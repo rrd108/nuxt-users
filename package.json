@@ -1,0 +1,56 @@
+{
+  "name": "nuxt-users",
+  "version": "0.1.0",
+  "description": "Nuxt users module",
+  "repository": "your-org/nuxt-users",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "predev": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
+    "dev": "npm run dev:prepare && nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "prerelease": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "lint": "eslint .",
+    "pretest": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.17.6"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "^2.6.2",
+    "@nuxt/eslint-config": "^1.5.2",
+    "@nuxt/module-builder": "^1.0.1",
+    "@nuxt/schema": "^3.17.6",
+    "@nuxt/test-utils": "^3.19.2",
+    "@types/node": "latest",
+    "changelogen": "^0.6.2",
+    "eslint": "^9.30.1",
+    "nuxt": "^3.17.6",
+    "typescript": "~5.8.3",
+    "vitest": "^3.2.4",
+    "vue-tsc": "^3.0.1"
+  }
+}
