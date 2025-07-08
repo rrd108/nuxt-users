@@ -32,12 +32,13 @@
     "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
     "lint": "eslint .",
     "pretest": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test": "yarn dev:prepare && vitest run",
+    "test:watch": "yarn dev:prepare && vitest watch",
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
   },
   "dependencies": {
-    "@nuxt/kit": "^3.17.6"
+    "@nuxt/kit": "^3.17.6",
+    "bcrypt": "^6.0.0"
   },
   "devDependencies": {
     "@nuxt/devtools": "^2.6.2",
@@ -45,6 +46,7 @@
     "@nuxt/module-builder": "^1.0.1",
     "@nuxt/schema": "^3.17.6",
     "@nuxt/test-utils": "^3.19.2",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "latest",
     "changelogen": "^0.6.2",
     "eslint": "^9.30.1",
