@@ -16,5 +16,16 @@ export default createConfigForNuxt({
   },
 })
   .append(
-    // your custom flat config here...
+    {
+      rules: {
+        // Override quotes rule to use single quotes
+        'quotes': ['error', 'single', { avoidEscape: true }],
+        'jsx-quotes': ['error', 'prefer-single'],
+        '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
+        '@stylistic/jsx-quotes': ['error', 'prefer-single'],
+        // Disable trailing commas
+        'comma-dangle': 'off',
+        '@stylistic/comma-dangle': 'off',
+      },
+    },
   )

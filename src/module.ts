@@ -1,7 +1,17 @@
 import { defineNuxtModule, addPlugin, createResolver } from '@nuxt/kit'
+import { defu } from 'defu'
+import { checkUsersTableExists, hasAnyUsers } from './runtime/server/utils/db'
+import type { ModuleOptions } from './types'
 
-// Module options TypeScript interface definition
-export interface ModuleOptions { }
+
+export const defaultOptions: ModuleOptions = {
+  connector: {
+    name: 'sqlite',
+    options: {
+      path: './data/db.sqlite3',
+    },
+  },
+}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -9,11 +19,27 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'nuxtUsers',
   },
   // Default configuration options of the Nuxt module
-  defaults: {},
-  setup(_options, _nuxt) {
+  defaults: defaultOptions,
+
+  async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
 
-    // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
+    // Add runtime config (server-side)
+    nuxt.options.runtimeConfig.nuxtUsers = defu(nuxt.options.runtimeConfig.nuxtUsers || {}, {
+      connector: options.connector,
+    })
+
+    // Check if the users table exists
+    const exists = await checkUsersTableExists(options)
+    if (!exists) {
+      console.log('[Nuxt Users DB] Users table does not exist, you should run the migration script to create it by running: yarn db:create-users-table')
+    }
+
+    const hasUsers = await hasAnyUsers(options)
+    if (!hasUsers) {
+      console.log('[Nuxt Users DB] No users found! Create a default user by running: yarn db:create-user')
+    }
+
     addPlugin(resolver.resolve('./runtime/plugin'))
   },
 })

@@ -34,10 +34,15 @@
     "pretest": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
+    "db:create-users-table": "tsx src/runtime/server/utils/create-users-table.ts",
+    "db:create-user": "tsx src/runtime/server/utils/create-user.ts"
   },
   "dependencies": {
-    "@nuxt/kit": "^3.17.6"
+    "@nuxt/kit": "^3.17.6",
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.2.0"
   },
   "devDependencies": {
     "@nuxt/devtools": "^2.6.2",
@@ -49,6 +54,8 @@
     "changelogen": "^0.6.2",
     "eslint": "^9.30.1",
     "nuxt": "^3.17.6",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
     "typescript": "~5.8.3",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.0.1"
