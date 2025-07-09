@@ -14,6 +14,17 @@ export const getConnector = async (name: string) => {
   }
 }
 
+export const checkPasswordResetTokensTableExists = async (options: ModuleOptions) => {
+  const db = await useDb(options)
+  try {
+    await db.sql`SELECT 1 FROM password_reset_tokens LIMIT 1`
+    return true
+  }
+  catch {
+    return false
+  }
+}
+
 const useDb = async (options: ModuleOptions) => {
   const connectorName = options.connector!.name
   const connector = await getConnector(connectorName)
