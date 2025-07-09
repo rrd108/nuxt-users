@@ -2,7 +2,7 @@ import { createError, defineEventHandler, readBody } from 'h3'
 import { getConnector } from '../utils/db'
 import { createDatabase } from 'db0'
 import bcrypt from 'bcrypt'
-import type { ModuleOptions } from '../../../types'
+import type { ModuleOptions, User } from '../../../types'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
   const connector = await getConnector(connectorName)
   const db = createDatabase(connector(options.connector!.options))
 
-  const user = await db.sql`SELECT * FROM users WHERE email = ${email}` as any
+  const user = await db.sql`SELECT * FROM users WHERE email = ${email}` as { rows: User[] }
 
   if (user.rows.length === 0) {
     throw createError({

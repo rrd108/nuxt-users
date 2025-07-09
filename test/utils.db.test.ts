@@ -1,12 +1,13 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { createDatabase } from 'db0'
+import type { Database } from 'db0'
 import { getConnector, checkUsersTableExists, hasAnyUsers } from '../src/runtime/server/utils/db'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import type { ModuleOptions } from '../src/types'
-import fs from 'fs'
+import fs from 'node:fs'
 
 describe('Utils: DB', () => {
-  let db: any
+  let db: Database
   let testOptions: ModuleOptions
 
   beforeEach(async () => {
@@ -26,11 +27,12 @@ describe('Utils: DB', () => {
   })
 
   afterEach(async () => {
-    try {   
+    try {
       fs.unlinkSync('./_db-utils')
       fs.unlinkSync('./_db-utils-different')
       fs.unlinkSync('./_db-utils-has-users')
-    } catch (error) {
+    }
+    catch {
       // Ignore errors during cleanup
     }
   })
@@ -68,7 +70,7 @@ describe('Utils: DB', () => {
     it('should return true when users table exists', async () => {
       // Create the users table first
       await createUsersTable('users', testOptions)
-      
+
       const exists = await checkUsersTableExists(testOptions)
       expect(exists).toBe(true)
     })
@@ -89,7 +91,7 @@ describe('Utils: DB', () => {
 
       // Create table in new database
       await createUsersTable('users', differentOptions)
-      
+
       // Now table exists
       const existsAfter = await checkUsersTableExists(differentOptions)
       expect(existsAfter).toBe(true)
@@ -100,7 +102,7 @@ describe('Utils: DB', () => {
     it('should return false when no users exist', async () => {
       // Create table but don't add users
       await createUsersTable('users', testOptions)
-      
+
       const hasUsers = await hasAnyUsers(testOptions)
       expect(hasUsers).toBe(false)
     })
@@ -108,13 +110,13 @@ describe('Utils: DB', () => {
     it('should return true when users exist', async () => {
       // Create table and add a user
       await createUsersTable('users', testOptions)
-      
+
       // Insert a test user
       await db.sql`
         INSERT INTO users (email, name, password, created_at, updated_at)
         VALUES ('test@example.com', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
-      
+
       const hasUsers = await hasAnyUsers(testOptions)
       expect(hasUsers).toBe(true)
     })
@@ -122,7 +124,7 @@ describe('Utils: DB', () => {
     it('should return true with multiple users', async () => {
       // Create table and add multiple users
       await createUsersTable('users', testOptions)
-      
+
       // Insert multiple test users
       await db.sql`
         INSERT INTO users (email, name, password, created_at, updated_at)
@@ -132,7 +134,7 @@ describe('Utils: DB', () => {
         INSERT INTO users (email, name, password, created_at, updated_at)
         VALUES ('user2@example.com', 'User 2', 'pass2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
-      
+
       const hasUsers = await hasAnyUsers(testOptions)
       expect(hasUsers).toBe(true)
     })
@@ -155,16 +157,16 @@ describe('Utils: DB', () => {
 
       // Create table and add user in different database
       await createUsersTable('users', differentOptions)
-      
+
       // Create a new database instance for the different options
       const connector = await import('db0/connectors/better-sqlite3')
       const differentDb = createDatabase(connector.default(differentOptions.connector!.options))
-      
+
       await differentDb.sql`
         INSERT INTO users (email, name, password, created_at, updated_at)
         VALUES ('test@example.com', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
-      
+
       const hasUsers = await hasAnyUsers(differentOptions)
       expect(hasUsers).toBe(true)
     })
@@ -178,7 +180,7 @@ describe('Utils: DB', () => {
 
       // Step 2: Create table
       await createUsersTable('users', testOptions)
-      
+
       // Step 3: Check table exists
       const tableExistsAfter = await checkUsersTableExists(testOptions)
       expect(tableExistsAfter).toBe(true)
@@ -192,7 +194,7 @@ describe('Utils: DB', () => {
         INSERT INTO users (email, name, password, created_at, updated_at)
         VALUES ('test@example.com', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
-      
+
       // Step 6: Check user exists
       const hasUsersAfter = await hasAnyUsers(testOptions)
       expect(hasUsersAfter).toBe(true)
@@ -201,13 +203,13 @@ describe('Utils: DB', () => {
     it('should handle multiple database operations correctly', async () => {
       // Create table
       await createUsersTable('users', testOptions)
-      
+
       // Verify table exists
       expect(await checkUsersTableExists(testOptions)).toBe(true)
-      
+
       // Verify no users initially
       expect(await hasAnyUsers(testOptions)).toBe(false)
-      
+
       // Add users
       await db.sql`
         INSERT INTO users (email, name, password, created_at, updated_at)
@@ -217,12 +219,12 @@ describe('Utils: DB', () => {
         INSERT INTO users (email, name, password, created_at, updated_at)
         VALUES ('user2@example.com', 'User 2', 'pass2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
-      
+
       // Verify users exist
       expect(await hasAnyUsers(testOptions)).toBe(true)
-      
+
       // Verify table still exists
       expect(await checkUsersTableExists(testOptions)).toBe(true)
     })
   })
-}) 
+})

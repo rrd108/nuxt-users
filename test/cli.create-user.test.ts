@@ -1,12 +1,13 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { createDatabase } from 'db0'
+import type { Database } from 'db0'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { createUser } from '../src/runtime/server/utils/create-user'
 import type { ModuleOptions } from '../src/types'
-import fs from 'fs'
+import fs from 'node:fs'
 
 describe('CLI: Create User', () => {
-  let db: any
+  let db: Database
   let testOptions: ModuleOptions
 
   beforeEach(async () => {
@@ -23,7 +24,7 @@ describe('CLI: Create User', () => {
     // Create in-memory database and migrate
     const connector = await import('db0/connectors/better-sqlite3')
     db = createDatabase(connector.default(testOptions.connector!.options))
-    
+
     // Create users table
     await createUsersTable('users', testOptions)
   })
@@ -33,7 +34,8 @@ describe('CLI: Create User', () => {
     try {
       fs.unlinkSync('./_create-user')
       fs.unlinkSync('./_create-user-different-connector')
-    } catch (error) {
+    }
+    catch {
       // Ignore errors during cleanup
     }
   })
@@ -112,14 +114,14 @@ describe('CLI: Create User', () => {
 
     expect(user.created_at).toBeDefined()
     expect(user.updated_at).toBeDefined()
-    
+
     // Check that timestamps are valid dates
     const createdAt = new Date(user.created_at)
     const updatedAt = new Date(user.updated_at)
 
     expect(createdAt.toString()).not.toBe('Invalid Date')
     expect(updatedAt.toString()).not.toBe('Invalid Date')
-    
+
     // Check that timestamps are not null/undefined
     expect(user.created_at).not.toBeNull()
     expect(user.updated_at).not.toBeNull()
@@ -170,4 +172,4 @@ describe('CLI: Create User', () => {
     expect(user.email).toBe(userData.email)
     expect(user.name).toBe(userData.name)
   })
-}) 
+})

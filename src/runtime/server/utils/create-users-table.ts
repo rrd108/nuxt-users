@@ -23,7 +23,8 @@ export const createUsersTable = async (table: string, options: ModuleOptions) =>
     `
     console.log('[DB:Create Users Table] Users table created successfully!')
     console.log('[DB:Create Users Table] Fields: id, email, name, password, created_at, updated_at')
-  } else {
+  }
+  else {
     console.log(`[DB:Create Users Table] Unknown table: ${table}`)
     throw new Error(`Unknown table: ${table}`)
   }
@@ -47,7 +48,8 @@ const migrateDefault = async () => {
   try {
     await createUsersTable('users', defaultOptions)
     process.exit(0)
-  } catch (error) {
+  }
+  catch (error) {
     console.error('[DB:Create Users Table] Error:', error)
     process.exit(1)
   }
@@ -56,4 +58,4 @@ const migrateDefault = async () => {
 // Run if this is the main module
 if (process.argv[1] && process.argv[1].endsWith('create-users-table.ts')) {
   migrateDefault()
-} 
+}

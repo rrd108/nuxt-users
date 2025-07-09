@@ -1,11 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { createDatabase } from 'db0'
+import type { Database } from 'db0'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import type { ModuleOptions } from '../src/types'
-import fs from 'fs'
+import fs from 'node:fs'
 
 describe('CLI: Create Users Table', () => {
-  let db: any
+  let db: Database
   let testOptions: ModuleOptions
 
   beforeEach(async () => {
@@ -29,7 +30,8 @@ describe('CLI: Create Users Table', () => {
     try {
       fs.unlinkSync('./_create-users-table')
       fs.unlinkSync('./_create-users-table-different-connector')
-    } catch (error) {
+    }
+    catch {
       // Ignore errors during cleanup
     }
   })
@@ -185,4 +187,4 @@ describe('CLI: Create Users Table', () => {
       VALUES ('Invalid User', 'password')
     `).rejects.toThrow() // Missing email
   })
-}) 
+})

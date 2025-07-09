@@ -42,7 +42,7 @@ const defaultOptions: ModuleOptions = {
 
 const createUserDefault = async () => {
   const args = process.argv.slice(2)
-  
+
   if (args.length < 3) {
     console.error('[DB:Create User] Usage: yarn create:user <email> <name> <password>')
     console.error('[DB:Create User] Example: yarn create:user john@example.com "John Doe" mypassword')
@@ -56,7 +56,8 @@ const createUserDefault = async () => {
   try {
     await createUser({ email, name, password }, defaultOptions)
     process.exit(0)
-  } catch (error) {
+  }
+  catch (error) {
     console.error('[DB:Create User] Error:', error)
     process.exit(1)
   }
@@ -65,4 +66,4 @@ const createUserDefault = async () => {
 // Run if this is the main module
 if (process.argv[1] && process.argv[1].endsWith('create-user.ts')) {
   createUserDefault()
-} 
+}

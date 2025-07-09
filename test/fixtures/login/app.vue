@@ -1,4 +1,3 @@
 <template>
-    <div>api-login fixture</div>
-  </template>
-  
+  <div>api-login fixture</div>
+</template>

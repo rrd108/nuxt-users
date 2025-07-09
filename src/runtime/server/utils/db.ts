@@ -23,12 +23,13 @@ const useDb = async (options: ModuleOptions) => {
 
 export const checkUsersTableExists = async (options: ModuleOptions) => {
   const db = await useDb(options)
-  
+
   try {
     // Try to query the users table - if it exists, this will succeed
     await db.sql`SELECT 1 FROM users LIMIT 1`
     return true
-  } catch (error) {
+  }
+  catch {
     // If the table doesn't exist, the query will fail
     return false
   }
@@ -40,11 +41,12 @@ interface CountResult {
 
 export const hasAnyUsers = async (options: ModuleOptions) => {
   const db = await useDb(options)
-  
+
   try {
     const users = await db.sql`SELECT COUNT(*) as count FROM users` as CountResult
     return users.rows?.[0]?.count > 0
-  } catch (error) {
+  }
+  catch {
     // If the table doesn't exist, there are no users
     return false
   }
