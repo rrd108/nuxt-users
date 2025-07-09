@@ -1,4 +1,4 @@
-import { defineNuxtModule, addPlugin, createResolver, addServerHandler } from '@nuxt/kit'
+import { defineNuxtModule, addPlugin, createResolver, addServerHandler, addComponent } from '@nuxt/kit'
 import { defu } from 'defu'
 import { checkUsersTableExists, hasAnyUsers } from './runtime/server/utils/db'
 import type { ModuleOptions } from './types'
@@ -47,5 +47,11 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     addPlugin(resolver.resolve('./runtime/plugin'))
+
+    // Register the LoginForm component
+    addComponent({
+      name: 'LoginForm',
+      filePath: resolver.resolve('./runtime/components/LoginForm.vue')
+    })
   },
 })

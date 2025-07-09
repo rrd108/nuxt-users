@@ -20,3 +20,15 @@ export interface User {
   created_at: string
   updated_at: string
 }
+
+export interface LoginFormData {
+  email: string
+  password: string
+  rememberMe?: boolean
+}
+
+export interface LoginFormProps {
+  apiEndpoint?: string
+  redirectTo?: string
+}
+

@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // For now, just return a success message
-  // In a real application, you would return a JWT or session token here
-  return { user: user.rows[0] }
+  // Return user without password for security
+  const { password: _, ...userWithoutPassword } = user.rows[0]
+  return { user: userWithoutPassword }
 })
