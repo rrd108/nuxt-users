@@ -7,7 +7,7 @@ export const createUsersTable = async (table: string, options: ModuleOptions) =>
   const connector = await getConnector(connectorName)
   const db = createDatabase(connector(options.connector!.options))
 
-  console.log(`[Migration] Creating ${table} table with ${connectorName} connector...`)
+  console.log(`[DB:Create Users Table] Creating ${table} table with ${connectorName} connector...`)
 
   if (table === 'users') {
     // Create users table with the specified fields
@@ -21,14 +21,14 @@ export const createUsersTable = async (table: string, options: ModuleOptions) =>
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `
-    console.log('[Migration] Users table created successfully!')
-    console.log('[Migration] Fields: id, email, name, password, created_at, updated_at')
+    console.log('[DB:Create Users Table] Users table created successfully!')
+    console.log('[DB:Create Users Table] Fields: id, email, name, password, created_at, updated_at')
   } else {
-    console.log(`[Migration] Unknown table: ${table}`)
+    console.log(`[DB:Create Users Table] Unknown table: ${table}`)
     throw new Error(`Unknown table: ${table}`)
   }
 
-  console.log('[Migration] Migration completed successfully!')
+  console.log('[DB:Create Users Table] Migration completed successfully!')
 }
 
 // Default options - you can override these with environment variables
@@ -48,7 +48,7 @@ const migrateDefault = async () => {
     await createUsersTable('users', defaultOptions)
     process.exit(0)
   } catch (error) {
-    console.error('[Migration] Error:', error)
+    console.error('[DB:Create Users Table] Error:', error)
     process.exit(1)
   }
 }

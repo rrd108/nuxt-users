@@ -14,7 +14,7 @@ export const createUser = async (userData: CreateUserOptions, options: ModuleOpt
   const connector = await getConnector(connectorName)
   const db = createDatabase(connector(options.connector!.options))
 
-  console.log(`[Create User] Creating user with ${connectorName} connector...`)
+  console.log(`[DB:Create User] Creating user with ${connectorName} connector...`)
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(userData.password, 10)
@@ -25,9 +25,9 @@ export const createUser = async (userData: CreateUserOptions, options: ModuleOpt
     VALUES (${userData.email}, ${userData.name}, ${hashedPassword}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
   `
 
-  console.log('[Create User] User created successfully!')
-  console.log(`[Create User] Email: ${userData.email}`)
-  console.log(`[Create User] Name: ${userData.name}`)
+  console.log('[DB:Create User] User created successfully!')
+  console.log(`[DB:Create User] Email: ${userData.email}`)
+  console.log(`[DB:Create User] Name: ${userData.name}`)
 }
 
 // Default options
@@ -44,20 +44,20 @@ const createUserDefault = async () => {
   const args = process.argv.slice(2)
   
   if (args.length < 3) {
-    console.error('[Create User] Usage: yarn create:user <email> <name> <password>')
-    console.error('[Create User] Example: yarn create:user john@example.com "John Doe" mypassword')
+    console.error('[DB:Create User] Usage: yarn create:user <email> <name> <password>')
+    console.error('[DB:Create User] Example: yarn create:user john@example.com "John Doe" mypassword')
     process.exit(1)
   }
 
   const [email, name, password] = args
 
-  console.log('[Create User] Starting user creation...')
+  console.log('[DB:Create User] Starting user creation...')
 
   try {
     await createUser({ email, name, password }, defaultOptions)
     process.exit(0)
   } catch (error) {
-    console.error('[Create User] Error:', error)
+    console.error('[DB:Create User] Error:', error)
     process.exit(1)
   }
 }

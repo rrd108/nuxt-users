@@ -1,8 +1,7 @@
-import { defineNuxtModule, addPlugin, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, addPlugin, createResolver, addServerHandler } from '@nuxt/kit'
 import { defu } from 'defu'
 import { checkUsersTableExists, hasAnyUsers } from './runtime/server/utils/db'
 import type { ModuleOptions } from './types'
-
 
 export const defaultOptions: ModuleOptions = {
   connector: {
@@ -32,13 +31,20 @@ export default defineNuxtModule<ModuleOptions>({
     // Check if the users table exists
     const exists = await checkUsersTableExists(options)
     if (!exists) {
-      console.log('[Nuxt Users DB] Users table does not exist, you should run the migration script to create it by running: yarn db:create-users-table')
+      console.warn('[Nuxt Users DB] Users table does not exist, you should run the migration script to create it by running: yarn db:create-users-table')
     }
 
     const hasUsers = await hasAnyUsers(options)
     if (!hasUsers) {
-      console.log('[Nuxt Users DB] No users found! Create a default user by running: yarn db:create-user')
+      console.warn('[Nuxt Users DB] No users found! Create a default user by running: yarn db:create-user rrd@example.com "John Doe" mypassword123')
     }
+
+    // Register API routes
+    addServerHandler({
+      route: '/api/login',
+      method: 'post',
+      handler: resolver.resolve('./runtime/server/api/login.post')
+    })
 
     addPlugin(resolver.resolve('./runtime/plugin'))
   },

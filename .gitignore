@@ -56,3 +56,7 @@ Temporary Items
 .apdisk
 
 data/db.sqlite3
+
+fixture-db.sqlite3
+
+test/fixtures/login/_db.sqlite3
