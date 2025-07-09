@@ -36,7 +36,8 @@
     "test:watch": "vitest watch",
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
     "db:create-users-table": "tsx src/runtime/server/utils/create-users-table.ts",
-    "db:create-user": "tsx src/runtime/server/utils/create-user.ts"
+    "db:create-user": "tsx src/runtime/server/utils/create-user.ts",
+    "db:create-personal-access-tokens-table": "tsx src/runtime/server/utils/create-personal-access-tokens-table.ts"
   },
   "dependencies": {
     "@nuxt/kit": "^3.17.6",

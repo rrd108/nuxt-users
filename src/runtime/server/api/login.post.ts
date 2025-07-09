@@ -1,7 +1,8 @@
-import { createError, defineEventHandler, readBody } from 'h3'
+import { createError, defineEventHandler, readBody, setCookie } from 'h3'
 import { getConnector } from '../utils/db'
 import { createDatabase } from 'db0'
 import bcrypt from 'bcrypt'
+import crypto from 'node:crypto'
 import type { ModuleOptions, User } from '../../../types'
 
 export default defineEventHandler(async (event) => {
@@ -22,16 +23,17 @@ export default defineEventHandler(async (event) => {
   const connector = await getConnector(connectorName)
   const db = createDatabase(connector(options.connector!.options))
 
-  const user = await db.sql`SELECT * FROM users WHERE email = ${email}` as { rows: User[] }
+  const userResult = await db.sql`SELECT * FROM users WHERE email = ${email}` as { rows: User[] }
 
-  if (user.rows.length === 0) {
+  if (userResult.rows.length === 0) {
     throw createError({
       statusCode: 401,
       statusMessage: 'Invalid email or password',
     })
   }
 
-  const storedPassword = user.rows[0].password
+  const user = userResult.rows[0]
+  const storedPassword = user.password
   const passwordMatch = await bcrypt.compare(password, storedPassword)
 
   if (!passwordMatch) {
@@ -41,7 +43,27 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  // Generate a secure token
+  const token = crypto.randomBytes(64).toString('hex')
+  const tokenName = 'auth_token' // Or any other meaningful name
+
+  // Store the token in the personal_access_tokens table
+  // Assuming user.id is the primary key of the users table
+  await db.sql`
+    INSERT INTO personal_access_tokens (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+    VALUES ('user', ${user.id}, ${tokenName}, ${token}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+  `
+
+  // Set the cookie
+  setCookie(event, 'auth_token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    sameSite: 'lax', // Adjust as needed
+    maxAge: 60 * 60 * 24 * 7, // Example: 7 days
+    path: '/',
+  })
+
   // Return user without password for security
-  const { password: _, ...userWithoutPassword } = user.rows[0]
+  const { password: _, ...userWithoutPassword } = user
   return { user: userWithoutPassword }
 })
