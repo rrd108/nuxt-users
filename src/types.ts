@@ -10,6 +10,10 @@ export interface ModuleOptions {
       database?: string
     }
   }
+  tables: {
+    users: boolean
+    personalAccessTokens: boolean
+  }
 }
 
 export interface User {
@@ -31,4 +35,3 @@ export interface LoginFormProps {
   apiEndpoint?: string
   redirectTo?: string
 }
-

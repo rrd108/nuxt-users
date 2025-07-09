@@ -45,7 +45,7 @@ Upon successful login via the `/api/login` endpoint:
 2.  This token is stored in the `personal_access_tokens` table, linked to the authenticated user.
 3.  An HTTP-only cookie named `auth_token` is set in the browser, containing this token. This cookie is used for subsequent authenticated requests.
 
-This system is inspired by Laravel Sanctum's token-based authentication.
+This system is inspired by __Laravel Sanctum__'s token-based authentication.
 
 ## Database Setup
 

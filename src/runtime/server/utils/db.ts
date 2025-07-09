@@ -35,6 +35,17 @@ export const checkUsersTableExists = async (options: ModuleOptions) => {
   }
 }
 
+export const checkPersonalAccessTokensTableExists = async (options: ModuleOptions) => {
+  const db = await useDb(options)
+  try {
+    await db.sql`SELECT 1 FROM personal_access_tokens LIMIT 1`
+    return true
+  }
+  catch {
+    return false
+  }
+}
+
 interface CountResult {
   rows: Array<{ count: number }>
 }

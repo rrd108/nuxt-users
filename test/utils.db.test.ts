@@ -5,6 +5,12 @@ import { getConnector, checkUsersTableExists, hasAnyUsers } from '../src/runtime
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import type { ModuleOptions } from '../src/types'
 import fs from 'node:fs'
+import { resolve } from 'pathe'
+import { fileURLToPath } from 'node:url'
+
+const dbPath = resolve(fileURLToPath(import.meta.url), '../fixtures/utils/db/_db-utils')
+const dbPathDifferent = resolve(fileURLToPath(import.meta.url), '../fixtures/utils/db/_db-utils-different')
+const dbPathHasUsers = resolve(fileURLToPath(import.meta.url), '../fixtures/utils/db/_db-utils-has-users')
 
 describe('Utils: DB', () => {
   let db: Database
@@ -16,7 +22,7 @@ describe('Utils: DB', () => {
       connector: {
         name: 'sqlite',
         options: {
-          path: './_db-utils', // Specific in-memory database for this test
+          path: dbPath, // Specific in-memory database for this test
         },
       },
     }
@@ -28,9 +34,7 @@ describe('Utils: DB', () => {
 
   afterEach(async () => {
     try {
-      fs.unlinkSync('./_db-utils')
-      fs.unlinkSync('./_db-utils-different')
-      fs.unlinkSync('./_db-utils-has-users')
+      fs.unlinkSync(dbPath)
     }
     catch {
       // Ignore errors during cleanup
@@ -80,7 +84,7 @@ describe('Utils: DB', () => {
         connector: {
           name: 'sqlite',
           options: {
-            path: './_db-utils-different',
+            path: dbPathDifferent,
           },
         },
       }
@@ -150,7 +154,7 @@ describe('Utils: DB', () => {
         connector: {
           name: 'sqlite',
           options: {
-            path: './_db-utils-has-users',
+            path: dbPathHasUsers,
           },
         },
       }
