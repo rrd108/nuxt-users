@@ -37,6 +37,16 @@ export default defineNuxtConfig({
 })
 ```
 
+## Authentication Flow
+
+Upon successful login via the `/api/login` endpoint:
+
+1.  A secure, random token is generated.
+2.  This token is stored in the `personal_access_tokens` table, linked to the authenticated user.
+3.  An HTTP-only cookie named `auth_token` is set in the browser, containing this token. This cookie is used for subsequent authenticated requests.
+
+This system is inspired by __Laravel Sanctum__'s token-based authentication.
+
 ## Database Setup
 
 ### 1. Create Users Table
@@ -45,7 +55,15 @@ export default defineNuxtConfig({
 yarn db:create-users-table
 ```
 
-### 2. Create Your First User
+### 2. Create Personal Access Tokens Table
+
+This table is required for storing authentication tokens.
+
+```bash
+yarn db:create-personal-access-tokens-table
+```
+
+### 3. Create Your First User
 
 ```bash
 yarn db:create-user rrd@example.com "John Doe" mypassword123
@@ -102,6 +120,7 @@ nuxtUsers: {
 | Command | Description |
 |---------|-------------|
 | `yarn db:create-users-table` | Create the users table |
+| `yarn db:create-personal-access-tokens-table` | Create the personal access tokens table |
 | `yarn db:create-user <email> <name> <password>` | Create a new user |
 
 ## Login Component
@@ -355,7 +374,20 @@ CREATE TABLE users (
   password TEXT NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-)
+);
+
+CREATE TABLE personal_access_tokens (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tokenable_type TEXT NOT NULL,
+  tokenable_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  token TEXT NOT NULL UNIQUE,
+  abilities TEXT,
+  last_used_at DATETIME,
+  expires_at DATETIME,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
 ## License

@@ -1,6 +1,34 @@
+<script setup>
+const handleSuccess = (user) => {
+  console.log('Login successful:', user)
+  alert(`Welcome back, ${user.name}!`)
+}
+
+const handleError = (error) => {
+  console.log('Login error:', error)
+}
+
+const handleSubmit = (data) => {
+  console.log('Form submitted:', data)
+}
+
+const hasUsersTable = useRuntimeConfig().public.nuxtUsers?.tables?.users ?? false
+const hasPersonalAccessTokensTable = useRuntimeConfig().public.nuxtUsers?.tables?.personalAccessTokens ?? false
+</script>
+
 <template>
   <div class="demo-container">
     <h1>Nuxt Users - Login Component Demo</h1>
+
+    <div
+      v-if="!hasUsersTable || !hasPersonalAccessTokensTable"
+      class="db-error"
+    >
+      <h2>⚠️ Tables</h2>
+      <p>❌ Users table is not created, execute <code>yarn db:create-users-table</code></p>
+      <p>❌ Personal access tokens table is not created, execute <code>yarn db:create-personal-access-tokens-table</code></p>
+      <p>After you are done you should restart the dev server!</p>
+    </div>
 
     <div class="demo-section">
       <h2>Default Login Form</h2>
@@ -153,21 +181,6 @@
   </div>
 </template>
 
-<script setup>
-const handleSuccess = (user) => {
-  console.log('Login successful:', user)
-  alert(`Welcome back, ${user.name}!`)
-}
-
-const handleError = (error) => {
-  console.log('Login error:', error)
-}
-
-const handleSubmit = (data) => {
-  console.log('Form submitted:', data)
-}
-</script>
-
 <style scoped>
 .demo-container {
   max-width: 1200px;
@@ -245,6 +258,25 @@ const handleSubmit = (data) => {
 .custom-submit-button:hover:not(:disabled) {
   background-color: #047857 !important;
   border-color: #047857 !important;
+}
+
+.db-error {
+  background-color: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  color: #92400e;
+  width: fit-content;
+
+  code {
+    display: block;
+    background-color: #ccc;
+    color: #000;
+    padding: .5em;
+    margin: .5em;
+    border-radius: 4px;
+  }
 }
 
 /* Custom error styles */

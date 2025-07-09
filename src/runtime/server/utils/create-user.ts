@@ -28,6 +28,13 @@ export const createUser = async (userData: CreateUserOptions, options: ModuleOpt
   console.log('[DB:Create User] User created successfully!')
   console.log(`[DB:Create User] Email: ${userData.email}`)
   console.log(`[DB:Create User] Name: ${userData.name}`)
+
+  // Fetch the created user to return it (especially to get the ID)
+  const result = await db.sql`SELECT id, email, name, created_at, updated_at FROM users WHERE email = ${userData.email}` as { rows: any[] }
+  if (result.rows.length === 0) {
+    throw new Error('Failed to retrieve created user.')
+  }
+  return result.rows[0]
 }
 
 // Default options
