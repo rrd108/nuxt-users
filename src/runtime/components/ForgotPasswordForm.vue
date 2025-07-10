@@ -1,28 +1,48 @@
 <template>
   <div>
     <h2>Forgot Password</h2>
-    <form @submit.prevent="handleForgotPassword">
-      <div>
-        <label for="email">Email:</label>
-        <input id="email" v-model="email" type="email" required />
-      </div>
-      <button type="submit" :disabled="loading">
-        {{ loading ? 'Sending...' : 'Send Password Reset Link' }}
-      </button>
-      <p v-if="message" :class="{ error: isError, success: !isError }">{{ message }}</p>
-    </form>
+    <FormKit
+      type="form"
+      @submit="handleForgotPassword"
+      :actions="false"
+      #default="{ disabled }"
+    >
+      <FormKit
+        type="email"
+        name="email"
+        label="Email"
+        placeholder="your@email.com"
+        validation="required|email"
+        v-model="formData.email"
+      />
+      <FormKit
+        type="submit"
+        :label="loading ? 'Sending...' : 'Send Password Reset Link'"
+        :disabled="disabled || loading"
+      />
+      <p v-if="message" :class="{ error: isError, success: !isError }" class="form-message">{{ message }}</p>
+    </FormKit>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+// Ensure FormKit types are available if you're using them explicitly,
+// though often not needed for basic setup with Nuxt FormKit module.
 
-const email = ref('')
+interface ForgotPasswordFormData {
+  email: string
+}
+
+const formData = reactive<ForgotPasswordFormData>({
+  email: '',
+})
+
 const message = ref('')
 const loading = ref(false)
 const isError = ref(false)
 
-const handleForgotPassword = async () => {
+const handleForgotPassword = async (data: ForgotPasswordFormData) => {
   loading.value = true
   message.value = ''
   isError.value = false
@@ -34,18 +54,18 @@ const handleForgotPassword = async () => {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({ email: email.value }),
+      body: JSON.stringify({ email: data.email }), // Use email from form data
     })
 
-    const data = await response.json()
+    const responseData = await response.json()
 
     if (!response.ok) {
-      throw new Error(data.message || data.statusMessage || 'An error occurred.')
+      throw new Error(responseData.message || responseData.statusMessage || 'An error occurred.')
     }
 
-    message.value = data.message
+    message.value = responseData.message
     isError.value = false
-    email.value = '' // Clear email field on success
+    formData.email = '' // Clear email field on success
   }
   catch (err: any) {
     message.value = err.message || 'Failed to send password reset link.'
@@ -64,20 +84,47 @@ const handleForgotPassword = async () => {
 .success {
   color: green;
 }
-form > div {
+.form-message {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+/* Basic styling for FormKit elements if not using a global theme */
+:deep(.formkit-outer) {
   margin-bottom: 1rem;
 }
-label {
+:deep(.formkit-label) {
   display: block;
   margin-bottom: 0.25rem;
+  font-weight: bold;
 }
-input {
+:deep(.formkit-input input[type="email"]),
+:deep(.formkit-input input[type="password"]) {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.75rem;
   box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
-button {
-  padding: 0.5rem 1rem;
+:deep(.formkit-input input[type="submit"]) {
+  padding: 0.75rem 1.5rem;
   cursor: pointer;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
 }
+:deep(.formkit-input input[type="submit"]:disabled) {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+:deep(.formkit-messages) {
+  list-style: none;
+  padding: 0;
+  margin-top: 0.25rem;
+}
+:deep(.formkit-message) {
+  color: red;
+  font-size: 0.8rem;
+}
+
 </style>
