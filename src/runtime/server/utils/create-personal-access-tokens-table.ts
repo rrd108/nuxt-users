@@ -11,7 +11,8 @@ export const createPersonalAccessTokensTable = async (table: string, options: Mo
 
   if (table === 'personal_access_tokens') {
     // Create personal_access_tokens table with the specified fields
-    await db.sql`
+    if (connectorName === 'sqlite') {
+      await db.sql`
       CREATE TABLE IF NOT EXISTS personal_access_tokens (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         tokenable_type TEXT NOT NULL,
@@ -25,6 +26,23 @@ export const createPersonalAccessTokensTable = async (table: string, options: Mo
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `
+    }
+    if (connectorName === 'mysql') {
+      await db.sql`
+      CREATE TABLE IF NOT EXISTS personal_access_tokens (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        tokenable_type VARCHAR(255) NOT NULL,
+        tokenable_id INT NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        token VARCHAR(64) NOT NULL UNIQUE,
+        abilities TEXT,
+        last_used_at DATETIME,
+        expires_at DATETIME,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `
+    }
     console.log('[DB:Create Personal Access Tokens Table] Personal access tokens table created successfully!')
     console.log('[DB:Create Personal Access Tokens Table] Fields: id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at')
   }
@@ -36,21 +54,13 @@ export const createPersonalAccessTokensTable = async (table: string, options: Mo
   console.log('[DB:Create Personal Access Tokens Table] Migration completed successfully!')
 }
 
-// Default options - you can override these with environment variables
-const defaultOptions: ModuleOptions = {
-  connector: {
-    name: 'sqlite',
-    options: {
-      path: './data/db.sqlite3',
-    },
-  },
-}
 
 const migrateDefault = async () => {
   console.log('[Nuxt Users] Starting migration for personal_access_tokens table...')
-
+  const options = useRuntimeConfig().nuxtUsers
+  
   try {
-    await createPersonalAccessTokensTable('personal_access_tokens', defaultOptions)
+    await createPersonalAccessTokensTable('personal_access_tokens', options)
     process.exit(0)
   }
   catch (error) {
