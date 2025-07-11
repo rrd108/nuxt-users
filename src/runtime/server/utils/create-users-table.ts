@@ -32,21 +32,13 @@ export const createUsersTable = async (table: string, options: ModuleOptions) =>
   console.log('[DB:Create Users Table] Migration completed successfully!')
 }
 
-// Default options - you can override these with environment variables
-const defaultOptions: ModuleOptions = {
-  connector: {
-    name: 'sqlite',
-    options: {
-      path: './data/db.sqlite3',
-    },
-  },
-}
-
 const migrateDefault = async () => {
   console.log('[Nuxt Users] Starting migration...')
 
+  const options = useRuntimeConfig().nuxtUsers
+
   try {
-    await createUsersTable('users', defaultOptions)
+    await createUsersTable('users', options)
     process.exit(0)
   }
   catch (error) {

@@ -34,6 +34,7 @@
     "pretest": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
     "test": "vitest run",
     "test:watch": "vitest watch",
+    "test:mysql": "./scripts/test-mysql.sh",
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
     "db:create-users-table": "tsx src/runtime/server/utils/create-users-table.ts",
     "db:create-user": "tsx src/runtime/server/utils/create-user.ts",
@@ -45,6 +46,7 @@
     "@types/bcrypt": "^5.0.2",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.2.0",
+    "mysql2": "^3.14.2",
     "nodemailer": "^7.0.5"
   },
   "devDependencies": {

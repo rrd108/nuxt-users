@@ -64,3 +64,5 @@ test/fixtures/login/_db.sqlite3
 test/fixtures/utils/db/_db-utils-different
 
 test/fixtures/utils/db/_db-utils-has-users
+
+bin/act

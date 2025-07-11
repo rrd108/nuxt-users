@@ -1,0 +1,88 @@
+import { beforeEach, afterEach } from 'vitest'
+import { createDatabase } from 'db0'
+import type { Database } from 'db0'
+import type { DatabaseConfig, ModuleOptions } from '../../src/types'
+import fs from 'node:fs'
+
+export interface TestSetupOptions {
+  dbType: 'sqlite' | 'mysql'
+  dbConfig: DatabaseConfig
+  tableName?: string
+  cleanupFiles?: string[]
+}
+
+export const createTestSetup = (options: TestSetupOptions) => {
+  const { dbType, dbConfig, tableName = 'users', cleanupFiles = [] } = options
+  let db: Database | undefined
+  let testOptions: ModuleOptions | undefined
+
+  beforeEach(async () => {
+    testOptions = {
+      connector: {
+        name: dbType,
+        options: dbConfig
+      },
+      tables: {
+        users: false,
+        personalAccessTokens: false,
+        passwordResetTokens: false
+      }
+    }
+
+    // Create database connection
+    if (dbType === 'mysql') {
+      const mysql = await import('db0/connectors/mysql2')
+      db = createDatabase(mysql.default(testOptions.connector!.options))
+    }
+    if (dbType === 'sqlite') {
+      const sqlite = await import('db0/connectors/better-sqlite3')
+      db = createDatabase(sqlite.default(testOptions.connector!.options))
+    }
+
+    return { db, testOptions }
+  })
+
+  afterEach(async () => {
+    if (dbType === 'sqlite') {
+      // Clean up SQLite files
+      for (const file of cleanupFiles) {
+        try {
+          fs.unlinkSync(file)
+        }
+        catch {
+          // Ignore errors during cleanup
+        }
+      }
+    }
+    else {
+      // Clean up MySQL data
+      if (db) {
+        try {
+          await db.sql`DELETE FROM ${tableName}`
+        }
+        catch {
+          // Ignore errors during cleanup
+        }
+      }
+    }
+  })
+
+  return { db, testOptions }
+}
+
+export const getDatabaseConfig = (dbType: 'sqlite' | 'mysql'): DatabaseConfig => {
+  if (dbType === 'sqlite') {
+    return {
+      path: './_test-db'
+    }
+  }
+  else {
+    return {
+      host: process.env.DB_HOST || 'localhost',
+      port: Number.parseInt(process.env.DB_PORT || '3306'),
+      username: process.env.DB_USER || 'root',
+      password: process.env.DB_PASSWORD || '123',
+      database: process.env.DB_NAME || 'test_db'
+    }
+  }
+}
