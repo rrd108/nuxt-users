@@ -4,8 +4,7 @@ import bcrypt from 'bcrypt'
 import { findUserByEmail, updateUserPassword } from '../utils/user'
 import { getConnector } from '../utils/db'
 import { createDatabase } from 'db0'
-import type { ModuleOptions, User } from '../../../types'
-import type { H3Event } from 'h3' // For useRuntimeConfig
+import type { ModuleOptions } from '../../../types'
 
 const TOKEN_EXPIRATION_HOURS = 1
 
@@ -14,11 +13,7 @@ const TOKEN_EXPIRATION_HOURS = 1
  */
 export const sendPasswordResetLink = async (
   email: string,
-  event: H3Event, // To access runtimeConfig
-): Promise<void> => {
-  const { nuxtUsers } = useRuntimeConfig(event)
-  const options = nuxtUsers as ModuleOptions
-
+  options: ModuleOptions): Promise<void> => {
   const user = await findUserByEmail(email, options)
 
   if (!user) {
@@ -43,9 +38,6 @@ export const sendPasswordResetLink = async (
     VALUES (${email}, ${hashedToken}, CURRENT_TIMESTAMP)
   `
 
-  // Construct the password reset URL
-  const resetUrl = `${options.passwordResetBaseUrl || 'http://localhost:3000'}/reset-password?token=${token}&email=${encodeURIComponent(email)}`
-
   // Send email
   if (!options.mailer) {
     console.error('Mailer configuration is missing. Cannot send password reset email.')
@@ -68,8 +60,8 @@ export const sendPasswordResetLink = async (
       from: options.mailer.defaults?.from || '"Nuxt Users" <noreply@example.com>',
       to: email,
       subject: 'Password Reset Request',
-      text: `Please click the following link to reset your password: ${resetUrl}`,
-      html: `<p>Please click the following link to reset your password:</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>This link will expire in ${TOKEN_EXPIRATION_HOURS} hour(s).</p>`,
+      text: `Please click the following link to reset your password: ${options.passwordResetBaseUrl}`,
+      html: `<p>Please click the following link to reset your password:</p><p><a href="${options.passwordResetBaseUrl}">${options.passwordResetBaseUrl}</a></p><p>This link will expire in ${TOKEN_EXPIRATION_HOURS} hour(s).</p>`,
     })
     console.log(`Password reset email sent to ${email}`)
   }
@@ -86,11 +78,7 @@ export const resetPassword = async (
   token: string,
   email: string, // Added email to quickly find the token
   newPassword: string,
-  event: H3Event, // To access runtimeConfig
-): Promise<boolean> => {
-  const { nuxtUsers } = useRuntimeConfig(event)
-  const options = nuxtUsers as ModuleOptions
-
+  options: ModuleOptions): Promise<boolean> => {
   const connectorName = options.connector!.name
   const connector = await getConnector(connectorName)
   const db = createDatabase(connector(options.connector!.options))
@@ -146,11 +134,7 @@ export const resetPassword = async (
  * Deletes expired password reset tokens from the database.
  */
 export const deleteExpiredPasswordResetTokens = async (
-  event: H3Event, // To access runtimeConfig
-): Promise<void> => {
-  const { nuxtUsers } = useRuntimeConfig(event)
-  const options = nuxtUsers as ModuleOptions
-
+  options: ModuleOptions): Promise<void> => {
   const connectorName = options.connector!.name
   const connector = await getConnector(connectorName)
   const db = createDatabase(connector(options.connector!.options))

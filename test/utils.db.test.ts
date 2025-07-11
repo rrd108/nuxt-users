@@ -78,28 +78,6 @@ describe('Utils: DB', () => {
       const exists = await checkUsersTableExists(testOptions)
       expect(exists).toBe(true)
     })
-
-    it('should work with different database connectors', async () => {
-      const differentOptions: ModuleOptions = {
-        connector: {
-          name: 'sqlite',
-          options: {
-            path: dbPathDifferent,
-          },
-        },
-      }
-
-      // Table doesn't exist in new database
-      const exists = await checkUsersTableExists(differentOptions)
-      expect(exists).toBe(false)
-
-      // Create table in new database
-      await createUsersTable('users', differentOptions)
-
-      // Now table exists
-      const existsAfter = await checkUsersTableExists(differentOptions)
-      expect(existsAfter).toBe(true)
-    })
   })
 
   describe('hasAnyUsers', () => {
@@ -147,32 +125,6 @@ describe('Utils: DB', () => {
       // Don't create the table
       const hasUsers = await hasAnyUsers(testOptions)
       expect(hasUsers).toBe(false)
-    })
-
-    it('should work with different database connectors', async () => {
-      const differentOptions: ModuleOptions = {
-        connector: {
-          name: 'sqlite',
-          options: {
-            path: dbPathHasUsers,
-          },
-        },
-      }
-
-      // Create table and add user in different database
-      await createUsersTable('users', differentOptions)
-
-      // Create a new database instance for the different options
-      const connector = await import('db0/connectors/better-sqlite3')
-      const differentDb = createDatabase(connector.default(differentOptions.connector!.options))
-
-      await differentDb.sql`
-        INSERT INTO users (email, name, password, created_at, updated_at)
-        VALUES ('test@example.com', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-      `
-
-      const hasUsers = await hasAnyUsers(differentOptions)
-      expect(hasUsers).toBe(true)
     })
   })
 

@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await sendPasswordResetLink(email, event)
+    await sendPasswordResetLink(email, event.context.nuxtUsers)
     // Always return a success-like message to prevent email enumeration
     return { message: 'If a user with that email exists, a password reset link has been sent.' }
   }

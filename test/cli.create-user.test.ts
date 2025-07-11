@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { createDatabase } from 'db0'
 import type { Database } from 'db0'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
-import { createUser } from '../src/runtime/server/utils/create-user'
+import { createUser } from '../src/runtime/server/utils/user'
 import type { ModuleOptions } from '../src/types'
 import fs from 'node:fs'
 
