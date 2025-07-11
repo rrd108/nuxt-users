@@ -12,7 +12,7 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
   console.log(`[DB:Create Password Reset Tokens Table] Creating ${tableName} table with ${connectorName} connector...`)
 
   await db.sql`
-    CREATE TABLE IF NOT EXISTS ${db.raw(tableName)} (
+    CREATE TABLE IF NOT EXISTS {${tableName}} (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT NOT NULL,
       token TEXT NOT NULL UNIQUE,
@@ -20,12 +20,12 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
     )
   `
   // Creating an index on email for faster lookups
-  await db.sql`CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_email ON ${db.raw(tableName)} (email)`
+  await db.sql`CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_email ON {${tableName}} (email)`
   // Creating an index on token for faster lookups
-  await db.sql`CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON ${db.raw(tableName)} (token)`
+  await db.sql`CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON {${tableName}} (token)`
 
   console.log(`[DB:Create Password Reset Tokens Table] ${tableName} table created successfully!`)
-  console.log(`[DB:Create Password Reset Tokens Table] Fields: id, email, token, created_at`)
+  console.log('[DB:Create Password Reset Tokens Table] Fields: id, email, token, created_at')
 
   console.log('[DB:Create Password Reset Tokens Table] Migration completed successfully!')
 }
