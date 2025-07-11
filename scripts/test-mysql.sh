@@ -6,6 +6,7 @@
 echo "Setting up MySQL test environment..."
 
 # Default MySQL configuration
+export DB_CONNECTOR="mysql"
 export DB_HOST=${DB_HOST:-"localhost"}
 export DB_PORT=${DB_PORT:-"3306"}
 export DB_USER=${DB_USER:-"root"}
@@ -31,5 +32,11 @@ echo "MySQL connection successful!"
 # Create test database if it doesn't exist
 mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;" >/dev/null 2>&1
 
-echo "Running tests..."
-npm test 
+echo "Running tests against MySQL..."
+
+# Check if any arguments were passed
+if [ $# -eq 0 ]; then
+    vitest run
+else
+    vitest run "$@"
+fi

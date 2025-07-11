@@ -1,14 +1,16 @@
+export type DatabaseType = 'sqlite' | 'mysql'// | 'postgresql'
+
 export type DatabaseConfig = {
   path?: string
   host?: string
   port?: number
-  username?: string
+  user?: string
   password?: string
   database?: string
 }
 export interface ModuleOptions {
   connector?: {
-    name: 'sqlite' | 'mysql' | 'postgresql'
+    name: DatabaseType
     options: DatabaseConfig
   }
   tables: {

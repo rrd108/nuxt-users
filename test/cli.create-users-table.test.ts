@@ -1,50 +1,50 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { createDatabase } from 'db0'
 import type { Database } from 'db0'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
-import type { ModuleOptions } from '../src/types'
-import fs from 'node:fs'
+import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../src/types'
+import { cleanupTestSetup, createTestSetup } from './utils/test-setup'
 
 describe('CLI: Create Users Table', () => {
   let db: Database
   let testOptions: ModuleOptions
+  let dbType: DatabaseType
+  let dbConfig: DatabaseConfig
 
   beforeEach(async () => {
-    // Create unique database path for each test
-    testOptions = {
-      connector: {
-        name: 'sqlite',
-        options: {
-          path: './_create-users-table', // Specific in-memory database for this test
-        },
-      },
+    dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
+    if (dbType === 'sqlite') {
+      dbConfig = {
+        path: './_create-users-table',
+      }
     }
+    if (dbType === 'mysql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '3306'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      }
+    }
+    const settings = await createTestSetup({
+      dbType,
+      dbConfig,
+    })
 
-    // Create in-memory database
-    const connector = await import('db0/connectors/better-sqlite3')
-    db = createDatabase(connector.default(testOptions.connector!.options))
+    db = settings.db
+    testOptions = settings.testOptions
   })
 
   afterEach(async () => {
-    // Clean up - drop the table
-    try {
-      fs.unlinkSync('./_create-users-table')
-      fs.unlinkSync('./_create-users-table-different-connector')
-    }
-    catch {
-      // Ignore errors during cleanup
-    }
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], 'users')
   })
 
   it('should create users table successfully', async () => {
     await createUsersTable('users', testOptions)
 
     // Verify table exists by querying it
-    const result = await db.sql`SELECT name FROM sqlite_master WHERE type='table' AND name='users'`
-    const table = result.rows?.[0]
-
-    expect(table).toBeDefined()
-    expect(table.name).toBe('users')
+    const result = await db.sql`SELECT 1 FROM users LIMIT 1`
+    expect(result).toBeDefined()
   })
 
   it('should create table with correct schema', async () => {
@@ -61,12 +61,12 @@ describe('CLI: Create Users Table', () => {
 
     // Check all required fields exist and have correct types
     expect(user).toBeDefined()
-    expect(user.id).toBe(1) // Auto-increment works
-    expect(user.email).toBe('test@example.com')
-    expect(user.name).toBe('Test User')
-    expect(user.password).toBe('hashedpassword')
-    expect(user.created_at).toBeDefined()
-    expect(user.updated_at).toBeDefined()
+    expect(user?.id).toBe(1) // Auto-increment works
+    expect(user?.email).toBe('test@example.com')
+    expect(user?.name).toBe('Test User')
+    expect(user?.password).toBe('hashedpassword')
+    expect(user?.created_at).toBeDefined()
+    expect(user?.updated_at).toBeDefined()
 
     // Test that email is unique
     await expect(db.sql`
@@ -146,20 +146,6 @@ describe('CLI: Create Users Table', () => {
 
   it('should throw error for unknown table', async () => {
     await expect(createUsersTable('unknown_table', testOptions)).rejects.toThrow('Unknown table: unknown_table')
-  })
-
-  it('should work with different database connectors', async () => {
-    // Test with different connector options (still using SQLite but different path)
-    const differentOptions: ModuleOptions = {
-      connector: {
-        name: 'sqlite',
-        options: {
-          path: './_create-users-table-different-connector', // Different in-memory instance
-        },
-      },
-    }
-
-    await expect(createUsersTable('users', differentOptions)).resolves.not.toThrow()
   })
 
   it('should handle table creation with all constraints', async () => {
