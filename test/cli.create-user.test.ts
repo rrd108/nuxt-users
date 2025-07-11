@@ -1,43 +1,45 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { createDatabase } from 'db0'
 import type { Database } from 'db0'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { createUser } from '../src/runtime/server/utils/user'
-import type { ModuleOptions } from '../src/types'
-import fs from 'node:fs'
+import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../src/types'
+import { cleanupTestSetup, createTestSetup } from './utils/test-setup'
 
 describe('CLI: Create User', () => {
   let db: Database
   let testOptions: ModuleOptions
+  let dbType: DatabaseType
+  let dbConfig: DatabaseConfig
 
   beforeEach(async () => {
-    // Create unique database path for each test
-    testOptions = {
-      connector: {
-        name: 'sqlite',
-        options: {
-          path: './_create-user', // Specific in-memory database for this test
-        },
-      },
+    dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
+    if (dbType === 'sqlite') {
+      dbConfig = {
+        path: './_create-users-table',
+      }
     }
+    if (dbType === 'mysql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '3306'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      }
+    }
+    const settings = await createTestSetup({
+      dbType,
+      dbConfig,
+    })
 
-    // Create in-memory database and migrate
-    const connector = await import('db0/connectors/better-sqlite3')
-    db = createDatabase(connector.default(testOptions.connector!.options))
+    db = settings.db
+    testOptions = settings.testOptions
 
-    // Create users table
-    await createUsersTable('users', testOptions)
+    createUsersTable('users', testOptions)
   })
 
   afterEach(async () => {
-    // Clean up - drop the table
-    try {
-      fs.unlinkSync('./_create-user')
-      fs.unlinkSync('./_create-user-different-connector')
-    }
-    catch {
-      // Ignore errors during cleanup
-    }
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], 'users')
   })
 
   it('should create a user successfully', async () => {
