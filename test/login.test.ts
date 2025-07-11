@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils/e2e'
-import { createUser } from '../src/runtime/server/utils/create-user'
+import { createUser } from '../src/runtime/server/utils/user'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/create-personal-access-tokens-table'
 import type { ModuleOptions, User } from '../src/types'

@@ -13,6 +13,31 @@ export interface ModuleOptions {
   tables: {
     users: boolean
     personalAccessTokens: boolean
+    passwordResetTokens?: boolean // Added for the new table
+  }
+  /**
+   * Mailer configuration options for sending emails (e.g., password resets)
+   * Uses nodemailer
+   */
+  mailer?: MailerOptions
+
+  /**
+   * Base URL for password reset links
+   * @default 'http://localhost:3000' // Example, will be set in module defaults
+   */
+  passwordResetBaseUrl?: string
+}
+
+export interface MailerOptions {
+  host: string
+  port: number
+  secure?: boolean // true for 465, false for other ports
+  auth: {
+    user: string // email user
+    pass: string // email password
+  }
+  defaults?: {
+    from: string // Default from address: '"Your App Name" <yourapp@example.com>'
   }
 }
 

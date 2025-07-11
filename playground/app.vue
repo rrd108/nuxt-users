@@ -38,6 +38,9 @@ const hasPersonalAccessTokensTable = useRuntimeConfig().public.nuxtUsers?.tables
         @error="handleError"
         @submit="handleSubmit"
       />
+      <div style="text-align: center; margin-top: 1rem;">
+        <NuxtLink to="/forgot-password">Forgot Password?</NuxtLink>
+      </div>
     </div>
 
     <div class="demo-section">
