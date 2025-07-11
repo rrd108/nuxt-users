@@ -60,6 +60,7 @@ export const cleanupTestSetup = async (dbType: 'sqlite' | 'mysql', db: Database,
     if (db) {
       try {
         await db.sql`DROP TABLE IF EXISTS {${tableName}}`
+        await db.sql`DROP TABLE IF EXISTS {${tableName}_tokens}`
       }
       catch {
         // Ignore errors during cleanup

@@ -11,7 +11,8 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
 
   console.log(`[DB:Create Password Reset Tokens Table] Creating ${tableName} table with ${connectorName} connector...`)
 
-  await db.sql`
+  if (connectorName === 'sqlite') {
+    await db.sql`
     CREATE TABLE IF NOT EXISTS {${tableName}} (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT NOT NULL,
@@ -19,6 +20,17 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `
+  }
+  if (connectorName === 'mysql') {
+    await db.sql`
+      CREATE TABLE IF NOT EXISTS {${tableName}} (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) NOT NULL,
+        token VARCHAR(255) NOT NULL UNIQUE,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `
+  }
   // Creating an index on email for faster lookups
   await db.sql`CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_email ON {${tableName}} (email)`
   // Creating an index on token for faster lookups
@@ -30,26 +42,13 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
   console.log('[DB:Create Password Reset Tokens Table] Migration completed successfully!')
 }
 
-// Default options - you can override these with environment variables
-const defaultOptions: ModuleOptions = {
-  connector: {
-    name: 'sqlite',
-    options: {
-      path: './data/db.sqlite3',
-    },
-  },
-  tables: {
-    users: false, // Not directly used by this script but part of ModuleOptions
-    personalAccessTokens: false, // Not directly used by this script
-    passwordResetTokens: true,
-  },
-}
-
 const migrateDefault = async () => {
   console.log('[Nuxt Users] Starting migration for password_reset_tokens table...')
 
+  const options = useRuntimeConfig().nuxtUsers
+
   try {
-    await createPasswordResetTokensTable(defaultOptions)
+    await createPasswordResetTokensTable(options)
     process.exit(0)
   }
   catch (error) {
