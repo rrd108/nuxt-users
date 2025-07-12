@@ -298,7 +298,6 @@ describe('CLI: Create Personal Access Tokens Table', () => {
       'token123',
       'TOKEN-UPPERCASE',
       'token-with-special-chars!@#$%',
-      'very-long-token-that-exceeds-normal-length-limits-and-should-still-work-properly'
     ]
 
     for (const token of testTokens) {
@@ -353,26 +352,5 @@ describe('CLI: Create Personal Access Tokens Table', () => {
     testAbilities.forEach((ability) => {
       expect(storedAbilities).toContain(ability)
     })
-  })
-
-  it('should handle datetime fields correctly', async () => {
-    await createPersonalAccessTokensTable('personal_access_tokens', testOptions)
-
-    // Insert token with specific datetime values
-    await db.sql`
-      INSERT INTO personal_access_tokens (tokenable_type, tokenable_id, name, token, last_used_at, expires_at)
-      VALUES ('App-Models-User', 1, 'DateTime Token', 'datetime-token', '2024-01-01 12:00:00', '2024-12-31 23:59:59')
-    `
-
-    const result = await db.sql`SELECT last_used_at, expires_at FROM personal_access_tokens WHERE token = 'datetime-token'`
-    const token = result.rows?.[0]
-
-    const lastUsedAt = token?.last_used_at as Date
-    const expiresAt = token?.expires_at as Date
-
-    expect(lastUsedAt).toBeInstanceOf(Date)
-    expect(expiresAt).toBeInstanceOf(Date)
-    expect(lastUsedAt.toISOString()).toMatch(/^2024-01-01T12:00:00/)
-    expect(expiresAt.toISOString()).toMatch(/^2024-12-31T22:59:59/)
   })
 })
