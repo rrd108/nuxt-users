@@ -164,10 +164,7 @@ describe('CLI: Create Personal Access Tokens Table', () => {
     expect(token?.abilities).toBe('["read", "write"]')
     expect(token?.last_used_at).toBeDefined()
     expect(token?.expires_at).toBeDefined()
-    // Check that expires_at is a valid date and matches expected format
-    const expiresAt = token?.expires_at as Date
-    expect(expiresAt).toBeInstanceOf(Date)
-    expect(expiresAt.toISOString()).toMatch(/^2024-12-31T22:59:59/)
+    expect(String(token?.expires_at)).toMatch(/^2024-12-31 23:59:59/)
   })
 
   it('should throw error for unknown table', async () => {

@@ -1,10 +1,10 @@
 import { createDatabase } from 'db0'
 import type { Database } from 'db0'
-import type { DatabaseConfig, ModuleOptions } from '../../src/types'
+import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../../src/types'
 import fs from 'node:fs'
 
 export interface TestSetupOptions {
-  dbType: 'sqlite' | 'mysql'
+  dbType: DatabaseType
   dbConfig: DatabaseConfig
   tableName?: string
   cleanupFiles?: string[]

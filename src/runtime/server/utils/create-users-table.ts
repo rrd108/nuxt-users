@@ -1,7 +1,6 @@
 import { createDatabase } from 'db0'
 import { getConnector } from './db'
 import type { ModuleOptions } from '../../../types'
-import { useRuntimeConfig } from 'nuxt/app'
 
 export const createUsersTable = async (table: string, options: ModuleOptions) => {
   const connectorName = options.connector!.name
