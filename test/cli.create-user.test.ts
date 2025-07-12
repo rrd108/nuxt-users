@@ -1,48 +1,50 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { createDatabase } from 'db0'
 import type { Database } from 'db0'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { createUser } from '../src/runtime/server/utils/user'
-import type { ModuleOptions } from '../src/types'
-import fs from 'node:fs'
+import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../src/types'
+import { cleanupTestSetup, createTestSetup } from './utils/test-setup'
 
 describe('CLI: Create User', () => {
   let db: Database
   let testOptions: ModuleOptions
+  let dbType: DatabaseType
+  let dbConfig: DatabaseConfig
 
   beforeEach(async () => {
-    // Create unique database path for each test
-    testOptions = {
-      connector: {
-        name: 'sqlite',
-        options: {
-          path: './_create-user', // Specific in-memory database for this test
-        },
-      },
+    dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
+    if (dbType === 'sqlite') {
+      dbConfig = {
+        path: './_create-user',
+      }
     }
+    if (dbType === 'mysql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '3306'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      }
+    }
+    const settings = await createTestSetup({
+      dbType,
+      dbConfig,
+    })
 
-    // Create in-memory database and migrate
-    const connector = await import('db0/connectors/better-sqlite3')
-    db = createDatabase(connector.default(testOptions.connector!.options))
+    db = settings.db
+    testOptions = settings.testOptions
 
-    // Create users table
-    await createUsersTable('users', testOptions)
+    await createUsersTable(testOptions)
   })
 
   afterEach(async () => {
-    // Clean up - drop the table
-    try {
-      fs.unlinkSync('./_create-user')
-      fs.unlinkSync('./_create-user-different-connector')
-    }
-    catch {
-      // Ignore errors during cleanup
-    }
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
   })
 
   it('should create a user successfully', async () => {
     const userData = {
-      email: 'test@example.com',
+      email: 'test@webmania.cc',
       name: 'Test User',
       password: 'mypassword123'
     }
@@ -62,7 +64,7 @@ describe('CLI: Create User', () => {
 
   it('should hash the password correctly', async () => {
     const userData = {
-      email: 'test@example.com',
+      email: 'test@webmania.cc',
       name: 'Test User',
       password: 'mypassword123'
     }
@@ -80,9 +82,9 @@ describe('CLI: Create User', () => {
 
   it('should create multiple users with different IDs', async () => {
     const users = [
-      { email: 'user1@example.com', name: 'User 1', password: 'pass1' },
-      { email: 'user2@example.com', name: 'User 2', password: 'pass2' },
-      { email: 'user3@example.com', name: 'User 3', password: 'pass3' }
+      { email: 'user1@webmania.cc', name: 'User 1', password: 'pass1' },
+      { email: 'user2@webmania.cc', name: 'User 2', password: 'pass2' },
+      { email: 'user3@webmania.cc', name: 'User 3', password: 'pass3' }
     ]
 
     for (const userData of users) {
@@ -101,7 +103,7 @@ describe('CLI: Create User', () => {
 
   it('should set created_at and updated_at timestamps', async () => {
     const userData = {
-      email: 'test@example.com',
+      email: 'test@webmania.cc',
       name: 'Test User',
       password: 'mypassword123'
     }
@@ -129,7 +131,7 @@ describe('CLI: Create User', () => {
 
   it('should throw error for duplicate email', async () => {
     const userData = {
-      email: 'test@example.com',
+      email: 'test@webmania.cc',
       name: 'Test User',
       password: 'mypassword123'
     }
@@ -143,7 +145,7 @@ describe('CLI: Create User', () => {
 
   it('should handle empty password', async () => {
     const userData = {
-      email: 'test@example.com',
+      email: 'test@webmania.cc',
       name: 'Test User',
       password: ''
     }
@@ -157,7 +159,7 @@ describe('CLI: Create User', () => {
 
   it('should handle special characters in name and email', async () => {
     const userData = {
-      email: 'test+user@example.com',
+      email: 'test+user@webmania.cc',
       name: 'Test User with Special Chars: !@#$%^&*()',
       password: 'mypassword123'
     }

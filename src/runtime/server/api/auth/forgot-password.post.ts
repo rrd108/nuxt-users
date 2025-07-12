@@ -17,8 +17,13 @@ export default defineEventHandler(async (event) => {
     // Always return a success-like message to prevent email enumeration
     return { message: 'If a user with that email exists, a password reset link has been sent.' }
   }
-  catch (error: any) {
-    console.error('Error in forgot-password endpoint:', error)
+  catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Error in forgot-password endpoint:', error.message)
+    }
+    else {
+      console.error('Error in forgot-password endpoint:', error)
+    }
     // Do not reveal specific errors to the client to prevent enumeration or info leaks
     throw createError({
       statusCode: 500,

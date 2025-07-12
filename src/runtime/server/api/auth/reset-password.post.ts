@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody, createError } from 'h3'
+import { defineEventHandler, readBody, createError, H3Error } from 'h3'
 import { resetPassword } from '../../services/password' // Adjusted path
 
 export default defineEventHandler(async (event) => {
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
   }
   // Add password strength validation if desired (e.g., min length)
   if (password.length < 8) {
-    throw createError({ statusCode: 400, statusMessage: 'Password must be at least 8 characters long.'})
+    throw createError({ statusCode: 400, statusMessage: 'Password must be at least 8 characters long.' })
   }
 
   try {
@@ -35,10 +35,15 @@ export default defineEventHandler(async (event) => {
       })
     }
   }
-  catch (error: any) {
-    console.error('Error in reset-password endpoint:', error)
+  catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Error in reset-password endpoint:', error.message)
+    }
+    else {
+      console.error('Error in reset-password endpoint:', error)
+    }
     // If it's a known error from resetPassword, it might already be an H3Error
-    if (error.output && error.output.statusCode) {
+    if (error instanceof H3Error) {
       throw error
     }
     throw createError({

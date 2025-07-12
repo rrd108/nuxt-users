@@ -1,19 +1,22 @@
+export type DatabaseType = 'sqlite' | 'mysql'// | 'postgresql'
+
+export type DatabaseConfig = {
+  path?: string
+  host?: string
+  port?: number
+  user?: string
+  password?: string
+  database?: string
+}
 export interface ModuleOptions {
   connector?: {
-    name: 'sqlite' | 'mysql' | 'postgresql'
-    options: {
-      path?: string
-      host?: string
-      port?: number
-      username?: string
-      password?: string
-      database?: string
-    }
+    name: DatabaseType
+    options: DatabaseConfig
   }
   tables: {
-    users: boolean
-    personalAccessTokens: boolean
-    passwordResetTokens?: boolean // Added for the new table
+    users: string
+    personalAccessTokens: string
+    passwordResetTokens?: string
   }
   /**
    * Mailer configuration options for sending emails (e.g., password resets)
