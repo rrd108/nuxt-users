@@ -21,40 +21,16 @@ const useDb = async (options: ModuleOptions) => {
   return createDatabase(connector(options.connector!.options))
 }
 
-export const checkPasswordResetTokensTableExists = async (options: ModuleOptions) => {  // TODO: use checkTableExists
-  const db = await useDb(options)
-  try {
-    await db.sql`SELECT 1 FROM password_reset_tokens LIMIT 1`
-    return true
-  }
-  catch {
-    return false
-  }
+export const checkPasswordResetTokensTableExists = async (options: ModuleOptions) => {
+  return await checkTableExists(options, options.tables.passwordResetTokens)
 }
 
-export const checkUsersTableExists = async (options: ModuleOptions) => {  // TODO: use checkTableExists
-  const db = await useDb(options)
-
-  try {
-    // Try to query the users table - if it exists, this will succeed
-    await db.sql`SELECT 1 FROM users LIMIT 1`
-    return true
-  }
-  catch {
-    // If the table doesn't exist, the query will fail
-    return false
-  }
+export const checkUsersTableExists = async (options: ModuleOptions) => {
+  return await checkTableExists(options, options.tables.users)
 }
 
-export const checkPersonalAccessTokensTableExists = async (options: ModuleOptions) => {  // TODO: use checkTableExists
-  const db = await useDb(options)
-  try {
-    await db.sql`SELECT 1 FROM personal_access_tokens LIMIT 1`
-    return true
-  }
-  catch {
-    return false
-  }
+export const checkPersonalAccessTokensTableExists = async (options: ModuleOptions) => {
+  return await checkTableExists(options, options.tables.personalAccessTokens)
 }
 
 export const checkTableExists = async (options: ModuleOptions, tableName: string) => {
@@ -76,7 +52,7 @@ export const hasAnyUsers = async (options: ModuleOptions) => {
   const db = await useDb(options)
 
   try {
-    const users = await db.sql`SELECT COUNT(*) as count FROM users` as CountResult
+    const users = await db.sql`SELECT COUNT(*) as count FROM ${options.tables.users}` as CountResult
     return users.rows?.[0]?.count > 0
   }
   catch {

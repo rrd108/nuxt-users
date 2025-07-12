@@ -31,10 +31,12 @@ export const sendPasswordResetLink = async (
   const token = crypto.randomBytes(32).toString('hex')
   const hashedToken = await bcrypt.hash(token, 10) // Hash the token before storing
 
+  const passwordResetTokensTable = options.tables.passwordResetTokens
+
   // Store the hashed token, user's email, and creation date
   // Consider adding an expiry directly to the table if preferred
   await db.sql`
-    INSERT INTO password_reset_tokens (email, token, created_at)
+    INSERT INTO ${passwordResetTokensTable} (email, token, created_at)
     VALUES (${email}, ${hashedToken}, CURRENT_TIMESTAMP)
   `
 
@@ -82,10 +84,11 @@ export const resetPassword = async (
   const connectorName = options.connector!.name
   const connector = await getConnector(connectorName)
   const db = createDatabase(connector(options.connector!.options))
+  const passwordResetTokensTable = options.tables.passwordResetTokens
 
   // Find potential tokens for the email (could be multiple if user requested several times)
   const tokenRecords = await db.sql`
-    SELECT * FROM password_reset_tokens
+    SELECT * FROM ${passwordResetTokensTable}
     WHERE email = ${email}
     ORDER BY created_at DESC
   ` as { rows: { id: number, email: string, token: string, created_at: string }[] }
@@ -116,7 +119,7 @@ export const resetPassword = async (
   if (new Date() > expirationTime) {
     console.log(`Expired password reset token for email: ${email}`)
     // Clean up this specific expired token
-    await db.sql`DELETE FROM password_reset_tokens WHERE id = ${validTokenRecord.id}`
+    await db.sql`DELETE FROM ${passwordResetTokensTable} WHERE id = ${validTokenRecord.id}`
     return false
   }
 
@@ -124,7 +127,7 @@ export const resetPassword = async (
   await updateUserPassword(email, newPassword, options)
 
   // Delete the used token (and any other tokens for this email to be safe)
-  await db.sql`DELETE FROM password_reset_tokens WHERE email = ${email}`
+  await db.sql`DELETE FROM ${passwordResetTokensTable} WHERE email = ${email}`
 
   console.log(`Password reset successful for email: ${email}`)
   return true
@@ -138,6 +141,7 @@ export const deleteExpiredPasswordResetTokens = async (
   const connectorName = options.connector!.name
   const connector = await getConnector(connectorName)
   const db = createDatabase(connector(options.connector!.options))
+  const passwordResetTokensTable = options.tables.passwordResetTokens
 
   const expirationDate = new Date()
   expirationDate.setHours(expirationDate.getHours() - TOKEN_EXPIRATION_HOURS)
@@ -146,7 +150,7 @@ export const deleteExpiredPasswordResetTokens = async (
   // Assuming created_at is stored in a format compatible with direct comparison or needs casting.
   // For SQLite, it's usually fine. For others, ensure proper date/time formatting/casting if issues arise.
   const result = await db.sql`
-    DELETE FROM password_reset_tokens
+    DELETE FROM ${passwordResetTokensTable}
     WHERE created_at < ${expirationDate.toISOString()}
   `
   // `result` might contain information about affected rows depending on db0 and the connector

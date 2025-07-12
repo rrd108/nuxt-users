@@ -33,7 +33,11 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
   let mockDb: any
   const mockOptions: ModuleOptions = {
     connector: { name: 'sqlite', options: { path: ':memory:' } },
-    tables: { users: true, personalAccessTokens: true, passwordResetTokens: true },
+    tables: {
+      users: 'users',
+      personalAccessTokens: 'personal_access_tokens',
+      passwordResetTokens: 'password_reset_tokens',
+    },
   }
 
   beforeEach(() => {
@@ -63,7 +67,7 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
       expect(mockDb.sql).toHaveBeenCalledWith(
         expect.arrayContaining([
         `
-    INSERT INTO users (email, name, password, created_at, updated_at)
+    INSERT INTO ${mockOptions.tables.users} (email, name, password, created_at, updated_at)
     VALUES (`, `, `, `, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
   `]),
         userData.email,
@@ -71,7 +75,7 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
         hashedPassword
       )
       expect(mockDb.sql).toHaveBeenCalledWith(
-        expect.arrayContaining([`SELECT id, email, name, created_at, updated_at FROM users WHERE email = `]),
+        expect.arrayContaining([`SELECT id, email, name, created_at, updated_at FROM ${mockOptions.tables.users} WHERE email = `]),
         userData.email
       )
     })
@@ -113,7 +117,7 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
       const user = await findUserByEmail(email, mockOptions)
 
       expect(mockDb.sql).toHaveBeenCalledWith(
-        expect.arrayContaining([`SELECT * FROM users WHERE email = `]),
+        expect.arrayContaining([`SELECT * FROM ${mockOptions.tables.users} WHERE email = `]),
         email
       )
       expect(user).toEqual(mockUser)
@@ -142,7 +146,7 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
       expect(bcrypt.hash).toHaveBeenCalledWith(newPassword, 10)
       expect(mockDb.sql).toHaveBeenCalledWith(
         expect.arrayContaining([`
-    UPDATE users
+    UPDATE ${mockOptions.tables.users}
     SET password = `, `, updated_at = CURRENT_TIMESTAMP
     WHERE email = `
         ]),

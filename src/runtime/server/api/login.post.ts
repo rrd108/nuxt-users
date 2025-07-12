@@ -22,8 +22,10 @@ export default defineEventHandler(async (event) => {
   const connectorName = options.connector!.name
   const connector = await getConnector(connectorName)
   const db = createDatabase(connector(options.connector!.options))
+  const usersTable = options.tables.users
+  const personalAccessTokensTable = options.tables.personalAccessTokens
 
-  const userResult = await db.sql`SELECT * FROM users WHERE email = ${email}` as { rows: User[] }
+  const userResult = await db.sql`SELECT * FROM ${usersTable} WHERE email = ${email}` as { rows: User[] }
 
   if (userResult.rows.length === 0) {
     throw createError({
@@ -50,7 +52,7 @@ export default defineEventHandler(async (event) => {
   // Store the token in the personal_access_tokens table
   // Assuming user.id is the primary key of the users table
   await db.sql`
-    INSERT INTO personal_access_tokens (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+    INSERT INTO ${personalAccessTokensTable} (tokenable_type, tokenable_id, name, token, created_at, updated_at)
     VALUES ('user', ${user.id}, ${tokenName}, ${token}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
   `
 
