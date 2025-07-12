@@ -15,7 +15,7 @@ A user authentication module for Nuxt 3 with database support for SQLite and MyS
 
 ```bash
 # Install the module
-npm install nuxt-users
+yarn add nuxt-users
 
 # Add to your nuxt.config.ts
 export default defineNuxtConfig({
@@ -37,33 +37,23 @@ yarn db:migrate
 yarn db:create-user user@example.com "John Doe" password123
 ```
 
-## Documentation
+## What's Included
 
-📚 **Full documentation is available at: [docs/](/docs/)**
+- **Authentication System**: Secure login with token-based authentication
+- **Database Support**: SQLite and MySQL with automatic migrations
+- **Password Reset**: Complete email-based password reset flow
+- **Vue Components**: Ready-to-use login and password reset forms
+- **CLI Tools**: Database management and user creation commands
+- **TypeScript**: Full type safety and IntelliSense support
 
-- [Installation Guide](/docs/guide/installation)
-- [Configuration Options](/docs/guide/configuration)
-- [API Reference](/docs/api/)
-- [Component Documentation](/docs/components/)
-- [Database Schema](/docs/database/schema)
-- [Contributing Guidelines](/docs/contributing/)
+## Get Started
 
-## Development
-
-```bash
-# Install dependencies
-yarn install
-
-# Start development server
-yarn dev
-
-# Run tests
-yarn test
-
-# Build documentation
-cd docs && yarn dev
-```
+- [Installation Guide](/guide/installation)
+- [Quick Start Tutorial](/guide/quick-start)
+- [Configuration Options](/guide/configuration)
+- [API Reference](/api/)
+- [Component Documentation](/components/)
 
 ## License
 
-MIT
+MIT 

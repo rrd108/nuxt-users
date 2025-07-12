@@ -42,7 +42,9 @@
     "db:create-personal-access-tokens-table": "tsx src/runtime/server/utils/create-personal-access-tokens-table.ts",
     "db:create-password-reset-tokens-table": "tsx src/runtime/server/utils/create-password-reset-tokens-table.ts",
     "db:create-migrations-table": "tsx src/runtime/server/utils/create-migrations-table.ts",
-    "db:migrate": "tsx src/runtime/server/utils/migrate.ts"
+    "db:migrate": "tsx src/runtime/server/utils/migrate.ts",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "@nuxt/kit": "^3.17.6",
@@ -50,7 +52,8 @@
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.2.0",
     "mysql2": "^3.14.2",
-    "nodemailer": "^7.0.5"
+    "nodemailer": "^7.0.5",
+    "vitepress": "^1.6.3"
   },
   "devDependencies": {
     "@formkit/nuxt": "^1.6.9",
