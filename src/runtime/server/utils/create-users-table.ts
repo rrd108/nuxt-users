@@ -34,6 +34,18 @@ export const createUsersTable = async (options: ModuleOptions) => {
       )
     `
   }
+  if (connectorName === 'postgresql') {
+    await db.sql`
+      CREATE TABLE IF NOT EXISTS {${tableName}} (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        name VARCHAR(255) NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+      )
+    `
+  }
 
   console.log(`[DB:Create ${connectorName} Users Table] Fields: id, email, name, password, created_at, updated_at ✅`)
 }

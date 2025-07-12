@@ -31,6 +31,16 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
       )
     `
   }
+  if (connectorName === 'postgresql') {
+    await db.sql`
+      CREATE TABLE IF NOT EXISTS {${tableName}} (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) NOT NULL,
+        token VARCHAR(255) NOT NULL UNIQUE,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+      )
+    `
+  }
   // Creating an index on email for faster lookups
   await db.sql`CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_email ON {${tableName}} (email)`
   // Creating an index on token for faster lookups
