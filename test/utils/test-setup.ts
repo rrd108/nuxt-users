@@ -1,6 +1,6 @@
 import { createDatabase } from 'db0'
 import type { Database } from 'db0'
-import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../../src/types'
+import type { DatabaseConfig, DatabaseType } from '../../src/types'
 import fs from 'node:fs'
 
 export interface TestSetupOptions {
@@ -42,6 +42,15 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
     users: 'users',
     personalAccessTokens: 'personal_access_tokens',
     passwordResetTokens: 'password_reset_tokens'
+  },
+  mailer: {
+    host: process.env.MAILER_HOST || 'localhost',
+    port: Number.parseInt(process.env.MAILER_PORT || '1025'),
+    secure: false,
+    auth: {
+      user: process.env.MAILER_USER || 'test',
+      pass: process.env.MAILER_PASSWORD || 'test'
+    }
   }
 })
 
@@ -61,9 +70,7 @@ export const cleanupTestSetup = async (dbType: DatabaseType, db: Database, clean
     // Clean up MySQL data
     if (db) {
       try {
-        await db.sql`DROP TABLE IF EXISTS users`
-        await db.sql`DROP TABLE IF EXISTS password_reset_tokens`
-        await db.sql`DROP TABLE IF EXISTS personal_access_tokens`
+        await db.sql`DROP TABLE IF EXISTS {${tableName}}`
       }
       catch {
         // Ignore errors during cleanup

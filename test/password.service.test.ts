@@ -1,203 +1,280 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { sendPasswordResetLink, resetPassword, deleteExpiredPasswordResetTokens } from '../src/runtime/server/services/password'
-import * as userUtils from '../src/runtime/server/utils/user' // To mock its functions
-import { createDatabase } from 'db0'
+import type { Database } from 'db0'
+import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
+import { cleanupTestSetup, createTestSetup } from './utils/test-setup'
+import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
+import { createPasswordResetTokensTable } from '../src/runtime/server/utils/create-password-reset-tokens-table'
+import { createUser, findUserByEmail } from '../src/runtime/server/utils/user'
 import bcrypt from 'bcrypt'
-import crypto from 'node:crypto'
-import { createTransport } from 'nodemailer'
-import type { ModuleOptions, User } from '../src/types'
 
-// --- Mocks ---
-vi.mock('db0', async (importOriginal) => {
-  const actual = await importOriginal()
+// Mock nodemailer
+vi.mock('nodemailer', () => {
+  const mockSendMail = vi.fn()
+  const mockCreateTransport = vi.fn(() => ({
+    sendMail: mockSendMail
+  }))
+
   return {
-    ...actual as Record<string, unknown>,
-    createDatabase: vi.fn(() => ({
-      sql: vi.fn(),
-      raw: vi.fn((str: string) => str),
-    })),
+    createTransport: mockCreateTransport
   }
 })
 
-vi.mock('bcrypt', () => ({
-  default: {
-    hash: vi.fn(),
-    compare: vi.fn(),
-  }
-}))
-
-vi.mock('node:crypto', () => ({
-  default: { // Assuming crypto is used as default import in the service
-    randomBytes: vi.fn(() => ({ toString: vi.fn() })),
-  }
-}))
-
-const mockSendMail = vi.fn()
-vi.mock('nodemailer', () => ({
-  createTransport: vi.fn(() => ({
-    sendMail: mockSendMail,
-  })),
-}))
-
-vi.mock('../src/runtime/server/utils/db', () => ({
-  getConnector: vi.fn().mockResolvedValue(vi.fn()),
-}))
-
-// Mock user utilities
-vi.mock('../src/runtime/server/utils/user')
-
-// Mock useRuntimeConfig
-const mockNuxtUsersOptions: ModuleOptions = {
-  connector: { name: 'sqlite', options: { path: ':memory:' } },
-  tables: { users: 'users', personalAccessTokens: 'personal_access_tokens', passwordResetTokens: 'password_reset_tokens' },
-  mailer: {
-    host: 'smtp.example.com', port: 587, auth: { user: 'user', pass: 'pass' },
-    defaults: { from: 'test@example.com' }
-  },
-  passwordResetBaseUrl: 'http://localhost:3000',
-}
-
 describe('Password Service (src/runtime/server/services/password.ts)', () => {
-  let mockDb: { sql: ReturnType<typeof vi.fn>, raw: ReturnType<typeof vi.fn> }
+  let db: Database
+  let testOptions: ModuleOptions
+  let dbType: DatabaseType
+  let dbConfig: DatabaseConfig
 
-  beforeEach(() => {
-    vi.clearAllMocks()
-    const dbInstance = { sql: vi.fn(), raw: vi.fn((str: string) => str) }
-    ;(createDatabase as any).mockReturnValue(dbInstance)
-    mockDb = dbInstance
+  beforeEach(async () => {
+    dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
+    if (dbType === 'sqlite') {
+      dbConfig = {
+        path: './_password_service',
+      }
+    }
+    if (dbType === 'mysql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '3306'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      }
+    }
+    const settings = await createTestSetup({
+      dbType,
+      dbConfig,
+    })
+
+    db = settings.db
+    testOptions = settings.testOptions
+
+    // Create tables for testing
+    await createUsersTable(testOptions)
+    await createPasswordResetTokensTable(testOptions)
+  })
+
+  afterEach(async () => {
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.passwordResetTokens)
   })
 
   describe('sendPasswordResetLink', () => {
-    const email = 'test@example.com'
-    const mockUser = { id: 1, email, name: 'Test User' } as User
-    const rawToken = 'rawTestToken'
-    const hashedToken = 'hashedTestToken'
-
     it('should do nothing if user not found (to prevent enumeration)', async () => {
-      vi.mocked(userUtils.findUserByEmail).mockResolvedValue(null)
-      await sendPasswordResetLink(email, mockNuxtUsersOptions)
-      expect(mockDb.sql).not.toHaveBeenCalled() // No DB interaction for token
-      expect(createTransport).not.toHaveBeenCalled()
+      const email = 'nonexistent@example.com'
+
+      // Should not throw an error
+      await expect(sendPasswordResetLink(email, testOptions)).resolves.not.toThrow()
+
+      // Verify no tokens were created
+      const tokens = await db.sql`SELECT * FROM {${testOptions.tables.passwordResetTokens}} WHERE email = ${email}` as { rows: any[] }
+      expect(tokens.rows).toHaveLength(0)
     })
 
     it('should generate token, store hashed token, and send email if user found', async () => {
-      vi.mocked(userUtils.findUserByEmail).mockResolvedValue(mockUser)
-      vi.mocked(crypto.randomBytes).mockReturnValue({ toString: vi.fn(() => rawToken) })
-      vi.mocked(bcrypt.hash).mockResolvedValue(hashedToken)
-      mockDb.sql.mockResolvedValue({ rows: [] }) // For INSERT
-      mockSendMail.mockResolvedValue({})
+      const email = 'test@example.com'
+      const userData = { email, name: 'Test User', password: 'password123' }
 
-      await sendPasswordResetLink(email, mockNuxtUsersOptions)
+      // Create a user first
+      await createUser(userData, testOptions)
 
-      expect(userUtils.findUserByEmail).toHaveBeenCalledWith(email, mockNuxtUsersOptions)
-      expect(crypto.randomBytes).toHaveBeenCalledWith(32)
-      expect(bcrypt.hash).toHaveBeenCalledWith(rawToken, 10)
-      expect(mockDb.sql).toHaveBeenCalledWith(
-        expect.arrayContaining([`
-    INSERT INTO password_reset_tokens (email, token, created_at)
-    VALUES (`, ', ', `, CURRENT_TIMESTAMP)
-  `]),
-        email,
-        hashedToken
-      )
-      expect(createTransport).toHaveBeenCalledWith({
-        host: mockNuxtUsersOptions.mailer!.host,
-        port: mockNuxtUsersOptions.mailer!.port,
-        secure: mockNuxtUsersOptions.mailer!.secure,
-        auth: {
-          user: mockNuxtUsersOptions.mailer!.auth.user,
-          pass: mockNuxtUsersOptions.mailer!.auth.pass,
-        },
-      })
-      expect(mockSendMail).toHaveBeenCalledWith(expect.objectContaining({
-        to: email,
-        subject: 'Password Reset Request',
-        text: expect.stringContaining(mockNuxtUsersOptions.passwordResetBaseUrl!),
-        html: expect.stringContaining(mockNuxtUsersOptions.passwordResetBaseUrl!),
-      }))
+      await sendPasswordResetLink(email, testOptions)
+
+      // Verify token was created in database
+      const tokens = await db.sql`SELECT * FROM {${testOptions.tables.passwordResetTokens}} WHERE email = ${email}` as { rows: Array<{ token: string, created_at: string }> }
+      expect(tokens.rows).toHaveLength(1)
+      expect(tokens.rows[0].token).toMatch(/^\$2[aby]\$\d{1,2}\$/) // bcrypt hash pattern
+      expect(tokens.rows[0].created_at).toBeDefined()
     })
 
     it('should not send email if mailer config is missing', async () => {
-      const optionsWithoutMailer = { ...mockNuxtUsersOptions, mailer: undefined }
+      const email = 'test@example.com'
+      const userData = { email, name: 'Test User', password: 'password123' }
 
-      vi.mocked(userUtils.findUserByEmail).mockResolvedValue(mockUser)
-      // Mock other necessary functions to prevent errors before mailer check
-      vi.mocked(crypto.randomBytes).mockReturnValue({ toString: vi.fn(() => rawToken) })
-      vi.mocked(bcrypt.hash).mockResolvedValue(hashedToken)
-      mockDb.sql.mockResolvedValue({ rows: [] })
+      // Create a user first
+      await createUser(userData, testOptions)
 
-      await sendPasswordResetLink(email, optionsWithoutMailer)
+      // Test with no mailer config
+      const optionsWithoutMailer = { ...testOptions, mailer: undefined }
 
-      expect(createTransport).not.toHaveBeenCalled()
-      expect(mockSendMail).not.toHaveBeenCalled()
+      // Should not throw an error
+      await expect(sendPasswordResetLink(email, optionsWithoutMailer)).resolves.not.toThrow()
+
+      // Verify token was still created (the function should still work, just not send email)
+      const tokens = await db.sql`SELECT * FROM {${testOptions.tables.passwordResetTokens}} WHERE email = ${email}` as { rows: any[] }
+      expect(tokens.rows).toHaveLength(1)
     })
   })
 
   describe('resetPassword', () => {
-    const token = 'rawTestToken'
-    const email = 'test@example.com'
-    const newPassword = 'newPassword123'
-    const storedHashedToken = 'hashedTestToken'
-    const tokenRecord = { id: 1, email, token: storedHashedToken, created_at: new Date().toISOString() }
-
     it('should return false if no token records found for email', async () => {
-      mockDb.sql.mockResolvedValue({ rows: [] }) // No tokens found
-      const result = await resetPassword(token, email, newPassword, mockNuxtUsersOptions)
+      const token = 'someToken'
+      const email = 'test@example.com'
+      const newPassword = 'newPassword123'
+
+      const result = await resetPassword(token, email, newPassword, testOptions)
       expect(result).toBe(false)
     })
 
     it('should return false if token does not match any stored hashed tokens', async () => {
-      mockDb.sql.mockResolvedValue({ rows: [tokenRecord] }) // Found a record
-      vi.mocked(bcrypt.compare).mockResolvedValue(false) // Token compare fails
-      const result = await resetPassword(token, email, newPassword, mockNuxtUsersOptions)
+      const email = 'test@example.com'
+      const userData = { email, name: 'Test User', password: 'password123' }
+
+      // Create a user first
+      await createUser(userData, testOptions)
+
+      // Create a token for this user
+      const token = 'validToken'
+      const hashedToken = await bcrypt.hash(token, 10)
+      await db.sql`
+        INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
+        VALUES (${email}, ${hashedToken}, CURRENT_TIMESTAMP)
+      `
+
+      // Try to reset with wrong token
+      const wrongToken = 'wrongToken'
+      const newPassword = 'newPassword123'
+      const result = await resetPassword(wrongToken, email, newPassword, testOptions)
+
       expect(result).toBe(false)
     })
 
     it('should return false if token is expired', async () => {
-      const expiredDate = new Date()
-      expiredDate.setHours(expiredDate.getHours() - 2) // 2 hours ago
-      const expiredTokenRecord = { ...tokenRecord, created_at: expiredDate.toISOString() }
-      mockDb.sql.mockResolvedValueOnce({ rows: [expiredTokenRecord] }) // Find token
-      vi.mocked(bcrypt.compare).mockResolvedValue(true) // Token matches
+      const email = 'test@example.com'
+      const userData = { email, name: 'Test User', password: 'password123' }
 
-      const result = await resetPassword(token, email, newPassword, mockNuxtUsersOptions)
+      // Create a user first
+      await createUser(userData, testOptions)
+
+      // Create an expired token
+      const token = 'validToken'
+      const hashedToken = await bcrypt.hash(token, 10)
+      const expiredDate = new Date()
+      expiredDate.setHours(expiredDate.getHours() - 2) // 2 hours ago (expired)
+
+      await db.sql`
+        INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
+        VALUES (${email}, ${hashedToken}, ${expiredDate.toISOString()})
+      `
+
+      const newPassword = 'newPassword123'
+      const result = await resetPassword(token, email, newPassword, testOptions)
 
       expect(result).toBe(false)
-      expect(mockDb.sql).toHaveBeenCalledWith( // Expect deletion of the specific expired token
-        expect.arrayContaining(['DELETE FROM password_reset_tokens WHERE id = ']),
-        expiredTokenRecord.id
-      )
+
+      // Verify the expired token was deleted
+      const tokens = await db.sql`SELECT * FROM {${testOptions.tables.passwordResetTokens}} WHERE email = ${email}` as { rows: any[] }
+      expect(tokens.rows).toHaveLength(0)
     })
 
     it('should update password and delete tokens if token is valid and not expired', async () => {
-      mockDb.sql.mockResolvedValueOnce({ rows: [tokenRecord] }) // Find token
-      vi.mocked(bcrypt.compare).mockResolvedValue(true) // Token matches
-      vi.mocked(userUtils.updateUserPassword).mockResolvedValue(undefined)
-      mockDb.sql.mockResolvedValueOnce({ rows: [] }) // For DELETE
+      const email = 'test@example.com'
+      const userData = { email, name: 'Test User', password: 'oldpassword123' }
 
-      const result = await resetPassword(token, email, newPassword, mockNuxtUsersOptions)
+      // Create a user first
+      await createUser(userData, testOptions)
+
+      // Create a valid token
+      const token = 'validToken'
+      const hashedToken = await bcrypt.hash(token, 10)
+      await db.sql`
+        INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
+        VALUES (${email}, ${hashedToken}, CURRENT_TIMESTAMP)
+      `
+
+      const newPassword = 'newPassword123'
+      const result = await resetPassword(token, email, newPassword, testOptions)
 
       expect(result).toBe(true)
-      expect(userUtils.updateUserPassword).toHaveBeenCalledWith(email, newPassword, mockNuxtUsersOptions)
-      expect(mockDb.sql).toHaveBeenCalledWith(
-        expect.arrayContaining(['DELETE FROM password_reset_tokens WHERE email = ']),
-        email
-      )
+
+      // Verify password was updated
+      const updatedUser = await findUserByEmail(email, testOptions)
+      expect(updatedUser).toBeDefined()
+      expect(updatedUser!.password).toMatch(/^\$2[aby]\$\d{1,2}\$/)
+
+      // Verify tokens were deleted
+      const tokens = await db.sql`SELECT * FROM {${testOptions.tables.passwordResetTokens}} WHERE email = ${email}` as { rows: any[] }
+      expect(tokens.rows).toHaveLength(0)
     })
   })
 
   describe('deleteExpiredPasswordResetTokens', () => {
-    it('should construct and execute a DELETE SQL query for expired tokens', async () => {
-      mockDb.sql.mockResolvedValue({ rows: [] }) // Mock DB response for DELETE
+    it('should delete expired tokens', async () => {
+      const email = 'test@example.com'
 
-      await deleteExpiredPasswordResetTokens(mockNuxtUsersOptions)
+      // Create some tokens with different timestamps
+      const validToken = await bcrypt.hash('valid', 10)
+      const expiredToken1 = await bcrypt.hash('expired1', 10)
+      const expiredToken2 = await bcrypt.hash('expired2', 10)
 
-      expect(mockDb.sql).toHaveBeenCalledWith(
-        expect.arrayContaining([`
-    DELETE FROM password_reset_tokens
-    WHERE created_at < `]),
-        expect.any(String) // Expecting an ISO string for the date
-      )
+      const now = new Date()
+      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000)
+      const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000)
+
+      // Insert tokens with different timestamps
+      await db.sql`
+        INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
+        VALUES 
+          (${email}, ${validToken}, ${now.toISOString()}),
+          (${email}, ${expiredToken1}, ${oneHourAgo.toISOString()}),
+          (${email}, ${expiredToken2}, ${twoHoursAgo.toISOString()})
+      `
+
+      // Verify we have 3 tokens initially
+      const initialTokens = await db.sql`SELECT * FROM {${testOptions.tables.passwordResetTokens}}` as { rows: any[] }
+      expect(initialTokens.rows).toHaveLength(3)
+
+      // Delete expired tokens
+      await deleteExpiredPasswordResetTokens(testOptions)
+
+      // Verify only the valid token remains
+      const remainingTokens = await db.sql`SELECT * FROM {${testOptions.tables.passwordResetTokens}}` as { rows: any[] }
+      expect(remainingTokens.rows).toHaveLength(1)
+      expect(remainingTokens.rows[0].token).toBe(validToken)
+    })
+  })
+
+  describe('Integration tests', () => {
+    it('should work together: create user, send reset link, reset password', async () => {
+      const email = 'integration@example.com'
+      const userData = { email, name: 'Integration User', password: 'initialpassword' }
+
+      // Step 1: Create user
+      await createUser(userData, testOptions)
+
+      // Step 2: Send password reset link
+      await sendPasswordResetLink(email, testOptions)
+
+      // Step 3: Verify token was created
+      const tokens = await db.sql`SELECT * FROM {${testOptions.tables.passwordResetTokens}} WHERE email = ${email}` as { rows: Array<{ token: string }> }
+      expect(tokens.rows).toHaveLength(1)
+
+      // Step 4: Get the raw token (we need to reverse the hash to test)
+      // For testing purposes, we'll create a known token
+      const rawToken = 'testToken123'
+      const hashedToken = await bcrypt.hash(rawToken, 10)
+
+      // Update the token in the database
+      await db.sql`
+        UPDATE {${testOptions.tables.passwordResetTokens}} 
+        SET token = ${hashedToken} 
+        WHERE email = ${email}
+      `
+
+      // Step 5: Reset password
+      const newPassword = 'newsecurepassword'
+      const result = await resetPassword(rawToken, email, newPassword, testOptions)
+
+      expect(result).toBe(true)
+
+      // Step 6: Verify password was updated
+      const updatedUser = await findUserByEmail(email, testOptions)
+      expect(updatedUser).toBeDefined()
+      expect(updatedUser!.password).toMatch(/^\$2[aby]\$\d{1,2}\$/)
+
+      // Step 7: Verify tokens were deleted
+      const remainingTokens = await db.sql`SELECT * FROM {${testOptions.tables.passwordResetTokens}} WHERE email = ${email}` as { rows: Array<{ token: string }> }
+      expect(remainingTokens.rows).toHaveLength(0)
     })
   })
 })

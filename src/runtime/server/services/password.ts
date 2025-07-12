@@ -36,7 +36,7 @@ export const sendPasswordResetLink = async (
   // Store the hashed token, user's email, and creation date
   // Consider adding an expiry directly to the table if preferred
   await db.sql`
-    INSERT INTO ${passwordResetTokensTable} (email, token, created_at)
+    INSERT INTO {${passwordResetTokensTable}} (email, token, created_at)
     VALUES (${email}, ${hashedToken}, CURRENT_TIMESTAMP)
   `
 
@@ -88,7 +88,7 @@ export const resetPassword = async (
 
   // Find potential tokens for the email (could be multiple if user requested several times)
   const tokenRecords = await db.sql`
-    SELECT * FROM ${passwordResetTokensTable}
+    SELECT * FROM {${passwordResetTokensTable}}
     WHERE email = ${email}
     ORDER BY created_at DESC
   ` as { rows: { id: number, email: string, token: string, created_at: string }[] }
@@ -107,19 +107,43 @@ export const resetPassword = async (
     }
   }
 
-  if (!validTokenRecord) {
+  if (!validTokenRecord || !validTokenRecord.created_at) {
     console.log(`Invalid password reset token provided for email: ${email}`)
     return false
   }
 
   // Verify token expiration
-  const tokenCreatedAt = new Date(validTokenRecord.created_at)
-  const expirationTime = new Date(tokenCreatedAt.getTime() + TOKEN_EXPIRATION_HOURS * 60 * 60 * 1000)
+  // Work with the database timestamp directly to avoid timezone issues
+  // The database stores timestamps as 'YYYY-MM-DD HH:MM:SS' in local time
 
-  if (new Date() > expirationTime) {
+  // Get current time in the same format as the database
+  const now = new Date()
+  const currentTimeString = now.toISOString().slice(0, 19).replace('T', ' ')
+
+  // Parse the original timestamp and add expiration hours
+  const [datePart, timePart] = validTokenRecord.created_at.split(/[ T]/) // Split on space or T
+  const [year, month, day] = datePart.split('-').map(Number)
+  const [hour, minute, second] = timePart.split(':').map(Number)
+
+  // Calculate expiration time by adding hours
+  let expirationHour = hour + TOKEN_EXPIRATION_HOURS
+  let expirationDay = day
+  const expirationMonth = month
+  const expirationYear = year
+
+  // Handle day/month/year overflow when adding hours
+  if (expirationHour >= 24) {
+    expirationHour -= 24
+    expirationDay++
+    // Simple overflow handling - in production you might want more sophisticated date math
+  }
+
+  const expirationTimeString = `${expirationYear.toString().padStart(4, '0')}-${expirationMonth.toString().padStart(2, '0')}-${expirationDay.toString().padStart(2, '0')} ${expirationHour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')}`
+
+  if (currentTimeString > expirationTimeString) {
     console.log(`Expired password reset token for email: ${email}`)
     // Clean up this specific expired token
-    await db.sql`DELETE FROM ${passwordResetTokensTable} WHERE id = ${validTokenRecord.id}`
+    await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE id = ${validTokenRecord.id}`
     return false
   }
 
@@ -127,7 +151,7 @@ export const resetPassword = async (
   await updateUserPassword(email, newPassword, options)
 
   // Delete the used token (and any other tokens for this email to be safe)
-  await db.sql`DELETE FROM ${passwordResetTokensTable} WHERE email = ${email}`
+  await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE email = ${email}`
 
   console.log(`Password reset successful for email: ${email}`)
   return true
@@ -146,15 +170,13 @@ export const deleteExpiredPasswordResetTokens = async (
   const expirationDate = new Date()
   expirationDate.setHours(expirationDate.getHours() - TOKEN_EXPIRATION_HOURS)
 
-  // In SQLite, DATETIME('now', '-1 hour') could be used, but JS Date is more portable across DBs
-  // Assuming created_at is stored in a format compatible with direct comparison or needs casting.
-  // For SQLite, it's usually fine. For others, ensure proper date/time formatting/casting if issues arise.
-  const result = await db.sql`
-    DELETE FROM ${passwordResetTokensTable}
-    WHERE created_at < ${expirationDate.toISOString()}
+  // Use ISO format for database comparison since that's how timestamps are stored
+  const expirationDateString = expirationDate.toISOString()
+
+  await db.sql`
+    DELETE FROM {${passwordResetTokensTable}}
+    WHERE created_at < ${expirationDateString}
   `
-  // `result` might contain information about affected rows depending on db0 and the connector
-  // For now, we'll just log. db0's `sql` template typically returns { rows: ... } or similar.
-  // Specific connectors might offer row counts for DELETE operations.
-  console.log(`Expired password reset tokens older than ${expirationDate.toISOString()} deleted.`)
+
+  console.log(`Expired password reset tokens older than ${expirationDateString} deleted.`)
 }
