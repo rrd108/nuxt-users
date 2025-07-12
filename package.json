@@ -32,9 +32,10 @@
     "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
     "lint": "eslint .",
     "pretest": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
-    "test": "yarn test:sqlite && yarn test:mysql",
+    "test": "yarn test:sqlite && yarn test:mysql && yarn test:postgres",
     "test:watch": "vitest watch",
     "test:mysql": "./scripts/test-mysql.sh",
+    "test:postgres": "./scripts/test-postgres.sh",
     "test:sqlite": "./scripts/test-sqlite.sh",
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
     "db:create-users-table": "tsx src/runtime/server/utils/create-users-table.ts",
@@ -54,6 +55,7 @@
     "better-sqlite3": "^12.2.0",
     "mysql2": "^3.14.2",
     "nodemailer": "^7.0.5",
+    "pg": "^8.12.0",
     "vitepress": "^1.6.3"
   },
   "devDependencies": {

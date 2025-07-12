@@ -25,6 +25,10 @@ export const createTestSetup = async (options: TestSetupOptions) => {
     const sqlite = await import('db0/connectors/better-sqlite3')
     db = createDatabase(sqlite.default(testOptions.connector!.options))
   }
+  if (dbType === 'postgres') {
+    const postgres = await import('db0/connectors/pg')
+    db = createDatabase(postgres.default(testOptions.connector!.options))
+  }
   // should throw on error
   if (!db) {
     throw new Error('Failed to create database connection')
@@ -67,7 +71,7 @@ export const cleanupTestSetup = async (dbType: DatabaseType, db: Database, clean
     }
   }
   else {
-    // Clean up MySQL data
+    // Clean up MySQL and PostgreSQL data
     if (db) {
       try {
         await db.sql`DROP TABLE IF EXISTS {${tableName}}`
@@ -83,6 +87,11 @@ export const getDatabaseConfig = (dbType: DatabaseType): DatabaseConfig => {
   if (dbType === 'sqlite') {
     return {
       path: './_test-db'
+    }
+  }
+  else if (dbType === 'postgres') {
+    return {
+      connectionString: `postgresql://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || '123'}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || '5432'}/${process.env.DB_NAME || 'test_db'}`
     }
   }
   else {
