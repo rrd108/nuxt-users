@@ -45,8 +45,6 @@ describe('Login API Route', async () => {
     db = settings.db
     testOptions = settings.testOptions
 
-    
-
     await createUsersTable(testOptions)
     await createPersonalAccessTokensTable(testOptions)
 
@@ -59,7 +57,8 @@ describe('Login API Route', async () => {
   })
 
   afterEach(async () => {
-    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], 'users')
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.personalAccessTokens)
   })
 
   it('should login successfully, set cookie, and store token', async () => {

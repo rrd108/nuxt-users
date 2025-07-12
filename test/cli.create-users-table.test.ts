@@ -53,16 +53,16 @@ describe('CLI: Create Users Table', () => {
     // Test that we can insert and query data (this validates the schema works)
     await db.sql`
       INSERT INTO {${testOptions.tables.users}} (email, name, password)
-      VALUES ('test@example.com', 'Test User', 'hashedpassword')
+      VALUES ('test@webmania.cc', 'Test User', 'hashedpassword')
     `
 
-    const result = await db.sql`SELECT id, email, name, password, created_at, updated_at FROM {${testOptions.tables.users}} WHERE email = 'test@example.com'`
+    const result = await db.sql`SELECT id, email, name, password, created_at, updated_at FROM {${testOptions.tables.users}} WHERE email = 'test@webmania.cc'`
     const user = result.rows?.[0]
 
     // Check all required fields exist and have correct types
     expect(user).toBeDefined()
     expect(user?.id).toBe(1) // Auto-increment works
-    expect(user?.email).toBe('test@example.com')
+    expect(user?.email).toBe('test@webmania.cc')
     expect(user?.name).toBe('Test User')
     expect(user?.password).toBe('hashedpassword')
     expect(user?.created_at).toBeDefined()
@@ -71,7 +71,7 @@ describe('CLI: Create Users Table', () => {
     // Test that email is unique
     await expect(db.sql`
       INSERT INTO {${testOptions.tables.users}} (email, name, password)
-      VALUES ('test@example.com', 'Another User', 'anotherpassword')
+      VALUES ('test@webmania.cc', 'Another User', 'anotherpassword')
     `).rejects.toThrow()
   })
 
@@ -93,13 +93,13 @@ describe('CLI: Create Users Table', () => {
     // Insert first user
     await db.sql`
       INSERT INTO {${testOptions.tables.users}} (email, name, password, created_at, updated_at)
-      VALUES ('test@example.com', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      VALUES ('test@webmania.cc', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `
 
     // Try to insert user with same email (should fail)
     await expect(db.sql`
       INSERT INTO {${testOptions.tables.users}} (email, name, password, created_at, updated_at)
-      VALUES ('test@example.com', 'Another User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      VALUES ('test@webmania.cc', 'Another User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `).rejects.toThrow()
   })
 
@@ -109,11 +109,11 @@ describe('CLI: Create Users Table', () => {
     // Insert multiple users
     await db.sql`
       INSERT INTO {${testOptions.tables.users}} (email, name, password, created_at, updated_at)
-      VALUES ('user1@example.com', 'User 1', 'pass1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      VALUES ('user1@webmania.cc', 'User 1', 'pass1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `
     await db.sql`
       INSERT INTO {${testOptions.tables.users}} (email, name, password, created_at, updated_at)
-      VALUES ('user2@example.com', 'User 2', 'pass2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      VALUES ('user2@webmania.cc', 'User 2', 'pass2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `
 
     // Check IDs are auto-incremented
@@ -131,11 +131,11 @@ describe('CLI: Create Users Table', () => {
     // Insert user without specifying timestamps
     await db.sql`
       INSERT INTO {${testOptions.tables.users}} (email, name, password)
-      VALUES ('test@example.com', 'Test User', 'hashedpassword')
+      VALUES ('test@webmania.cc', 'Test User', 'hashedpassword')
     `
 
     // Check that timestamps were set
-    const result = await db.sql`SELECT created_at, updated_at FROM {${testOptions.tables.users}} WHERE email = 'test@example.com'`
+    const result = await db.sql`SELECT created_at, updated_at FROM {${testOptions.tables.users}} WHERE email = 'test@webmania.cc'`
     const user = result.rows?.[0]
 
     expect(user.created_at).toBeDefined()
@@ -150,18 +150,18 @@ describe('CLI: Create Users Table', () => {
     // Test inserting a valid user
     await expect(db.sql`
       INSERT INTO {${testOptions.tables.users}} (email, name, password)
-      VALUES ('valid@example.com', 'Valid User', 'validpassword')
+      VALUES ('valid@webmania.cc', 'Valid User', 'validpassword')
     `).resolves.not.toThrow()
 
     // Test that required fields are enforced
     await expect(db.sql`
       INSERT INTO {${testOptions.tables.users}} (email, name)
-      VALUES ('invalid@example.com', 'Invalid User')
+      VALUES ('invalid@webmania.cc', 'Invalid User')
     `).rejects.toThrow() // Missing password
 
     await expect(db.sql`
       INSERT INTO {${testOptions.tables.users}} (email, password)
-      VALUES ('invalid2@example.com', 'password')
+      VALUES ('invalid2@webmania.cc', 'password')
     `).rejects.toThrow() // Missing name
 
     await expect(db.sql`

@@ -29,12 +29,22 @@ export const createUser = async (userData: CreateUserParams, options: ModuleOpti
   `
   // Fetch the created user to return it (especially to get the ID and ensure it was created)
   // Exclude password in the return type
-  const result = await db.sql`SELECT id, email, name, created_at, updated_at FROM {${usersTable}} WHERE email = ${userData.email}` as { rows: Omit<User, 'password'>[] }
+  const result = await db.sql`SELECT id, email, name, created_at, updated_at FROM {${usersTable}} WHERE email = ${userData.email}` as { rows: Array<{ id: number, email: string, name: string, created_at: Date | string, updated_at: Date | string }> }
 
   if (result.rows.length === 0) {
     throw new Error('Failed to retrieve created user.')
   }
-  return result.rows[0]
+
+  const user = result.rows[0]
+
+  // Convert Date objects to ISO strings if needed
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    created_at: user.created_at instanceof Date ? user.created_at.toISOString() : user.created_at,
+    updated_at: user.updated_at instanceof Date ? user.updated_at.toISOString() : user.updated_at
+  }
 }
 
 /**
@@ -46,12 +56,23 @@ export const findUserByEmail = async (email: string, options: ModuleOptions): Pr
   const db = createDatabase(connector(options.connector!.options))
   const usersTable = options.tables.users
 
-  const result = await db.sql`SELECT * FROM {${usersTable}} WHERE email = ${email}` as { rows: User[] }
+  const result = await db.sql`SELECT * FROM {${usersTable}} WHERE email = ${email}` as { rows: Array<{ id: number, email: string, name: string, password: string, created_at: Date | string, updated_at: Date | string }> }
 
   if (result.rows.length === 0) {
     return null
   }
-  return result.rows[0]
+
+  const user = result.rows[0]
+
+  // Convert Date objects to ISO strings if needed
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    password: user.password,
+    created_at: user.created_at instanceof Date ? user.created_at.toISOString() : user.created_at,
+    updated_at: user.updated_at instanceof Date ? user.updated_at.toISOString() : user.updated_at
+  }
 }
 
 /**

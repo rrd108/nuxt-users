@@ -39,12 +39,12 @@ describe('CLI: Create User', () => {
   })
 
   afterEach(async () => {
-    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], 'users')
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
   })
 
   it('should create a user successfully', async () => {
     const userData = {
-      email: 'test@example.com',
+      email: 'test@webmania.cc',
       name: 'Test User',
       password: 'mypassword123'
     }
@@ -64,7 +64,7 @@ describe('CLI: Create User', () => {
 
   it('should hash the password correctly', async () => {
     const userData = {
-      email: 'test@example.com',
+      email: 'test@webmania.cc',
       name: 'Test User',
       password: 'mypassword123'
     }
@@ -82,9 +82,9 @@ describe('CLI: Create User', () => {
 
   it('should create multiple users with different IDs', async () => {
     const users = [
-      { email: 'user1@example.com', name: 'User 1', password: 'pass1' },
-      { email: 'user2@example.com', name: 'User 2', password: 'pass2' },
-      { email: 'user3@example.com', name: 'User 3', password: 'pass3' }
+      { email: 'user1@webmania.cc', name: 'User 1', password: 'pass1' },
+      { email: 'user2@webmania.cc', name: 'User 2', password: 'pass2' },
+      { email: 'user3@webmania.cc', name: 'User 3', password: 'pass3' }
     ]
 
     for (const userData of users) {
@@ -103,7 +103,7 @@ describe('CLI: Create User', () => {
 
   it('should set created_at and updated_at timestamps', async () => {
     const userData = {
-      email: 'test@example.com',
+      email: 'test@webmania.cc',
       name: 'Test User',
       password: 'mypassword123'
     }
@@ -131,7 +131,7 @@ describe('CLI: Create User', () => {
 
   it('should throw error for duplicate email', async () => {
     const userData = {
-      email: 'test@example.com',
+      email: 'test@webmania.cc',
       name: 'Test User',
       password: 'mypassword123'
     }
@@ -145,7 +145,7 @@ describe('CLI: Create User', () => {
 
   it('should handle empty password', async () => {
     const userData = {
-      email: 'test@example.com',
+      email: 'test@webmania.cc',
       name: 'Test User',
       password: ''
     }
@@ -159,7 +159,7 @@ describe('CLI: Create User', () => {
 
   it('should handle special characters in name and email', async () => {
     const userData = {
-      email: 'test+user@example.com',
+      email: 'test+user@webmania.cc',
       name: 'Test User with Special Chars: !@#$%^&*()',
       password: 'mypassword123'
     }

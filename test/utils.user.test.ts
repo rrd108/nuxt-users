@@ -39,12 +39,13 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
   })
 
   afterEach(async () => {
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.passwordResetTokens)
   })
 
   describe('createUser', () => {
     it('should hash password and insert user', async () => {
-      const userData = { email: 'test@example.com', name: 'Test User', password: 'password123' }
+      const userData = { email: 'test@webmania.cc', name: 'Test User', password: 'password123' }
 
       const user = await createUser(userData, testOptions)
 
@@ -64,7 +65,7 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
     })
 
     it('should return the created user (without password)', async () => {
-      const userData = { email: 'test2@example.com', name: 'Test User 2', password: 'password123' }
+      const userData = { email: 'test2@webmania.cc', name: 'Test User 2', password: 'password123' }
 
       const user = await createUser(userData, testOptions)
 
@@ -88,7 +89,7 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
 
   describe('findUserByEmail', () => {
     it('should return user if found', async () => {
-      const email = 'test@example.com'
+      const email = 'test@webmania.cc'
       const userData = { email, name: 'Test User', password: 'password123' }
 
       // Create a user first
@@ -103,7 +104,7 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
     })
 
     it('should return null if user not found', async () => {
-      const email = 'notfound@example.com'
+      const email = 'notfound@webmania.cc'
 
       const user = await findUserByEmail(email, testOptions)
 
@@ -113,7 +114,7 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
 
   describe('updateUserPassword', () => {
     it('should hash the new password and update the user', async () => {
-      const email = 'test@example.com'
+      const email = 'test@webmania.cc'
       const userData = { email, name: 'Test User', password: 'oldpassword123' }
       const newPassword = 'newPassword123'
 
@@ -139,7 +140,7 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
 
   describe('Integration tests', () => {
     it('should work together: create user, find user, update password', async () => {
-      const userData = { email: 'integration@example.com', name: 'Integration User', password: 'initialpassword' }
+      const userData = { email: 'integration@webmania.cc', name: 'Integration User', password: 'initialpassword' }
 
       // Step 1: Create user
       const createdUser = await createUser(userData, testOptions)
@@ -164,8 +165,8 @@ describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
     })
 
     it('should handle multiple users correctly', async () => {
-      const user1Data = { email: 'user1@example.com', name: 'User 1', password: 'password1' }
-      const user2Data = { email: 'user2@example.com', name: 'User 2', password: 'password2' }
+      const user1Data = { email: 'user1@webmania.cc', name: 'User 1', password: 'password1' }
+      const user2Data = { email: 'user2@webmania.cc', name: 'User 2', password: 'password2' }
 
       // Create multiple users
       const user1 = await createUser(user1Data, testOptions)
