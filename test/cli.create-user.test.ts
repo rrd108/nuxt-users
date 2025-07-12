@@ -15,7 +15,7 @@ describe('CLI: Create User', () => {
     dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
     if (dbType === 'sqlite') {
       dbConfig = {
-        path: './_create-users-table',
+        path: './_create-user',
       }
     }
     if (dbType === 'mysql') {
@@ -35,7 +35,7 @@ describe('CLI: Create User', () => {
     db = settings.db
     testOptions = settings.testOptions
 
-    createUsersTable('users', testOptions)
+    await createUsersTable('users', testOptions)
   })
 
   afterEach(async () => {
