@@ -21,14 +21,17 @@ const useDb = async (options: ModuleOptions) => {
   return createDatabase(connector(options.connector!.options))
 }
 
+// TODO remove this
 export const checkPasswordResetTokensTableExists = async (options: ModuleOptions) => {
   return await checkTableExists(options, options.tables.passwordResetTokens)
 }
 
+// TODO remove this
 export const checkUsersTableExists = async (options: ModuleOptions) => {
   return await checkTableExists(options, options.tables.users)
 }
 
+// TODO remove this
 export const checkPersonalAccessTokensTableExists = async (options: ModuleOptions) => {
   return await checkTableExists(options, options.tables.personalAccessTokens)
 }
@@ -36,7 +39,7 @@ export const checkPersonalAccessTokensTableExists = async (options: ModuleOption
 export const checkTableExists = async (options: ModuleOptions, tableName: string) => {
   const db = await useDb(options)
   try {
-    await db.sql`SELECT 1 FROM ${tableName} LIMIT 1`
+    await db.sql`SELECT 1 FROM {${tableName}} LIMIT 1`
     return true
   }
   catch {
@@ -52,7 +55,7 @@ export const hasAnyUsers = async (options: ModuleOptions) => {
   const db = await useDb(options)
 
   try {
-    const users = await db.sql`SELECT COUNT(*) as count FROM ${options.tables.users}` as CountResult
+    const users = await db.sql`SELECT COUNT(*) as count FROM {${options.tables.users}}` as CountResult
     return users.rows?.[0]?.count > 0
   }
   catch {

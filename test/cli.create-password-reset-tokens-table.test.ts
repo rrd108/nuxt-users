@@ -43,7 +43,7 @@ describe('CLI: Create Password Reset Tokens Table', () => {
     await createPasswordResetTokensTable(testOptions)
 
     // Verify table exists by querying it
-    const result = await db.sql`SELECT 1 FROM ${testOptions.tables.passwordResetTokens} LIMIT 1`
+    const result = await db.sql`SELECT 1 FROM {${testOptions.tables.passwordResetTokens}} LIMIT 1`
     expect(result).toBeDefined()
   })
 
@@ -52,11 +52,11 @@ describe('CLI: Create Password Reset Tokens Table', () => {
 
     // Test that we can insert and query data (this validates the schema works)
     await db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token)
       VALUES ('test@example.com', 'reset-token-123')
     `
 
-    const result = await db.sql`SELECT id, email, token, created_at FROM ${testOptions.tables.passwordResetTokens} WHERE email = 'test@example.com'`
+    const result = await db.sql`SELECT id, email, token, created_at FROM {${testOptions.tables.passwordResetTokens}} WHERE email = 'test@example.com'`
     const token = result.rows?.[0]
 
     // Check all required fields exist and have correct types
@@ -68,7 +68,7 @@ describe('CLI: Create Password Reset Tokens Table', () => {
 
     // Test that token is unique
     await expect(db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token)
       VALUES ('another@example.com', 'reset-token-123')
     `).rejects.toThrow()
   })
@@ -81,7 +81,7 @@ describe('CLI: Create Password Reset Tokens Table', () => {
     await expect(createPasswordResetTokensTable(testOptions)).resolves.not.toThrow()
 
     // Verify table still exists and works
-    const result = await db.sql`SELECT COUNT(*) as count FROM ${testOptions.tables.passwordResetTokens}`
+    const result = await db.sql`SELECT COUNT(*) as count FROM {${testOptions.tables.passwordResetTokens}}`
     expect(result.rows?.[0]?.count).toBe(0)
   })
 
@@ -90,13 +90,13 @@ describe('CLI: Create Password Reset Tokens Table', () => {
 
     // Insert first token
     await db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token, created_at)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
       VALUES ('test@example.com', 'unique-token-123', CURRENT_TIMESTAMP)
     `
 
     // Try to insert token with same value (should fail)
     await expect(db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token, created_at)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
       VALUES ('another@example.com', 'unique-token-123', CURRENT_TIMESTAMP)
     `).rejects.toThrow()
   })
@@ -106,16 +106,16 @@ describe('CLI: Create Password Reset Tokens Table', () => {
 
     // Insert multiple tokens
     await db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token, created_at)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
       VALUES ('user1@example.com', 'token-1', CURRENT_TIMESTAMP)
     `
     await db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token, created_at)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
       VALUES ('user2@example.com', 'token-2', CURRENT_TIMESTAMP)
     `
 
     // Check IDs are auto-incremented
-    const result = await db.sql`SELECT id, email, token FROM ${testOptions.tables.passwordResetTokens} ORDER BY id`
+    const result = await db.sql`SELECT id, email, token FROM {${testOptions.tables.passwordResetTokens}} ORDER BY id`
     const tokens = result.rows || []
 
     expect(tokens).toHaveLength(2)
@@ -128,12 +128,12 @@ describe('CLI: Create Password Reset Tokens Table', () => {
 
     // Insert token without specifying timestamp
     await db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token)
       VALUES ('test@example.com', 'test-token')
     `
 
     // Check that timestamp was set
-    const result = await db.sql`SELECT created_at FROM ${testOptions.tables.passwordResetTokens} WHERE email = 'test@example.com'`
+    const result = await db.sql`SELECT created_at FROM {${testOptions.tables.passwordResetTokens}} WHERE email = 'test@example.com'`
     const token = result.rows?.[0]
 
     expect(token).toBeDefined()
@@ -146,16 +146,16 @@ describe('CLI: Create Password Reset Tokens Table', () => {
 
     // Insert multiple tokens for the same email (should work)
     await db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token, created_at)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
       VALUES ('same@example.com', 'token-1', CURRENT_TIMESTAMP)
     `
     await db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token, created_at)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
       VALUES ('same@example.com', 'token-2', CURRENT_TIMESTAMP)
     `
 
     // Verify both tokens exist
-    const result = await db.sql`SELECT COUNT(*) as count FROM ${testOptions.tables.passwordResetTokens} WHERE email = 'same@example.com'`
+    const result = await db.sql`SELECT COUNT(*) as count FROM {${testOptions.tables.passwordResetTokens}} WHERE email = 'same@example.com'`
     expect(result.rows?.[0]?.count).toBe(2)
   })
 
@@ -164,18 +164,18 @@ describe('CLI: Create Password Reset Tokens Table', () => {
 
     // Test inserting a valid token
     await expect(db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token)
       VALUES ('valid@example.com', 'valid-token')
     `).resolves.not.toThrow()
 
     // Test that required fields are enforced
     await expect(db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email)
       VALUES ('invalid@example.com')
     `).rejects.toThrow() // Missing token
 
     await expect(db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (token)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (token)
       VALUES ('token-only')
     `).rejects.toThrow() // Missing email
   })
@@ -185,19 +185,19 @@ describe('CLI: Create Password Reset Tokens Table', () => {
 
     // Insert some test data
     await db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token, created_at)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
       VALUES ('user1@example.com', 'token-1', CURRENT_TIMESTAMP)
     `
     await db.sql`
-      INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token, created_at)
+      INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token, created_at)
       VALUES ('user2@example.com', 'token-2', CURRENT_TIMESTAMP)
     `
 
     // Test that queries using indexed columns work efficiently
-    const emailResult = await db.sql`SELECT * FROM ${testOptions.tables.passwordResetTokens} WHERE email = 'user1@example.com'`
+    const emailResult = await db.sql`SELECT * FROM {${testOptions.tables.passwordResetTokens}} WHERE email = 'user1@example.com'`
     expect(emailResult.rows).toHaveLength(1)
 
-    const tokenResult = await db.sql`SELECT * FROM ${testOptions.tables.passwordResetTokens} WHERE token = 'token-2'`
+    const tokenResult = await db.sql`SELECT * FROM {${testOptions.tables.passwordResetTokens}} WHERE token = 'token-2'`
     expect(tokenResult.rows).toHaveLength(1)
   })
 
@@ -215,13 +215,13 @@ describe('CLI: Create Password Reset Tokens Table', () => {
     for (const email of testEmails) {
       const token = `token-${email.replace(/[^a-z0-9]/gi, '')}`
       await expect(db.sql`
-        INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token)
+        INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token)
         VALUES (${email}, ${token})
       `).resolves.not.toThrow()
     }
 
     // Verify all emails were stored correctly
-    const result = await db.sql`SELECT email FROM ${testOptions.tables.passwordResetTokens}`
+    const result = await db.sql`SELECT email FROM {${testOptions.tables.passwordResetTokens}}`
     const storedEmails = result.rows?.map(row => row.email) || []
     expect(storedEmails).toHaveLength(testEmails.length)
     testEmails.forEach((email) => {
@@ -244,13 +244,13 @@ describe('CLI: Create Password Reset Tokens Table', () => {
 
     for (const token of testTokens) {
       await expect(db.sql`
-        INSERT INTO ${testOptions.tables.passwordResetTokens} (email, token)
+        INSERT INTO {${testOptions.tables.passwordResetTokens}} (email, token)
         VALUES (${`user-${token}@example.com`}, ${token})
       `).resolves.not.toThrow()
     }
 
     // Verify all tokens were stored correctly
-    const result = await db.sql`SELECT token FROM ${testOptions.tables.passwordResetTokens}`
+    const result = await db.sql`SELECT token FROM {${testOptions.tables.passwordResetTokens}}`
     const storedTokens = result.rows?.map(row => row.token) || []
     expect(storedTokens).toHaveLength(testTokens.length)
     testTokens.forEach((token) => {

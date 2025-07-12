@@ -13,7 +13,7 @@ export const createPersonalAccessTokensTable = async (options: ModuleOptions) =>
   // Create personal_access_tokens table with the specified fields
   if (connectorName === 'sqlite') {
     await db.sql`
-    CREATE TABLE IF NOT EXISTS ${tableName} (
+    CREATE TABLE IF NOT EXISTS {${tableName}} (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       tokenable_type TEXT NOT NULL,
       tokenable_id INTEGER NOT NULL,
@@ -29,7 +29,7 @@ export const createPersonalAccessTokensTable = async (options: ModuleOptions) =>
   }
   if (connectorName === 'mysql') {
     await db.sql`
-    CREATE TABLE IF NOT EXISTS ${tableName} (
+    CREATE TABLE IF NOT EXISTS {${tableName}} (
       id INT AUTO_INCREMENT PRIMARY KEY,
       tokenable_type VARCHAR(255) NOT NULL,
       tokenable_id INT NOT NULL,

@@ -12,7 +12,7 @@ export const createUsersTable = async (options: ModuleOptions) => {
 
   if (connectorName === 'sqlite') {
     await db.sql`
-    CREATE TABLE IF NOT EXISTS ${tableName} (
+    CREATE TABLE IF NOT EXISTS {${tableName}} (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT NOT NULL UNIQUE,
       name TEXT NOT NULL,
@@ -24,7 +24,7 @@ export const createUsersTable = async (options: ModuleOptions) => {
   }
   if (connectorName === 'mysql') {
     await db.sql`
-      CREATE TABLE IF NOT EXISTS ${tableName} (
+      CREATE TABLE IF NOT EXISTS {${tableName}} (
         id INT AUTO_INCREMENT PRIMARY KEY,
         email VARCHAR(255) NOT NULL UNIQUE,
         name VARCHAR(255) NOT NULL,

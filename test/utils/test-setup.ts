@@ -39,9 +39,9 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
     options: dbConfig
   },
   tables: {
-    users: false,
-    personalAccessTokens: false,
-    passwordResetTokens: false
+    users: 'users',
+    personalAccessTokens: 'personal_access_tokens',
+    passwordResetTokens: 'password_reset_tokens'
   }
 })
 
@@ -61,8 +61,8 @@ export const cleanupTestSetup = async (dbType: DatabaseType, db: Database, clean
     // Clean up MySQL data
     if (db) {
       try {
-        await db.sql`DROP TABLE IF EXISTS {${tableName}}`
-        await db.sql`DROP TABLE IF EXISTS {${tableName}_tokens}`
+        await db.sql`DROP TABLE IF EXISTS users`
+        await db.sql`DROP TABLE IF EXISTS password_reset_tokens`
         await db.sql`DROP TABLE IF EXISTS personal_access_tokens`
       }
       catch {

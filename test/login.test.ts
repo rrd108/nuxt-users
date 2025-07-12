@@ -47,8 +47,8 @@ describe('Login API Route', async () => {
 
     
 
-    await createUsersTable('users', testOptions)
-    await createPersonalAccessTokensTable('personal_access_tokens', testOptions)
+    await createUsersTable(testOptions)
+    await createPersonalAccessTokensTable(testOptions)
 
     // Create a test user
     testUser = await createUser({

@@ -49,7 +49,7 @@ vi.mock('../src/runtime/server/utils/user')
 // Mock useRuntimeConfig
 const mockNuxtUsersOptions: ModuleOptions = {
   connector: { name: 'sqlite', options: { path: ':memory:' } },
-  tables: { users: true, personalAccessTokens: true, passwordResetTokens: true },
+  tables: { users: 'users', personalAccessTokens: 'personal_access_tokens', passwordResetTokens: 'password_reset_tokens' },
   mailer: {
     host: 'smtp.example.com', port: 587, auth: { user: 'user', pass: 'pass' },
     defaults: { from: 'test@example.com' }

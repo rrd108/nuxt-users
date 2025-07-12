@@ -1,49 +1,43 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { createDatabase } from 'db0'
 import type { Database } from 'db0'
 import { getConnector, checkUsersTableExists, hasAnyUsers } from '../src/runtime/server/utils/db'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
-import type { ModuleOptions } from '../src/types'
-import fs from 'node:fs'
-import { resolve } from 'pathe'
-import { fileURLToPath } from 'node:url'
-
-const dbPath = resolve(fileURLToPath(import.meta.url), '../fixtures/utils/db/_db-utils')
-const dbPathDifferent = resolve(fileURLToPath(import.meta.url), '../fixtures/utils/db/_db-utils-different')
-const dbPathHasUsers = resolve(fileURLToPath(import.meta.url), '../fixtures/utils/db/_db-utils-has-users')
+import { cleanupTestSetup, createTestSetup } from './utils/test-setup'
+import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
 
 describe('Utils: DB', () => {
   let db: Database
   let testOptions: ModuleOptions
+  let dbType: DatabaseType
+  let dbConfig: DatabaseConfig
 
   beforeEach(async () => {
-    // Create unique database path for each test
-    testOptions = {
-      connector: {
-        name: 'sqlite',
-        options: {
-          path: dbPath, // Specific in-memory database for this test
-        },
-      },
-      tables: {
-        users: 'users',
-        personalAccessTokens: 'personal_access_tokens',
-        passwordResetTokens: 'password_reset_tokens',
-      },
+    dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
+    if (dbType === 'sqlite') {
+      dbConfig = {
+        path: './_utils_db',
+      }
     }
+    if (dbType === 'mysql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '3306'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      }
+    }
+    const settings = await createTestSetup({
+      dbType,
+      dbConfig,
+    })
 
-    // Create in-memory database
-    const connector = await import('db0/connectors/better-sqlite3')
-    db = createDatabase(connector.default(testOptions.connector!.options))
+    db = settings.db
+    testOptions = settings.testOptions
   })
 
   afterEach(async () => {
-    try {
-      fs.unlinkSync(dbPath)
-    }
-    catch {
-      // Ignore errors during cleanup
-    }
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.passwordResetTokens)
   })
 
   describe('getConnector', () => {
@@ -100,8 +94,8 @@ describe('Utils: DB', () => {
 
       // Insert a test user
       await db.sql`
-        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
-        VALUES ('test@example.com', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO {${testOptions.tables.users}} (email, name, password, created_at, updated_at)
+        VALUES ('test@webmania.cc', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
 
       const hasUsers = await hasAnyUsers(testOptions)
@@ -114,12 +108,12 @@ describe('Utils: DB', () => {
 
       // Insert multiple test users
       await db.sql`
-        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
-        VALUES ('user1@example.com', 'User 1', 'pass1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO {${testOptions.tables.users}} (email, name, password, created_at, updated_at)
+        VALUES ('user1@webmania.cc', 'User 1', 'pass1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
       await db.sql`
-        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
-        VALUES ('user2@example.com', 'User 2', 'pass2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO {${testOptions.tables.users}} (email, name, password, created_at, updated_at)
+        VALUES ('user2@webmania.cc', 'User 2', 'Gauranga-2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
 
       const hasUsers = await hasAnyUsers(testOptions)
@@ -152,8 +146,8 @@ describe('Utils: DB', () => {
 
       // Step 5: Add a user
       await db.sql`
-        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
-        VALUES ('test@example.com', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO {${testOptions.tables.users}} (email, name, password, created_at, updated_at)
+        VALUES ('test@webmania.cc', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
 
       // Step 6: Check user exists
@@ -173,12 +167,12 @@ describe('Utils: DB', () => {
 
       // Add users
       await db.sql`
-        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
-        VALUES ('user1@example.com', 'User 1', 'pass1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO {${testOptions.tables.users}} (email, name, password, created_at, updated_at)
+        VALUES ('user1@webmania.cc', 'User 1', 'pass1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
       await db.sql`
-        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
-        VALUES ('user2@example.com', 'User 2', 'pass2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO {${testOptions.tables.users}} (email, name, password, created_at, updated_at)
+        VALUES ('user2@webmania.cc', 'User 2', 'Gauranga-2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
 
       // Verify users exist
