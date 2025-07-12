@@ -30,7 +30,7 @@ export const createMigrationsTable = async (options: ModuleOptions) => {
     `
   }
 
-  console.log(`[DB:Create Migrations ${connectorName} Table] Migration completed successfully!`)
+  console.log(`[DB:Create Migrations ${connectorName} Table] successfull ✅`)
 }
 
 const migrateDefault = async () => {

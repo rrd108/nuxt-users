@@ -16,7 +16,7 @@ export interface ModuleOptions {
   tables: {
     users: string
     personalAccessTokens: string
-    passwordResetTokens?: string
+    passwordResetTokens: string
   }
   /**
    * Mailer configuration options for sending emails (e.g., password resets)

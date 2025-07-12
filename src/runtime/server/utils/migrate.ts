@@ -80,7 +80,7 @@ export const runMigrations = async (options: ModuleOptions): Promise<void> => {
     try {
       await migration.run(options)
       await markMigrationAsApplied(options, migration.name)
-      console.log(`[Nuxt Users] ✓ Migration ${migration.name} completed successfully`)
+      console.log(`[Nuxt Users] ✓ Migration ${migration.name} successfull ✅`)
     }
     catch (error) {
       console.error(`[Nuxt Users] ✗ Migration ${migration.name} failed:`, error)
@@ -88,7 +88,7 @@ export const runMigrations = async (options: ModuleOptions): Promise<void> => {
     }
   }
 
-  console.log('[Nuxt Users] All migrations completed successfully!')
+  console.log('[Nuxt Users] All migrations successfull ✅')
 }
 
 const migrateDefault = async () => {

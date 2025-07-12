@@ -36,10 +36,7 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
   // Creating an index on token for faster lookups
   await db.sql`CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON {${tableName}} (token)`
 
-  console.log(`[DB:Create Password Reset Tokens ${connectorName} Table] ${tableName} table created successfully!`)
-  console.log(`[DB:Create Password Reset Tokens ${connectorName} Table] Fields: id, email, token, created_at`)
-
-  console.log(`[DB:Create Password Reset Tokens ${connectorName} Table] Migration completed successfully!`)
+  console.log(`[DB:Create Password Reset Tokens ${connectorName} Table] Fields: id, email, token, created_at ✅`)
 }
 
 const migrateDefault = async () => {
