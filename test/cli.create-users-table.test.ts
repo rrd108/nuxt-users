@@ -36,27 +36,27 @@ describe('CLI: Create Users Table', () => {
   })
 
   afterEach(async () => {
-    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], 'users')
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
   })
 
   it('should create users table successfully', async () => {
-    await createUsersTable('users', testOptions)
+    await createUsersTable(testOptions)
 
     // Verify table exists by querying it
-    const result = await db.sql`SELECT 1 FROM users LIMIT 1`
+    const result = await db.sql`SELECT 1 FROM ${testOptions.tables.users} LIMIT 1`
     expect(result).toBeDefined()
   })
 
   it('should create table with correct schema', async () => {
-    await createUsersTable('users', testOptions)
+    await createUsersTable(testOptions)
 
     // Test that we can insert and query data (this validates the schema works)
     await db.sql`
-      INSERT INTO users (email, name, password)
+      INSERT INTO ${testOptions.tables.users} (email, name, password)
       VALUES ('test@example.com', 'Test User', 'hashedpassword')
     `
 
-    const result = await db.sql`SELECT id, email, name, password, created_at, updated_at FROM users WHERE email = 'test@example.com'`
+    const result = await db.sql`SELECT id, email, name, password, created_at, updated_at FROM ${testOptions.tables.users} WHERE email = 'test@example.com'`
     const user = result.rows?.[0]
 
     // Check all required fields exist and have correct types
@@ -70,54 +70,54 @@ describe('CLI: Create Users Table', () => {
 
     // Test that email is unique
     await expect(db.sql`
-      INSERT INTO users (email, name, password)
+      INSERT INTO ${testOptions.tables.users} (email, name, password)
       VALUES ('test@example.com', 'Another User', 'anotherpassword')
     `).rejects.toThrow()
   })
 
   it('should handle CREATE TABLE IF NOT EXISTS correctly', async () => {
     // Create table first time
-    await createUsersTable('users', testOptions)
+    await createUsersTable(testOptions)
 
     // Try to create table again (should not fail)
-    await expect(createUsersTable('users', testOptions)).resolves.not.toThrow()
+    await expect(createUsersTable(testOptions)).resolves.not.toThrow()
 
     // Verify table still exists and works
-    const result = await db.sql`SELECT COUNT(*) as count FROM users`
+    const result = await db.sql`SELECT COUNT(*) as count FROM ${testOptions.tables.users}`
     expect(result.rows?.[0]?.count).toBe(0)
   })
 
   it('should enforce unique constraint on email', async () => {
-    await createUsersTable('users', testOptions)
+    await createUsersTable(testOptions)
 
     // Insert first user
     await db.sql`
-      INSERT INTO users (email, name, password, created_at, updated_at)
+      INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
       VALUES ('test@example.com', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `
 
     // Try to insert user with same email (should fail)
     await expect(db.sql`
-      INSERT INTO users (email, name, password, created_at, updated_at)
+      INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
       VALUES ('test@example.com', 'Another User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `).rejects.toThrow()
   })
 
   it('should auto-increment ID correctly', async () => {
-    await createUsersTable('users', testOptions)
+    await createUsersTable(testOptions)
 
     // Insert multiple users
     await db.sql`
-      INSERT INTO users (email, name, password, created_at, updated_at)
+      INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
       VALUES ('user1@example.com', 'User 1', 'pass1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `
     await db.sql`
-      INSERT INTO users (email, name, password, created_at, updated_at)
+      INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
       VALUES ('user2@example.com', 'User 2', 'pass2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `
 
     // Check IDs are auto-incremented
-    const result = await db.sql`SELECT id, email FROM users ORDER BY id`
+    const result = await db.sql`SELECT id, email FROM ${testOptions.tables.users} ORDER BY id`
     const users = result.rows || []
 
     expect(users).toHaveLength(2)
@@ -126,16 +126,16 @@ describe('CLI: Create Users Table', () => {
   })
 
   it('should set default timestamps', async () => {
-    await createUsersTable('users', testOptions)
+    await createUsersTable(testOptions)
 
     // Insert user without specifying timestamps
     await db.sql`
-      INSERT INTO users (email, name, password)
+      INSERT INTO ${testOptions.tables.users} (email, name, password)
       VALUES ('test@example.com', 'Test User', 'hashedpassword')
     `
 
     // Check that timestamps were set
-    const result = await db.sql`SELECT created_at, updated_at FROM users WHERE email = 'test@example.com'`
+    const result = await db.sql`SELECT created_at, updated_at FROM ${testOptions.tables.users} WHERE email = 'test@example.com'`
     const user = result.rows?.[0]
 
     expect(user.created_at).toBeDefined()
@@ -144,32 +144,28 @@ describe('CLI: Create Users Table', () => {
     expect(user.updated_at).not.toBeNull()
   })
 
-  it('should throw error for unknown table', async () => {
-    await expect(createUsersTable('unknown_table', testOptions)).rejects.toThrow('Unknown table: unknown_table')
-  })
-
   it('should handle table creation with all constraints', async () => {
-    await createUsersTable('users', testOptions)
+    await createUsersTable(testOptions)
 
     // Test inserting a valid user
     await expect(db.sql`
-      INSERT INTO users (email, name, password)
+      INSERT INTO ${testOptions.tables.users} (email, name, password)
       VALUES ('valid@example.com', 'Valid User', 'validpassword')
     `).resolves.not.toThrow()
 
     // Test that required fields are enforced
     await expect(db.sql`
-      INSERT INTO users (email, name)
+      INSERT INTO ${testOptions.tables.users} (email, name)
       VALUES ('invalid@example.com', 'Invalid User')
     `).rejects.toThrow() // Missing password
 
     await expect(db.sql`
-      INSERT INTO users (email, password)
+      INSERT INTO ${testOptions.tables.users} (email, password)
       VALUES ('invalid2@example.com', 'password')
     `).rejects.toThrow() // Missing name
 
     await expect(db.sql`
-      INSERT INTO users (name, password)
+      INSERT INTO ${testOptions.tables.users} (name, password)
       VALUES ('Invalid User', 'password')
     `).rejects.toThrow() // Missing email
   })

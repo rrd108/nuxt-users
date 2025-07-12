@@ -25,6 +25,11 @@ describe('Utils: DB', () => {
           path: dbPath, // Specific in-memory database for this test
         },
       },
+      tables: {
+        users: 'users',
+        personalAccessTokens: 'personal_access_tokens',
+        passwordResetTokens: 'password_reset_tokens',
+      },
     }
 
     // Create in-memory database
@@ -73,7 +78,7 @@ describe('Utils: DB', () => {
 
     it('should return true when users table exists', async () => {
       // Create the users table first
-      await createUsersTable('users', testOptions)
+      await createUsersTable(testOptions)
 
       const exists = await checkUsersTableExists(testOptions)
       expect(exists).toBe(true)
@@ -83,7 +88,7 @@ describe('Utils: DB', () => {
   describe('hasAnyUsers', () => {
     it('should return false when no users exist', async () => {
       // Create table but don't add users
-      await createUsersTable('users', testOptions)
+      await createUsersTable(testOptions)
 
       const hasUsers = await hasAnyUsers(testOptions)
       expect(hasUsers).toBe(false)
@@ -91,11 +96,11 @@ describe('Utils: DB', () => {
 
     it('should return true when users exist', async () => {
       // Create table and add a user
-      await createUsersTable('users', testOptions)
+      await createUsersTable(testOptions)
 
       // Insert a test user
       await db.sql`
-        INSERT INTO users (email, name, password, created_at, updated_at)
+        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
         VALUES ('test@example.com', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
 
@@ -105,15 +110,15 @@ describe('Utils: DB', () => {
 
     it('should return true with multiple users', async () => {
       // Create table and add multiple users
-      await createUsersTable('users', testOptions)
+      await createUsersTable(testOptions)
 
       // Insert multiple test users
       await db.sql`
-        INSERT INTO users (email, name, password, created_at, updated_at)
+        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
         VALUES ('user1@example.com', 'User 1', 'pass1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
       await db.sql`
-        INSERT INTO users (email, name, password, created_at, updated_at)
+        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
         VALUES ('user2@example.com', 'User 2', 'pass2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
 
@@ -135,7 +140,7 @@ describe('Utils: DB', () => {
       expect(tableExists).toBe(false)
 
       // Step 2: Create table
-      await createUsersTable('users', testOptions)
+      await createUsersTable(testOptions)
 
       // Step 3: Check table exists
       const tableExistsAfter = await checkUsersTableExists(testOptions)
@@ -147,7 +152,7 @@ describe('Utils: DB', () => {
 
       // Step 5: Add a user
       await db.sql`
-        INSERT INTO users (email, name, password, created_at, updated_at)
+        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
         VALUES ('test@example.com', 'Test User', 'hashedpassword', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
 
@@ -158,7 +163,7 @@ describe('Utils: DB', () => {
 
     it('should handle multiple database operations correctly', async () => {
       // Create table
-      await createUsersTable('users', testOptions)
+      await createUsersTable(testOptions)
 
       // Verify table exists
       expect(await checkUsersTableExists(testOptions)).toBe(true)
@@ -168,11 +173,11 @@ describe('Utils: DB', () => {
 
       // Add users
       await db.sql`
-        INSERT INTO users (email, name, password, created_at, updated_at)
+        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
         VALUES ('user1@example.com', 'User 1', 'pass1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
       await db.sql`
-        INSERT INTO users (email, name, password, created_at, updated_at)
+        INSERT INTO ${testOptions.tables.users} (email, name, password, created_at, updated_at)
         VALUES ('user2@example.com', 'User 2', 'pass2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
 

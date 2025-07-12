@@ -11,9 +11,9 @@ export const defaultOptions: ModuleOptions = {
     },
   },
   tables: {
-    users: false,
-    personalAccessTokens: false,
-    passwordResetTokens: false, // Added
+    users: 'users',
+    personalAccessTokens: 'personal_access_tokens',
+    passwordResetTokens: 'password_reset_tokens',
   },
   mailer: { // Added default mailer (example using ethereal.email)
     host: 'smtp.ethereal.email',
@@ -62,13 +62,11 @@ export default defineNuxtModule<ModuleOptions>({
     const runtimeConfigOptions = defu(options, nuxt.options.runtimeConfig.nuxtUsers || {}, defaultOptions)
 
     nuxt.options.runtimeConfig.nuxtUsers = {
-      connector: runtimeConfigOptions.connector,
-      mailer: runtimeConfigOptions.mailer, // Added mailer config
-      passwordResetBaseUrl: runtimeConfigOptions.passwordResetBaseUrl, // Added base URL
+      ...runtimeConfigOptions,
       tables: {
-        users: hasUsersTable,
-        personalAccessTokens: hasPersonalAccessTokensTable,
-        passwordResetTokens: hasPasswordResetTokensTable, // Use stored value
+        users: options.tables?.users || 'users',
+        personalAccessTokens: options.tables?.personalAccessTokens || 'personal_access_tokens',
+        passwordResetTokens: options.tables?.passwordResetTokens || 'password_reset_tokens',
       },
     }
 
