@@ -14,17 +14,7 @@ export const createTestSetup = async (options: TestSetupOptions) => {
   const { dbType, dbConfig } = options
   let db: Database | undefined
 
-  const testOptions: ModuleOptions = {
-    connector: {
-      name: dbType,
-      options: dbConfig
-    },
-    tables: {
-      users: false,
-      personalAccessTokens: false,
-      passwordResetTokens: false
-    }
-  }
+  const testOptions = getTestOptions(dbType, dbConfig)
 
   // Create database connection
   if (dbType === 'mysql') {
@@ -43,7 +33,19 @@ export const createTestSetup = async (options: TestSetupOptions) => {
   return { db, testOptions }
 }
 
-export const cleanupTestSetup = async (dbType: 'sqlite' | 'mysql', db: Database, cleanupFiles: string[], tableName: string) => {
+export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) => ({
+  connector: {
+    name: dbType,
+    options: dbConfig
+  },
+  tables: {
+    users: false,
+    personalAccessTokens: false,
+    passwordResetTokens: false
+  }
+})
+
+export const cleanupTestSetup = async (dbType: DatabaseType, db: Database, cleanupFiles: string[], tableName: string) => {
   if (dbType === 'sqlite') {
     // Clean up SQLite files
     for (const file of cleanupFiles) {
@@ -70,7 +72,7 @@ export const cleanupTestSetup = async (dbType: 'sqlite' | 'mysql', db: Database,
   }
 }
 
-export const getDatabaseConfig = (dbType: 'sqlite' | 'mysql'): DatabaseConfig => {
+export const getDatabaseConfig = (dbType: DatabaseType): DatabaseConfig => {
   if (dbType === 'sqlite') {
     return {
       path: './_test-db'

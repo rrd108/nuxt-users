@@ -1,19 +1,27 @@
+import { getTestOptions } from '../../../test/utils/test-setup'
 import NuxtUsers from '../../../src/module'
-import { fileURLToPath } from 'node:url'
-import { resolve } from 'pathe'
+import type { DatabaseConfig, DatabaseType } from '../../../src/types'
 
-const dbPath = resolve(fileURLToPath(import.meta.url), '../_db.sqlite3')
+const dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
+let dbConfig = {} as DatabaseConfig
+
+if (dbType === 'sqlite') {
+  dbConfig = {
+    path: './_login-test',
+  }
+}
+if (dbType === 'mysql') {
+  dbConfig = {
+    host: process.env.DB_HOST,
+    port: Number.parseInt(process.env.DB_PORT || '3306'),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+  }
+}
+const options = getTestOptions(dbType, dbConfig)
 
 export default defineNuxtConfig({
-  modules: [
-    NuxtUsers,
-  ],
-  nuxtUsers: {
-    connector: {
-      name: 'sqlite',
-      options: {
-        path: dbPath,
-      },
-    },
-  },
+  modules: [NuxtUsers],
+  nuxtUsers: options,
 })
