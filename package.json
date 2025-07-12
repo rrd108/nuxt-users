@@ -40,7 +40,9 @@
     "db:create-users-table": "tsx src/runtime/server/utils/create-users-table.ts",
     "db:create-user": "tsx src/runtime/server/utils/create-user.ts",
     "db:create-personal-access-tokens-table": "tsx src/runtime/server/utils/create-personal-access-tokens-table.ts",
-    "db:create-password-reset-tokens-table": "tsx src/runtime/server/utils/create-password-reset-tokens-table.ts"
+    "db:create-password-reset-tokens-table": "tsx src/runtime/server/utils/create-password-reset-tokens-table.ts",
+    "db:create-migrations-table": "tsx src/runtime/server/utils/create-migrations-table.ts",
+    "db:migrate": "tsx src/runtime/server/utils/migrate.ts"
   },
   "dependencies": {
     "@nuxt/kit": "^3.17.6",

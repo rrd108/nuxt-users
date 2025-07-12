@@ -90,13 +90,27 @@ This system is inspired by __Laravel Sanctum__'s token-based authentication.
 
 ## Database Setup
 
-### 1. Create Users Table
+### Option 1: Run All Migrations (Recommended)
+
+The easiest way to set up your database is to run all migrations at once:
+
+```bash
+yarn db:migrate
+```
+
+This will create all necessary tables in the correct order.
+
+### Option 2: Run Individual Table Creation Commands
+
+You can also run table creation commands individually:
+
+#### 1. Create Users Table
 
 ```bash
 yarn db:create-users-table
 ```
 
-### 2. Create Personal Access Tokens Table
+#### 2. Create Personal Access Tokens Table
 
 This table is required for storing authentication tokens.
 
@@ -104,7 +118,7 @@ This table is required for storing authentication tokens.
 yarn db:create-personal-access-tokens-table
 ```
 
-### 3. Create Password Reset Tokens Table (for Password Resets)
+#### 3. Create Password Reset Tokens Table (for Password Resets)
 
 This table is required for storing tokens used in the password reset flow.
 
@@ -112,11 +126,28 @@ This table is required for storing tokens used in the password reset flow.
 yarn db:create-password-reset-tokens-table
 ```
 
-### 4. Create Your First User
+#### 4. Create Your First User
 
 ```bash
 yarn db:create-user rrd@example.com "John Doe" mypassword123
 ```
+
+### Migration System
+
+The module includes a migration system that tracks which database changes have been applied. This ensures that:
+
+- Migrations are only run once
+- Database schema is consistent across environments
+- Future database changes can be safely applied
+
+The migration system creates a `migrations` table that tracks all applied migrations. When you run `yarn db:migrate`, it will:
+
+1. Create the migrations table if it doesn't exist
+2. Check which migrations have already been applied
+3. Run only the pending migrations
+4. Mark each migration as applied after successful execution
+
+This system allows for safe database schema evolution as the module is updated.
 
 ## Database Connectors
 
@@ -168,9 +199,11 @@ nuxtUsers: {
 
 | Command | Description |
 |---------|-------------|
+| `yarn db:migrate` | Run all pending migrations (recommended) |
 | `yarn db:create-users-table` | Create the users table |
 | `yarn db:create-personal-access-tokens-table` | Create the personal access tokens table |
 | `yarn db:create-password-reset-tokens-table` | Create the password reset tokens table |
+| `yarn db:create-migrations-table` | Create the migrations tracking table |
 | `yarn db:create-user <email> <name> <password>` | Create a new user |
 
 ## Password Reset

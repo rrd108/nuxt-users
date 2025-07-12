@@ -1,0 +1,112 @@
+import { createDatabase } from 'db0'
+import { getConnector } from './db'
+import type { ModuleOptions } from '../../../types'
+import { createUsersTable } from './create-users-table'
+import { createPersonalAccessTokensTable } from './create-personal-access-tokens-table'
+import { createPasswordResetTokensTable } from './create-password-reset-tokens-table'
+import { createMigrationsTable } from './create-migrations-table'
+
+interface Migration {
+  name: string
+  run: (options: ModuleOptions) => Promise<void>
+}
+
+const migrations: Migration[] = [
+  {
+    name: 'create_migrations_table',
+    run: createMigrationsTable
+  },
+  {
+    name: 'create_users_table',
+    run: createUsersTable
+  },
+  {
+    name: 'create_personal_access_tokens_table',
+    run: createPersonalAccessTokensTable
+  },
+  {
+    name: 'create_password_reset_tokens_table',
+    run: createPasswordResetTokensTable
+  }
+]
+
+export const getAppliedMigrations = async (options: ModuleOptions): Promise<string[]> => {
+  const connectorName = options.connector!.name
+  const connector = await getConnector(connectorName)
+  const db = createDatabase(connector(options.connector!.options))
+
+  try {
+    const result = await db.sql`SELECT name FROM migrations ORDER BY id` as { rows: Array<{ name: string }> }
+    return result.rows.map(row => row.name)
+  }
+  catch {
+    // If migrations table doesn't exist, return empty array
+    return []
+  }
+}
+
+export const markMigrationAsApplied = async (options: ModuleOptions, migrationName: string): Promise<void> => {
+  const connectorName = options.connector!.name
+  const connector = await getConnector(connectorName)
+  const db = createDatabase(connector(options.connector!.options))
+
+  await db.sql`INSERT INTO migrations (name) VALUES (${migrationName})`
+}
+
+export const runMigrations = async (options: ModuleOptions): Promise<void> => {
+  console.log('[Nuxt Users] Starting migration system...')
+
+  // First, ensure migrations table exists
+  await createMigrationsTable(options)
+
+  const appliedMigrations = await getAppliedMigrations(options)
+  console.log(`[Nuxt Users] Applied migrations: ${appliedMigrations.join(', ')}`)
+
+  const pendingMigrations = migrations.filter(migration => !appliedMigrations.includes(migration.name))
+
+  if (pendingMigrations.length === 0) {
+    console.log('[Nuxt Users] No pending migrations to run.')
+    return
+  }
+
+  console.log(`[Nuxt Users] Found ${pendingMigrations.length} pending migrations:`)
+  pendingMigrations.forEach((migration) => {
+    console.log(`  - ${migration.name}`)
+  })
+
+  for (const migration of pendingMigrations) {
+    console.log(`[Nuxt Users] Running migration: ${migration.name}`)
+
+    try {
+      await migration.run(options)
+      await markMigrationAsApplied(options, migration.name)
+      console.log(`[Nuxt Users] ✓ Migration ${migration.name} completed successfully`)
+    }
+    catch (error) {
+      console.error(`[Nuxt Users] ✗ Migration ${migration.name} failed:`, error)
+      throw error
+    }
+  }
+
+  console.log('[Nuxt Users] All migrations completed successfully!')
+}
+
+const migrateDefault = async () => {
+  console.log('[Nuxt Users] Starting migration system...')
+
+  const options = useRuntimeConfig().nuxtUsers
+
+  try {
+    await runMigrations(options)
+    process.exit(0)
+  }
+  catch (error) {
+    console.error('[Nuxt Users] Migration failed:', error)
+    process.exit(1)
+  }
+}
+
+// Run if this is the main module
+if (process.argv[1] && process.argv[1].endsWith('migrate.ts')) {
+  migrateDefault()
+}
