@@ -2,25 +2,31 @@
   <div>
     <h2>Forgot Password</h2>
     <FormKit
+      v-slot="{ disabled }"
       type="form"
-      @submit="handleForgotPassword"
       :actions="false"
-      #default="{ disabled }"
+      @submit="handleForgotPassword"
     >
       <FormKit
+        v-model="formData.email"
         type="email"
         name="email"
         label="Email"
         placeholder="your@email.com"
         validation="required|email"
-        v-model="formData.email"
       />
       <FormKit
         type="submit"
         :label="loading ? 'Sending...' : 'Send Password Reset Link'"
         :disabled="disabled || loading"
       />
-      <p v-if="message" :class="{ error: isError, success: !isError }" class="form-message">{{ message }}</p>
+      <p
+        v-if="message"
+        :class="{ error: isError, success: !isError }"
+        class="form-message"
+      >
+        {{ message }}
+      </p>
     </FormKit>
   </div>
 </template>
@@ -67,8 +73,14 @@ const handleForgotPassword = async (data: ForgotPasswordFormData) => {
     isError.value = false
     formData.email = '' // Clear email field on success
   }
-  catch (err: any) {
-    message.value = err.message || 'Failed to send password reset link.'
+  catch (err: unknown) {
+    if (err instanceof Error) {
+      message.value = err.message
+    }
+    else {
+      message.value = 'Failed to send password reset link.'
+    }
+    console.error(err)
     isError.value = true
   }
   finally {
@@ -126,5 +138,4 @@ const handleForgotPassword = async (data: ForgotPasswordFormData) => {
   color: red;
   font-size: 0.8rem;
 }
-
 </style>

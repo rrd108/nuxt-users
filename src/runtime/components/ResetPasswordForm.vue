@@ -2,11 +2,11 @@
   <div>
     <h2>Reset Password</h2>
     <FormKit
-      type="form"
-      @submit="handleResetPassword"
-      :actions="false"
-      #default="{ disabled }"
+      v-slot="{ disabled }"
       v-model="formData"
+      type="form"
+      :actions="false"
+      @submit="handleResetPassword"
     >
       <FormKit
         type="password"
@@ -28,7 +28,13 @@
         :label="loading ? 'Resetting...' : 'Reset Password'"
         :disabled="disabled || loading || formInvalidDueToToken"
       />
-      <p v-if="message" :class="{ error: isError, success: !isError }" class="form-message">{{ message }}</p>
+      <p
+        v-if="message"
+        :class="{ error: isError, success: !isError }"
+        class="form-message"
+      >
+        {{ message }}
+      </p>
     </FormKit>
   </div>
 </template>
@@ -112,7 +118,7 @@ const handleResetPassword = async (data: ResetPasswordFormData) => {
       throw new Error(responseData.message || responseData.statusMessage || 'An error occurred.')
     }
 
-    message.value = responseData.message + " Redirecting to login..."
+    message.value = responseData.message + ' Redirecting to login...'
     isError.value = false
     formData.password = '' // Clear form
     formData.password_confirm = ''
@@ -120,10 +126,15 @@ const handleResetPassword = async (data: ResetPasswordFormData) => {
     setTimeout(() => {
       router.push('/login') // Adjust if your login route is different
     }, 3000)
-
   }
-  catch (err: any) {
-    message.value = err.message || 'Failed to reset password.'
+  catch (err: unknown) {
+    if (err instanceof Error) {
+      message.value = err.message
+    }
+    else {
+      message.value = 'Failed to reset password.'
+    }
+    console.error(err)
     isError.value = true
   }
   finally {

@@ -3,7 +3,7 @@
     <h1>Reset Your Password</h1>
     <p>Enter your new password below.</p>
     <ResetPasswordForm />
-    <hr />
+    <hr>
     <NuxtLink to="/login">Back to Login</NuxtLink>
   </div>
 </template>

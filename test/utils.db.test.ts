@@ -10,7 +10,7 @@ describe('Utils: DB', () => {
   let testOptions: ModuleOptions
   let dbType: DatabaseType
   let dbConfig: DatabaseConfig
-  
+
   beforeEach(async () => {
     dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
     if (dbType === 'sqlite') {

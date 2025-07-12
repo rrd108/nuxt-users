@@ -3,7 +3,7 @@
     <h1>Forgot Your Password?</h1>
     <p>Enter your email address below and we'll send you a link to reset your password.</p>
     <ForgotPasswordForm />
-    <hr />
+    <hr>
     <NuxtLink to="/login">Back to Login</NuxtLink>
   </div>
 </template>
