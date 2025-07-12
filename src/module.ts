@@ -1,6 +1,7 @@
 import { defineNuxtModule, addPlugin, createResolver, addServerHandler, addComponent } from '@nuxt/kit'
 import { defu } from 'defu'
 import { checkPersonalAccessTokensTableExists, checkUsersTableExists, hasAnyUsers, checkPasswordResetTokensTableExists } from './runtime/server/utils/db' // Added import
+import { getAppliedMigrations } from './runtime/server/utils/migrate'
 import type { ModuleOptions } from './types'
 
 export const defaultOptions: ModuleOptions = {
@@ -41,20 +42,36 @@ export default defineNuxtModule<ModuleOptions>({
   async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
 
+    // Check applied migrations
+    const appliedMigrations = await getAppliedMigrations(options)
+    const requiredMigrations = [
+      'create_migrations_table',
+      'create_users_table',
+      'create_personal_access_tokens_table',
+      'create_password_reset_tokens_table'
+    ]
+
+    const missingMigrations = requiredMigrations.filter(migration => !appliedMigrations.includes(migration))
+
+    if (missingMigrations.length > 0) {
+      console.warn(`[Nuxt Users DB] ⚠️  Missing migrations: ${missingMigrations.join(', ')}`)
+      console.warn('[Nuxt Users DB] ⚠️  Run migrations with: yarn db:migrate')
+    }
+
     // Check if the users table exists
     const hasUsersTable = await checkUsersTableExists(options)
     if (!hasUsersTable) {
-      console.warn('[Nuxt Users DB] ⚠️  Users table does not exist, you should run the migration script to create it by running: yarn db:create-users-table')
+      console.warn('[Nuxt Users DB] ⚠️  Users table does not exist, you should run the migration script to create it by running: yarn db:migrate')
     }
 
     const hasPersonalAccessTokensTable = await checkPersonalAccessTokensTableExists(options)
     if (!hasPersonalAccessTokensTable) {
-      console.warn('[Nuxt Users DB] ⚠️  Personal access tokens table does not exist, you should run the migration script to create it by running: yarn db:create-personal-access-tokens-table')
+      console.warn('[Nuxt Users DB] ⚠️  Personal access tokens table does not exist, you should run the migration script to create it by running: yarn db:migrate')
     }
 
     const hasPasswordResetTokensTable = await checkPasswordResetTokensTableExists(options) // Call and store
     if (!hasPasswordResetTokensTable) {
-      console.warn('[Nuxt Users DB] ⚠️  Password reset tokens table does not exist, you should run the migration script to create it by running: yarn db:create-password-reset-tokens-table')
+      console.warn('[Nuxt Users DB] ⚠️  Password reset tokens table does not exist, you should run the migration script to create it by running: yarn db:migrate')
     }
 
     // Add runtime config (server-side)

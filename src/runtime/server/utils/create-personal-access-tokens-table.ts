@@ -43,10 +43,7 @@ export const createPersonalAccessTokensTable = async (options: ModuleOptions) =>
     )
   `
   }
-  console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Personal access tokens table created successfully!`)
-  console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Fields: id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at`)
-
-  console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Migration completed successfully!`)
+  console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Fields: id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at ✅`)
 }
 
 const migrateDefault = async () => {

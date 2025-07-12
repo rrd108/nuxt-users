@@ -35,10 +35,7 @@ export const createUsersTable = async (options: ModuleOptions) => {
     `
   }
 
-  console.log(`[DB:Create ${connectorName} Users Table] Users table created successfully!`)
-  console.log(`[DB:Create ${connectorName} Users Table] Fields: id, email, name, password, created_at, updated_at`)
-
-  console.log(`[DB:Create ${connectorName} Users Table] Migration completed successfully!`)
+  console.log(`[DB:Create ${connectorName} Users Table] Fields: id, email, name, password, created_at, updated_at ✅`)
 }
 
 const migrateDefault = async () => {

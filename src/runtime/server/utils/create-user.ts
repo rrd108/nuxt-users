@@ -33,9 +33,7 @@ const runCreateUserCLI = async () => {
   try {
     const newUser = await createUser({ email, name, password }, defaultOptions)
     console.log('[DB:Create User CLI] User created successfully!')
-    console.log(`[DB:Create User CLI] ID: ${newUser.id}`)
-    console.log(`[DB:Create User CLI] Email: ${newUser.email}`)
-    console.log(`[DB:Create User CLI] Name: ${newUser.name}`)
+    console.log(`[DB:Create User CLI] ID: ${newUser.id}, Email: ${newUser.email}, Name: ${newUser.name} ✅`)
     process.exit(0)
   }
   catch (error) {
