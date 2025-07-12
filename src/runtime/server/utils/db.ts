@@ -14,7 +14,14 @@ export const getConnector = async (name: string) => {
   }
 }
 
-export const checkPasswordResetTokensTableExists = async (options: ModuleOptions) => {
+const useDb = async (options: ModuleOptions) => {
+  const connectorName = options.connector!.name
+  const connector = await getConnector(connectorName)
+
+  return createDatabase(connector(options.connector!.options))
+}
+
+export const checkPasswordResetTokensTableExists = async (options: ModuleOptions) => {  // TODO: use checkTableExists
   const db = await useDb(options)
   try {
     await db.sql`SELECT 1 FROM password_reset_tokens LIMIT 1`
@@ -25,14 +32,7 @@ export const checkPasswordResetTokensTableExists = async (options: ModuleOptions
   }
 }
 
-const useDb = async (options: ModuleOptions) => {
-  const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-
-  return createDatabase(connector(options.connector!.options))
-}
-
-export const checkUsersTableExists = async (options: ModuleOptions) => {
+export const checkUsersTableExists = async (options: ModuleOptions) => {  // TODO: use checkTableExists
   const db = await useDb(options)
 
   try {
@@ -46,10 +46,21 @@ export const checkUsersTableExists = async (options: ModuleOptions) => {
   }
 }
 
-export const checkPersonalAccessTokensTableExists = async (options: ModuleOptions) => {
+export const checkPersonalAccessTokensTableExists = async (options: ModuleOptions) => {  // TODO: use checkTableExists
   const db = await useDb(options)
   try {
     await db.sql`SELECT 1 FROM personal_access_tokens LIMIT 1`
+    return true
+  }
+  catch {
+    return false
+  }
+}
+
+export const checkTableExists = async (options: ModuleOptions, tableName: string) => {
+  const db = await useDb(options)
+  try {
+    await db.sql`SELECT 1 FROM ${tableName} LIMIT 1`
     return true
   }
   catch {

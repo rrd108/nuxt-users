@@ -63,7 +63,7 @@ export const cleanupTestSetup = async (dbType: DatabaseType, db: Database, clean
       try {
         await db.sql`DROP TABLE IF EXISTS {${tableName}}`
         await db.sql`DROP TABLE IF EXISTS {${tableName}_tokens}`
-        await db.sql`DROP TABLE IF EXISTS {${tableName}_personal_access_tokens}`
+        await db.sql`DROP TABLE IF EXISTS personal_access_tokens`
       }
       catch {
         // Ignore errors during cleanup

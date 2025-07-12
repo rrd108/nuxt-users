@@ -7,7 +7,7 @@ export const createPersonalAccessTokensTable = async (table: string, options: Mo
   const connector = await getConnector(connectorName)
   const db = createDatabase(connector(options.connector!.options))
 
-  console.log(`[DB:Create Personal Access Tokens Table] Creating ${table} table with ${connectorName} connector...`)
+  console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Creating ${table} table with ${connectorName} connector...`)
 
   if (table === 'personal_access_tokens') {
     // Create personal_access_tokens table with the specified fields
@@ -34,7 +34,7 @@ export const createPersonalAccessTokensTable = async (table: string, options: Mo
         tokenable_type VARCHAR(255) NOT NULL,
         tokenable_id INT NOT NULL,
         name VARCHAR(255) NOT NULL,
-        token VARCHAR(64) NOT NULL UNIQUE,
+        token VARCHAR(255) NOT NULL UNIQUE,
         abilities TEXT,
         last_used_at DATETIME,
         expires_at DATETIME,
@@ -43,22 +43,21 @@ export const createPersonalAccessTokensTable = async (table: string, options: Mo
       )
     `
     }
-    console.log('[DB:Create Personal Access Tokens Table] Personal access tokens table created successfully!')
-    console.log('[DB:Create Personal Access Tokens Table] Fields: id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at')
+    console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Personal access tokens table created successfully!`)
+    console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Fields: id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at`)
   }
   else {
-    console.log(`[DB:Create Personal Access Tokens Table] Unknown table: ${table}`)
+    console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Unknown table: ${table}`)
     throw new Error(`Unknown table: ${table}`)
   }
 
-  console.log('[DB:Create Personal Access Tokens Table] Migration completed successfully!')
+  console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Migration completed successfully!`)
 }
-
 
 const migrateDefault = async () => {
   console.log('[Nuxt Users] Starting migration for personal_access_tokens table...')
   const options = useRuntimeConfig().nuxtUsers
-  
+
   try {
     await createPersonalAccessTokensTable('personal_access_tokens', options)
     process.exit(0)

@@ -9,7 +9,7 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
 
   const tableName = 'password_reset_tokens'
 
-  console.log(`[DB:Create Password Reset Tokens Table] Creating ${tableName} table with ${connectorName} connector...`)
+  console.log(`[DB:Create Password Reset Tokens ${connectorName} Table] Creating ${tableName} table with ${connectorName} connector...`)
 
   if (connectorName === 'sqlite') {
     await db.sql`
@@ -36,14 +36,14 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
   // Creating an index on token for faster lookups
   await db.sql`CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON {${tableName}} (token)`
 
-  console.log(`[DB:Create Password Reset Tokens Table] ${tableName} table created successfully!`)
-  console.log('[DB:Create Password Reset Tokens Table] Fields: id, email, token, created_at')
+  console.log(`[DB:Create Password Reset Tokens ${connectorName} Table] ${tableName} table created successfully!`)
+  console.log(`[DB:Create Password Reset Tokens ${connectorName} Table] Fields: id, email, token, created_at`)
 
-  console.log('[DB:Create Password Reset Tokens Table] Migration completed successfully!')
+  console.log(`[DB:Create Password Reset Tokens ${connectorName} Table] Migration completed successfully!`)
 }
 
 const migrateDefault = async () => {
-  console.log('[Nuxt Users] Starting migration for password_reset_tokens table...')
+  console.log('[Nuxt Users] Starting migration for password_reset_tokens table...', process.argv[1])
 
   const options = useRuntimeConfig().nuxtUsers
 

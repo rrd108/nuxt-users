@@ -164,7 +164,7 @@ describe('CLI: Create Personal Access Tokens Table', () => {
     expect(token?.abilities).toBe('["read", "write"]')
     expect(token?.last_used_at).toBeDefined()
     expect(token?.expires_at).toBeDefined()
-    expect(String(token?.expires_at)).toMatch(/^2024-12-31 23:59:59/)
+    expect(new Date(token?.expires_at as string).toISOString()).toMatch(new Date('2024-12-31T23:59:59').toISOString())
   })
 
   it('should throw error for unknown table', async () => {

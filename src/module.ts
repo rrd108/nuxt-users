@@ -7,7 +7,7 @@ export const defaultOptions: ModuleOptions = {
   connector: {
     name: 'sqlite',
     options: {
-      path: './data/db.sqlite3',
+      path: './data/default.sqlite3',
     },
   },
   tables: {
