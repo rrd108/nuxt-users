@@ -5,6 +5,14 @@ import { getAppliedMigrations } from './runtime/server/utils/migrate'
 import type { ModuleOptions } from './types'
 
 export const defaultOptions: ModuleOptions = {
+  oauth: {
+    google: {
+      clientId: '',
+      clientSecret: '',
+      redirectUri: '',
+      scope: [],
+    },
+  },
   connector: {
     name: 'sqlite',
     options: {
@@ -121,6 +129,12 @@ export default defineNuxtModule<ModuleOptions>({
       handler: resolver.resolve('./runtime/server/api/auth/reset-password.post')
     })
 
+    addServerHandler({
+      route: '/api/auth/google',
+      method: 'post',
+      handler: resolver.resolve('./runtime/server/api/auth/google/login.post')
+    })
+
     addPlugin(resolver.resolve('./runtime/plugin'))
 
     // Register the LoginForm component
@@ -139,6 +153,12 @@ export default defineNuxtModule<ModuleOptions>({
     addComponent({
       name: 'ResetPasswordForm',
       filePath: resolver.resolve('./runtime/components/ResetPasswordForm.vue')
+    })
+
+    // Register the GoogleLoginButton component
+    addComponent({
+      name: 'GoogleLoginButton',
+      filePath: resolver.resolve('./runtime/components/GoogleLoginButton.vue')
     })
   },
 })

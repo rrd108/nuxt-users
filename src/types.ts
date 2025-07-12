@@ -8,7 +8,18 @@ export type DatabaseConfig = {
   password?: string
   database?: string
 }
+
+export interface OauthOptions {
+  google: {
+    clientId: string
+    clientSecret: string
+    redirectUri: string
+    scope: string[]
+  }
+}
+
 export interface ModuleOptions {
+  oauth?: OauthOptions
   connector?: {
     name: DatabaseType
     options: DatabaseConfig
