@@ -11,9 +11,9 @@ const defaultOptions: ModuleOptions = {
   },
   // tables config is not strictly needed by createUser directly but part of ModuleOptions
   tables: {
-    users: true,
-    personalAccessTokens: false, // Assuming not relevant for direct user creation script
-    passwordResetTokens: false, // Assuming not relevant for direct user creation script
+    users: 'users',
+    personalAccessTokens: 'personal_access_tokens',
+    passwordResetTokens: 'password_reset_tokens',
   }
 }
 

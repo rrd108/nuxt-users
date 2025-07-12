@@ -14,9 +14,9 @@ export interface ModuleOptions {
     options: DatabaseConfig
   }
   tables: {
-    users: boolean
-    personalAccessTokens: boolean
-    passwordResetTokens?: boolean // Added for the new table
+    users: string
+    personalAccessTokens: string
+    passwordResetTokens?: string
   }
   /**
    * Mailer configuration options for sending emails (e.g., password resets)

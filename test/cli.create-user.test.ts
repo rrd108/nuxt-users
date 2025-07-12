@@ -35,7 +35,7 @@ describe('CLI: Create User', () => {
     db = settings.db
     testOptions = settings.testOptions
 
-    await createUsersTable('users', testOptions)
+    await createUsersTable(testOptions)
   })
 
   afterEach(async () => {

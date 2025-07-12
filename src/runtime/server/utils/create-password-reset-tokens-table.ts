@@ -7,7 +7,7 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
   const connector = await getConnector(connectorName)
   const db = createDatabase(connector(options.connector!.options))
 
-  const tableName = 'password_reset_tokens'
+  const tableName = options.tables.passwordResetTokens
 
   console.log(`[DB:Create Password Reset Tokens ${connectorName} Table] Creating ${tableName} table with ${connectorName} connector...`)
 
