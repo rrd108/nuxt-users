@@ -1,59 +1,33 @@
-# Nuxt Users
+---
+# https://vitepress.dev/reference/default-theme-home-page
+layout: home
 
-A user authentication module for Nuxt 3 with database support for SQLite and MySQL.
+hero:
+  name: "Nuxt Users Module"
+  text: "A user authentication module for Nuxt 3 with database support for SQLite and MySQL"
+  tagline: That provides a full stack user authentication system for Nuxt 3 projects.
+  actions:
+    - theme: brand
+      text: Get Started
+      link: /get-started
+    - theme: alt
+      text: Open on GitHub →
+      link: https://github.com/rrd108/vue-mess-detector
 
-## Features
+features:
+  - title: 🛸 Zero-config setup
+    details: With sensible defaults
+  - title: 😻 TypeScript support
+    details: TypeScript support for all components and API
+  - title: 🤖 SQLite and MySQL support
+    details: Use with your favourite database
+  - title: 🔥 Full stack authentication
+    details: Password reset, email verification, and more
+  - title: 💅🏻 Zero effort UI
+    details: Zero effort UI components for your Nuxt 3 project
+  - title: 🚀 Easy to use
+    details: Easy to use and customize
+---
 
-- 🔐 User authentication with bcrypt password hashing
-- 🗄️ Database support (SQLite, MySQL)
-- 🛠️ CLI commands for database management
-- 🔑 Password Reset Functionality
-- 📦 Zero-config setup with sensible defaults
-- 🔧 TypeScript support
+<span id="morphBlur"></span>
 
-## Quick Start
-
-```bash
-# Install the module
-yarn add nuxt-users
-
-# Add to your nuxt.config.ts
-export default defineNuxtConfig({
-  modules: ['nuxt-users'],
-  nuxtUsers: {
-    connector: {
-      name: 'sqlite',
-      options: {
-        path: './data/default.sqlite3'
-      }
-    }
-  }
-})
-
-# Run migrations
-yarn db:migrate
-
-# Create your first user
-yarn db:create-user user@example.com "John Doe" password123
-```
-
-## What's Included
-
-- **Authentication System**: Secure login with token-based authentication
-- **Database Support**: SQLite and MySQL with automatic migrations
-- **Password Reset**: Complete email-based password reset flow
-- **Vue Components**: Ready-to-use login and password reset forms
-- **CLI Tools**: Database management and user creation commands
-- **TypeScript**: Full type safety and IntelliSense support
-
-## Get Started
-
-- [Installation Guide](/guide/installation)
-- [Quick Start Tutorial](/guide/quick-start)
-- [Configuration Options](/guide/configuration)
-- [API Reference](/api/)
-- [Component Documentation](/components/)
-
-## License
-
-MIT 
