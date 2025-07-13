@@ -27,7 +27,27 @@ jobs:
       - name: Lint
         run: npm run lint
 
-  test:
+  test-sqlite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm i -g --force corepack@latest && corepack enable
+
+      - name: Install dependencies
+        run: npx nypm@latest i
+
+      - name: Playground prepare
+        run: npm run dev:prepare
+
+      - name: Test
+        run: npm run test:sqlite
+
+  test-mysql:
     runs-on: ubuntu-latest
 
     services:
@@ -43,6 +63,32 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm i -g --force corepack@latest && corepack enable
+
+      - name: Install dependencies
+        run: npx nypm@latest i
+
+      - name: Playground prepare
+        run: npm run dev:prepare
+
+      - name: Install DB Clients
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+      - name: Test
+        run: npm run test:mysql
+
+  test-postgresql:
+    runs-on: ubuntu-latest
+
+    services:
       postgres:
         image: postgres:13
         env:
@@ -73,8 +119,7 @@ jobs:
         run: npm run dev:prepare
 
       - name: Install DB Clients
-        run: sudo apt-get update && sudo apt-get install -y mysql-client postgresql-client postgresql-client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
       - name: Test
-        run: npm run test
-        
+        run: npm run test:postgresql
