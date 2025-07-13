@@ -53,4 +53,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: npm run autofix
-      - uses: autofix-ci/action@8bc06253bec489732e5f9c52884c7cace15c0160
+      - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27
