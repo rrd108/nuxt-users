@@ -26,14 +26,14 @@ for i in {1..10}; do
         echo "PostgreSQL connection successful!"
         break
     fi
-    echo "PostgreSQL not ready, retrying in 3 seconds..."
+    echo "PostgreSQL not ready, retrying in 3 seconds... (attempt $i/10)"
     sleep 3
 done
 
 # Final check if PostgreSQL is running
 if ! pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -q; then
     echo "Error: Cannot connect to PostgreSQL after multiple retries. Please ensure PostgreSQL is running and accessible."
-    echo "You can start PostgreSQL with: docker run --name postgres-test -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=test_db -p 5432:5432 -d postgres:13"
+    echo "You can start PostgreSQL with: docker run --name postgres-test -e POSTGRES_PASSWORD=123 -e POSTGRES_DB=test_db -p 5432:5432 -d postgres:13"
     exit 1
 fi
 
