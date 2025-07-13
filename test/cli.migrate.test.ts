@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
 import { runMigrations, getAppliedMigrations, markMigrationAsApplied } from '../src/runtime/server/utils/migrate'
 import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../src/types'
-import { cleanupTestSetup, createTestSetup } from './utils/test-setup'
+import { cleanupTestSetup, createTestSetup } from './test-setup'
 
 describe('CLI: Migrate', () => {
   let db: Database
@@ -26,6 +26,17 @@ describe('CLI: Migrate', () => {
         database: process.env.DB_NAME
       }
     }
+    if (dbType === 'postgresql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '5432'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      }
+    }
+    
+
     const settings = await createTestSetup({
       dbType,
       dbConfig,
@@ -198,6 +209,15 @@ describe('CLI: Migrate', () => {
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL UNIQUE,
         executed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `
+    }
+    if (dbType === 'postgresql') {
+      await db.sql`
+      CREATE TABLE IF NOT EXISTS migrations (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL UNIQUE,
+        executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `
     }

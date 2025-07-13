@@ -1,4 +1,4 @@
-export type DatabaseType = 'sqlite' | 'mysql'// | 'postgresql'
+export type DatabaseType = 'sqlite' | 'mysql' | 'postgresql'
 
 export type DatabaseConfig = {
   path?: string

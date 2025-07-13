@@ -129,7 +129,7 @@ describe('Feature Name', () => {
 ### Database Test Setup
 
 ```ts
-import { createTestSetup } from './utils/test-setup'
+import { createTestSetup } from './test-setup'
 
 describe('Database Tests', () => {
   let db: Database
@@ -180,14 +180,14 @@ describe('Login API', () => {
 
 ### Test Setup
 
-The `test/utils/test-setup.ts` file provides utilities for:
+The `test/test-setup.ts` file provides utilities for:
 
 - Creating test database connections
 - Setting up test configurations
 - Cleaning up test data
 
 ```ts
-import { createTestSetup, cleanupTestSetup } from './utils/test-setup'
+import { createTestSetup, cleanupTestSetup } from './test-setup'
 
 const settings = await createTestSetup({
   dbType: 'sqlite',

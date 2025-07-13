@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../src/types'
-import { cleanupTestSetup, createTestSetup } from './utils/test-setup'
+import { cleanupTestSetup, createTestSetup } from './test-setup'
 
 describe('CLI: Create Users Table', () => {
   let db: Database
@@ -11,7 +11,7 @@ describe('CLI: Create Users Table', () => {
   let dbConfig: DatabaseConfig
 
   beforeEach(async () => {
-    dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
+    dbType = process.env.DB_CONNECTOR as DatabaseType
     if (dbType === 'sqlite') {
       dbConfig = {
         path: './_create-users-table',
@@ -26,6 +26,16 @@ describe('CLI: Create Users Table', () => {
         database: process.env.DB_NAME
       }
     }
+    if (dbType === 'postgresql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '5432'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      }
+    }
+
     const settings = await createTestSetup({
       dbType,
       dbConfig,

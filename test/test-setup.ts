@@ -1,6 +1,6 @@
 import { createDatabase } from 'db0'
 import type { Database } from 'db0'
-import type { DatabaseConfig, DatabaseType } from '../../src/types'
+import type { DatabaseConfig, DatabaseType } from '../src/types'
 import fs from 'node:fs'
 
 export interface TestSetupOptions {
@@ -24,6 +24,10 @@ export const createTestSetup = async (options: TestSetupOptions) => {
   if (dbType === 'sqlite') {
     const sqlite = await import('db0/connectors/better-sqlite3')
     db = createDatabase(sqlite.default(testOptions.connector!.options))
+  }
+  if (dbType === 'postgresql') {
+    const postgresql = await import('db0/connectors/postgresql')
+    db = createDatabase(postgresql.default(testOptions.connector!.options))
   }
   // should throw on error
   if (!db) {
@@ -85,7 +89,7 @@ export const getDatabaseConfig = (dbType: DatabaseType): DatabaseConfig => {
       path: './_test-db'
     }
   }
-  else {
+  if (dbType === 'mysql') {
     return {
       host: process.env.DB_HOST || 'localhost',
       port: Number.parseInt(process.env.DB_PORT || '3306'),
@@ -94,4 +98,14 @@ export const getDatabaseConfig = (dbType: DatabaseType): DatabaseConfig => {
       database: process.env.DB_NAME || 'test_db'
     }
   }
+  if (dbType === 'postgresql') {
+    return {
+      host: process.env.DB_HOST || 'localhost',
+      port: Number.parseInt(process.env.DB_PORT || '5432'),
+      user: process.env.DB_USER || 'postgres',
+      password: process.env.DB_PASSWORD || 'postgres',
+      database: process.env.DB_NAME || 'test_db'
+    }
+  }
+  throw new Error(`Unsupported database type: ${dbType}`)
 }

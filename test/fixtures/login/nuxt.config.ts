@@ -1,4 +1,4 @@
-import { getTestOptions } from '../../../test/utils/test-setup'
+import { getTestOptions } from '../../test-setup'
 import NuxtUsers from '../../../src/module'
 import type { DatabaseConfig, DatabaseType } from '../../../src/types'
 

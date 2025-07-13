@@ -8,7 +8,7 @@ import type { DatabaseConfig, DatabaseType, ModuleOptions, User } from '../src/t
 import { fileURLToPath } from 'node:url'
 import { createDatabase } from 'db0'
 import { getConnector } from '../src/runtime/server/utils/db'
-import { cleanupTestSetup, createTestSetup } from './utils/test-setup'
+import { cleanupTestSetup, createTestSetup } from './test-setup'
 
 describe('Login API Route', async () => {
   let db: Database
@@ -37,6 +37,16 @@ describe('Login API Route', async () => {
         database: process.env.DB_NAME
       }
     }
+    if (dbType === 'postgresql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '5432'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      }
+    }
+
     const settings = await createTestSetup({
       dbType,
       dbConfig,
