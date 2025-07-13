@@ -43,6 +43,22 @@ export const createPersonalAccessTokensTable = async (options: ModuleOptions) =>
     )
   `
   }
+  if (connectorName === 'postgresql') {
+    await db.sql`
+    CREATE TABLE IF NOT EXISTS {${tableName}} (
+      id SERIAL PRIMARY KEY,
+      tokenable_type VARCHAR(255) NOT NULL,
+      tokenable_id INT NOT NULL,
+      name VARCHAR(255) NOT NULL,
+      token VARCHAR(255) NOT NULL UNIQUE,
+      abilities TEXT,
+      last_used_at TIMESTAMPTZ,
+      expires_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    )
+  `
+  }
   console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Fields: id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at ✅`)
 }
 
