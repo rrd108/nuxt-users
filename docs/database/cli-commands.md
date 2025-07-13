@@ -181,7 +181,7 @@ const options = useRuntimeConfig().nuxtUsers
 
 ### Database Connectors
 
-Commands support both SQLite and MySQL:
+Commands support SQLite, MySQL, and PostgreSQL:
 
 ```ts
 const connectorName = options.connector!.name

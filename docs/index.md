@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Nuxt Users Module"
-  text: "A user authentication module for Nuxt 3 with database support for SQLite and MySQL"
+  text: "A user authentication module for Nuxt 3 with database support for SQLite, MySQL, and PostgreSQL"
   tagline: That provides a full stack user authentication system for Nuxt 3 projects.
   actions:
     - theme: brand
@@ -19,7 +19,7 @@ features:
     details: With sensible defaults
   - title: 😻 TypeScript support
     details: TypeScript support for all components and API
-  - title: 🤖 SQLite and MySQL support
+  - title: 🤖 SQLite, MySQL, and PostgreSQL support
     details: Use with your favourite database
   - title: 🔥 Full stack authentication
     details: Password reset, email verification, and more

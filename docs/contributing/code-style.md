@@ -176,6 +176,8 @@ if (connectorName === 'sqlite') {
   await db.sql`CREATE TABLE users (...)`
 } else if (connectorName === 'mysql') {
   await db.sql`CREATE TABLE users (...)`
+} else if (connectorName === 'postgresql') {
+  await db.sql`CREATE TABLE users (...)`
 }
 ```
 

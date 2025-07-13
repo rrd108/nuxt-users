@@ -32,7 +32,7 @@
     "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
     "lint": "eslint .",
     "pretest": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
-    "test": "yarn test:sqlite && yarn test:mysql",
+    "test": "yarn test:sqlite && yarn test:mysql && yarn test:postgresql",
     "test:watch": "vitest watch",
     "test:sqlite": "./scripts/test-sqlite.sh",
     "test:mysql": "./scripts/test-mysql.sh",

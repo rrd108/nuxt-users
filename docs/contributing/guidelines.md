@@ -37,7 +37,7 @@ We welcome contributions! This guide will help you get started.
 ### New Features
 
 - **Authentication methods**: Additional login options
-- **Database support**: New database connectors
+- **Database support**: New database connectors (PostgreSQL, MongoDB, etc.)
 - **UI components**: Additional Vue components
 - **API endpoints**: New functionality
 - **CLI commands**: Database management tools
@@ -156,7 +156,7 @@ describe('Feature Name', () => {
 
 ### Database Tests
 
-- Test against both SQLite and MySQL
+- Test against SQLite, MySQL, and PostgreSQL
 - Use isolated test databases
 - Clean up after each test
 - Test both success and failure scenarios
@@ -220,7 +220,7 @@ docs(api): update login endpoint documentation
 
 ### Pull Request Checklist
 
-- [ ] Tests pass for both SQLite and MySQL
+- [ ] Tests pass for SQLite, MySQL, and PostgreSQL
 - [ ] TypeScript types are correct
 - [ ] Code follows style guidelines
 - [ ] Documentation is updated

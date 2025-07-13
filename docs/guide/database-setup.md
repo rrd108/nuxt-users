@@ -80,6 +80,25 @@ nuxtUsers: {
 }
 ```
 
+### PostgreSQL
+
+For PostgreSQL, you need a running PostgreSQL instance:
+
+```ts
+nuxtUsers: {
+  connector: {
+    name: 'postgresql',
+    options: {
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'password',
+      database: 'myapp'
+    }
+  }
+}
+```
+
 ## Migration System
 
 The module includes a migration system that tracks which database changes have been applied. This ensures that:
@@ -123,6 +142,12 @@ export default defineNuxtConfig({
         username: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME
+      } : process.env.DB_TYPE === 'postgresql' ? {
+        host: process.env.DB_HOST,
+        port: Number(process.env.DB_PORT),
+        username: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
       } : {
         path: process.env.DB_PATH || './data/default.sqlite3'
       }
@@ -131,13 +156,56 @@ export default defineNuxtConfig({
 })
 ```
 
+## PostgreSQL Setup
+
+### Prerequisites
+
+1. **Install PostgreSQL**: Make sure PostgreSQL is installed and running
+2. **Create Database**: Create a database for your application
+3. **Configure Connection**: Update your configuration with PostgreSQL credentials
+
+### Quick Setup with Docker
+
+```bash
+# Start PostgreSQL container
+docker run --name postgres-test \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=myapp \
+  -p 5432:5432 \
+  -d postgres:13
+
+# Test connection
+psql -h localhost -p 5432 -U postgres -d myapp
+```
+
+### Environment Variables for PostgreSQL
+
+```bash
+export DB_TYPE=postgresql
+export DB_HOST=localhost
+export DB_PORT=5432
+export DB_USER=postgres
+export DB_PASSWORD=postgres
+export DB_NAME=myapp
+```
+
+### Testing PostgreSQL
+
+The module includes a PostgreSQL test script:
+
+```bash
+# Run PostgreSQL tests
+yarn test:postgresql
+```
+
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Permission Denied**: Ensure the database directory is writable
+1. **Permission Denied**: Ensure the database directory is writable (SQLite)
 2. **Connection Failed**: Check database credentials and network connectivity
 3. **Table Already Exists**: The migration system handles this automatically
+4. **PostgreSQL Connection**: Ensure PostgreSQL service is running and accessible
 
 ### Verification
 
@@ -152,6 +220,9 @@ yarn db:create-user test@example.com "Test User" password123
 
 # Check the database file (SQLite)
 ls -la data/
+
+# For PostgreSQL, connect and check tables
+psql -h localhost -p 5432 -U postgres -d myapp -c "\dt"
 ```
 
 ## Next Steps

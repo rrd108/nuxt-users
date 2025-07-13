@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   
   nuxtUsers: {
     connector: {
-      name: 'sqlite', // | 'mysql'
+      name: 'sqlite', // | 'mysql' | 'postgresql'
       options: {
         path: './data/default.sqlite3'
       }
@@ -62,6 +62,23 @@ nuxtUsers: {
       host: 'localhost',
       port: 3306,
       username: 'root',
+      password: 'password',
+      database: 'myapp'
+    }
+  }
+}
+```
+
+### PostgreSQL
+
+```ts
+nuxtUsers: {
+  connector: {
+    name: 'postgresql',
+    options: {
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
       password: 'password',
       database: 'myapp'
     }
@@ -142,6 +159,12 @@ export default defineNuxtConfig({
     connector: {
       name: process.env.DB_TYPE || 'sqlite',
       options: process.env.DB_TYPE === 'mysql' ? {
+        host: process.env.DB_HOST,
+        port: Number(process.env.DB_PORT),
+        username: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      } : process.env.DB_TYPE === 'postgresql' ? {
         host: process.env.DB_HOST,
         port: Number(process.env.DB_PORT),
         username: process.env.DB_USER,

@@ -89,6 +89,45 @@ CREATE TABLE migrations (
 );
 ```
 
+## PostgreSQL Schema
+
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  name VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE personal_access_tokens (
+  id SERIAL PRIMARY KEY,
+  tokenable_type VARCHAR(255) NOT NULL,
+  tokenable_id INTEGER NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  token VARCHAR(255) NOT NULL UNIQUE,
+  abilities TEXT,
+  last_used_at TIMESTAMP,
+  expires_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE password_reset_tokens (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  token VARCHAR(255) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE migrations (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL UNIQUE,
+  executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
 ## Indexes
 
 The following indexes are automatically created for better performance:
@@ -157,6 +196,30 @@ Tracks which database migrations have been applied.
 - **Users → Personal Access Tokens**: One-to-many relationship
 - **Users → Password Reset Tokens**: One-to-many relationship (by email)
 - **Migrations**: Independent tracking table
+
+## Database-Specific Considerations
+
+### PostgreSQL
+
+- Uses `SERIAL` for auto-incrementing primary keys
+- Uses `TIMESTAMP` instead of `DATETIME` for timestamps
+- Uses `INTEGER` instead of `INT` for foreign keys
+- Supports JSON data types for advanced use cases
+- Better performance for complex queries and large datasets
+
+### MySQL
+
+- Uses `AUTO_INCREMENT` for auto-incrementing primary keys
+- Uses `DATETIME` for timestamps
+- Uses `INT` for integer fields
+- Good performance for read-heavy workloads
+
+### SQLite
+
+- Uses `INTEGER PRIMARY KEY AUTOINCREMENT` for auto-incrementing primary keys
+- Uses `DATETIME` for timestamps
+- Lightweight and file-based
+- Perfect for development and small applications
 
 ## Security Considerations
 

@@ -106,6 +106,27 @@ export DB_PASSWORD=123
 export DB_NAME=test_db
 ```
 
+### PostgreSQL
+
+For PostgreSQL testing, you need a running PostgreSQL instance:
+
+```bash
+# Using Docker
+docker run --name postgres-test \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=test_db \
+  -p 5432:5432 \
+  -d postgres:13
+
+# Set environment variables
+export DB_CONNECTOR=postgresql
+export DB_HOST=localhost
+export DB_PORT=5432
+export DB_USER=postgres
+export DB_PASSWORD=postgres
+export DB_NAME=test_db
+```
+
 ## Next Steps
 
 - [Running Tests](/contributing/running-tests) - Learn how to run and write tests

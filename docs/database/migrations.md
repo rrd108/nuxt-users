@@ -35,6 +35,13 @@ CREATE TABLE migrations (
   name VARCHAR(255) NOT NULL UNIQUE,
   executed_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- PostgreSQL
+CREATE TABLE migrations (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL UNIQUE,
+  executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
 ## Available Migrations
@@ -202,6 +209,21 @@ CREATE TABLE IF NOT EXISTS users (
   password VARCHAR(255) NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)
+```
+
+### PostgreSQL Migrations
+
+PostgreSQL migrations use PostgreSQL-specific syntax:
+
+```sql
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  name VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 ```
 

@@ -4,7 +4,7 @@ Learn how to run and write tests for the Nuxt Users module.
 
 ## Test Overview
 
-The project includes comprehensive tests for both SQLite and MySQL databases:
+The project includes comprehensive tests for SQLite, MySQL, and PostgreSQL databases:
 
 - **Unit tests**: Individual function testing
 - **Integration tests**: API endpoint testing
@@ -48,6 +48,19 @@ yarn test:mysql test/login.test.ts
 
 # Run tests matching a pattern
 yarn test:mysql -- --grep "authentication"
+```
+
+### PostgreSQL Tests
+
+```bash
+# Run tests against PostgreSQL only
+yarn test:postgresql
+
+# Run specific test files
+yarn test:postgresql test/login.test.ts
+
+# Run tests matching a pattern
+yarn test:postgresql -- --grep "authentication"
 ```
 
 ## Test Files Overview
@@ -99,6 +112,47 @@ yarn test:mysql
 # Clean up
 docker stop mysql-test
 docker rm mysql-test
+```
+
+## PostgreSQL Testing Requirements
+
+For PostgreSQL tests, you need a running PostgreSQL instance. The tests use these default credentials:
+
+- **Host**: `localhost`
+- **Port**: `5432`
+- **User**: `postgres`
+- **Password**: `postgres`
+- **Database**: `test_db`
+
+### Environment Variables
+
+You can override these with environment variables:
+
+```bash
+export DB_CONNECTOR=postgresql
+export DB_HOST=your-postgresql-host
+export DB_PORT=5432
+export DB_USER=your-user
+export DB_PASSWORD=your-password
+export DB_NAME=your-test-db
+```
+
+### Quick PostgreSQL Setup with Docker
+
+```bash
+# Start PostgreSQL container for testing
+docker run --name postgres-test \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=test_db \
+  -p 5432:5432 \
+  -d postgres:13
+
+# Run PostgreSQL tests
+yarn test:postgresql
+
+# Clean up
+docker stop postgres-test
+docker rm postgres-test
 ```
 
 ## Writing Tests
@@ -233,7 +287,7 @@ yarn lint --fix
 
 The project includes CI configuration that:
 
-1. Runs tests against both SQLite and MySQL
+1. Runs tests against SQLite, MySQL, and PostgreSQL
 2. Checks TypeScript types
 3. Runs linting
 4. Builds the module
@@ -276,13 +330,14 @@ yarn test:sqlite -- --coverage
 ### Database Connection Issues
 
 1. **MySQL not running**: Start MySQL service or Docker container
-2. **Wrong credentials**: Check environment variables
-3. **Permission denied**: Ensure database user has proper permissions
+2. **PostgreSQL not running**: Start PostgreSQL service or Docker container
+3. **Wrong credentials**: Check environment variables
+4. **Permission denied**: Ensure database user has proper permissions
 
 ### Test Failures
 
 1. **Clean database**: Tests may fail if database has existing data
-2. **Port conflicts**: Ensure MySQL port 3306 is available
+2. **Port conflicts**: Ensure MySQL port 3306 and PostgreSQL port 5432 are available
 3. **File permissions**: Ensure test database files are writable
 
 ## Next Steps

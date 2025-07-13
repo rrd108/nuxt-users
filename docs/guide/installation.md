@@ -36,7 +36,7 @@ export default defineNuxtConfig({
   
   nuxtUsers: {
     connector: {
-      name: 'sqlite', // | 'mysql'
+      name: 'sqlite', // | 'mysql' | 'postgresql'
       options: {
         path: './data/default.sqlite3'
       }
