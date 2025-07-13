@@ -38,7 +38,8 @@ if ! mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "SELECT 1;
 fi
 
 # Create test database if it doesn't exist
-mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;" >/dev/null 2>&1
+export MYSQL_PWD="$DB_PASSWORD"
+mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;" >/dev/null 2>&1
 
 echo "Running tests against MySQL..."
 
