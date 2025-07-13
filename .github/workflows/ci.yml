@@ -74,10 +74,4 @@ jobs:
 
       - name: Test
         run: npm run test
-
-  autofix:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm run autofix
-      - uses: autofix-ci/action@8bc06253bec489732e5f9c52884c7cace15c0160
+        
