@@ -31,7 +31,8 @@ jobs:
 
   test-mysql:
     runs-on: ubuntu-latest
-
+    env:
+      DB_HOST: mysql
     services:
       mysql:
         image: mysql:5.7
@@ -61,15 +62,13 @@ jobs:
       - name: Playground prepare
         run: npm run dev:prepare
 
-      - name: Install DB Clients
-        run: sudo apt-get update && sudo apt-get install -y mysql-client
-
       - name: Test
         run: npm run test:mysql
 
   test-postgresql:
     runs-on: ubuntu-latest
-
+    env:
+      DB_HOST: postgres
     services:
       postgres:
         image: postgres:13
@@ -99,9 +98,6 @@ jobs:
 
       - name: Playground prepare
         run: npm run dev:prepare
-
-      - name: Install DB Clients
-        run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
       - name: Test
         run: npm run test:postgresql
