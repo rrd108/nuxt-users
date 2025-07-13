@@ -17,9 +17,21 @@ fetch('https://api.github.com/repos/rrd108/nuxt-users/contributors')
   <div>
     <h2>Contributors</h2>
     <ul>
-      <li v-for="contributor in contributors" :key="contributor.id">
-        <img :src="contributor.avatar_url" :alt="contributor.login" width="50" height="50">
-        <a :href="contributor.html_url" target="_blank" rel="noopener noreferrer">
+      <li
+        v-for="contributor in contributors"
+        :key="contributor.id"
+      >
+        <img
+          :src="contributor.avatar_url"
+          :alt="contributor.login"
+          width="50"
+          height="50"
+        >
+        <a
+          :href="contributor.html_url"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {{ contributor.login }}
         </a>
       </li>

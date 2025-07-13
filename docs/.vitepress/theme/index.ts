@@ -1,9 +1,9 @@
 import DefaultTheme from 'vitepress/theme'
-import Contributors from '../components/Contributors.vue'
+import ModuleContributors from '../components/ModuleContributors.vue'
 
 export default {
   ...DefaultTheme,
   enhanceApp({ app }) {
-    app.component('Contributors', Contributors)
+    app.component('ModuleContributors', ModuleContributors)
   },
 }

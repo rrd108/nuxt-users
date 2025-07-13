@@ -35,7 +35,7 @@ describe('CLI: Create Migrations Table', () => {
         database: process.env.DB_NAME
       }
     }
-    
+
     const settings = await createTestSetup({
       dbType,
       dbConfig,

@@ -35,7 +35,6 @@ describe('CLI: Migrate', () => {
         database: process.env.DB_NAME
       }
     }
-    
 
     const settings = await createTestSetup({
       dbType,

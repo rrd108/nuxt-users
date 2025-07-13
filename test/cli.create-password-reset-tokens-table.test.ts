@@ -35,7 +35,6 @@ describe('CLI: Create Password Reset Tokens Table', () => {
         database: process.env.DB_NAME
       }
     }
-    
 
     const settings = await createTestSetup({
       dbType,
