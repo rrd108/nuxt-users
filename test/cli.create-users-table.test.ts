@@ -94,7 +94,7 @@ describe('CLI: Create Users Table', () => {
 
     // Verify table still exists and works
     const result = await db.sql`SELECT COUNT(*) as count FROM {${testOptions.tables.users}}`
-    expect(result.rows?.[0]?.count).toBe(0)
+    expect(Number(result.rows?.[0]?.count)).toBe(0)
   })
 
   it('should enforce unique constraint on email', async () => {

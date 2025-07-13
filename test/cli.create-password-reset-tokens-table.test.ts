@@ -94,7 +94,7 @@ describe('CLI: Create Password Reset Tokens Table', () => {
 
     // Verify table still exists and works
     const result = await db.sql`SELECT COUNT(*) as count FROM {${testOptions.tables.passwordResetTokens}}`
-    expect(result.rows?.[0]?.count).toBe(0)
+    expect(Number(result.rows?.[0]?.count)).toBe(0)
   })
 
   it('should enforce unique constraint on token', async () => {
@@ -168,7 +168,7 @@ describe('CLI: Create Password Reset Tokens Table', () => {
 
     // Verify both tokens exist
     const result = await db.sql`SELECT COUNT(*) as count FROM {${testOptions.tables.passwordResetTokens}} WHERE email = 'same@webmania.cc'`
-    expect(result.rows?.[0]?.count).toBe(2)
+    expect(Number(result.rows?.[0]?.count)).toBe(2)
   })
 
   it('should handle table creation with all constraints', async () => {

@@ -99,7 +99,7 @@ describe('CLI: Create Personal Access Tokens Table', () => {
 
     // Verify table still exists and works
     const result = await db.sql`SELECT COUNT(*) as count FROM {${testOptions.tables.personalAccessTokens}}`
-    expect(result.rows?.[0]?.count).toBe(0)
+    expect(Number(result.rows?.[0]?.count)).toBe(0)
   })
 
   it('should enforce unique constraint on token', async () => {

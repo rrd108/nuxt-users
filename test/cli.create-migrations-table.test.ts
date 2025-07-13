@@ -91,7 +91,7 @@ describe('CLI: Create Migrations Table', () => {
 
     // Verify table still exists and works
     const result = await db.sql`SELECT COUNT(*) as count FROM migrations`
-    expect(result.rows?.[0]?.count).toBe(0)
+    expect(Number(result.rows?.[0]?.count)).toBe(0)
   })
 
   it('should enforce unique constraint on name', async () => {
@@ -173,7 +173,7 @@ describe('CLI: Create Migrations Table', () => {
       'create_users_table',
       'create_personal_access_tokens_table',
       'create_password_reset_tokens_table',
-      'add_user_roles_table'
+      'some_table_alter'
     ]
 
     for (const name of migrationNames) {
@@ -191,6 +191,6 @@ describe('CLI: Create Migrations Table', () => {
     expect(insertedNames).toContain('create_users_table')
     expect(insertedNames).toContain('create_personal_access_tokens_table')
     expect(insertedNames).toContain('create_password_reset_tokens_table')
-    expect(insertedNames).toContain('add_user_roles_table')
+    expect(insertedNames).toContain('some_table_alter')
   })
 })

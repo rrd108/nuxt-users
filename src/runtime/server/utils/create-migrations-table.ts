@@ -29,6 +29,15 @@ export const createMigrationsTable = async (options: ModuleOptions) => {
       )
     `
   }
+  if (connectorName === 'postgresql') {
+    await db.sql`
+      CREATE TABLE IF NOT EXISTS {${tableName}} (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL UNIQUE,
+        executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `
+  }
 
   console.log(`[DB:Create Migrations ${connectorName} Table] successfull ✅`)
 }
