@@ -76,7 +76,12 @@ nuxt-users/
 ├── test/                  # Test files
 ├── playground/            # Test application
 ├── docs/                  # Documentation
-└── scripts/              # Test scripts
+├── scripts/               # Test scripts
+│   ├── test-sqlite.sh     # SQLite test runner
+│   ├── test-mysql.sh      # MySQL test runner
+│   └── test-postgresql.sh # PostgreSQL test runner
+└── .github/workflows/     # CI/CD configuration
+    └── ci.yml            # Continuous integration
 ```
 
 ## Database Setup for Development
@@ -113,7 +118,7 @@ For PostgreSQL testing, you need a running PostgreSQL instance:
 ```bash
 # Using Docker
 docker run --name postgres-test \
-  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_PASSWORD=123 \
   -e POSTGRES_DB=test_db \
   -p 5432:5432 \
   -d postgres:13
@@ -123,7 +128,7 @@ export DB_CONNECTOR=postgresql
 export DB_HOST=localhost
 export DB_PORT=5432
 export DB_USER=postgres
-export DB_PASSWORD=postgres
+export DB_PASSWORD=123
 export DB_NAME=test_db
 ```
 

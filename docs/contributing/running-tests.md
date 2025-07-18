@@ -23,6 +23,8 @@ yarn test:watch
 
 ## Database-Specific Tests
 
+The project uses shell scripts to set up the proper environment for each database type before running tests.
+
 ### SQLite Tests
 
 ```bash
@@ -50,6 +52,12 @@ yarn test:mysql test/login.test.ts
 yarn test:mysql -- --grep "authentication"
 ```
 
+The MySQL test script (`scripts/test-mysql.sh`) automatically:
+- Sets up environment variables for MySQL
+- Waits for MySQL to be ready (with retry logic)
+- Creates the test database if it doesn't exist
+- Handles authentication with `MYSQL_PWD` environment variable
+
 ### PostgreSQL Tests
 
 ```bash
@@ -62,6 +70,35 @@ yarn test:postgresql test/login.test.ts
 # Run tests matching a pattern
 yarn test:postgresql -- --grep "authentication"
 ```
+
+The PostgreSQL test script (`scripts/test-postgresql.sh`) automatically:
+- Sets up environment variables for PostgreSQL
+- Waits for PostgreSQL to be ready (with retry logic)
+- Creates the test database if it doesn't exist
+- Uses `PGPASSWORD` for authentication
+
+## Test Scripts
+
+The project includes shell scripts in the `scripts/` directory that handle database setup and test execution:
+
+### `scripts/test-sqlite.sh`
+- Sets `DB_CONNECTOR=sqlite` environment variable
+- Runs tests against SQLite database
+- No additional setup required
+
+### `scripts/test-mysql.sh`
+- Sets up MySQL environment variables
+- Waits for MySQL connection with retry logic (up to 10 attempts)
+- Creates test database if it doesn't exist
+- Sets `MYSQL_PWD` for authentication
+- Provides helpful error messages if MySQL is not accessible
+
+### `scripts/test-postgresql.sh`
+- Sets up PostgreSQL environment variables
+- Waits for PostgreSQL connection with retry logic (up to 10 attempts)
+- Creates test database if it doesn't exist
+- Uses `PGPASSWORD` for authentication
+- Provides helpful error messages if PostgreSQL is not accessible
 
 ## Test Files Overview
 
@@ -121,7 +158,7 @@ For PostgreSQL tests, you need a running PostgreSQL instance. The tests use thes
 - **Host**: `localhost`
 - **Port**: `5432`
 - **User**: `postgres`
-- **Password**: `postgres`
+- **Password**: `123`
 - **Database**: `test_db`
 
 ### Environment Variables
@@ -142,7 +179,7 @@ export DB_NAME=your-test-db
 ```bash
 # Start PostgreSQL container for testing
 docker run --name postgres-test \
-  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_PASSWORD=123 \
   -e POSTGRES_DB=test_db \
   -p 5432:5432 \
   -d postgres:13
@@ -285,13 +322,25 @@ yarn lint --fix
 
 ## Continuous Integration
 
-The project includes CI configuration that:
+The project includes CI configuration (`.github/workflows/ci.yml`) that:
 
-1. Runs tests against SQLite, MySQL, and PostgreSQL
-2. Checks TypeScript types
-3. Runs linting
-4. Builds the module
-5. Builds documentation
+1. **Runs tests against all databases**:
+   - SQLite (no additional setup required)
+   - MySQL (with MariaDB 10.5 service and health checks)
+   - PostgreSQL (with PostgreSQL 13 service and health checks)
+
+2. **Database setup in CI**:
+   - Installs database clients (`mariadb-client`, `postgresql-client`)
+   - Uses health checks to ensure databases are ready before testing
+   - Sets up proper environment variables for each database type
+
+3. **Additional checks**:
+   - Checks TypeScript types
+   - Runs linting
+   - Builds the module
+   - Builds documentation
+
+The CI workflow automatically handles database setup and teardown, making it easy to run tests in a clean environment.
 
 ## Debugging Tests
 
