@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { navigateTo } from '#app'
+import GoogleLoginButton from './GoogleLoginButton.vue'
 import type { LoginFormData, LoginFormProps, User } from '~/src/types'
 
 interface Emits {
@@ -120,6 +121,10 @@ const handleSubmit = async (formData: LoginFormData) => {
           />
           {{ isLoading ? 'Signing in...' : 'Sign In' }}
         </FormKit>
+      </slot>
+
+      <slot name="google-login-button">
+        <GoogleLoginButton />
       </slot>
 
       <!-- Footer slot -->

@@ -50,6 +50,7 @@
     "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
+    "@lucia-auth/oauth": "^4.0.0",
     "@nuxt/kit": "^3.17.6",
     "@types/bcrypt": "^5.0.2",
     "@types/pg": "^8.15.4",

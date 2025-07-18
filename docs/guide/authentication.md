@@ -200,4 +200,42 @@ export default defineEventHandler(async (event) => {
 
 - [Password Reset](/guide/password-reset) - Add password reset functionality
 - [Components](/components/) - Learn about available Vue components
-- [API Reference](/api/) - Explore all available API endpoints 
+- [API Reference](/api/) - Explore all available API endpoints
+
+## Social Login with Google
+
+This module also supports social login with Google.
+
+### Configuration
+
+First, you need to configure the Google OAuth credentials in your `nuxt.config.ts` file:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    oauth: {
+      google: {
+        clientId: 'your-google-client-id',
+        clientSecret: 'your-google-client-secret',
+        redirectUri: 'http://localhost:3000/api/auth/google/callback',
+        scope: ['email', 'profile'],
+      },
+    },
+  },
+})
+```
+
+### Usage
+
+The module provides a `GoogleLoginButton` component that you can use in your login page:
+
+```vue
+<template>
+  <LoginForm />
+</template>
+```
+
+The `LoginForm` component will automatically display the `GoogleLoginButton` if the Google OAuth credentials are configured.
+
+When a user clicks the "Login with Google" button, they will be redirected to Google for authentication. After successful authentication, they will be redirected back to your application at the `redirectUri` you configured. The module will then create a new user if one doesn't exist and create a session for the user.
