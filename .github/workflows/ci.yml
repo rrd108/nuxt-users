@@ -31,17 +31,16 @@ jobs:
 
   test-mysql:
     runs-on: ubuntu-latest
-
     services:
       mysql:
-        image: mysql:5.7
+        image: mariadb:10.5
         env:
-          MYSQL_ROOT_PASSWORD: 123
-          MYSQL_DATABASE: test_db
+          MARIADB_ROOT_PASSWORD: 123
+          MARIADB_DATABASE: test_db
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
