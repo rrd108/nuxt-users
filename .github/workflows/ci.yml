@@ -61,7 +61,7 @@ jobs:
         run: npm run dev:prepare
 
       - name: Install DB Clients
-        run: sudo apt-get update && sudo apt-get install -y mysql-client
+        run: sudo apt-get update && sudo apt-get install -y mariadb-client
 
       - name: Test
         run: npm run test:mysql
