@@ -61,7 +61,7 @@ nuxtUsers: {
     options: {
       host: 'localhost',
       port: 3306,
-      username: 'root',
+      user: 'root',
       password: 'password',
       database: 'myapp'
     }
@@ -78,7 +78,7 @@ nuxtUsers: {
     options: {
       host: 'localhost',
       port: 5432,
-      username: 'postgres',
+      user: 'postgres',
       password: 'password',
       database: 'myapp'
     }
@@ -161,13 +161,13 @@ export default defineNuxtConfig({
       options: process.env.DB_TYPE === 'mysql' ? {
         host: process.env.DB_HOST,
         port: Number(process.env.DB_PORT),
-        username: process.env.DB_USER,
+        user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME
       } : process.env.DB_TYPE === 'postgresql' ? {
         host: process.env.DB_HOST,
         port: Number(process.env.DB_PORT),
-        username: process.env.DB_USER,
+        user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME
       } : {
