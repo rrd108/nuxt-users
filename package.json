@@ -47,7 +47,8 @@
     "db:migrate": "tsx src/cli/migrate.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "docs:deploy": "npm run docs:build && ./scripts/deploy-docs.sh"
   },
   "dependencies": {
     "@nuxt/kit": "^3.17.6",
