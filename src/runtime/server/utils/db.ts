@@ -14,11 +14,17 @@ export const getConnector = async (name: string) => {
   }
 }
 
-const useDb = async (options: ModuleOptions) => {
+export const useDb = async (options: ModuleOptions) => {
   const connectorName = options.connector!.name
   const connector = await getConnector(connectorName)
 
-  return createDatabase(connector(options.connector!.options))
+  // Filter out path option for non-SQLite databases
+  const connectorOptions = { ...options.connector!.options }
+  if (connectorName !== 'sqlite') {
+    delete connectorOptions.path
+  }
+
+  return createDatabase(connector(connectorOptions))
 }
 
 // TODO remove this

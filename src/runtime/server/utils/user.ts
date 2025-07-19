@@ -1,5 +1,4 @@
-import { createDatabase } from 'db0'
-import { getConnector } from './db'
+import { useDb } from './db'
 import bcrypt from 'bcrypt'
 import type { ModuleOptions, User } from '../../../types'
 
@@ -14,9 +13,7 @@ interface CreateUserParams {
  * Hashes the password before storing.
  */
 export const createUser = async (userData: CreateUserParams, options: ModuleOptions): Promise<Omit<User, 'password'>> => {
-  const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-  const db = createDatabase(connector(options.connector!.options))
+  const db = await useDb(options)
   const usersTable = options.tables.users
 
   // Hash the password
@@ -51,9 +48,7 @@ export const createUser = async (userData: CreateUserParams, options: ModuleOpti
  * Finds a user by their email address.
  */
 export const findUserByEmail = async (email: string, options: ModuleOptions): Promise<User | null> => {
-  const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-  const db = createDatabase(connector(options.connector!.options))
+  const db = await useDb(options)
   const usersTable = options.tables.users
 
   const result = await db.sql`SELECT * FROM {${usersTable}} WHERE email = ${email}` as { rows: Array<{ id: number, email: string, name: string, password: string, created_at: Date | string, updated_at: Date | string }> }
@@ -80,9 +75,7 @@ export const findUserByEmail = async (email: string, options: ModuleOptions): Pr
  * Hashes the new password before storing.
  */
 export const updateUserPassword = async (email: string, newPassword: string, options: ModuleOptions): Promise<void> => {
-  const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-  const db = createDatabase(connector(options.connector!.options))
+  const db = await useDb(options)
   const usersTable = options.tables.users
 
   const hashedPassword = await bcrypt.hash(newPassword, 10)

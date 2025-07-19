@@ -1,11 +1,9 @@
-import { createDatabase } from 'db0'
-import { getConnector } from './db'
+import { useDb } from './db'
 import type { ModuleOptions } from '../../../types'
 
 export const createPasswordResetTokensTable = async (options: ModuleOptions) => {
   const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-  const db = createDatabase(connector(options.connector!.options))
+  const db = await useDb(options)
 
   const tableName = options.tables.passwordResetTokens
 

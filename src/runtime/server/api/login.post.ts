@@ -1,6 +1,5 @@
 import { createError, defineEventHandler, readBody, setCookie } from 'h3'
-import { getConnector } from '../utils/db'
-import { createDatabase } from 'db0'
+import { useDb } from '../utils/db'
 import bcrypt from 'bcrypt'
 import crypto from 'node:crypto'
 import type { ModuleOptions, User } from '../../../types'
@@ -19,10 +18,7 @@ export default defineEventHandler(async (event) => {
 
   const { nuxtUsers } = useRuntimeConfig()
   const options = nuxtUsers as ModuleOptions
-
-  const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-  const db = createDatabase(connector(options.connector!.options))
+  const db = await useDb(options)
   const usersTable = options.tables.users
   const personalAccessTokensTable = options.tables.personalAccessTokens
 

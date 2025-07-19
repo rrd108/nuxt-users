@@ -1,5 +1,4 @@
-import { createDatabase } from 'db0'
-import { getConnector } from './db'
+import { useDb } from './db'
 import type { ModuleOptions } from '../../../types'
 import { createUsersTable } from './create-users-table'
 import { createPersonalAccessTokensTable } from './create-personal-access-tokens-table'
@@ -31,9 +30,7 @@ const migrations: Migration[] = [
 ]
 
 export const getAppliedMigrations = async (options: ModuleOptions): Promise<string[]> => {
-  const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-  const db = createDatabase(connector(options.connector!.options))
+  const db = await useDb(options)
 
   try {
     const result = await db.sql`SELECT name FROM migrations ORDER BY id` as { rows: Array<{ name: string }> }
@@ -46,9 +43,7 @@ export const getAppliedMigrations = async (options: ModuleOptions): Promise<stri
 }
 
 export const markMigrationAsApplied = async (options: ModuleOptions, migrationName: string): Promise<void> => {
-  const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-  const db = createDatabase(connector(options.connector!.options))
+  const db = await useDb(options)
 
   await db.sql`INSERT INTO migrations (name) VALUES (${migrationName})`
 }

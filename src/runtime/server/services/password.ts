@@ -2,8 +2,7 @@ import { createTransport } from 'nodemailer'
 import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
 import { findUserByEmail, updateUserPassword } from '../utils/user'
-import { getConnector } from '../utils/db'
-import { createDatabase } from 'db0'
+import { useDb } from '../utils/db'
 import type { ModuleOptions } from '../../../types'
 
 const TOKEN_EXPIRATION_HOURS = 1
@@ -23,9 +22,7 @@ export const sendPasswordResetLink = async (
     return
   }
 
-  const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-  const db = createDatabase(connector(options.connector!.options))
+  const db = await useDb(options)
 
   // Generate a secure token
   const token = crypto.randomBytes(32).toString('hex')
@@ -81,9 +78,7 @@ export const resetPassword = async (
   email: string, // Added email to quickly find the token
   newPassword: string,
   options: ModuleOptions): Promise<boolean> => {
-  const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-  const db = createDatabase(connector(options.connector!.options))
+  const db = await useDb(options)
   const passwordResetTokensTable = options.tables.passwordResetTokens
 
   // Find potential tokens for the email (could be multiple if user requested several times)
@@ -162,9 +157,7 @@ export const resetPassword = async (
  */
 export const deleteExpiredPasswordResetTokens = async (
   options: ModuleOptions): Promise<void> => {
-  const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-  const db = createDatabase(connector(options.connector!.options))
+  const db = await useDb(options)
   const passwordResetTokensTable = options.tables.passwordResetTokens
 
   const expirationDate = new Date()
