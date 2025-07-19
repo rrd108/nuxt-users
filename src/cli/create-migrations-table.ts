@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 import { createMigrationsTable } from '../runtime/server/utils/create-migrations-table'
 import { getOptionsFromEnv } from './utils'
 

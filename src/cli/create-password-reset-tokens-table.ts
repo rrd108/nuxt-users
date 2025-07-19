@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 import { createPasswordResetTokensTable } from '../runtime/server/utils/create-password-reset-tokens-table'
 import { getOptionsFromEnv } from './utils'
 

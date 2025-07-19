@@ -21,9 +21,17 @@
     }
   },
   "files": [
-    "dist",
-    "cli.js"
+    "dist",     
+    "src/cli"
   ],
+  "bin": {
+    "nuxt-users-migrate": "./src/cli/migrate.ts",
+    "nuxt-users-create-users-table": "./src/cli/create-users-table.ts",
+    "nuxt-users-create-user": "./src/cli/create-user.ts",
+    "nuxt-users-create-personal-access-tokens-table": "./src/cli/create-personal-access-tokens-table.ts",
+    "nuxt-users-create-password-reset-tokens-table": "./src/cli/create-password-reset-tokens-table.ts",
+    "nuxt-users-create-migrations-table": "./src/cli/create-migrations-table.ts"
+  },
   "scripts": {
     "prepack": "nuxt-module-build build",
     "predev": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
@@ -62,7 +70,8 @@
     "mysql2": "^3.14.2",
     "nodemailer": "^7.0.5",
     "pg": "^8.16.3",
-    "vitepress": "^1.6.3"
+    "vitepress": "^1.6.3",
+    "tsx": "^4.20.3"
   },
   "devDependencies": {
     "@formkit/nuxt": "^1.6.9",

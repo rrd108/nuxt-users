@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 import { createPersonalAccessTokensTable } from '../runtime/server/utils/create-personal-access-tokens-table'
 import { getOptionsFromEnv } from './utils'
 

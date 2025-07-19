@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 import { createUser } from '../runtime/server/utils/user'
 import { getOptionsFromEnv } from './utils'
 

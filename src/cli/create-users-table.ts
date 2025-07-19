@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 import { createUsersTable } from '../runtime/server/utils/create-users-table'
 import { getOptionsFromEnv } from './utils'
 

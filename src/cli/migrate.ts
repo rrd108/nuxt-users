@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 import { runMigrations } from '../runtime/server/utils/migrate'
 import { getOptionsFromEnv } from './utils'
 
