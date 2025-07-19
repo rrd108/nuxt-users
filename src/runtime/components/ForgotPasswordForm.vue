@@ -1,36 +1,3 @@
-<template>
-  <div>
-    <h2>Forgot Password</h2>
-    <FormKit
-      v-slot="{ disabled }"
-      type="form"
-      :actions="false"
-      @submit="handleForgotPassword"
-    >
-      <FormKit
-        v-model="formData.email"
-        type="email"
-        name="email"
-        label="Email"
-        placeholder="your@email.com"
-        validation="required|email"
-      />
-      <FormKit
-        type="submit"
-        :label="loading ? 'Sending...' : 'Send Password Reset Link'"
-        :disabled="disabled || loading"
-      />
-      <p
-        v-if="message"
-        :class="{ error: isError, success: !isError }"
-        class="form-message"
-      >
-        {{ message }}
-      </p>
-    </FormKit>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 // Ensure FormKit types are available if you're using them explicitly,
@@ -88,6 +55,39 @@ const handleForgotPassword = async (data: ForgotPasswordFormData) => {
   }
 }
 </script>
+
+<template>
+  <div>
+    <h2>Forgot Password</h2>
+    <FormKit
+      v-slot="{ disabled }"
+      type="form"
+      :actions="false"
+      @submit="handleForgotPassword"
+    >
+      <FormKit
+        v-model="formData.email"
+        type="email"
+        name="email"
+        label="Email"
+        placeholder="your@email.com"
+        validation="required|email"
+      />
+      <FormKit
+        type="submit"
+        :label="loading ? 'Sending...' : 'Send Password Reset Link'"
+        :disabled="Boolean(disabled) || loading"
+      />
+      <p
+        v-if="message"
+        :class="{ error: isError, success: !isError }"
+        class="form-message"
+      >
+        {{ message }}
+      </p>
+    </FormKit>
+  </div>
+</template>
 
 <style scoped>
 .error {

@@ -1,5 +1,7 @@
 import { defineEventHandler, readBody, createError, H3Error } from 'h3'
 import { resetPassword } from '../../services/password' // Adjusted path
+import type { ModuleOptions } from '../../../../types'
+import { useRuntimeConfig } from '#imports'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -23,7 +25,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const success = await resetPassword(token, email, password, event)
+    const options = useRuntimeConfig().nuxtUsers as ModuleOptions
+    const success = await resetPassword(token, email, password, options)
 
     if (success) {
       return { message: 'Password has been reset successfully. You can now log in with your new password.' }

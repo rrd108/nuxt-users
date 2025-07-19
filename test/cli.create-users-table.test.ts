@@ -148,10 +148,10 @@ describe('CLI: Create Users Table', () => {
     const result = await db.sql`SELECT created_at, updated_at FROM {${testOptions.tables.users}} WHERE email = 'test@webmania.cc'`
     const user = result.rows?.[0]
 
-    expect(user.created_at).toBeDefined()
-    expect(user.updated_at).toBeDefined()
-    expect(user.created_at).not.toBeNull()
-    expect(user.updated_at).not.toBeNull()
+    expect(user?.created_at).toBeDefined()
+    expect(user?.updated_at).toBeDefined()
+    expect(user?.created_at).not.toBeNull()
+    expect(user?.updated_at).not.toBeNull()
   })
 
   it('should handle table creation with all constraints', async () => {

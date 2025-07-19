@@ -4,6 +4,7 @@ import { createDatabase } from 'db0'
 import bcrypt from 'bcrypt'
 import crypto from 'node:crypto'
 import type { ModuleOptions, User } from '../../../types'
+import { useRuntimeConfig } from '#imports'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

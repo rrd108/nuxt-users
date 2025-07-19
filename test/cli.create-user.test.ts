@@ -66,10 +66,10 @@ describe('CLI: Create User', () => {
     const user = result.rows?.[0]
 
     expect(user).toBeDefined()
-    expect(user.email).toBe(userData.email)
-    expect(user.name).toBe(userData.name)
-    expect(user.id).toBe(1)
-    expect(user.created_at).toBeDefined()
+    expect(user?.email).toBe(userData.email)
+    expect(user?.name).toBe(userData.name)
+    expect(user?.id).toBe(1)
+    expect(user?.created_at).toBeDefined()
   })
 
   it('should hash the password correctly', async () => {
@@ -83,7 +83,7 @@ describe('CLI: Create User', () => {
 
     // Get the stored password
     const result = await db.sql`SELECT password FROM users WHERE email = ${userData.email}`
-    const storedPassword = result.rows?.[0]?.password
+    const storedPassword = result.rows?.[0]?.password as string
 
     expect(storedPassword).toBeDefined()
     expect(storedPassword).not.toBe(userData.password) // Should be hashed
@@ -124,19 +124,19 @@ describe('CLI: Create User', () => {
     const result = await db.sql`SELECT created_at, updated_at FROM users WHERE email = ${userData.email}`
     const user = result.rows?.[0]
 
-    expect(user.created_at).toBeDefined()
-    expect(user.updated_at).toBeDefined()
+    expect(user?.created_at).toBeDefined()
+    expect(user?.updated_at).toBeDefined()
 
     // Check that timestamps are valid dates
-    const createdAt = new Date(user.created_at)
-    const updatedAt = new Date(user.updated_at)
+    const createdAt = new Date(user?.created_at as string)
+    const updatedAt = new Date(user?.updated_at as string)
 
     expect(createdAt.toString()).not.toBe('Invalid Date')
     expect(updatedAt.toString()).not.toBe('Invalid Date')
 
     // Check that timestamps are not null/undefined
-    expect(user.created_at).not.toBeNull()
-    expect(user.updated_at).not.toBeNull()
+    expect(user?.created_at).not.toBeNull()
+    expect(user?.updated_at).not.toBeNull()
   })
 
   it('should throw error for duplicate email', async () => {
@@ -181,7 +181,7 @@ describe('CLI: Create User', () => {
     const user = result.rows?.[0]
 
     expect(user).toBeDefined()
-    expect(user.email).toBe(userData.email)
-    expect(user.name).toBe(userData.name)
+    expect(user?.email).toBe(userData.email)
+    expect(user?.name).toBe(userData.name)
   })
 })

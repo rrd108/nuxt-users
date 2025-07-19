@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { navigateTo } from '#app'
-import type { LoginFormData, LoginFormProps, User } from '~/src/types'
+import type { LoginFormData, LoginFormProps, User } from '../../types'
 
 interface Emits {
   (e: 'success', user: User): void

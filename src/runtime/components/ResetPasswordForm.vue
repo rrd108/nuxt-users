@@ -1,44 +1,3 @@
-<template>
-  <div>
-    <h2>Reset Password</h2>
-    <FormKit
-      v-slot="{ disabled }"
-      v-model="formData"
-      type="form"
-      :actions="false"
-      @submit="handleResetPassword"
-    >
-      <FormKit
-        type="password"
-        name="password"
-        label="New Password"
-        validation="required|length:8"
-        placeholder="Enter new password"
-      />
-      <FormKit
-        type="password"
-        name="password_confirm"
-        label="Confirm New Password"
-        placeholder="Confirm new password"
-        validation="required|confirm"
-        validation-label="Password confirmation"
-      />
-      <FormKit
-        type="submit"
-        :label="loading ? 'Resetting...' : 'Reset Password'"
-        :disabled="disabled || loading || formInvalidDueToToken"
-      />
-      <p
-        v-if="message"
-        :class="{ error: isError, success: !isError }"
-        class="form-message"
-      >
-        {{ message }}
-      </p>
-    </FormKit>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from '#app' // Nuxt 3 specific imports
@@ -142,6 +101,47 @@ const handleResetPassword = async (data: ResetPasswordFormData) => {
   }
 }
 </script>
+
+<template>
+  <div>
+    <h2>Reset Password</h2>
+    <FormKit
+      v-slot="{ disabled }"
+      v-model="formData"
+      type="form"
+      :actions="false"
+      @submit="handleResetPassword"
+    >
+      <FormKit
+        type="password"
+        name="password"
+        label="New Password"
+        validation="required|length:8"
+        placeholder="Enter new password"
+      />
+      <FormKit
+        type="password"
+        name="password_confirm"
+        label="Confirm New Password"
+        placeholder="Confirm new password"
+        validation="required|confirm"
+        validation-label="Password confirmation"
+      />
+      <FormKit
+        type="submit"
+        :label="loading ? 'Resetting...' : 'Reset Password'"
+        :disabled="Boolean(disabled) || loading || formInvalidDueToToken"
+      />
+      <p
+        v-if="message"
+        :class="{ error: isError, success: !isError }"
+        class="form-message"
+      >
+        {{ message }}
+      </p>
+    </FormKit>
+  </div>
+</template>
 
 <style scoped>
 .error {
