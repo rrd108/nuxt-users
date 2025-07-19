@@ -1,11 +1,11 @@
-import type { ModuleOptions, DatabaseConfig, SqliteConfig, MySqlConfig, PostgreSqlConfig } from '../types'
+import type { ModuleOptions, DatabaseConfig } from '../types'
 
 export const defaultOptions: ModuleOptions = {
   connector: {
     name: 'sqlite',
     options: {
       path: './data/default.sqlite3',
-    } as SqliteConfig,
+    },
   },
   tables: {
     users: 'users',
@@ -36,7 +36,7 @@ export const getOptionsFromEnv = (): ModuleOptions => {
     case 'sqlite':
       connectorOptions = {
         path: process.env.DB_PATH || './data/default.sqlite3',
-      } as SqliteConfig
+      }
       break
     case 'mysql':
       connectorOptions = {
@@ -45,7 +45,7 @@ export const getOptionsFromEnv = (): ModuleOptions => {
         user: process.env.DB_USER || 'root',
         password: process.env.DB_PASSWORD || '',
         database: process.env.DB_NAME || 'nuxt_users',
-      } as MySqlConfig
+      }
       break
     case 'postgresql':
       connectorOptions = {
@@ -54,7 +54,7 @@ export const getOptionsFromEnv = (): ModuleOptions => {
         user: process.env.DB_USER || 'postgres',
         password: process.env.DB_PASSWORD || '',
         database: process.env.DB_NAME || 'nuxt_users',
-      } as PostgreSqlConfig
+      }
       break
     default:
       throw new Error(`Unsupported database connector: ${connectorName}`)
