@@ -1,6 +1,6 @@
 {
   "name": "nuxt-users",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Nuxt users module",
   "repository": "rrd108/nuxt-users",
   "license": "MIT",
@@ -12,7 +12,6 @@
     }
   },
   "main": "./dist/module.mjs",
-  
   "typesVersions": {
     "*": {
       ".": [
@@ -21,7 +20,7 @@
     }
   },
   "files": [
-    "dist",     
+    "dist",
     "src/cli"
   ],
   "bin": {
@@ -66,7 +65,7 @@
     "mysql2": "^3.14.2",
     "nodemailer": "^7.0.5",
     "pg": "^8.16.3"
-    },
+  },
   "devDependencies": {
     "@formkit/nuxt": "^1.6.9",
     "@nuxt/devtools": "^2.6.2",
