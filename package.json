@@ -25,12 +25,7 @@
     "src/cli"
   ],
   "bin": {
-    "nuxt-users-migrate": "./src/cli/migrate.ts",
-    "nuxt-users-create-users-table": "./src/cli/create-users-table.ts",
-    "nuxt-users-create-user": "./src/cli/create-user.ts",
-    "nuxt-users-create-personal-access-tokens-table": "./src/cli/create-personal-access-tokens-table.ts",
-    "nuxt-users-create-password-reset-tokens-table": "./src/cli/create-password-reset-tokens-table.ts",
-    "nuxt-users-create-migrations-table": "./src/cli/create-migrations-table.ts"
+    "nuxt-users": "./src/cli/main.ts"
   },
   "scripts": {
     "prepack": "nuxt-module-build build",
@@ -66,13 +61,12 @@
     "@types/pg": "^8.15.4",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.2.0",
+    "citty": "^0.1.6",
     "defu": "^6.1.4",
     "mysql2": "^3.14.2",
     "nodemailer": "^7.0.5",
-    "pg": "^8.16.3",
-    "vitepress": "^1.6.3",
-    "tsx": "^4.20.3"
-  },
+    "pg": "^8.16.3"
+    },
   "devDependencies": {
     "@formkit/nuxt": "^1.6.9",
     "@nuxt/devtools": "^2.6.2",
@@ -85,9 +79,10 @@
     "changelogen": "^0.6.2",
     "eslint": "^9.30.1",
     "nuxt": "^3.17.6",
-    "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
     "typescript": "~5.8.3",
+    "unbuild": "^2.0.0",
+    "vitepress": "^1.6.3",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.0.1"
   }
