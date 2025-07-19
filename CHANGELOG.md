@@ -1,6 +1,33 @@
 # Changelog
 
 
+## v1.1.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.1.0...v1.1.2)
+
+### 🩹 Fixes
+
+- CLI tool for database management ([0a4793f](https://github.com/rrd108/nuxt-users/commit/0a4793f))
+- Handling cli commands ([120c396](https://github.com/rrd108/nuxt-users/commit/120c396))
+- Database handling and setup ([11ddc20](https://github.com/rrd108/nuxt-users/commit/11ddc20))
+
+### 💅 Refactors
+
+- CLI commands to use environment variables ([3fc6c9f](https://github.com/rrd108/nuxt-users/commit/3fc6c9f))
+- Remove unused types ([06b5e9f](https://github.com/rrd108/nuxt-users/commit/06b5e9f))
+- Database connection logic ([f5baadf](https://github.com/rrd108/nuxt-users/commit/f5baadf))
+
+### 🏡 Chore
+
+- **release:** V1.1.0 ([bfc24f6](https://github.com/rrd108/nuxt-users/commit/bfc24f6))
+- Adds script to deploy documentation to server ([81f7f74](https://github.com/rrd108/nuxt-users/commit/81f7f74))
+- Adds script to deploy documentation ([7e2f642](https://github.com/rrd108/nuxt-users/commit/7e2f642))
+- **release:** V1.1.1 ([e3bda8a](https://github.com/rrd108/nuxt-users/commit/e3bda8a))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.1.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.1.0...v1.1.1)
