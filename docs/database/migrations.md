@@ -155,9 +155,7 @@ Each migration is implemented as a standalone script:
 ```ts
 // src/runtime/server/utils/create-users-table.ts
 export const createUsersTable = async (options: ModuleOptions) => {
-  const connectorName = options.connector!.name
-  const connector = await getConnector(connectorName)
-  const db = createDatabase(connector(options.connector!.options))
+  const db = await useDb(options)
   
   // Database-specific table creation
   if (connectorName === 'sqlite') {
