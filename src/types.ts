@@ -7,6 +7,11 @@ export type DatabaseConfig = {
   user?: string
   password?: string
   database?: string
+  // MySQL specific options
+  connectTimeout?: number
+  acquireTimeout?: number
+  // PostgreSQL specific options
+  connectionTimeoutMillis?: number
 }
 export interface ModuleOptions {
   connector?: {
@@ -29,6 +34,11 @@ export interface ModuleOptions {
    * @default 'http://localhost:3000' // Example, will be set in module defaults
    */
   passwordResetBaseUrl?: string
+  /**
+   * Skip database checks during module setup to prevent hanging
+   * @default false
+   */
+  skipDatabaseChecks?: boolean
 }
 
 export interface MailerOptions {

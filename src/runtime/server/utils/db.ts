@@ -24,7 +24,22 @@ export const useDb = async (options: ModuleOptions) => {
     delete connectorOptions.path
   }
 
-  return createDatabase(connector(connectorOptions))
+  // Add connection timeout for MySQL and PostgreSQL
+  if (connectorName === 'mysql') {
+    connectorOptions.connectTimeout = 5000 // 5 seconds
+    connectorOptions.acquireTimeout = 5000
+  }
+  if (connectorName === 'postgresql') {
+    connectorOptions.connectionTimeoutMillis = 5000 // 5 seconds
+  }
+
+  try {
+    return createDatabase(connector(connectorOptions))
+  }
+  catch (error) {
+    console.warn(`[Nuxt Users DB] ⚠️  Failed to connect to ${connectorName} database:`, error instanceof Error ? error.message : 'Unknown error')
+    throw error
+  }
 }
 
 // TODO remove this
@@ -43,12 +58,13 @@ export const checkPersonalAccessTokensTableExists = async (options: ModuleOption
 }
 
 export const checkTableExists = async (options: ModuleOptions, tableName: string) => {
-  const db = await useDb(options)
   try {
+    const db = await useDb(options)
     await db.sql`SELECT 1 FROM {${tableName}} LIMIT 1`
     return true
   }
   catch {
+    // Table doesn't exist or connection failed
     return false
   }
 }
@@ -58,14 +74,14 @@ interface CountResult {
 }
 
 export const hasAnyUsers = async (options: ModuleOptions) => {
-  const db = await useDb(options)
-
   try {
+    const db = await useDb(options)
+
     const users = await db.sql`SELECT COUNT(*) as count FROM {${options.tables.users}}` as CountResult
     return users.rows?.[0]?.count > 0
   }
   catch {
-    // If the table doesn't exist, there are no users
+    // If the table doesn't exist or connection fails, there are no users
     return false
   }
 }

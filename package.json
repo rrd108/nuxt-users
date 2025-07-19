@@ -21,13 +21,14 @@
   },
   "files": [
     "dist",
-    "src/cli"
+    "src/cli",
+    "data"
   ],
   "bin": {
     "nuxt-users": "./src/cli/main.ts"
   },
   "scripts": {
-    "prepack": "nuxt-module-build build",
+    "prepack": "npm run db:create-empty-sqlite && nuxt-module-build build",
     "predev": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
     "dev": "npm run dev:prepare && nuxi dev playground",
     "dev:build": "nuxi build playground",
@@ -49,6 +50,7 @@
     "db:create-password-reset-tokens-table": "tsx src/cli/create-password-reset-tokens-table.ts",
     "db:create-migrations-table": "tsx src/cli/create-migrations-table.ts",
     "db:migrate": "tsx src/cli/migrate.ts",
+    "db:create-empty-sqlite": "node scripts/create-empty-sqlite.js",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
