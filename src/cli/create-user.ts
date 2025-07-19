@@ -1,6 +1,5 @@
-import { useRuntimeConfig } from '#imports'
 import { createUser } from '../runtime/server/utils/user'
-import type { ModuleOptions } from '../types'
+import { getOptionsFromEnv } from './utils'
 
 const createUserDefault = async () => {
   const args = process.argv.slice(2)
@@ -10,7 +9,7 @@ const createUserDefault = async () => {
   }
 
   const [email, name, password] = args
-  const options = useRuntimeConfig().nuxtUsers as ModuleOptions
+  const options = getOptionsFromEnv()
 
   try {
     const user = await createUser({ email, name, password }, options)

@@ -1,14 +1,14 @@
-import { useRuntimeConfig } from '#imports'
 import { createMigrationsTable } from '../runtime/server/utils/create-migrations-table'
-import type { ModuleOptions } from '../types'
+import { getOptionsFromEnv } from './utils'
 
 const migrateDefault = async () => {
-  console.log('[Nuxt Users] Starting migration...')
+  console.log('[Nuxt Users] Creating migrations table...')
 
-  const options = useRuntimeConfig().nuxtUsers as ModuleOptions
+  const options = getOptionsFromEnv()
 
   try {
     await createMigrationsTable(options)
+    console.log('[Nuxt Users] Migrations table created successfully!')
     process.exit(0)
   }
   catch (error) {

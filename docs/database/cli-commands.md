@@ -1,297 +1,220 @@
 # CLI Commands
 
-Learn about the available CLI commands for database management.
+The Nuxt Users module provides several CLI commands for database management and user creation.
 
-## Overview
+## Prerequisites
 
-The module provides several CLI commands for database operations:
+Before running any CLI commands, make sure you have:
 
-- **Migration commands**: Create database tables
-- **User management**: Create and manage users
-- **Database utilities**: Check and maintain database state
+1. Installed the module in your project
+2. Set up your database configuration
+3. Have the required dependencies installed (`db0`, `better-sqlite3`, `mysql2`, `pg`)
 
 ## Available Commands
 
-| Command | Description |
-|---------|-------------|
-| `yarn db:migrate` | Run all pending migrations (recommended) |
-| `yarn db:create-users-table` | Create the users table |
-| `yarn db:create-personal-access-tokens-table` | Create the personal access tokens table |
-| `yarn db:create-password-reset-tokens-table` | Create the password reset tokens table |
-| `yarn db:create-migrations-table` | Create the migrations tracking table |
-| `yarn db:create-user <email> <name> <password>` | Create a new user |
+### Database Migration
 
-## Migration Commands
-
-### Run All Migrations
+#### Run All Migrations (Recommended)
 
 ```bash
 yarn db:migrate
 ```
 
-This is the recommended way to set up your database. It will:
+This command will:
+- Create the migrations table if it doesn't exist
+- Run all pending migrations in the correct order
+- Create all necessary tables (users, personal_access_tokens, password_reset_tokens)
 
-1. Create the migrations table if it doesn't exist
-2. Check which migrations have already been applied
-3. Run only the pending migrations
-4. Mark each migration as applied after successful execution
-
-**Example Output:**
-```
-[Nuxt Users DB] Starting migration...
-[DB:Create Migrations sqlite Table] Creating migrations table with sqlite connector...
-[DB:Create Migrations sqlite Table] successfull ✅
-[DB:Create sqlite Users Table] Creating users...
-[DB:Create sqlite Users Table] Fields: id, email, name, password, created_at, updated_at ✅
-[DB:Create Personal Access Tokens sqlite Table] Creating personal_access_tokens table with sqlite connector...
-[DB:Create Personal Access Tokens sqlite Table] Fields: id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at ✅
-[DB:Create Password Reset Tokens sqlite Table] Creating password_reset_tokens table with sqlite connector...
-[DB:Create Password Reset Tokens sqlite Table] Fields: id, email, token, created_at ✅
-```
-
-### Individual Table Creation
+#### Individual Table Creation
 
 You can also create tables individually:
 
-#### Create Users Table
-
 ```bash
+# Create migrations tracking table
+yarn db:create-migrations-table
+
+# Create users table
 yarn db:create-users-table
-```
 
-Creates the `users` table with the following structure:
-
-```sql
-CREATE TABLE users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email TEXT NOT NULL UNIQUE,
-  name TEXT NOT NULL,
-  password TEXT NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-#### Create Personal Access Tokens Table
-
-```bash
+# Create personal access tokens table
 yarn db:create-personal-access-tokens-table
-```
 
-Creates the `personal_access_tokens` table for storing authentication tokens.
-
-#### Create Password Reset Tokens Table
-
-```bash
+# Create password reset tokens table
 yarn db:create-password-reset-tokens-table
 ```
 
-Creates the `password_reset_tokens` table for password reset functionality.
+### User Management
 
-#### Create Migrations Table
-
-```bash
-yarn db:create-migrations-table
-```
-
-Creates the `migrations` table for tracking applied migrations.
-
-## User Management Commands
-
-### Create User
+#### Create a New User
 
 ```bash
 yarn db:create-user <email> <name> <password>
 ```
 
-Creates a new user in the database.
-
-**Parameters:**
-- `email`: User's email address (must be unique)
-- `name`: User's display name
-- `password`: User's password (will be hashed)
-
-**Examples:**
+Example:
 ```bash
-# Create a test user
-yarn db:create-user test@example.com "Test User" password123
-
-# Create an admin user
-yarn db:create-user admin@example.com "Admin User" securepassword456
-```
-
-**Example Output:**
-```
-[Nuxt Users] Creating user...
-[DB:Create User] User created successfully: test@example.com
-```
-
-## Command Implementation
-
-### How Commands Work
-
-Each command is implemented as a standalone TypeScript file that can be executed directly:
-
-```ts
-// src/cli/create-user.ts
-const createUserDefault = async () => {
-  console.log('[Nuxt Users] Creating user...')
-  
-  const options = useRuntimeConfig().nuxtUsers
-  const [email, name, password] = process.argv.slice(2)
-  
-  try {
-    await createUser({ email, name, password }, options)
-    console.log(`[DB:Create User] User created successfully: ${email}`)
-    process.exit(0)
-  } catch (error) {
-    console.error('[DB:Create User] Error:', error)
-    process.exit(1)
-  }
-}
-
-// Run if this is the main module
-if (process.argv[1] && process.argv[1].endsWith('create-user.ts')) {
-  createUserDefault()
-}
-```
-
-### Command Execution
-
-Commands are executed using `tsx` for TypeScript support:
-
-```json
-{
-  "scripts": {
-    "db:create-user": "tsx src/cli/create-user.ts"
-  }
-}
+yarn db:create-user john@example.com "John Doe" mypassword123
 ```
 
 ## Database Configuration
 
-### Environment Variables
+The CLI commands use environment variables to determine database configuration. You can set these in your shell or in a `.env` file.
 
-Commands use the same configuration as your Nuxt application:
+### SQLite (Default)
 
-```ts
-// Commands read from runtime config
-const options = useRuntimeConfig().nuxtUsers
+```bash
+export DB_CONNECTOR=sqlite
+export DB_PATH=./data/myapp.sqlite3
 ```
 
-### Database Connectors
+### MySQL
 
-Commands support SQLite, MySQL, and PostgreSQL:
-
-```ts
-const connectorName = options.connector!.name
-const connector = await getConnector(connectorName)
-const db = createDatabase(connector(options.connector!.options))
+```bash
+export DB_CONNECTOR=mysql
+export DB_HOST=localhost
+export DB_PORT=3306
+export DB_USER=root
+export DB_PASSWORD=your_password
+export DB_NAME=your_database
 ```
 
-## Error Handling
+### PostgreSQL
 
-### Common Errors
-
-1. **Missing parameters**: User creation requires email, name, and password
-2. **Duplicate email**: Email addresses must be unique
-3. **Database connection**: Check database configuration
-4. **Permission denied**: Ensure database directory is writable
-
-### Error Messages
-
-Commands provide clear error messages:
-
-```
-[DB:Create User] Error: Email is required
-[DB:Create User] Error: User with this email already exists
-[DB:Create User] Error: Cannot connect to database
+```bash
+export DB_CONNECTOR=postgresql
+export DB_HOST=localhost
+export DB_PORT=5432
+export DB_USER=postgres
+export DB_PASSWORD=your_password
+export DB_NAME=your_database
 ```
 
-## Best Practices
+## Environment Variables Reference
 
-### Development
-
-1. **Use migrations**: Run `yarn db:migrate` for initial setup
-2. **Create test users**: Use `yarn db:create-user` for testing
-3. **Check logs**: Monitor command output for errors
-4. **Backup data**: Backup before running destructive commands
-
-### Production
-
-1. **Test commands**: Test in staging environment first
-2. **Secure passwords**: Use strong passwords for production users
-3. **Monitor execution**: Log command execution for audit trails
-4. **Backup database**: Always backup before running commands
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `DB_CONNECTOR` | Database type: `sqlite`, `mysql`, or `postgresql` | `sqlite` | No |
+| `DB_PATH` | SQLite database file path | `./data/default.sqlite3` | For SQLite |
+| `DB_HOST` | Database host | `localhost` | For MySQL/PostgreSQL |
+| `DB_PORT` | Database port | `3306` (MySQL) / `5432` (PostgreSQL) | For MySQL/PostgreSQL |
+| `DB_USER` | Database username | `root` (MySQL) / `postgres` (PostgreSQL) | For MySQL/PostgreSQL |
+| `DB_PASSWORD` | Database password | Empty string | For MySQL/PostgreSQL |
+| `DB_NAME` | Database name | `nuxt_users` | For MySQL/PostgreSQL |
 
 ## Troubleshooting
 
-### Command Not Found
+### Common Issues
 
-If commands are not found:
+#### 1. "Command not found" Error
+
+If you get a "Command not found" error, make sure you're running the command from the project root directory where the `package.json` file is located.
+
+#### 2. MySQL Connection Issues
+
+If you're having trouble connecting to MySQL:
+
+1. Ensure MySQL is running
+2. Verify your connection credentials
+3. Make sure the database exists
+4. Check that the user has proper permissions
+
+#### 3. PostgreSQL Connection Issues
+
+If you're having trouble connecting to PostgreSQL:
+
+1. Ensure PostgreSQL is running
+2. Verify your connection credentials
+3. Make sure the database exists
+4. Check that the user has proper permissions
+
+#### 4. Permission Denied Errors
+
+For SQLite, ensure the directory where you're creating the database file is writable:
 
 ```bash
-# Check if tsx is installed
-npm list tsx
-
-# Reinstall dependencies
-yarn install
-
-# Check script definitions
-cat package.json | grep db:
+mkdir -p ./data
+chmod 755 ./data
 ```
 
-### Database Connection Issues
+### Debug Mode
+
+To see more detailed output, you can run commands with verbose logging:
 
 ```bash
-# Check database configuration
-cat nuxt.config.ts | grep nuxtUsers
+DEBUG=* yarn db:migrate
+```
 
-# Test database connection
+## Examples
+
+### Complete Setup with SQLite
+
+```bash
+# Set up SQLite (default)
+export DB_CONNECTOR=sqlite
+export DB_PATH=./data/myapp.sqlite3
+
+# Run migrations
 yarn db:migrate
 
-# Check database file (SQLite)
-ls -la data/
+# Create a user
+yarn db:create-user admin@example.com "Admin User" admin123
 ```
 
-### Permission Issues
+### Complete Setup with MySQL
 
 ```bash
-# Check file permissions
-ls -la data/
+# Set up MySQL
+export DB_CONNECTOR=mysql
+export DB_HOST=localhost
+export DB_PORT=3306
+export DB_USER=root
+export DB_PASSWORD=your_password
+export DB_NAME=myapp
 
-# Fix permissions
-chmod 755 data/
-chmod 644 data/*.sqlite3
+# Run migrations
+yarn db:migrate
+
+# Create a user
+yarn db:create-user admin@example.com "Admin User" admin123
 ```
 
-## Future Commands
-
-### Planned Features
-
-- **User management**: List, update, and delete users
-- **Database backup**: Backup and restore database
-- **Schema validation**: Verify database schema
-- **Performance analysis**: Database performance metrics
-
-### Example Future Commands
+### Complete Setup with PostgreSQL
 
 ```bash
-# List all users
-yarn db:list-users
+# Set up PostgreSQL
+export DB_CONNECTOR=postgresql
+export DB_HOST=localhost
+export DB_PORT=5432
+export DB_USER=postgres
+export DB_PASSWORD=your_password
+export DB_NAME=myapp
 
-# Update user password
-yarn db:update-user-password <email> <new-password>
+# Run migrations
+yarn db:migrate
 
-# Backup database
-yarn db:backup
-
-# Restore database
-yarn db:restore <backup-file>
+# Create a user
+yarn db:create-user admin@example.com "Admin User" admin123
 ```
 
-## Next Steps
+## Integration with CI/CD
 
-- [Database Schema](/database/schema) - Understand the database structure
-- [Migrations](/database/migrations) - Learn about the migration system
-- [Database Setup](/guide/database-setup) - Learn how to set up your database 
+For continuous integration, you can set environment variables in your CI configuration:
+
+```yaml
+# Example for GitHub Actions
+env:
+  DB_CONNECTOR: mysql
+  DB_HOST: localhost
+  DB_PORT: 3306
+  DB_USER: root
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_NAME: test_db
+```
+
+## Security Notes
+
+- Never commit database passwords to version control
+- Use environment variables for sensitive configuration
+- Consider using a secrets management service in production
+- Regularly rotate database passwords
+- Use strong passwords for database users 

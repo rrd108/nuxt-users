@@ -1,14 +1,14 @@
-import { useRuntimeConfig } from '#imports'
 import { createPasswordResetTokensTable } from '../runtime/server/utils/create-password-reset-tokens-table'
-import type { ModuleOptions } from '../types'
+import { getOptionsFromEnv } from './utils'
 
 const migrateDefault = async () => {
-  console.log('[Nuxt Users] Starting migration...')
+  console.log('[Nuxt Users] Creating password reset tokens table...')
 
-  const options = useRuntimeConfig().nuxtUsers as ModuleOptions
+  const options = getOptionsFromEnv()
 
   try {
     await createPasswordResetTokensTable(options)
+    console.log('[Nuxt Users] Password reset tokens table created successfully!')
     process.exit(0)
   }
   catch (error) {

@@ -1,14 +1,14 @@
-import { useRuntimeConfig } from '#imports'
 import { createPersonalAccessTokensTable } from '../runtime/server/utils/create-personal-access-tokens-table'
-import type { ModuleOptions } from '../types'
+import { getOptionsFromEnv } from './utils'
 
 const migrateDefault = async () => {
-  console.log('[Nuxt Users] Starting migration...')
+  console.log('[Nuxt Users] Creating personal access tokens table...')
 
-  const options = useRuntimeConfig().nuxtUsers as ModuleOptions
+  const options = getOptionsFromEnv()
 
   try {
     await createPersonalAccessTokensTable(options)
+    console.log('[Nuxt Users] Personal access tokens table created successfully!')
     process.exit(0)
   }
   catch (error) {

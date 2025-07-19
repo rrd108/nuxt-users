@@ -1,14 +1,14 @@
-import { useRuntimeConfig } from '#imports'
 import { runMigrations } from '../runtime/server/utils/migrate'
-import type { ModuleOptions } from '../types'
+import { getOptionsFromEnv } from './utils'
 
 const migrateDefault = async () => {
   console.log('[Nuxt Users] Starting migration system...')
 
-  const options = useRuntimeConfig().nuxtUsers as ModuleOptions
+  const options = getOptionsFromEnv()
 
   try {
     await runMigrations(options)
+    console.log('[Nuxt Users] Migration completed successfully!')
     process.exit(0)
   }
   catch (error) {
