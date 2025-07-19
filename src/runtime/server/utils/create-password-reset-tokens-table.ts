@@ -48,23 +48,3 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
 
   console.log(`[DB:Create Password Reset Tokens ${connectorName} Table] Fields: id, email, token, created_at ✅`)
 }
-
-const migrateDefault = async () => {
-  console.log('[Nuxt Users] Starting migration for password_reset_tokens table...', process.argv[1])
-
-  const options = useRuntimeConfig().nuxtUsers
-
-  try {
-    await createPasswordResetTokensTable(options)
-    process.exit(0)
-  }
-  catch (error) {
-    console.error('[DB:Create Password Reset Tokens Table] Error:', error)
-    process.exit(1)
-  }
-}
-
-// Run if this is the main module
-if (process.argv[1] && process.argv[1].endsWith('create-password-reset-tokens-table.ts')) {
-  migrateDefault()
-}

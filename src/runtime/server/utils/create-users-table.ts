@@ -49,23 +49,3 @@ export const createUsersTable = async (options: ModuleOptions) => {
 
   console.log(`[DB:Create ${connectorName} Users Table] Fields: id, email, name, password, created_at, updated_at ✅`)
 }
-
-const migrateDefault = async () => {
-  console.log('[Nuxt Users] Starting migration...')
-
-  const options = useRuntimeConfig().nuxtUsers
-
-  try {
-    await createUsersTable(options)
-    process.exit(0)
-  }
-  catch (error) {
-    console.error('[DB:Create Users Table] Error:', error)
-    process.exit(1)
-  }
-}
-
-// Run if this is the main module
-if (process.argv[1] && process.argv[1].endsWith('create-users-table.ts')) {
-  migrateDefault()
-}

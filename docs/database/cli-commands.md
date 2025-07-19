@@ -133,7 +133,7 @@ yarn db:create-user admin@example.com "Admin User" securepassword456
 Each command is implemented as a standalone TypeScript file that can be executed directly:
 
 ```ts
-// src/runtime/server/utils/create-user.ts
+// src/cli/create-user.ts
 const createUserDefault = async () => {
   console.log('[Nuxt Users] Creating user...')
   
@@ -163,7 +163,7 @@ Commands are executed using `tsx` for TypeScript support:
 ```json
 {
   "scripts": {
-    "db:create-user": "tsx src/runtime/server/utils/create-user.ts"
+    "db:create-user": "tsx src/cli/create-user.ts"
   }
 }
 ```

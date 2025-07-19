@@ -61,22 +61,3 @@ export const createPersonalAccessTokensTable = async (options: ModuleOptions) =>
   }
   console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Fields: id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at ✅`)
 }
-
-const migrateDefault = async () => {
-  console.log('[Nuxt Users] Starting migration for personal_access_tokens table...')
-  const options = useRuntimeConfig().nuxtUsers
-
-  try {
-    await createPersonalAccessTokensTable(options)
-    process.exit(0)
-  }
-  catch (error) {
-    console.error('[DB:Create Personal Access Tokens Table] Error:', error)
-    process.exit(1)
-  }
-}
-
-// Run if this is the main module
-if (process.argv[1] && process.argv[1].endsWith('create-personal-access-tokens-table.ts')) {
-  migrateDefault()
-}

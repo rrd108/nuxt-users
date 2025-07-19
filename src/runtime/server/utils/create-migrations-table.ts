@@ -41,23 +41,3 @@ export const createMigrationsTable = async (options: ModuleOptions) => {
 
   console.log(`[DB:Create Migrations ${connectorName} Table] successfull ✅`)
 }
-
-const migrateDefault = async () => {
-  console.log('[Nuxt Users] Starting migration for migrations table...')
-
-  const options = useRuntimeConfig().nuxtUsers
-
-  try {
-    await createMigrationsTable(options)
-    process.exit(0)
-  }
-  catch (error) {
-    console.error('[DB:Create Migrations Table] Error:', error)
-    process.exit(1)
-  }
-}
-
-// Run if this is the main module
-if (process.argv[1] && process.argv[1].endsWith('create-migrations-table.ts')) {
-  migrateDefault()
-}
