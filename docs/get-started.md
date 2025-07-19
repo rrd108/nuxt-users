@@ -11,7 +11,9 @@ A user authentication module for Nuxt 3 with database support for SQLite, MySQL,
 - 📦 Zero-config setup with sensible defaults
 - 🔧 TypeScript support
 
-## Quick Start
+## Quick Start with SQLite
+
+For MySQL setup, see the [MySQL configuration example](/guide/database-setup#mysql), for Postgresql see the [Postresql configuration example](/guide/database-setup#postgresql) in the Database Setup guide.
 
 ```bash
 # Install the module
