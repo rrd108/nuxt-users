@@ -25,8 +25,8 @@ const hasPersonalAccessTokensTable = useRuntimeConfig().public.nuxtUsers?.tables
       class="db-error"
     >
       <h2>⚠️ Tables</h2>
-      <p>❌ Users table is not created, execute <code>yarn db:create-users-table</code></p>
-      <p>❌ Personal access tokens table is not created, execute <code>yarn db:create-personal-access-tokens-table</code></p>
+      <p>❌ Users table is not created, execute <code>npx nuxt-users create-users-table</code></p>
+      <p>❌ Personal access tokens table is not created, execute <code>npx nuxt-users create-personal-access-tokens-table</code></p>
       <p>After you are done you should restart the dev server!</p>
     </div>
 

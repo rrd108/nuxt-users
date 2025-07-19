@@ -31,10 +31,10 @@ export default defineNuxtConfig({
 })
 
 # Run migrations
-yarn db:migrate
+npx nuxt-users migrate
 
 # Create your first user
-yarn db:create-user user@example.com "John Doe" password123
+npx nuxt-users create-user user@example.com "John Doe" password123
 ```
 
 ## Documentation

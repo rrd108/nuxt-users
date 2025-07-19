@@ -68,8 +68,10 @@ Migrations are applied in this order:
 
 ### Run All Migrations (Recommended)
 
+When using this module as a dependency in your Nuxt project, you can run migrations using the `nuxt-users` CLI:
+
 ```bash
-yarn db:migrate
+npx nuxt-users migrate
 ```
 
 This command will:
@@ -85,16 +87,39 @@ You can also run migrations individually:
 
 ```bash
 # Create migrations table
-yarn db:create-migrations-table
+npx nuxt-users create-migrations-table
 
 # Create users table
-yarn db:create-users-table
+npx nuxt-users create-users-table
 
 # Create personal access tokens table
-yarn db:create-personal-access-tokens-table
+npx nuxt-users create-personal-access-tokens-table
 
 # Create password reset tokens table
-yarn db:create-password-reset-tokens-table
+npx nuxt-users create-password-reset-tokens-table
+```
+
+### Using Package.json Scripts
+
+For convenience, you can add these commands to your project's `package.json` scripts:
+
+```json
+{
+  "scripts": {
+    "db:migrate": "nuxt-users migrate",
+    "db:create-migrations-table": "nuxt-users create-migrations-table",
+    "db:create-users-table": "nuxt-users create-users-table",
+    "db:create-personal-access-tokens-table": "nuxt-users create-personal-access-tokens-table",
+    "db:create-password-reset-tokens-table": "nuxt-users create-password-reset-tokens-table"
+  }
+}
+```
+
+Then you can run:
+
+```bash
+yarn db:migrate
+npm run db:migrate
 ```
 
 ## Migration Process
@@ -260,7 +285,7 @@ The module warns about missing migrations during startup:
 
 ```
 [Nuxt Users DB] ⚠️  Missing migrations: create_users_table, create_personal_access_tokens_table
-[Nuxt Users DB] ⚠️  Run migrations with: yarn db:migrate
+[Nuxt Users DB] ⚠️  Run migrations with: npx nuxt-users migrate
 ```
 
 ## Future Enhancements
@@ -293,7 +318,7 @@ export default defineNuxtConfig({
 
 ### Development
 
-1. **Always run migrations**: Use `yarn db:migrate` in development
+1. **Always run migrations**: Use `npx nuxt-users migrate` in development
 2. **Test migrations**: Verify migrations work with both databases
 3. **Backup data**: Backup production data before running migrations
 4. **Monitor logs**: Check for migration warnings and errors

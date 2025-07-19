@@ -12,6 +12,9 @@
     }
   },
   "main": "./dist/module.mjs",
+  "bin": {
+    "nuxt-users": "cli.js"
+  },
   "typesVersions": {
     "*": {
       ".": [
@@ -20,7 +23,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "cli.js"
   ],
   "scripts": {
     "prepack": "nuxt-module-build build",

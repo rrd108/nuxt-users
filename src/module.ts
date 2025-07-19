@@ -55,23 +55,23 @@ export default defineNuxtModule<ModuleOptions>({
 
     if (missingMigrations.length > 0) {
       console.warn(`[Nuxt Users DB] ⚠️  Missing migrations: ${missingMigrations.join(', ')}`)
-      console.warn('[Nuxt Users DB] ⚠️  Run migrations with: yarn db:migrate')
+      console.warn('[Nuxt Users DB] ⚠️  Run migrations with: npx nuxt-users migrate')
     }
 
     // Check if the users table exists
     const hasUsersTable = await checkUsersTableExists(options)
     if (!hasUsersTable) {
-      console.warn('[Nuxt Users DB] ⚠️  Users table does not exist, you should run the migration script to create it by running: yarn db:migrate')
+      console.warn('[Nuxt Users DB] ⚠️  Users table does not exist, you should run the migration script to create it by running: npx nuxt-users migrate')
     }
 
     const hasPersonalAccessTokensTable = await checkPersonalAccessTokensTableExists(options)
     if (!hasPersonalAccessTokensTable) {
-      console.warn('[Nuxt Users DB] ⚠️  Personal access tokens table does not exist, you should run the migration script to create it by running: yarn db:migrate')
+      console.warn('[Nuxt Users DB] ⚠️  Personal access tokens table does not exist, you should run the migration script to create it by running: npx nuxt-users migrate')
     }
 
     const hasPasswordResetTokensTable = await checkPasswordResetTokensTableExists(options) // Call and store
     if (!hasPasswordResetTokensTable) {
-      console.warn('[Nuxt Users DB] ⚠️  Password reset tokens table does not exist, you should run the migration script to create it by running: yarn db:migrate')
+      console.warn('[Nuxt Users DB] ⚠️  Password reset tokens table does not exist, you should run the migration script to create it by running: npx nuxt-users migrate')
     }
 
     // Add runtime config (server-side)
@@ -99,7 +99,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     const hasUsers = await hasAnyUsers(options)
     if (!hasUsers) {
-      console.warn('[Nuxt Users DB] ⚠️  No users found! Create a default user by running: yarn db:create-user rrd@example.com "John Doe" mypassword123')
+      console.warn('[Nuxt Users DB] ⚠️  No users found! Create a default user by running: npx nuxt-users create-user rrd@example.com "John Doe" mypassword123')
     }
 
     // Register API routes

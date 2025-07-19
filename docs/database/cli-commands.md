@@ -1,12 +1,12 @@
 # CLI Commands
 
-The Nuxt Users module provides several CLI commands for database management and user creation.
+The Nuxt Users module provides several CLI commands for database management and user creation. These commands are available when you install this module as a dependency in your Nuxt project.
 
 ## Prerequisites
 
 Before running any CLI commands, make sure you have:
 
-1. Installed the module in your project
+1. Installed the module in your project: `npm install nuxt-users`
 2. Set up your database configuration
 3. Have the required dependencies installed (`db0`, `better-sqlite3`, `mysql2`, `pg`)
 
@@ -17,7 +17,7 @@ Before running any CLI commands, make sure you have:
 #### Run All Migrations (Recommended)
 
 ```bash
-yarn db:migrate
+npx nuxt-users migrate
 ```
 
 This command will:
@@ -31,16 +31,16 @@ You can also create tables individually:
 
 ```bash
 # Create migrations tracking table
-yarn db:create-migrations-table
+npx nuxt-users create-migrations-table
 
 # Create users table
-yarn db:create-users-table
+npx nuxt-users create-users-table
 
 # Create personal access tokens table
-yarn db:create-personal-access-tokens-table
+npx nuxt-users create-personal-access-tokens-table
 
 # Create password reset tokens table
-yarn db:create-password-reset-tokens-table
+npx nuxt-users create-password-reset-tokens-table
 ```
 
 ### User Management
@@ -48,12 +48,38 @@ yarn db:create-password-reset-tokens-table
 #### Create a New User
 
 ```bash
-yarn db:create-user <email> <name> <password>
+npx nuxt-users create-user <email> <name> <password>
 ```
 
 Example:
 ```bash
-yarn db:create-user john@example.com "John Doe" mypassword123
+npx nuxt-users create-user john@example.com "John Doe" mypassword123
+```
+
+### Using Package.json Scripts
+
+For convenience, you can add these commands to your project's `package.json` scripts:
+
+```json
+{
+  "scripts": {
+    "db:migrate": "nuxt-users migrate",
+    "db:create-user": "nuxt-users create-user",
+    "db:create-migrations-table": "nuxt-users create-migrations-table",
+    "db:create-users-table": "nuxt-users create-users-table",
+    "db:create-personal-access-tokens-table": "nuxt-users create-personal-access-tokens-table",
+    "db:create-password-reset-tokens-table": "nuxt-users create-password-reset-tokens-table"
+  }
+}
+```
+
+Then you can run:
+
+```bash
+yarn db:migrate
+yarn db:create-user admin@example.com "Admin User" mypassword123
+npm run db:migrate
+npm run db:create-user admin@example.com "Admin User" mypassword123
 ```
 
 ## Database Configuration
@@ -107,7 +133,13 @@ export DB_NAME=your_database
 
 #### 1. "Command not found" Error
 
-If you get a "Command not found" error, make sure you're running the command from the project root directory where the `package.json` file is located.
+If you get a "Command not found" error when using `npx nuxt-users`, make sure:
+
+1. The module is properly installed: `npm install nuxt-users`
+2. You're running the command from your project root directory
+3. The module is listed in your `package.json` dependencies
+
+If you're using the package.json scripts approach, make sure you've added the scripts to your `package.json` file.
 
 #### 2. MySQL Connection Issues
 
@@ -141,7 +173,7 @@ chmod 755 ./data
 To see more detailed output, you can run commands with verbose logging:
 
 ```bash
-DEBUG=* yarn db:migrate
+DEBUG=* npx nuxt-users migrate
 ```
 
 ## Examples
@@ -154,10 +186,10 @@ export DB_CONNECTOR=sqlite
 export DB_PATH=./data/myapp.sqlite3
 
 # Run migrations
-yarn db:migrate
+npx nuxt-users migrate
 
 # Create a user
-yarn db:create-user admin@example.com "Admin User" admin123
+npx nuxt-users create-user admin@example.com "Admin User" admin123
 ```
 
 ### Complete Setup with MySQL
@@ -172,10 +204,10 @@ export DB_PASSWORD=your_password
 export DB_NAME=myapp
 
 # Run migrations
-yarn db:migrate
+npx nuxt-users migrate
 
 # Create a user
-yarn db:create-user admin@example.com "Admin User" admin123
+npx nuxt-users create-user admin@example.com "Admin User" admin123
 ```
 
 ### Complete Setup with PostgreSQL
@@ -190,9 +222,28 @@ export DB_PASSWORD=your_password
 export DB_NAME=myapp
 
 # Run migrations
-yarn db:migrate
+npx nuxt-users migrate
 
 # Create a user
+npx nuxt-users create-user admin@example.com "Admin User" admin123
+```
+
+### Using Package.json Scripts (Alternative)
+
+You can also add these to your `package.json` scripts for convenience:
+
+```json
+{
+  "scripts": {
+    "db:migrate": "nuxt-users migrate",
+    "db:create-user": "nuxt-users create-user"
+  }
+}
+```
+
+Then run:
+```bash
+yarn db:migrate
 yarn db:create-user admin@example.com "Admin User" admin123
 ```
 

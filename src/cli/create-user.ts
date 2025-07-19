@@ -4,7 +4,7 @@ import { getOptionsFromEnv } from './utils'
 const createUserDefault = async () => {
   const args = process.argv.slice(2)
   if (args.length < 3) {
-    console.error('Usage: yarn db:create-user <email> <name> <password>')
+    console.error('Usage: npx nuxt-users create-user <email> <name> <password>')
     process.exit(1)
   }
 

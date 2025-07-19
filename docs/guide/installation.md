@@ -66,15 +66,15 @@ After installation, you need to set up your database:
 
 ```bash
 # Run all migrations (recommended)
-yarn db:migrate
+npx nuxt-users migrate
 
 # Or run individual commands
-yarn db:create-users-table
-yarn db:create-personal-access-tokens-table
-yarn db:create-password-reset-tokens-table
+npx nuxt-users create-users-table
+npx nuxt-users create-personal-access-tokens-table
+npx nuxt-users create-password-reset-tokens-table
 
 # Create your first user
-yarn db:create-user user@example.com "John Doe" password123
+npx nuxt-users create-user user@example.com "John Doe" password123
 ```
 
 ## Next Steps

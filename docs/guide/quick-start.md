@@ -30,10 +30,10 @@ export default defineNuxtConfig({
 
 ```bash
 # Run all migrations
-yarn db:migrate
+npx nuxt-users migrate
 
 # Create your first user
-yarn db:create-user user@example.com "John Doe" password123
+npx nuxt-users create-user user@example.com "John Doe" password123
 ```
 
 ## 4. Add Login Form to Your App

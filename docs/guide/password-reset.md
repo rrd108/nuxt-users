@@ -261,7 +261,7 @@ const TOKEN_EXPIRATION_HOURS = 2 // Change from 1 to 2 hours
 
 ```bash
 # Create a test user
-yarn db:create-user test@example.com "Test User" password123
+npx nuxt-users create-user test@example.com "Test User" password123
 
 # Test the reset flow
 # 1. Visit /forgot-password

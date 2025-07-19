@@ -7,7 +7,7 @@ Learn how to set up and configure your database for Nuxt Users.
 The easiest way to set up your database is to run all migrations at once:
 
 ```bash
-yarn db:migrate
+npx nuxt-users migrate
 ```
 
 This will create all necessary tables in the correct order.
@@ -19,7 +19,7 @@ You can also run table creation commands individually:
 ### 1. Create Users Table
 
 ```bash
-yarn db:create-users-table
+npx nuxt-users create-users-table
 ```
 
 ### 2. Create Personal Access Tokens Table
@@ -27,7 +27,7 @@ yarn db:create-users-table
 This table is required for storing authentication tokens.
 
 ```bash
-yarn db:create-personal-access-tokens-table
+npx nuxt-users create-personal-access-tokens-table
 ```
 
 ### 3. Create Password Reset Tokens Table
@@ -35,13 +35,13 @@ yarn db:create-personal-access-tokens-table
 This table is required for storing tokens used in the password reset flow.
 
 ```bash
-yarn db:create-password-reset-tokens-table
+npx nuxt-users create-password-reset-tokens-table
 ```
 
 ### 4. Create Your First User
 
 ```bash
-yarn db:create-user user@example.com "John Doe" password123
+npx nuxt-users create-user user@example.com "John Doe" password123
 ```
 
 ## Database Connectors
@@ -107,7 +107,7 @@ The module includes a migration system that tracks which database changes have b
 - Database schema is consistent across environments
 - Future database changes can be safely applied
 
-The migration system creates a `migrations` table that tracks all applied migrations. When you run `yarn db:migrate`, it will:
+The migration system creates a `migrations` table that tracks all applied migrations. When you run `npx nuxt-users migrate`, it will:
 
 1. Create the migrations table if it doesn't exist
 2. Check which migrations have already been applied
@@ -118,12 +118,12 @@ The migration system creates a `migrations` table that tracks all applied migrat
 
 | Command | Description |
 |---------|-------------|
-| `yarn db:migrate` | Run all pending migrations (recommended) |
-| `yarn db:create-users-table` | Create the users table |
-| `yarn db:create-personal-access-tokens-table` | Create the personal access tokens table |
-| `yarn db:create-password-reset-tokens-table` | Create the password reset tokens table |
-| `yarn db:create-migrations-table` | Create the migrations tracking table |
-| `yarn db:create-user <email> <name> <password>` | Create a new user |
+| `npx nuxt-users migrate` | Run all pending migrations (recommended) |
+| `npx nuxt-users create-users-table` | Create the users table |
+| `npx nuxt-users create-personal-access-tokens-table` | Create the personal access tokens table |
+| `npx nuxt-users create-password-reset-tokens-table` | Create the password reset tokens table |
+| `npx nuxt-users create-migrations-table` | Create the migrations tracking table |
+| `npx nuxt-users create-user <email> <name> <password>` | Create a new user |
 
 ## Environment Variables
 
@@ -213,10 +213,10 @@ To verify your database setup:
 
 ```bash
 # Check if tables exist
-yarn db:migrate
+npx nuxt-users migrate
 
 # Create a test user
-yarn db:create-user test@example.com "Test User" password123
+npx nuxt-users create-user test@example.com "Test User" password123
 
 # Check the database file (SQLite)
 ls -la data/
