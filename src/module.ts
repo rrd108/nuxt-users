@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addServerHandler, addComponent } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin } from '@nuxt/kit'
 import { defu } from 'defu'
 import type { ModuleOptions } from './types'
 
@@ -10,6 +10,7 @@ export const defaultOptions: ModuleOptions = {
     },
   },
   tables: {
+    migrations: 'migrations',
     users: 'users',
     personalAccessTokens: 'personal_access_tokens',
     passwordResetTokens: 'password_reset_tokens',
@@ -46,9 +47,21 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.runtimeConfig.nuxtUsers = {
       ...runtimeConfigOptions,
       tables: {
+        migrations: options.tables?.migrations || 'migrations',
         users: options.tables?.users || 'users',
         personalAccessTokens: options.tables?.personalAccessTokens || 'personal_access_tokens',
         passwordResetTokens: options.tables?.passwordResetTokens || 'password_reset_tokens',
+      },
+    }
+
+    // Add public runtime config (client-side accessible)
+    nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {}
+    nuxt.options.runtimeConfig.public.nuxtUsers = {
+      tables: {
+        migrations: options.tables?.migrations,
+        users: options.tables?.users,
+        personalAccessTokens: options.tables?.personalAccessTokens,
+        passwordResetTokens: options.tables?.passwordResetTokens,
       },
     }
 
@@ -57,7 +70,7 @@ export default defineNuxtModule<ModuleOptions>({
       nitroConfig.alias['#users/db'] = resolver.resolve('./runtime/server/utils')
     }) */
 
-    // addPlugin(resolver.resolve('./runtime/plugin'))
+    addPlugin(resolver.resolve('./runtime/plugin'))
 
     // Register API routes
     addServerHandler({

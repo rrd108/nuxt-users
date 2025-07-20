@@ -33,21 +33,6 @@ export const useDb = async (options: ModuleOptions) => {
   }
 }
 
-// TODO remove this
-export const checkPasswordResetTokensTableExists = async (options: ModuleOptions) => {
-  return await checkTableExists(options, options.tables.passwordResetTokens)
-}
-
-// TODO remove this
-export const checkUsersTableExists = async (options: ModuleOptions) => {
-  return await checkTableExists(options, options.tables.users)
-}
-
-// TODO remove this
-export const checkPersonalAccessTokensTableExists = async (options: ModuleOptions) => {
-  return await checkTableExists(options, options.tables.personalAccessTokens)
-}
-
 export const checkTableExists = async (options: ModuleOptions, tableName: string) => {
   try {
     const db = await useDb(options)

@@ -14,6 +14,7 @@ export interface ModuleOptions {
     options: DatabaseConfig
   }
   tables: {
+    migrations: string
     users: string
     personalAccessTokens: string
     passwordResetTokens: string
