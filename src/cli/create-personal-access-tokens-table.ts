@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { createPersonalAccessTokensTable } from '../runtime/server/utils/create-personal-access-tokens-table'
+import { createPersonalAccessTokensTable } from '../utils'
 import { getOptionsFromEnv } from './utils'
 
 export default defineCommand({

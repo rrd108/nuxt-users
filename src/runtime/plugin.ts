@@ -1,6 +1,6 @@
 import { defineNuxtPlugin, useRuntimeConfig } from '#app'
 import type { ModuleOptions } from '../types'
-import { checkTableExists } from './server/utils/db'
+import { checkTableExists } from '../utils/db'
 
 export default defineNuxtPlugin(async (_nuxtApp) => {
   // Only run on server side since we're checking database tables

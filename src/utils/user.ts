@@ -1,6 +1,6 @@
 import { useDb } from './db'
 import bcrypt from 'bcrypt'
-import type { ModuleOptions, User } from '../../../types'
+import type { ModuleOptions, User } from '../types'
 
 interface CreateUserParams {
   email: string

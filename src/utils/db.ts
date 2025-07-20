@@ -1,5 +1,5 @@
 import { createDatabase } from 'db0'
-import type { ModuleOptions } from '../../../types'
+import type { ModuleOptions } from '../types'
 
 export const getConnector = async (name: string) => {
   switch (name) {

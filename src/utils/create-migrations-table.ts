@@ -1,5 +1,5 @@
 import { useDb } from './db'
-import type { ModuleOptions } from '../../../types'
+import type { ModuleOptions } from '../types'
 
 export const createMigrationsTable = async (options: ModuleOptions) => {
   const connectorName = options.connector!.name

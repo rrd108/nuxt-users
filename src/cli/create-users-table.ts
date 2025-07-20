@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { createUsersTable } from '../runtime/server/utils/create-users-table'
+import { createUsersTable } from '../utils'
 import { getOptionsFromEnv } from './utils'
 
 export default defineCommand({

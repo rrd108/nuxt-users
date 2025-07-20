@@ -4,10 +4,11 @@ export const defaultOptions: ModuleOptions = {
   connector: {
     name: 'sqlite',
     options: {
-      path: './data/default.sqlite3',
+      path: './data/users.sqlite3',
     },
   },
   tables: {
+    migrations: 'migrations',
     users: 'users',
     personalAccessTokens: 'personal_access_tokens',
     passwordResetTokens: 'password_reset_tokens',
