@@ -1,6 +1,14 @@
 # CLI Commands
 
-The Nuxt Users module provides several CLI commands for database management and user creation. These commands are available when you install this module as a dependency in your Nuxt project.
+The Nuxt Users module provides a powerful Command Line Interface (CLI) for managing users, database operations, and project information. All commands are built using [citty](https://github.com/unjs/citty) for a modern and user-friendly experience.
+
+## Installation
+
+The CLI is automatically available when you install the `nuxt-users` module. You can run commands using:
+
+```bash
+npx nuxt-users <command>
+```
 
 ## Prerequisites
 
@@ -51,10 +59,29 @@ npx nuxt-users create-password-reset-tokens-table
 npx nuxt-users create-user <email> <name> <password>
 ```
 
-Example:
+**Arguments:**
+- `email`: User's email address (required)
+- `name`: User's full name (required)
+- `password`: User's password (required)
+
+**Example:**
 ```bash
 npx nuxt-users create-user john@example.com "John Doe" mypassword123
 ```
+
+### `project-info`
+Get detailed information about the Nuxt project and module configuration.
+
+```bash
+npx nuxt-users project-info
+```
+
+This command will display:
+- Nuxt project information
+- Module configuration
+- Database connector settings
+- Table existence status
+- Runtime configuration details
 
 ### Using Package.json Scripts
 
@@ -261,6 +288,77 @@ env:
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
   DB_NAME: test_db
 ```
+
+## Getting Help
+
+To see all available commands and their descriptions:
+
+```bash
+npx nuxt-users --help
+```
+
+To get help for a specific command:
+
+```bash
+npx nuxt-users <command> --help
+```
+
+## Error Handling
+
+All CLI commands provide clear error messages and appropriate exit codes:
+
+- **Exit code 0**: Success
+- **Exit code 1**: Error occurred
+
+Common error scenarios:
+- Database connection failures
+- Missing environment variables
+- Invalid command arguments
+- Table already exists (for creation commands)
+
+## Integration with Nuxt Context
+
+The `project-info` command demonstrates how CLI commands can access the Nuxt instance using `@nuxt/kit`. This allows commands to:
+
+- Read project configuration
+- Access runtime config
+- Check module settings
+- Validate project structure
+
+## Development
+
+The CLI commands are located in the `src/cli/` directory. Each command is a TypeScript file that exports a citty command definition.
+
+To add a new command:
+
+1. Create a new file in `src/cli/`
+2. Export a citty command using `defineCommand`
+3. Import and register it in `src/cli/main.ts`
+4. Rebuild the CLI using `npm run build:cli`
+
+## Build Process
+
+The CLI is built using [unbuild](https://github.com/unjs/unbuild) and configured in `package.json`:
+
+```json
+{
+  "unbuild": {
+    "entries": [
+      "./src/module",
+      {
+        "builder": "rollup",
+        "input": "./src/cli/main",
+        "name": "cli",
+        "ext": "mjs"
+      }
+    ],
+    "declaration": true,
+    "clean": true
+  }
+}
+```
+
+The compiled CLI is available at `./dist/cli.mjs` and exposed via the `bin` field in `package.json`.
 
 ## Security Notes
 
