@@ -217,6 +217,7 @@ npx nuxt-users migrate
 
 # Create a test user
 npx nuxt-users create-user test@example.com "Test User" password123
+```
 
 # Check the database file (SQLite)
 ls -la data/
