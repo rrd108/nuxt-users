@@ -86,3 +86,20 @@ export const updateUserPassword = async (email: string, newPassword: string, opt
     WHERE email = ${email}
   `
 }
+
+interface CountResult {
+  rows: Array<{ count: number }>
+}
+
+export const hasAnyUsers = async (options: ModuleOptions) => {
+  try {
+    const db = await useDb(options)
+
+    const users = await db.sql`SELECT COUNT(*) as count FROM {${options.tables.users}}` as CountResult
+    return users.rows?.[0]?.count > 0
+  }
+  catch {
+    // If the table doesn't exist or connection fails, there are no users
+    return false
+  }
+}
