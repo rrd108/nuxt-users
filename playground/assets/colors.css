@@ -1,0 +1,50 @@
+:root {
+    /* Primary Colors */
+    --color-primary: #3b82f6;
+    --color-primary-dark: #2563eb;
+    --color-primary-light: #60a5fa;
+
+    /* Secondary Colors */
+    --color-secondary: #059669;
+    --color-secondary-dark: #047857;
+    --color-secondary-light: #10b981;
+
+    /* Neutral Colors */
+    --color-white: #ffffff;
+    --color-black: #000000;
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+
+    /* Success Colors */
+    --color-success: #059669;
+    --color-success-light: #f0fdf4;
+
+    /* Warning Colors */
+    --color-warning: #f59e0b;
+    --color-warning-light: #fef3c7;
+    --color-warning-text: #92400e;
+
+    /* Error Colors */
+    --color-error: #dc2626;
+    --color-error-light: #fef2f2;
+    --color-error-border: #fecaca;
+    --color-error-alt: #db5050;
+
+    /* Border Colors */
+    --color-border: #e5e7eb;
+    --color-border-light: #d1d5db;
+    --color-border-dark: #ccc;
+
+    /* Background Colors */
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f9fafb;
+    --color-bg-tertiary: #f3f4f6;
+}

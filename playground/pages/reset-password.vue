@@ -17,12 +17,12 @@
 <style scoped>
 div {
   max-width: 500px;
-  margin: 2rem auto;
-  padding: 2rem;
-  border: 1px solid #ccc;
+  margin: 2em auto;
+  padding: 2em;
+  border: 1px solid var(--color-border-dark);
   border-radius: 8px;
 }
 hr {
-  margin: 1.5rem 0;
+  margin: 1.5em 0;
 }
 </style>
