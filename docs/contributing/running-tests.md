@@ -292,7 +292,7 @@ await cleanupTestSetup(dbType, db, paths, tables)
 ### Database Utilities
 
 ```ts
-import { getConnector, checkUsersTableExists } from '../src/runtime/server/utils/db'
+import { getConnector, checkUsersTableExists } from '../src/utils/db'
 
 // Test database connector
 const connector = await getConnector('sqlite')

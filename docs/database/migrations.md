@@ -178,7 +178,7 @@ await db.sql`
 Each migration is implemented as a standalone script:
 
 ```ts
-// src/runtime/server/utils/create-users-table.ts
+// src/utils/create-users-table.ts
 export const createUsersTable = async (options: ModuleOptions) => {
   const db = await useDb(options)
   
