@@ -151,42 +151,42 @@ const handleResetPassword = async (data: ResetPasswordFormData) => {
   color: green;
 }
 .form-message {
-  margin-top: 1rem;
+      margin-top: 1em;
   font-size: 0.9rem;
 }
 /* Basic styling for FormKit elements if not using a global theme */
 :deep(.formkit-outer) {
-  margin-bottom: 1rem;
+      margin-bottom: 1em;
 }
 :deep(.formkit-label) {
   display: block;
-  margin-bottom: 0.25rem;
+      margin-bottom: 0.25em;
   font-weight: bold;
 }
 :deep(.formkit-input input[type="email"]),
 :deep(.formkit-input input[type="password"]) {
   width: 100%;
-  padding: 0.75rem;
+      padding: 0.75em;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border-dark);
   border-radius: 4px;
 }
 :deep(.formkit-input input[type="submit"]) {
-  padding: 0.75rem 1.5rem;
+      padding: 0.75em 1.5em;
   cursor: pointer;
-  background-color: #333;
+  background-color: var(--color-gray-800);
   color: white;
   border: none;
   border-radius: 4px;
 }
 :deep(.formkit-input input[type="submit"]:disabled) {
-  background-color: #aaa;
+  background-color: var(--color-gray-500);
   cursor: not-allowed;
 }
 :deep(.formkit-messages) {
   list-style: none;
   padding: 0;
-  margin-top: 0.25rem;
+      margin-top: 0.25em;
 }
 :deep(.formkit-message) {
   color: red;

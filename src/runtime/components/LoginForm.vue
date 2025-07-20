@@ -155,11 +155,11 @@ const handleSubmit = async (formData: LoginFormData) => {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
-  padding: 2rem;
-  background: #ffffff;
+      padding: 2em;
+  background: var(--color-bg-primary);
   border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
 }
 
 :deep(.formkit-form) {
@@ -170,34 +170,34 @@ const handleSubmit = async (formData: LoginFormData) => {
 
 .login-header {
   text-align: center;
-  margin-bottom: 1rem;
+      margin-bottom: 1em;
 }
 
 .login-title {
   font-size: 1.875rem;
   font-weight: 700;
-  color: #111827;
-  margin: 0 0 0.5rem 0;
+  color: var(--color-gray-800);
+      margin: 0 0 0.5em 0;
   line-height: 1.2;
 }
 
 .login-subtitle {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-gray-500);
   margin: 0;
   line-height: 1.5;
 }
 
 :deep(.formkit-inner) {
   --fk-border-radius: 8px;
-  --fk-border-color: #d1d5db;
-  --fk-border-color-focus: #3b82f6;
-  --fk-bg-color: #f9fafb;
-  --fk-bg-color-focus: #ffffff;
-  --fk-text-color: #374151;
-  --fk-text-color-placeholder: #9ca3af;
+  --fk-border-color: var(--color-border-light);
+  --fk-border-color-focus: var(--color-primary);
+  --fk-bg-color: var(--color-bg-secondary);
+  --fk-bg-color-focus: var(--color-bg-primary);
+  --fk-text-color: var(--color-gray-700);
+  --fk-text-color-placeholder: var(--color-gray-400);
   --fk-font-size: 0.875rem;
-  --fk-padding: 0.75rem 1rem;
+      --fk-padding: 0.75em 1em;
   --fk-transition: all 0.2s ease-in-out;
 }
 
@@ -224,8 +224,8 @@ const handleSubmit = async (formData: LoginFormData) => {
   display: block;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #374151;
-  margin-bottom: 0.5rem;
+  color: var(--color-gray-700);
+      margin-bottom: 0.5em;
 }
 
 :deep(.formkit-messages) {
@@ -234,14 +234,14 @@ const handleSubmit = async (formData: LoginFormData) => {
   padding: 0;
 }
 :deep(.formkit-message) {
-  margin-top: 0.25rem;
+      margin-top: 0.25em;
 }
 
 :deep(.formkit-message[data-message-type="validation"]) {
-  color: #db5050;
+  color: var(--color-error-alt);
 }
 :deep(.formkit-message[data-message-type="error"]) {
-  color: #dc2626;
+  color: var(--color-error);
 }
 
 :deep(.formkit-wrapper:has(input[type="checkbox"])) {
@@ -258,17 +258,17 @@ const handleSubmit = async (formData: LoginFormData) => {
 :deep(.formkit-label:has(input[type="checkbox"])) {
   margin: 0;
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--color-gray-700);
 }
 
 :deep(button[type='submit']) {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.75em 1em;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #ffffff;
-  background-color: #3b82f6;
-  border: 1px solid #3b82f6;
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-primary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -280,8 +280,8 @@ const handleSubmit = async (formData: LoginFormData) => {
 }
 
 :deep(button[type='submit']:hover:not(:disabled)) {
-  background-color: #2563eb;
-  border-color: #2563eb;
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
 }
 
 :deep(button[type='submit']:disabled) {
@@ -292,7 +292,7 @@ const handleSubmit = async (formData: LoginFormData) => {
 .loading-spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--color-white);
   border-top: 2px solid transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -305,7 +305,7 @@ const handleSubmit = async (formData: LoginFormData) => {
 
 .login-footer {
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 1em;
 }
 
 .forgot-password {
@@ -314,32 +314,32 @@ const handleSubmit = async (formData: LoginFormData) => {
 
 .forgot-link {
   font-size: 0.875rem;
-  color: #3b82f6;
+  color: var(--color-primary);
   text-decoration: none;
   transition: color 0.2s ease-in-out;
 }
 
 .forgot-link:hover {
-  color: #2563eb;
+  color: var(--color-primary-dark);
   text-decoration: underline;
 }
 
 .error-message {
-  padding: 0.75rem 1rem;
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
+  padding: 0.75em 1em;
+  background-color: var(--color-error-light);
+  border: 1px solid var(--color-error-border);
   border-radius: 8px;
-  color: #dc2626;
+  color: var(--color-error);
   font-size: 0.875rem;
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 1em;
 }
 
 /* Responsive design */
 @media (max-width: 480px) {
   .login-form-container {
-    padding: 1.5rem;
-    margin: 1rem;
+    padding: 1.5em;
+    margin: 1em;
   }
 
   .login-title {
