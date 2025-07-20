@@ -27,7 +27,6 @@ export const defaultOptions: ModuleOptions = {
       from: '"Nuxt Users Module" <noreply@example.com>',
     },
   },
-  passwordResetBaseUrl: 'http://localhost:3000', // Added
 }
 
 export default defineNuxtModule<ModuleOptions>({
