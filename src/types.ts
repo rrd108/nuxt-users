@@ -7,11 +7,6 @@ export type DatabaseConfig = {
   user?: string
   password?: string
   database?: string
-  // MySQL specific options
-  connectTimeout?: number
-  acquireTimeout?: number
-  // PostgreSQL specific options
-  connectionTimeoutMillis?: number
 }
 export interface ModuleOptions {
   connector?: {

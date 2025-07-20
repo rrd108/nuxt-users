@@ -24,15 +24,6 @@ export const useDb = async (options: ModuleOptions) => {
     delete connectorOptions.path
   }
 
-  // Add connection timeout for MySQL and PostgreSQL
-  if (connectorName === 'mysql') {
-    connectorOptions.connectTimeout = 5000 // 5 seconds
-    connectorOptions.acquireTimeout = 5000
-  }
-  if (connectorName === 'postgresql') {
-    connectorOptions.connectionTimeoutMillis = 5000 // 5 seconds
-  }
-
   try {
     return createDatabase(connector(connectorOptions))
   }
