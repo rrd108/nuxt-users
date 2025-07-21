@@ -1,4 +1,5 @@
 import type { ModuleOptions, DatabaseConfig } from '../types'
+import { loadNuxt } from '@nuxt/kit'
 
 export const defaultOptions: ModuleOptions = {
   connector: {
