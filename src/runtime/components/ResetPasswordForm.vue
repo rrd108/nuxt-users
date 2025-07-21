@@ -4,7 +4,7 @@ import { useRoute, useRouter } from '#app' // Nuxt 3 specific imports
 
 interface ResetPasswordFormData {
   password: string
-  password_confirm: string // FormKit's confirm rule expects field_confirm
+  password_confirm: string
 }
 
 const formData = reactive<ResetPasswordFormData>({
@@ -15,7 +15,7 @@ const formData = reactive<ResetPasswordFormData>({
 const message = ref('')
 const loading = ref(false)
 const isError = ref(false)
-const formInvalidDueToToken = ref(false) // To disable submit if token/email is missing
+const formInvalidDueToToken = ref(false)
 
 const route = useRoute()
 const router = useRouter()
@@ -34,23 +34,24 @@ onMounted(() => {
   if (!tokenFromUrl.value || !emailFromUrl.value) {
     message.value = 'Invalid or missing password reset token or email in URL. Cannot reset password.'
     isError.value = true
-    formInvalidDueToToken.value = true // Disable form submission
+    formInvalidDueToToken.value = true
   }
 })
 
-// Computed property to check if token/email are present
 const canSubmit = computed(() => !!tokenFromUrl.value && !!emailFromUrl.value && !formInvalidDueToToken.value)
 
-const handleResetPassword = async (data: ResetPasswordFormData) => {
+const handleResetPassword = async () => {
   if (!canSubmit.value) {
-    // This check is mostly redundant if button is disabled, but good for safety
     message.value = 'Token or email is missing or invalid. Cannot reset password.'
     isError.value = true
     return
   }
 
-  // FormKit handles password confirmation validation, so direct check is not strictly needed here
-  // but API also validates. Password length is also handled by FormKit.
+  if (formData.password !== formData.password_confirm) {
+    message.value = 'Passwords do not match.'
+    isError.value = true
+    return
+  }
 
   loading.value = true
   message.value = ''
@@ -66,8 +67,8 @@ const handleResetPassword = async (data: ResetPasswordFormData) => {
       body: JSON.stringify({
         token: tokenFromUrl.value,
         email: emailFromUrl.value,
-        password: data.password, // Use password from form data
-        password_confirmation: data.password_confirm, // Use confirmation from form data
+        password: formData.password,
+        password_confirmation: formData.password_confirm,
       }),
     })
 
@@ -79,11 +80,11 @@ const handleResetPassword = async (data: ResetPasswordFormData) => {
 
     message.value = responseData.message + ' Redirecting to login...'
     isError.value = false
-    formData.password = '' // Clear form
+    formData.password = ''
     formData.password_confirm = ''
 
     setTimeout(() => {
-      router.push('/login') // Adjust if your login route is different
+      router.push('/login')
     }, 3000)
   }
   catch (err: unknown) {
@@ -105,33 +106,37 @@ const handleResetPassword = async (data: ResetPasswordFormData) => {
 <template>
   <div>
     <h2>Reset Password</h2>
-    <FormKit
-      v-slot="{ disabled }"
-      v-model="formData"
-      type="form"
-      :actions="false"
-      @submit="handleResetPassword"
-    >
-      <FormKit
-        type="password"
-        name="password"
-        label="New Password"
-        validation="required|length:8"
-        placeholder="Enter new password"
-      />
-      <FormKit
-        type="password"
-        name="password_confirm"
-        label="Confirm New Password"
-        placeholder="Confirm new password"
-        validation="required|confirm"
-        validation-label="Password confirmation"
-      />
-      <FormKit
+    <form @submit.prevent="handleResetPassword">
+      <div class="form-group">
+        <label for="password">New Password</label>
+        <input
+          id="password"
+          v-model="formData.password"
+          type="password"
+          name="password"
+          placeholder="Enter new password"
+          required
+          minlength="8"
+        >
+      </div>
+      <div class="form-group">
+        <label for="password_confirm">Confirm New Password</label>
+        <input
+          id="password_confirm"
+          v-model="formData.password_confirm"
+          type="password"
+          name="password_confirm"
+          placeholder="Confirm new password"
+          required
+          minlength="8"
+        >
+      </div>
+      <button
         type="submit"
-        :label="loading ? 'Resetting...' : 'Reset Password'"
-        :disabled="Boolean(disabled) || loading || formInvalidDueToToken"
-      />
+        :disabled="loading || formInvalidDueToToken"
+      >
+        {{ loading ? 'Resetting...' : 'Reset Password' }}
+      </button>
       <p
         v-if="message"
         :class="{ error: isError, success: !isError }"
@@ -139,7 +144,7 @@ const handleResetPassword = async (data: ResetPasswordFormData) => {
       >
         {{ message }}
       </p>
-    </FormKit>
+    </form>
   </div>
 </template>
 
@@ -155,41 +160,35 @@ const handleResetPassword = async (data: ResetPasswordFormData) => {
   font-size: 0.9rem;
 }
 /* Basic styling for FormKit elements if not using a global theme */
-:deep(.formkit-outer) {
-      margin-bottom: 1em;
+.form-group {
+  margin-bottom: 1em;
 }
-:deep(.formkit-label) {
+
+label {
   display: block;
-      margin-bottom: 0.25em;
+  margin-bottom: 0.25em;
   font-weight: bold;
 }
-:deep(.formkit-input input[type="email"]),
-:deep(.formkit-input input[type="password"]) {
+
+input[type="password"] {
   width: 100%;
-      padding: 0.75em;
+  padding: 0.75em;
   box-sizing: border-box;
   border: 1px solid var(--color-border-dark);
   border-radius: 4px;
 }
-:deep(.formkit-input input[type="submit"]) {
-      padding: 0.75em 1.5em;
+
+button[type="submit"] {
+  padding: 0.75em 1.5em;
   cursor: pointer;
   background-color: var(--color-gray-800);
   color: white;
   border: none;
   border-radius: 4px;
 }
-:deep(.formkit-input input[type="submit"]:disabled) {
+
+button[type="submit"]:disabled {
   background-color: var(--color-gray-500);
   cursor: not-allowed;
-}
-:deep(.formkit-messages) {
-  list-style: none;
-  padding: 0;
-      margin-top: 0.25em;
-}
-:deep(.formkit-message) {
-  color: red;
-  font-size: 0.8rem;
 }
 </style>

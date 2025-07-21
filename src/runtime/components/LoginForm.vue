@@ -18,19 +18,24 @@ const emit = defineEmits<Emits>()
 
 const isLoading = ref(false)
 const error = ref('')
+const formData = ref<LoginFormData>({
+  email: '',
+  password: '',
+  rememberMe: false
+})
 
-const handleSubmit = async (formData: LoginFormData) => {
+const handleSubmit = async () => {
   isLoading.value = true
   error.value = ''
 
   try {
-    emit('submit', formData)
+    emit('submit', formData.value)
 
     const response = await $fetch<{ user: User }>(props.apiEndpoint, {
       method: 'POST',
       body: {
-        email: formData.email,
-        password: formData.password
+        email: formData.value.email,
+        password: formData.value.password
       }
     })
 
@@ -58,11 +63,7 @@ const handleSubmit = async (formData: LoginFormData) => {
 
 <template>
   <div class="login-form-container">
-    <FormKit
-      type="form"
-      :actions="false"
-      @submit="handleSubmit"
-    >
+    <form @submit.prevent="handleSubmit">
       <!-- Header slot -->
       <slot name="header">
         <div class="login-header">
@@ -77,40 +78,51 @@ const handleSubmit = async (formData: LoginFormData) => {
 
       <!-- Email field -->
       <slot name="email-field">
-        <FormKit
-          type="email"
-          name="email"
-          label="Email"
-          placeholder="Enter your email"
-          validation="required|email"
-        />
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            v-model="formData.email"
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          >
+        </div>
       </slot>
 
       <!-- Password field -->
       <slot name="password-field">
-        <FormKit
-          type="password"
-          name="password"
-          label="Password"
-          placeholder="Enter your password"
-          validation="required|length:6"
-        />
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            v-model="formData.password"
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+            minlength="6"
+          >
+        </div>
       </slot>
 
       <!-- Remember me slot -->
       <slot name="remember-me">
         <div class="remember-me">
-          <FormKit
+          <input
+            id="rememberMe"
+            v-model="formData.rememberMe"
             type="checkbox"
             name="rememberMe"
-            label="Remember me"
-          />
+          >
+          <label for="rememberMe">Remember me</label>
         </div>
       </slot>
 
       <!-- Submit button slot -->
       <slot name="submit-button">
-        <FormKit
+        <button
           type="submit"
           :disabled="isLoading"
         >
@@ -119,7 +131,7 @@ const handleSubmit = async (formData: LoginFormData) => {
             class="loading-spinner"
           />
           {{ isLoading ? 'Signing in...' : 'Sign In' }}
-        </FormKit>
+        </button>
       </slot>
 
       <!-- Footer slot -->
@@ -146,7 +158,7 @@ const handleSubmit = async (formData: LoginFormData) => {
           {{ error }}
         </div>
       </slot>
-    </FormKit>
+    </form>
   </div>
 </template>
 
@@ -162,10 +174,44 @@ const handleSubmit = async (formData: LoginFormData) => {
   border: 1px solid var(--color-border);
 }
 
-:deep(.formkit-form) {
+form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-700);
+  margin-bottom: 0.5em;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 0.75em 1em;
+  font-size: 0.875rem;
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-gray-700);
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background-color: var(--color-bg-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .login-header {
@@ -188,80 +234,24 @@ const handleSubmit = async (formData: LoginFormData) => {
   line-height: 1.5;
 }
 
-:deep(.formkit-inner) {
-  --fk-border-radius: 8px;
-  --fk-border-color: var(--color-border-light);
-  --fk-border-color-focus: var(--color-primary);
-  --fk-bg-color: var(--color-bg-secondary);
-  --fk-bg-color-focus: var(--color-bg-primary);
-  --fk-text-color: var(--color-gray-700);
-  --fk-text-color-placeholder: var(--color-gray-400);
-  --fk-font-size: 0.875rem;
-      --fk-padding: 0.75em 1em;
-  --fk-transition: all 0.2s ease-in-out;
-}
-
-:deep(.formkit-inner .formkit-input) {
-  width: 100%;
-  padding: var(--fk-padding);
-  font-size: var(--fk-font-size);
-  border: 1px solid var(--fk-border-color);
-  border-radius: var(--fk-border-radius);
-  background-color: var(--fk-bg-color);
-  color: var(--fk-text-color);
-  transition: var(--fk-transition);
-  box-sizing: border-box;
-}
-
-:deep(.formkit-inner .formkit-input:focus) {
-  outline: none;
-  border-color: var(--fk-border-color-focus);
-  background-color: var(--fk-bg-color-focus);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-:deep(.formkit-inner .formkit-label) {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-gray-700);
-      margin-bottom: 0.5em;
-}
-
-:deep(.formkit-messages) {
-  list-style: none;
-  font-size: 0.75rem;
-  padding: 0;
-}
-:deep(.formkit-message) {
-      margin-top: 0.25em;
-}
-
-:deep(.formkit-message[data-message-type="validation"]) {
-  color: var(--color-error-alt);
-}
-:deep(.formkit-message[data-message-type="error"]) {
-  color: var(--color-error);
-}
-
-:deep(.formkit-wrapper:has(input[type="checkbox"])) {
+.remember-me {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-:deep(.formkit-input[type="checkbox"]) {
+input[type="checkbox"] {
   width: auto;
   margin: 0;
 }
 
-:deep(.formkit-label:has(input[type="checkbox"])) {
+.remember-me label {
   margin: 0;
   font-size: 0.875rem;
   color: var(--color-gray-700);
 }
 
-:deep(button[type='submit']) {
+button[type='submit'] {
   width: 100%;
   padding: 0.75em 1em;
   font-size: 0.875rem;
@@ -279,12 +269,12 @@ const handleSubmit = async (formData: LoginFormData) => {
   min-height: 44px;
 }
 
-:deep(button[type='submit']:hover:not(:disabled)) {
+button[type='submit']:hover:not(:disabled) {
   background-color: var(--color-primary-dark);
   border-color: var(--color-primary-dark);
 }
 
-:deep(button[type='submit']:disabled) {
+button[type='submit']:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-// Ensure FormKit types are available if you're using them explicitly,
-// though often not needed for basic setup with Nuxt FormKit module.
 
 interface ForgotPasswordFormData {
   email: string
@@ -15,7 +13,7 @@ const message = ref('')
 const loading = ref(false)
 const isError = ref(false)
 
-const handleForgotPassword = async (data: ForgotPasswordFormData) => {
+const handleForgotPassword = async () => {
   loading.value = true
   message.value = ''
   isError.value = false
@@ -27,7 +25,7 @@ const handleForgotPassword = async (data: ForgotPasswordFormData) => {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({ email: data.email }), // Use email from form data
+      body: JSON.stringify({ email: formData.email }),
     })
 
     const responseData = await response.json()
@@ -59,25 +57,24 @@ const handleForgotPassword = async (data: ForgotPasswordFormData) => {
 <template>
   <div>
     <h2>Forgot Password</h2>
-    <FormKit
-      v-slot="{ disabled }"
-      type="form"
-      :actions="false"
-      @submit="handleForgotPassword"
-    >
-      <FormKit
-        v-model="formData.email"
-        type="email"
-        name="email"
-        label="Email"
-        placeholder="your@email.com"
-        validation="required|email"
-      />
-      <FormKit
+    <form @submit.prevent="handleForgotPassword">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          v-model="formData.email"
+          type="email"
+          name="email"
+          placeholder="your@email.com"
+          required
+        >
+      </div>
+      <button
         type="submit"
-        :label="loading ? 'Sending...' : 'Send Password Reset Link'"
-        :disabled="Boolean(disabled) || loading"
-      />
+        :disabled="loading"
+      >
+        {{ loading ? 'Sending...' : 'Send Password Reset Link' }}
+      </button>
       <p
         v-if="message"
         :class="{ error: isError, success: !isError }"
@@ -85,7 +82,7 @@ const handleForgotPassword = async (data: ForgotPasswordFormData) => {
       >
         {{ message }}
       </p>
-    </FormKit>
+    </form>
   </div>
 </template>
 
@@ -101,41 +98,35 @@ const handleForgotPassword = async (data: ForgotPasswordFormData) => {
   font-size: 0.9rem;
 }
 /* Basic styling for FormKit elements if not using a global theme */
-:deep(.formkit-outer) {
-      margin-bottom: 1em;
+.form-group {
+  margin-bottom: 1em;
 }
-:deep(.formkit-label) {
+
+label {
   display: block;
-      margin-bottom: 0.25em;
+  margin-bottom: 0.25em;
   font-weight: bold;
 }
-:deep(.formkit-input input[type="email"]),
-:deep(.formkit-input input[type="password"]) {
+
+input[type="email"] {
   width: 100%;
-      padding: 0.75em;
+  padding: 0.75em;
   box-sizing: border-box;
   border: 1px solid var(--color-border-dark);
   border-radius: 4px;
 }
-:deep(.formkit-input input[type="submit"]) {
-      padding: 0.75em 1.5em;
+
+button[type="submit"] {
+  padding: 0.75em 1.5em;
   cursor: pointer;
   background-color: var(--color-gray-800);
   color: white;
   border: none;
   border-radius: 4px;
 }
-:deep(.formkit-input input[type="submit"]:disabled) {
+
+button[type="submit"]:disabled {
   background-color: var(--color-gray-500);
   cursor: not-allowed;
-}
-:deep(.formkit-messages) {
-  list-style: none;
-  padding: 0;
-      margin-top: 0.25em;
-}
-:deep(.formkit-message) {
-  color: red;
-  font-size: 0.8rem;
 }
 </style>
