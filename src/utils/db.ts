@@ -2,15 +2,25 @@ import { createDatabase } from 'db0'
 import type { ModuleOptions } from '../types'
 
 export const getConnector = async (name: string) => {
-  switch (name) {
-    case 'mysql':
-      return (await import('db0/connectors/mysql2')).default
-    case 'postgresql':
-      return (await import('db0/connectors/postgresql')).default
-    case 'sqlite':
-      return (await import('db0/connectors/better-sqlite3')).default
-    default:
-      throw new Error(`Unsupported database connector: ${name}`)
+  try {
+    switch (name) {
+      case 'mysql':
+        return (await import('db0/connectors/mysql2')).default
+      case 'postgresql':
+        return (await import('db0/connectors/postgresql')).default
+      case 'sqlite':
+        return (await import('db0/connectors/better-sqlite3')).default
+      default:
+        throw new Error(`Unsupported database connector: ${name}`)
+    }
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('Cannot resolve')) {
+      throw new Error(`Database connector "${name}" not found. Please install the required peer dependency:\n` +
+        `- For sqlite: yarn add better-sqlite3\n` +
+        `- For mysql: yarn add mysql2\n` +
+        `- For postgresql: yarn add pg`)
+    }
+    throw error
   }
 }
 
