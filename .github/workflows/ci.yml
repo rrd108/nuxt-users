@@ -60,6 +60,9 @@ jobs:
       - name: Playground prepare
         run: npm run dev:prepare
 
+      - name: Install mysql2
+        run: npx nypm@latest i mysql2
+
       - name: Install DB Clients
         run: sudo apt-get update && sudo apt-get install -y mariadb-client
 
@@ -100,6 +103,9 @@ jobs:
 
       - name: Playground prepare
         run: npm run dev:prepare
+
+      - name: Install pg
+        run: npx nypm@latest i pg
 
       - name: Install DB Clients
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
