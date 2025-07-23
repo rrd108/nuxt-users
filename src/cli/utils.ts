@@ -1,5 +1,4 @@
-import type { ModuleOptions, DatabaseConfig } from '../types'
-import { loadNuxt } from '@nuxt/kit'
+import type { ModuleOptions, DatabaseConfig, DatabaseType } from '../types'
 
 export const defaultOptions: ModuleOptions = {
   connector: {
@@ -30,7 +29,7 @@ export const defaultOptions: ModuleOptions = {
 }
 
 export const getOptionsFromEnv = (): ModuleOptions => {
-  const connectorName = process.env.DB_CONNECTOR || 'sqlite'
+  const connectorName = process.env.DB_CONNECTOR || 'sqlite' as DatabaseType
 
   let connectorOptions: DatabaseConfig
 
@@ -65,7 +64,7 @@ export const getOptionsFromEnv = (): ModuleOptions => {
   return {
     ...defaultOptions,
     connector: {
-      name: connectorName as 'sqlite' | 'mysql' | 'postgresql',
+      name: connectorName as DatabaseType,
       options: connectorOptions,
     },
   }

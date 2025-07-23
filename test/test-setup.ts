@@ -43,6 +43,7 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
     options: dbConfig
   },
   tables: {
+    migrations: 'migrations',
     users: 'users',
     personalAccessTokens: 'personal_access_tokens',
     passwordResetTokens: 'password_reset_tokens'
