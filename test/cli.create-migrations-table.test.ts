@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
-import { createMigrationsTable } from '../src/runtime/server/utils/create-migrations-table'
+import { createMigrationsTable } from '../src/utils/create-migrations-table'
 import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 

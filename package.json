@@ -121,6 +121,7 @@
     "docs:deploy": "yarn docs:build && ./scripts/deploy-docs.sh"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "citty": "^0.1.6",
     "defu": "^6.1.4"
   },

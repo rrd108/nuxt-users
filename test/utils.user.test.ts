@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { createUser, findUserByEmail, updateUserPassword } from '../src/runtime/server/utils/user'
+import { createUser, findUserByEmail, updateUserPassword } from '../src/utils/user'
 import type { Database } from 'db0'
 import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
-import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
+import { createUsersTable } from '../src/utils/create-users-table'
 
-describe('User Utilities (src/runtime/server/utils/user.ts)', () => {
+describe('User Utilities (src/utils/user.ts)', () => {
   let db: Database
   let testOptions: ModuleOptions
   let dbType: DatabaseType

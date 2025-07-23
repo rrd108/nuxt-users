@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils/e2e'
 import type { Database } from 'db0'
-import { createUser } from '../src/runtime/server/utils/user'
-import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
-import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/create-personal-access-tokens-table'
+import { createUser } from '../src/utils/user'
+import { createUsersTable } from '../src/utils/create-users-table'
+import { createPersonalAccessTokensTable } from '../src/utils/create-personal-access-tokens-table'
 import type { DatabaseConfig, DatabaseType, ModuleOptions, User } from '../src/types'
 import { fileURLToPath } from 'node:url'
 import { createDatabase } from 'db0'
-import { getConnector } from '../src/runtime/server/utils/db'
+import { getConnector } from '../src/utils/db'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 
 describe('Login API Route', async () => {

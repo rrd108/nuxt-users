@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
-import { getConnector, checkUsersTableExists, hasAnyUsers } from '../src/runtime/server/utils/db'
-import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
+import { getConnector, checkTableExists } from '../src/utils/db'
+import { createUsersTable } from '../src/utils/create-users-table'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
+import { hasAnyUsers } from '../src/utils/user'
 
 describe('Utils: DB', () => {
   let db: Database
@@ -77,7 +78,7 @@ describe('Utils: DB', () => {
 
   describe('checkUsersTableExists', () => {
     it('should return false when users table does not exist', async () => {
-      const exists = await checkUsersTableExists(testOptions)
+      const exists = await checkTableExists(testOptions, 'users')
       expect(exists).toBe(false)
     })
 
@@ -85,7 +86,7 @@ describe('Utils: DB', () => {
       // Create the users table first
       await createUsersTable(testOptions)
 
-      const exists = await checkUsersTableExists(testOptions)
+      const exists = await checkTableExists(testOptions, 'users')
       expect(exists).toBe(true)
     })
   })
@@ -141,14 +142,14 @@ describe('Utils: DB', () => {
   describe('Integration tests', () => {
     it('should work together: create table, check exists, add users, check has users', async () => {
       // Step 1: Check table doesn't exist
-      const tableExists = await checkUsersTableExists(testOptions)
+      const tableExists = await checkTableExists(testOptions, 'users')
       expect(tableExists).toBe(false)
 
       // Step 2: Create table
       await createUsersTable(testOptions)
 
       // Step 3: Check table exists
-      const tableExistsAfter = await checkUsersTableExists(testOptions)
+      const tableExistsAfter = await checkTableExists(testOptions, 'users')
       expect(tableExistsAfter).toBe(true)
 
       // Step 4: Check no users exist
@@ -171,7 +172,7 @@ describe('Utils: DB', () => {
       await createUsersTable(testOptions)
 
       // Verify table exists
-      expect(await checkUsersTableExists(testOptions)).toBe(true)
+      expect(await checkTableExists(testOptions, 'users')).toBe(true)
 
       // Verify no users initially
       expect(await hasAnyUsers(testOptions)).toBe(false)
@@ -190,7 +191,7 @@ describe('Utils: DB', () => {
       expect(await hasAnyUsers(testOptions)).toBe(true)
 
       // Verify table still exists
-      expect(await checkUsersTableExists(testOptions)).toBe(true)
+      expect(await checkTableExists(testOptions, 'users')).toBe(true)
     })
   })
 })
