@@ -67,3 +67,12 @@ cd docs && yarn dev
 ## License
 
 MIT
+
+## TODO
+
+- [ ] Use `--stub` flag for module-builder to avoid building the module in the playground
+
+```
+"dev:prepare": "yarn nuxt-module-build build --stub && yarn nuxt-module-build prepare && nuxi prepare playground",
+```
+

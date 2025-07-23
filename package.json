@@ -98,7 +98,7 @@
     "predev": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for development' && exit 1)",
     "dev": "yarn dev:prepare && nuxi dev playground",
     "dev:build": "nuxi build playground",
-    "dev:prepare": "yarn nuxt-module-build build --stub && yarn nuxt-module-build prepare && nuxi prepare playground",
+    "dev:prepare": "yarn nuxt-module-build build   && yarn nuxt-module-build prepare && nuxi prepare playground",
     "build": "nuxt-module-build build",
     "prerelease": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
     "release": "yarn lint && yarn test && yarn build && changelogen --release && yarn publish && git push --follow-tags",
