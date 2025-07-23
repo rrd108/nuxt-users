@@ -1,7 +1,10 @@
+import { BASE_CONFIG } from '../src/constants'
+
 export default defineNuxtConfig({
   modules: ['../src/module'],
   devtools: { enabled: true },
+
   css: ['~/assets/colors.css'],
-  compatibilityDate: '2025-07-08',
+  ...BASE_CONFIG,
   nuxtUsers: {},
 })

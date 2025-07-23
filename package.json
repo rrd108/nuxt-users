@@ -64,34 +64,7 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "unbuild": {
-    "entries": [
-      "./src/module",
-      {
-        "input": "./src/utils/index",
-        "name": "utils"
-      },
-      {
-        "builder": "rollup",
-        "input": "./src/cli/main",
-        "name": "cli",
-        "ext": "mjs"
-      }
-    ],
-    "declaration": true,
-    "clean": true,
-    "failOnWarn": false,
-    "externals": [
-      "bcrypt",
-      "nodemailer",
-      "better-sqlite3",
-      "mysql2",
-      "pg"
-    ],
-    "rollup": {
-      "inlineDependencies": true
-    }
-  },
+
   "scripts": {
     "prepack": "nuxt-module-build build",
     "postinstall": "node -e \"try { require('fs').chmodSync('./dist/cli.mjs', '755') } catch(e) {}\"",

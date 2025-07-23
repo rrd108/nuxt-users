@@ -1,6 +1,7 @@
 import { getTestOptions } from '../../test-setup'
 import NuxtUsers from '../../../src/module'
 import type { DatabaseConfig, DatabaseType } from '../../../src/types'
+import { BASE_CONFIG } from '../../../src/constants'
 
 const dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
 let dbConfig = {} as DatabaseConfig
@@ -32,5 +33,6 @@ const options = getTestOptions(dbType, dbConfig)
 
 export default defineNuxtConfig({
   modules: [NuxtUsers],
+  ...BASE_CONFIG,
   nuxtUsers: options,
 })
