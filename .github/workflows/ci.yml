@@ -23,6 +23,9 @@ jobs:
       - name: Install dependencies
         run: npx nypm@latest i
 
+      - name: Install sqlite3
+        run: npx nypm@latest i sqlite3
+
       - name: Playground prepare
         run: npm run dev:prepare
 
@@ -57,11 +60,15 @@ jobs:
       - name: Install dependencies
         run: npx nypm@latest i
 
+      - name: Install mysql2
+        run: npx nypm@latest i mysql2
+
+      - name: Install mysql
+        run: sudo apt-get update && sudo apt-get install -y mariadb-client
+
       - name: Playground prepare
         run: npm run dev:prepare
 
-      - name: Install mysql2
-        run: npx nypm@latest i mysql2
 
       - name: Install DB Clients
         run: sudo apt-get update && sudo apt-get install -y mariadb-client
@@ -101,11 +108,11 @@ jobs:
       - name: Install dependencies
         run: npx nypm@latest i
 
-      - name: Playground prepare
-        run: npm run dev:prepare
-
       - name: Install pg
         run: npx nypm@latest i pg
+
+      - name: Playground prepare
+        run: npm run dev:prepare
 
       - name: Install DB Clients
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
