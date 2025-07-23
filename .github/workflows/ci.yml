@@ -23,6 +23,10 @@ jobs:
       - name: Install dependencies
         run: npx nypm@latest i
 
+      - name: Install peer dependencies
+        run: |
+          node -e "const pkg=require('./package.json');const peers=pkg.peerDependencies||{};console.log(Object.entries(peers).map(([k,v])=>k+'@'+v).join(' '))" | xargs npx nypm@latest i
+
       - name: Install sqlite3
         run: npx nypm@latest i sqlite3
 
@@ -59,6 +63,10 @@ jobs:
 
       - name: Install dependencies
         run: npx nypm@latest i
+
+      - name: Install peer dependencies
+        run: |
+          node -e "const pkg=require('./package.json');const peers=pkg.peerDependencies||{};console.log(Object.entries(peers).map(([k,v])=>k+'@'+v).join(' '))" | xargs npx nypm@latest i
 
       - name: Install mysql2
         run: npx nypm@latest i mysql2
@@ -107,6 +115,10 @@ jobs:
 
       - name: Install dependencies
         run: npx nypm@latest i
+
+      - name: Install peer dependencies
+        run: |
+          node -e "const pkg=require('./package.json');const peers=pkg.peerDependencies||{};console.log(Object.entries(peers).map(([k,v])=>k+'@'+v).join(' '))" | xargs npx nypm@latest i
 
       - name: Install pg
         run: npx nypm@latest i pg
