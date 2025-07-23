@@ -83,7 +83,10 @@
     "failOnWarn": false,
     "externals": [
       "bcrypt",
-      "nodemailer"
+      "nodemailer",
+      "better-sqlite3",
+      "mysql2",
+      "pg"
     ],
     "rollup": {
       "inlineDependencies": true
@@ -123,7 +126,8 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "citty": "^0.1.6",
-    "defu": "^6.1.4"
+    "defu": "^6.1.4",
+    "nodemailer": "^7.0.5"
   },
   "optionalDependencies": {
     "better-sqlite3": "^12.2.0",
