@@ -97,7 +97,7 @@ const handleForgotPassword = async () => {
       margin-top: 1em;
   font-size: 0.9rem;
 }
-/* Basic styling for FormKit elements if not using a global theme */
+
 .form-group {
   margin-bottom: 1em;
 }
