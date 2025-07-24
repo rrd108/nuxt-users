@@ -35,6 +35,7 @@ export default defineCommand({
     try {
       const user = await createUser({ email, name, password }, options)
       console.log(`[DB:Create User] User created successfully: ${user.email}`)
+      process.exit(0)
     }
     catch (error) {
       console.error('[DB:Create User] Error:', error)
