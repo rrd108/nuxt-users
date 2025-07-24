@@ -111,7 +111,12 @@ npm run db:create-user admin@example.com "Admin User" mypassword123
 
 ## Database Configuration
 
-The CLI commands use environment variables to determine database configuration. You can set these in your shell or in a `.env` file.
+The CLI commands determine database configuration using the following priority:
+
+1. **Nuxt project configuration** - If running from a Nuxt project, the CLI will first attempt to load configuration from `nuxt.config.ts` under the `nuxtUsers` module options
+2. **Environment variables** - If no Nuxt configuration is found, the CLI falls back to environment variables
+
+You can set environment variables in your shell or in a `.env` file.
 
 ### SQLite (Default)
 
