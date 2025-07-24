@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v1.1.5
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.1.4...v1.1.5)
+
+### 🩹 Fixes
+
+- **deps:** Exclude bcrypt from client-side bundle ([a678a96](https://github.com/rrd108/nuxt-users/commit/a678a96))
+
+### 💅 Refactors
+
+- **cli:** Commands to load options ([403a281](https://github.com/rrd108/nuxt-users/commit/403a281))
+
+### 🏡 Chore
+
+- **release:** V1.1.4 ([4980c98](https://github.com/rrd108/nuxt-users/commit/4980c98))
+
+### ✅ Tests
+
+- Ensures database cleanup on test completion ([a1a528c](https://github.com/rrd108/nuxt-users/commit/a1a528c))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.1.4
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.1.0...v1.1.4)
