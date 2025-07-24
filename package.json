@@ -1,6 +1,6 @@
 {
   "name": "nuxt-users",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "A comprehensive user management module for Nuxt 3 applications with authentication, database support, and CLI tools",
   "keywords": [
     "nuxt",
@@ -58,7 +58,7 @@
     "dev": "yarn dev:prepare && nuxi dev playground",
     "dev:build": "nuxi build playground",
     "dev:prepare": "yarn nuxt-module-build build --stub && yarn nuxt-module-build prepare && nuxi prepare playground",
-    "build": "nuxt-module-build build",
+    "build": "node scripts/replace-version.js && nuxt-module-build build",
     "prerelease": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
     "release": "yarn lint && yarn test && yarn build && changelogen --release && yarn publish && git push --follow-tags",
     "lint": "eslint .",
