@@ -1,5 +1,6 @@
 import { defineCommand } from 'citty'
 import { loadNuxt } from '@nuxt/kit'
+import type { ModuleOptions } from '../types'
 
 export default defineCommand({
   meta: {
@@ -16,7 +17,7 @@ export default defineCommand({
       console.log('🌐 Base URL:', nuxt.options.app?.baseURL || '/')
 
       // Check if nuxt-users module is configured
-      const nuxtUsersConfig = nuxt.options.runtimeConfig?.nuxtUsers
+      const nuxtUsersConfig = nuxt.options.runtimeConfig?.nuxtUsers as ModuleOptions
       if (nuxtUsersConfig) {
         console.log('🔧 Nuxt Users module configuration:')
         console.log('   Database connector:', nuxtUsersConfig.connector?.name)
@@ -29,7 +30,7 @@ export default defineCommand({
       }
 
       // Check public runtime config
-      const publicConfig = nuxt.options.runtimeConfig?.public?.nuxtUsers
+      const publicConfig = nuxt.options.runtimeConfig?.public?.nuxtUsers as ModuleOptions
       if (publicConfig) {
         console.log('🌍 Public runtime config:')
         console.log('   Users table exists:', publicConfig.tables?.users)

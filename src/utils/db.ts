@@ -13,12 +13,13 @@ export const getConnector = async (name: string) => {
       default:
         throw new Error(`Unsupported database connector: ${name}`)
     }
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof Error && error.message.includes('Cannot resolve')) {
-      throw new Error(`Database connector "${name}" not found. Please install the required peer dependency:\n` +
-        `- For sqlite: yarn add better-sqlite3\n` +
-        `- For mysql: yarn add mysql2\n` +
-        `- For postgresql: yarn add pg`)
+      throw new Error(`Database connector "${name}" not found. Please install the required peer dependency:\n`
+        + '- For sqlite: yarn add better-sqlite3\n'
+        + '- For mysql: yarn add mysql2\n'
+        + '- For postgresql: yarn add pg')
     }
     throw error
   }
