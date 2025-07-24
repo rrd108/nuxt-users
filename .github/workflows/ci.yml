@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mariadb:11.8
+        image: mariadb:10.11
         env:
           MARIADB_ROOT_PASSWORD: 123
           MARIADB_DATABASE: test_db
