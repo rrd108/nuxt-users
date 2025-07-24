@@ -1,8 +1,6 @@
 import { defineCommand } from 'citty'
 import { runMigrations } from '../utils'
-import { getOptionsFromEnv } from './utils'
-import { loadNuxt } from '@nuxt/kit'
-import type { ModuleOptions } from '../types'
+import { loadOptions } from './utils'
 
 export default defineCommand({
   meta: {
@@ -12,28 +10,7 @@ export default defineCommand({
   async run() {
     console.log('[Nuxt Users] Starting migration system...')
 
-    let options: ModuleOptions
-    try {
-      // Try to load Nuxt configuration first
-      console.log('[Nuxt Users] Loading Nuxt project...')
-      const nuxt = await loadNuxt({ cwd: process.cwd() })
-      const nuxtUsersConfig = nuxt.options.runtimeConfig?.nuxtUsers as ModuleOptions
-      await nuxt.close()
-
-      if (nuxtUsersConfig) {
-        console.log('[Nuxt Users] Using configuration from Nuxt project')
-        options = nuxtUsersConfig
-      }
-      else {
-        console.log('[Nuxt Users] No nuxt-users configuration found, using environment variables')
-        options = getOptionsFromEnv()
-      }
-    }
-    catch (error) {
-      console.log('[Nuxt Users] Could not load Nuxt project, using environment variables')
-      console.error(error)
-      options = getOptionsFromEnv()
-    }
+    const options = await loadOptions()
 
     try {
       await runMigrations(options)

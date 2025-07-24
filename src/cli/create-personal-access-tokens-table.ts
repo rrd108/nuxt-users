@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { createPersonalAccessTokensTable } from '../utils'
-import { getOptionsFromEnv } from './utils'
+import { loadOptions } from './utils'
 
 export default defineCommand({
   meta: {
@@ -10,7 +10,7 @@ export default defineCommand({
   async run() {
     console.log('[Nuxt Users] Creating personal access tokens table...')
 
-    const options = getOptionsFromEnv()
+    const options = await loadOptions()
 
     try {
       await createPersonalAccessTokensTable(options)

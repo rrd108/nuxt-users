@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { createUser } from '../utils'
-import { getOptionsFromEnv } from './utils'
+import { loadOptions } from './utils'
 
 export default defineCommand({
   meta: {
@@ -29,7 +29,8 @@ export default defineCommand({
   },
   async run({ args }) {
     const { email, name, password } = args
-    const options = getOptionsFromEnv()
+
+    const options = await loadOptions()
 
     try {
       const user = await createUser({ email, name, password }, options)
