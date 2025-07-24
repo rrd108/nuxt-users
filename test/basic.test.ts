@@ -10,8 +10,10 @@ describe('ssr', async () => {
   })
 
   afterEach(async () => {
-    // remove the test db file
-    await fs.promises.unlink(path.join(process.cwd(), '_basic-test'))
+    const dbPath = path.join(process.cwd(), '_basic-test')
+    if (fs.existsSync(dbPath)) {
+      await fs.promises.unlink(dbPath)
+    }
   })
 
   it('renders the index page', async () => {
