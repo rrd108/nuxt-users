@@ -21,7 +21,7 @@ export const BASE_CONFIG = {
       }
     },
     optimizeDeps: {
-      exclude: ['db0', 'better-sqlite3', 'mysql2', 'pg']
+      exclude: ['db0', 'better-sqlite3', 'mysql2', 'pg', 'bcrypt']
     }
   },
 }

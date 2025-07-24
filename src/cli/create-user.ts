@@ -9,16 +9,19 @@ export default defineCommand({
   },
   args: {
     email: {
+      alias: 'e',
       type: 'string',
       description: 'User email address',
       required: true
     },
     name: {
+      alias: 'n',
       type: 'string',
       description: 'User full name',
       required: true
     },
     password: {
+      alias: 'p',
       type: 'string',
       description: 'User password',
       required: true
