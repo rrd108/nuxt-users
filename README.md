@@ -68,11 +68,14 @@ cd docs && yarn dev
 
 MIT
 
-## TODO
+## Dev misc
 
-- [ ] Use `--stub` flag for module-builder to avoid building the module in the playground
+### Using yalc
 
+```bash
+# Publish the module's new version
+yalc publish
+
+# Install the module in the consumer app
+yalc add nuxt-users
 ```
-"dev:prepare": "yarn nuxt-module-build build --stub && yarn nuxt-module-build prepare && nuxi prepare playground",
-```
-
