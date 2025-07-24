@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 
 export const EXTERNALS = [
+  'db0',
   'db0/connectors/better-sqlite3',
   'db0/connectors/mysql2',
   'db0/connectors/postgresql',
