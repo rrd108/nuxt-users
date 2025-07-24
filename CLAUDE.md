@@ -218,3 +218,19 @@ yarn docs:deploy
 - **CLI entry**: `src/cli/main.ts:11` (command definitions)
 - **Type definitions**: `src/types.ts:11` (ModuleOptions interface)
 - **Login API**: `src/runtime/server/api/login.post.ts:8` (authentication handler)
+
+## Documentation Mapping
+
+When making changes to these code areas, consider updating the corresponding documentation:
+
+| Code Area | Documentation Files | Notes |
+|-----------|-------------------|-------|
+| `src/cli/` | `docs/database/cli-commands.md` | CLI commands, configuration loading, environment variables |
+| `src/types.ts` | `docs/guide/configuration.md`, `docs/database/schema.md` | ModuleOptions interface, database types |
+| `src/runtime/server/api/` | `docs/guide/authentication.md` | API endpoints, authentication flow |
+| `src/runtime/components/` | `docs/components/index.md` | Vue component props and usage |
+| `src/module.ts` | `docs/guide/installation.md`, `docs/guide/configuration.md` | Module registration, default options |
+| `src/utils/db.ts` | `docs/database/migrations.md`, `docs/guide/database-setup.md` | Database connectors, connection handling |
+| Database migrations | `docs/database/migrations.md`, `docs/database/schema.md` | Table structure, migration process |
+| Test files | `docs/contributing/running-tests.md` | Testing setup, database configurations |
+| Build configuration | `docs/contributing/development-setup.md` | Build process, external dependencies |
