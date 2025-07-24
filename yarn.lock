@@ -1308,14 +1308,14 @@
     ws "^8.18.3"
 
 "@nuxt/eslint-config@^1.5.2":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@nuxt/eslint-config/-/eslint-config-1.7.0.tgz#7b8f293f999ad4ef81a325a2897ccca7ed7ec258"
-  integrity sha512-P1LZiCCCXsUVSuqG/ToyndFdcl1lDwa5gummO0Tylu2tEwIU+rrGpS61YbFBe77HfyO6ZkKzCnW3jsxDpklUFw==
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@nuxt/eslint-config/-/eslint-config-1.7.1.tgz#3118c116be62d24c2d917c559fba43a6e0c9404a"
+  integrity sha512-xY9CNA24LGiauNw2h1L76iw/SFChEIojqQQM5UgGU+nfRfAZaitfumsmqhMXa6tTdnbF+uf6EpumaMdk3LNRpg==
   dependencies:
     "@antfu/install-pkg" "^1.1.0"
     "@clack/prompts" "^0.11.0"
     "@eslint/js" "^9.31.0"
-    "@nuxt/eslint-plugin" "1.7.0"
+    "@nuxt/eslint-plugin" "1.7.1"
     "@stylistic/eslint-plugin" "^5.2.1"
     "@typescript-eslint/eslint-plugin" "^8.38.0"
     "@typescript-eslint/parser" "^8.38.0"
@@ -1334,10 +1334,10 @@
     pathe "^2.0.3"
     vue-eslint-parser "^10.2.0"
 
-"@nuxt/eslint-plugin@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@nuxt/eslint-plugin/-/eslint-plugin-1.7.0.tgz#1f1d4f3178fb9782056c0eebbb2054b7bd912b19"
-  integrity sha512-Quk4LGuOOBADIoxizF4dZiYZoMuImkX1Rqh1+6Xey9oAVQ7TbTzRoMAwvhTAvTzKPbdMnTuXUm9L7eDrJc0+VA==
+"@nuxt/eslint-plugin@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@nuxt/eslint-plugin/-/eslint-plugin-1.7.1.tgz#be49606b09ff291d54df5b293426981f681f74cb"
+  integrity sha512-az7qM8g95JPI8SO4c7lcbab3DVQPsNxCVik+b4XwtpEhxtkW0BEq3VFCmM5aZbFhmV4qE5TOCl7LA4Saq4lhGQ==
   dependencies:
     "@typescript-eslint/types" "^8.38.0"
     "@typescript-eslint/utils" "^8.38.0"
