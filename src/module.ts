@@ -46,10 +46,10 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.runtimeConfig.nuxtUsers = {
       ...runtimeConfigOptions,
       tables: {
-        migrations: options.tables?.migrations || 'migrations',
-        users: options.tables?.users || 'users',
-        personalAccessTokens: options.tables?.personalAccessTokens || 'personal_access_tokens',
-        passwordResetTokens: options.tables?.passwordResetTokens || 'password_reset_tokens',
+        migrations: options.tables?.migrations || defaultOptions.tables.migrations,
+        users: options.tables?.users || defaultOptions.tables.users,
+        personalAccessTokens: options.tables?.personalAccessTokens || defaultOptions.tables.personalAccessTokens,
+        passwordResetTokens: options.tables?.passwordResetTokens || defaultOptions.tables.passwordResetTokens,
       },
     }
 
