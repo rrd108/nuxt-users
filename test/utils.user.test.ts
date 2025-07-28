@@ -83,6 +83,7 @@ describe('User Utilities (src/utils/user.ts)', () => {
         id: expect.any(Number),
         email: userData.email,
         name: userData.name,
+        role: 'user',
         created_at: expect.any(String),
         updated_at: expect.any(String)
       })
@@ -94,6 +95,18 @@ describe('User Utilities (src/utils/user.ts)', () => {
       // For now, we'll skip this test as the happy path is more important
       // and the error handling is already tested in the integration tests
       expect(true).toBe(true)
+    })
+
+    it('should create user with custom role', async () => {
+      const userData = { email: 'admin@webmania.cc', name: 'Admin User', password: 'password123', role: 'admin' }
+
+      const user = await createUser(userData, testOptions)
+
+      expect(user).toBeDefined()
+      expect(user.email).toBe(userData.email)
+      expect(user.name).toBe(userData.name)
+      expect(user.role).toBe('admin')
+      expect(user).not.toHaveProperty('password')
     })
   })
 

@@ -25,16 +25,22 @@ export default defineCommand({
       type: 'string',
       description: 'User password',
       required: true
+    },
+    role: {
+      alias: 'r',
+      type: 'string',
+      description: 'User role (defaults to "user")',
+      default: 'user'
     }
   },
   async run({ args }) {
-    const { email, name, password } = args
+    const { email, name, password, role } = args
 
     const options = await loadOptions()
 
     try {
-      const user = await createUser({ email, name, password }, options)
-      console.log(`[DB:Create User] User created successfully: ${user.email}`)
+      const user = await createUser({ email, name, password, role }, options)
+      console.log(`[DB:Create User] User created successfully: ${user.email} (role: ${user.role})`)
       process.exit(0)
     }
     catch (error) {

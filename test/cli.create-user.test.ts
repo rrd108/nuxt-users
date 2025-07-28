@@ -153,6 +153,39 @@ describe('CLI: Create User', () => {
     await expect(createUser(userData, testOptions)).rejects.toThrow()
   })
 
+  it('should create user with default role', async () => {
+    const userData = {
+      email: 'test@webmania.cc',
+      name: 'Test User',
+      password: 'mypassword123'
+    }
+
+    await createUser(userData, testOptions)
+
+    // Verify user was created with default role
+    const result = await db.sql`SELECT role FROM users WHERE email = ${userData.email}`
+    const user = result.rows?.[0]
+
+    expect(user?.role).toBe('user')
+  })
+
+  it('should create user with custom role', async () => {
+    const userData = {
+      email: 'admin@webmania.cc',
+      name: 'Admin User',
+      password: 'mypassword123',
+      role: 'admin'
+    }
+
+    await createUser(userData, testOptions)
+
+    // Verify user was created with custom role
+    const result = await db.sql`SELECT role FROM users WHERE email = ${userData.email}`
+    const user = result.rows?.[0]
+
+    expect(user?.role).toBe('admin')
+  })
+
   it('should handle empty password', async () => {
     const userData = {
       email: 'test@webmania.cc',

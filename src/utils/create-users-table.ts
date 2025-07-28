@@ -15,6 +15,7 @@ export const createUsersTable = async (options: ModuleOptions) => {
       email TEXT NOT NULL UNIQUE,
       name TEXT NOT NULL,
       password TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'user',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -27,6 +28,7 @@ export const createUsersTable = async (options: ModuleOptions) => {
         email VARCHAR(255) NOT NULL UNIQUE,
         name VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL,
+        role VARCHAR(32) NOT NULL DEFAULT 'user',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
@@ -39,11 +41,12 @@ export const createUsersTable = async (options: ModuleOptions) => {
         email VARCHAR(255) NOT NULL UNIQUE,
         name VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL,
+        role VARCHAR(32) NOT NULL DEFAULT 'user',
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       )
     `
   }
 
-  console.log(`[DB:Create ${connectorName} Users Table] Fields: id, email, name, password, created_at, updated_at ✅`)
+  console.log(`[DB:Create ${connectorName} Users Table] Fields: id, email, name, password, role, created_at, updated_at ✅`)
 }
