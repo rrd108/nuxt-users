@@ -1,0 +1,42 @@
+
+name: nuxt4
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-nuxt4:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm i -g --force corepack@latest && corepack enable
+
+      - name: Install dependencies
+        run: npx nypm@latest i
+
+      - name: Build module
+        run: npm run prepack
+
+      - name: Create Nuxt 4 app
+        run: npx nuxi@latest init nuxt4-app
+
+      - name: Install module in Nuxt 4 app
+        run: |
+          cd nuxt4-app
+          npm install $(npm pack .. | tail -1)
+          echo "export default defineNuxtConfig({ modules: ['../dist/module.mjs'] })" > nuxt.config.ts
+
+      - name: Build Nuxt 4 app
+        run: |
+          cd nuxt4-app
+          npm run build
