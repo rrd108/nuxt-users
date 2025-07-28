@@ -53,23 +53,10 @@ export default defineNuxtModule<ModuleOptions>({
       },
     }
 
-    // Add public runtime config (client-side accessible)
-    nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {}
-    nuxt.options.runtimeConfig.public.nuxtUsers = {
-      tables: {
-        migrations: options.tables?.migrations,
-        users: options.tables?.users,
-        personalAccessTokens: options.tables?.personalAccessTokens,
-        passwordResetTokens: options.tables?.passwordResetTokens,
-      },
-    }
-
-    /* nuxt.hook('nitro:config', (nitroConfig) => {
-      nitroConfig.alias = nitroConfig.alias || {}
-      nitroConfig.alias['#users/db'] = resolver.resolve('./runtime/server/utils')
-    }) */
-
-    addPlugin(resolver.resolve('./runtime/plugin'))
+    addPlugin({
+      src: resolver.resolve('./runtime/plugin'),
+      mode: 'server'
+    })
 
     // Register API routes
     addServerHandler({
@@ -105,7 +92,7 @@ export default defineNuxtModule<ModuleOptions>({
       filePath: resolver.resolve('./runtime/components/ResetPasswordForm.vue')
     })
 
-    // Add global CSS with color variables
+    // TODOAdd global CSS with color variables
     nuxt.options.css = nuxt.options.css || []
     nuxt.options.css.push(resolver.resolve('./runtime/assets/colors.css'))
   },

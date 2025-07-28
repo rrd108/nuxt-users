@@ -11,36 +11,11 @@ const handleError = (error) => {
 const handleSubmit = (data) => {
   console.log('Form submitted:', data)
 }
-
-const hasMigrationsTable = useRuntimeConfig().public.nuxtUsers?.tables?.migrations ?? false
-const hasUsersTable = useRuntimeConfig().public.nuxtUsers?.tables?.users ?? false
-const hasPersonalAccessTokensTable = useRuntimeConfig().public.nuxtUsers?.tables?.personalAccessTokens ?? false
-const hasPasswordResetTokensTable = useRuntimeConfig().public.nuxtUsers?.tables?.passwordResetTokens ?? false
 </script>
 
 <template>
   <div class="demo-container">
     <h1>Nuxt Users - Login Component Demo</h1>
-
-    <div
-      v-if="!hasMigrationsTable || !hasUsersTable || !hasPersonalAccessTokensTable || !hasPasswordResetTokensTable"
-      class="db-error"
-    >
-      <h2>⚠️ Tables</h2>
-      <p v-if="!hasMigrationsTable">
-        ❌ Migrations table is not created, execute <code>npx nuxt-users:migrate</code>
-      </p>
-      <p v-if="!hasUsersTable">
-        ❌ Users table is not created, execute <code>npx nuxt-users:create-users-table</code>
-      </p>
-      <p v-if="!hasPersonalAccessTokensTable">
-        ❌ Personal access tokens table is not created, execute <code>npx nuxt-users:create-personal-access-tokens-table</code>
-      </p>
-      <p v-if="!hasPasswordResetTokensTable">
-        ❌ Password reset tokens table is not created, execute <code>npx nuxt-users:create-password-reset-tokens-table</code>
-      </p>
-      <p>After you are done you should restart the dev server!</p>
-    </div>
 
     <div class="demo-section">
       <h2>Default Login Form</h2>
@@ -62,7 +37,7 @@ const hasPasswordResetTokensTable = useRuntimeConfig().public.nuxtUsers?.tables?
   max-width: 1200px;
   margin: 0 auto;
   padding: 2em;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .demo-container h1 {
@@ -92,25 +67,6 @@ const hasPasswordResetTokensTable = useRuntimeConfig().public.nuxtUsers?.tables?
   color: var(--color-gray-500);
   margin-bottom: 2em;
   font-size: 0.875rem;
-}
-
-.db-error {
-  background-color: var(--color-warning-light);
-  border: 1px solid var(--color-warning);
-  border-radius: 8px;
-  padding: 1em 2em;
-  margin: 1em auto;
-  color: var(--color-warning-text);
-  width: fit-content;
-}
-
-code {
-  display: block;
-  background-color: var(--color-border-dark);
-  color: var(--color-black);
-  padding: 0.5em;
-  margin: 0.5em;
-  border-radius: 4px;
 }
 
 /* Responsive design */
