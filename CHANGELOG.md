@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v1.1.6
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.1.5...v1.1.6)
+
+### 🩹 Fixes
+
+- **deps:** Exclude bcrypt from client-side bundle ([a678a96](https://github.com/rrd108/nuxt-users/commit/a678a96))
+- **cli:** Exits process after successful user creation ([d71b779](https://github.com/rrd108/nuxt-users/commit/d71b779))
+- Remove db releated code from client code ([114d360](https://github.com/rrd108/nuxt-users/commit/114d360))
+
+### 💅 Refactors
+
+- **cli:** Commands to load options ([403a281](https://github.com/rrd108/nuxt-users/commit/403a281))
+
+### 🏡 Chore
+
+- **release:** V1.1.5 ([98ab3d1](https://github.com/rrd108/nuxt-users/commit/98ab3d1))
+
+### 🤖 CI
+
+- Adds Nuxt 4 compatibility tests ([4132d86](https://github.com/rrd108/nuxt-users/commit/4132d86))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.1.5
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.1.4...v1.1.5)
