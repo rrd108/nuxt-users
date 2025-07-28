@@ -56,17 +56,19 @@ npx nuxt-users create-password-reset-tokens-table
 #### Create a New User
 
 ```bash
-npx nuxt-users create-user <email> <name> <password>
+npx nuxt-users create-user <email> <name> <password> [role]
 ```
 
 **Arguments:**
 - `email`: User's email address (required)
 - `name`: User's full name (required)
 - `password`: User's password (required)
+- `role`: User's role (optional, defaults to "user")
 
 **Example:**
 ```bash
 npx nuxt-users create-user john@example.com "John Doe" mypassword123
+npx nuxt-users create-user admin@example.com "Admin User" adminpass123 admin
 ```
 
 ### `project-info`

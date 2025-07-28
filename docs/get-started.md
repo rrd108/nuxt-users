@@ -37,6 +37,8 @@ npx nuxt-users migrate
 
 # Create your first user
 npx nuxt-users create-user user@example.com "John Doe" password123
+# Create an admin user
+npx nuxt-users create-user admin@example.com "Admin User" adminpass123 admin
 ```
 
 ## What's Included

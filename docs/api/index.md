@@ -25,6 +25,7 @@ Authenticate a user with email and password.
     "id": 1,
     "email": "user@example.com",
     "name": "John Doe",
+    "role": "user",
     "created_at": "2024-01-01T00:00:00.000Z",
     "updated_at": "2024-01-01T00:00:00.000Z"
   }

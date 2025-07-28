@@ -19,6 +19,7 @@ CREATE TABLE users (
   email TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
   password TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'user',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -58,6 +59,7 @@ CREATE TABLE users (
   email VARCHAR(255) NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
+  role VARCHAR(32) NOT NULL DEFAULT 'user',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -97,6 +99,7 @@ CREATE TABLE users (
   email VARCHAR(255) NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
+  role VARCHAR(32) NOT NULL DEFAULT 'user',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -150,6 +153,7 @@ Stores user account information.
 | `email` | TEXT/VARCHAR(255) | User's email address (unique) |
 | `name` | TEXT/VARCHAR(255) | User's display name |
 | `password` | TEXT/VARCHAR(255) | Hashed password (bcrypt) |
+| `role` | TEXT/VARCHAR(32) | User role (defaults to 'user') |
 | `created_at` | DATETIME | Account creation timestamp |
 | `updated_at` | DATETIME | Last update timestamp |
 
