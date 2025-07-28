@@ -1,5 +1,9 @@
 # Installation
 
+## Nuxt Version Support
+
+This module is compatible with both **Nuxt 3** and **Nuxt 4**. The installation and configuration process is the same for both versions.
+
 ## Install the Module
 
 ```bash
@@ -28,7 +32,7 @@ npm install @formkit/nuxt
 
 ## Add to Nuxt Config
 
-Add the module to your `nuxt.config.ts`:
+Add the module to your `nuxt.config.ts` (works for both Nuxt 3 and Nuxt 4):
 
 ```ts
 export default defineNuxtConfig({

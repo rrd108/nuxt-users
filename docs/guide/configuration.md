@@ -2,7 +2,7 @@
 
 ## Basic Configuration
 
-The module can be configured in your `nuxt.config.ts`:
+The module can be configured in your `nuxt.config.ts` (compatible with both Nuxt 3 and Nuxt 4):
 
 ```ts
 export default defineNuxtConfig({

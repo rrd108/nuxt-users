@@ -1,15 +1,16 @@
 # Nuxt Users
 
-A user authentication module for Nuxt 3 with database support for SQLite and MySQL.
+A user authentication module for Nuxt 3 and Nuxt 4 with database support for SQLite, MySQL, and PostgreSQL.
 
 ## Features
 
 - 🔐 User authentication with bcrypt password hashing
-- 🗄️ Database support (SQLite, MySQL)
+- 🗄️ Database support (SQLite, MySQL, PostgreSQL)
 - 🛠️ CLI commands for database management
 - 🔑 Password Reset Functionality
 - 📦 Zero-config setup with sensible defaults
 - 🔧 TypeScript support
+- 🚀 Nuxt 3 & 4 compatibility
 
 ## Quick Start
 

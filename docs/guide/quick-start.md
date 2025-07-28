@@ -1,6 +1,6 @@
 # Quick Start
 
-Get up and running with Nuxt Users in minutes.
+Get up and running with Nuxt Users in minutes. This guide works for both Nuxt 3 and Nuxt 4.
 
 ## 1. Install the Module
 

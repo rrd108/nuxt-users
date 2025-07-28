@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: "Nuxt Users Module"
-  text: "A user authentication module for Nuxt 3 with database support for SQLite, MySQL, and PostgreSQL"
-  tagline: That provides a full stack user authentication system for Nuxt 3 projects.
+  text: "A user authentication module for Nuxt 3 & 4 with database support for SQLite, MySQL, and PostgreSQL"
+  tagline: That provides a full stack user authentication system for Nuxt 3 and Nuxt 4 projects.
   actions:
     - theme: brand
       text: Get Started
