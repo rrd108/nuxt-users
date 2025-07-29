@@ -2,6 +2,23 @@
 
 Learn how the authentication system works in Nuxt Users.
 
+## Whitelisting Routes
+
+By default, all pages require authentication. You can whitelist routes that should be accessible without authentication using the `auth.whitelist` option in your `nuxt.config.ts`.
+
+By default, the login page is already whitelisted. If you want to add other pages, like a register page, you can do so like this:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    auth: {
+      whitelist: ['/login', '/register'],
+    },
+  },
+})
+```
+
 ## Overview
 
 The module provides a complete authentication system with:

@@ -35,6 +35,15 @@ export interface ModuleOptions {
    * @default false
    */
   skipDatabaseChecks?: boolean
+
+  auth?: {
+    /**
+     * Whitelisted routes that do not require authentication
+     * @default ['/login']
+     * @example ['/login', '/register']
+     */
+    whitelist: string[]
+  }
 }
 
 export interface MailerOptions {

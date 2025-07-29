@@ -115,6 +115,8 @@
     "tsx": "^4.20.3",
     "typescript": "~5.8.3",
     "unbuild": "^3.0.0",
+    "unplugin-auto-import": "^19.3.0",
+    "vite-tsconfig-paths": "^5.1.4",
     "vitepress": "^1.6.3",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.0.1"
