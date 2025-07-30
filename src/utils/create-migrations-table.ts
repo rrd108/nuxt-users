@@ -6,7 +6,7 @@ export const createMigrationsTable = async (options: ModuleOptions) => {
   const db = await useDb(options)
   const tableName = 'migrations'
 
-  console.log(`[DB:Create Migrations ${connectorName} Table] Creating ${tableName} table with ${connectorName} connector...`)
+  console.log(`[Nuxt Users] DB:Create Migrations ${connectorName} Table Creating ${tableName} table with ${connectorName} connector...`)
 
   if (connectorName === 'sqlite') {
     await db.sql`
@@ -36,5 +36,5 @@ export const createMigrationsTable = async (options: ModuleOptions) => {
     `
   }
 
-  console.log(`[DB:Create Migrations ${connectorName} Table] successfull ✅`)
+  console.log(`[Nuxt Users] DB:Create Migrations ${connectorName} Table successfull ✅`)
 }

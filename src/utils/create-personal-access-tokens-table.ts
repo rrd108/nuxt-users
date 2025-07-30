@@ -6,7 +6,7 @@ export const createPersonalAccessTokensTable = async (options: ModuleOptions) =>
   const db = await useDb(options)
   const tableName = options.tables.personalAccessTokens
 
-  console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Creating ${tableName} table with ${connectorName} connector...`)
+  console.log(`[Nuxt Users] DB:Create Personal Access Tokens ${connectorName} Table Creating ${tableName} table with ${connectorName} connector...`)
 
   // Create personal_access_tokens table with the specified fields
   if (connectorName === 'sqlite') {
@@ -57,5 +57,5 @@ export const createPersonalAccessTokensTable = async (options: ModuleOptions) =>
     )
   `
   }
-  console.log(`[DB:Create Personal Access Tokens ${connectorName} Table] Fields: id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at ✅`)
+  console.log(`[Nuxt Users] DB:Create Personal Access Tokens ${connectorName} Table Fields: id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at ✅`)
 }

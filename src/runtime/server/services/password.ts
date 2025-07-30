@@ -17,7 +17,7 @@ export const sendPasswordResetLink = async (
   if (!user) {
     // To prevent email enumeration, we don't throw an error here.
     // Log this event server-side if desired.
-    console.log(`Password reset requested for non-existent email: ${email}`)
+    console.log(`[Nuxt Users] Password reset requested for non-existent email: ${email}`)
     return
   }
 
@@ -38,7 +38,7 @@ export const sendPasswordResetLink = async (
 
   // Send email
   if (!options.mailer) {
-    console.error('Mailer configuration is missing. Cannot send password reset email.')
+    console.error('[Nuxt Users] Mailer configuration is missing. Cannot send password reset email.')
     // Potentially throw an error or handle this case based on application requirements
     return
   }
@@ -61,10 +61,10 @@ export const sendPasswordResetLink = async (
       text: `Please click the following link to reset your password: ${options.passwordResetBaseUrl}`,
       html: `<p>Please click the following link to reset your password:</p><p><a href="${options.passwordResetBaseUrl}">${options.passwordResetBaseUrl}</a></p><p>This link will expire in ${TOKEN_EXPIRATION_HOURS} hour(s).</p>`,
     })
-    console.log(`Password reset email sent to ${email}`)
+    console.log(`[Nuxt Users] Password reset email sent to ${email}`)
   }
   catch (error) {
-    console.error(`Failed to send password reset email to ${email}:`, error)
+    console.error(`[Nuxt Users] Failed to send password reset email to ${email}:`, error)
     // Handle email sending failure (e.g., log, notify admin)
   }
 }
@@ -88,7 +88,7 @@ export const resetPassword = async (
   ` as { rows: { id: number, email: string, token: string, created_at: string }[] }
 
   if (tokenRecords.rows.length === 0) {
-    console.log(`No password reset tokens found for email: ${email}`)
+    console.log(`[Nuxt Users] No password reset tokens found for email: ${email}`)
     return false
   }
 
@@ -102,7 +102,7 @@ export const resetPassword = async (
   }
 
   if (!validTokenRecord || !validTokenRecord.created_at) {
-    console.log(`Invalid password reset token provided for email: ${email}`)
+    console.log(`[Nuxt Users] Invalid password reset token provided for email: ${email}`)
     return false
   }
 
@@ -135,7 +135,7 @@ export const resetPassword = async (
   const expirationTimeString = `${expirationYear.toString().padStart(4, '0')}-${expirationMonth.toString().padStart(2, '0')}-${expirationDay.toString().padStart(2, '0')} ${expirationHour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')}`
 
   if (currentTimeString > expirationTimeString) {
-    console.log(`Expired password reset token for email: ${email}`)
+    console.log(`[Nuxt Users] Expired password reset token for email: ${email}`)
     // Clean up this specific expired token
     await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE id = ${validTokenRecord.id}`
     return false
@@ -147,7 +147,7 @@ export const resetPassword = async (
   // Delete the used token (and any other tokens for this email to be safe)
   await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE email = ${email}`
 
-  console.log(`Password reset successful for email: ${email}`)
+  console.log(`[Nuxt Users] Password reset successful for email: ${email}`)
   return true
 }
 
@@ -170,5 +170,5 @@ export const deleteExpiredPasswordResetTokens = async (
     WHERE created_at < ${expirationDateString}
   `
 
-  console.log(`Expired password reset tokens older than ${expirationDateString} deleted.`)
+  console.log(`[Nuxt Users] Expired password reset tokens older than ${expirationDateString} deleted.`)
 }

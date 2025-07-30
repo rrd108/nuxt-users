@@ -1,15 +1,15 @@
 <script setup>
 const handleSuccess = (user) => {
-  console.log('Login successful:', user)
+  console.log('[Nuxt Users] Login successful:', user)
   alert(`Welcome back, ${user.name}!`)
 }
 
 const handleError = (error) => {
-  console.log('Login error:', error)
+  console.log('[Nuxt Users] Login error:', error)
 }
 
 const handleSubmit = (data) => {
-  console.log('Form submitted:', data)
+  console.log('[Nuxt Users] Form submitted:', data)
 }
 </script>
 

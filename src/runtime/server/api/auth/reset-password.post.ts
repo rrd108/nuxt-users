@@ -40,10 +40,10 @@ export default defineEventHandler(async (event) => {
   }
   catch (error: unknown) {
     if (error instanceof Error) {
-      console.error('Error in reset-password endpoint:', error.message)
+      console.error('[Nuxt Users] Error in reset-password endpoint:', error.message)
     }
     else {
-      console.error('Error in reset-password endpoint:', error)
+      console.error('[Nuxt Users] Error in reset-password endpoint:', error)
     }
     // If it's a known error from resetPassword, it might already be an H3Error
     if (error instanceof H3Error) {

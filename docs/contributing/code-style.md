@@ -168,7 +168,7 @@ try {
   const result = await db.sql`SELECT * FROM users`
   return result.rows
 } catch (error) {
-  console.error('Database query failed:', error)
+  console.error('[Nuxt Users] Database query failed:', error)
   throw new Error('Failed to fetch users')
 }
 
@@ -449,7 +449,7 @@ const safeOperation = async () => {
     const result = await riskyOperation()
     return result
   } catch (error) {
-    console.error('Operation failed:', error)
+    console.error('[Nuxt Users] Operation failed:', error)
     throw new Error('Operation failed')
   }
 }

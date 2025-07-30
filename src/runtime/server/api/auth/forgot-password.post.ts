@@ -19,10 +19,10 @@ export default defineEventHandler(async (event) => {
   }
   catch (error: unknown) {
     if (error instanceof Error) {
-      console.error('Error in forgot-password endpoint:', error.message)
+      console.error('[Nuxt Users] Error in forgot-password endpoint:', error.message)
     }
     else {
-      console.error('Error in forgot-password endpoint:', error)
+      console.error('[Nuxt Users] Error in forgot-password endpoint:', error)
     }
     // Do not reveal specific errors to the client to prevent enumeration or info leaks
     throw createError({

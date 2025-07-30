@@ -66,7 +66,7 @@ export const runMigrations = async (options: ModuleOptions): Promise<void> => {
 
   console.log(`[Nuxt Users] Found ${pendingMigrations.length} pending migrations:`)
   pendingMigrations.forEach((migration) => {
-    console.log(`  - ${migration.name}`)
+    console.log(`[Nuxt Users]   - ${migration.name}`)
   })
 
   for (const migration of pendingMigrations) {

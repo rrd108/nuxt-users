@@ -39,7 +39,7 @@ export const useDb = async (options: ModuleOptions) => {
     return createDatabase(connector(connectorOptions))
   }
   catch (error) {
-    console.warn(`[Nuxt Users DB] ⚠️  Failed to connect to ${connectorName} database:`, error instanceof Error ? error.message : 'Unknown error')
+    console.warn(`[Nuxt Users] ⚠️  Failed to connect to ${connectorName} database:`, error instanceof Error ? error.message : 'Unknown error')
     throw error
   }
 }

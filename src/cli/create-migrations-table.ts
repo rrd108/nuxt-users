@@ -17,7 +17,7 @@ export default defineCommand({
       console.log('[Nuxt Users] Migrations table created successfully!')
     }
     catch (error) {
-      console.error('[DB:Create Migrations Table] Error:', error)
+      console.error('[Nuxt Users] DB:Create Migrations Table Error:', error)
       process.exit(1)
     }
   }

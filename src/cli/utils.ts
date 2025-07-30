@@ -90,7 +90,7 @@ export const loadOptions = async (): Promise<ModuleOptions> => {
   }
   catch (error) {
     console.log('[Nuxt Users] Could not load Nuxt project, using environment variables')
-    console.error(error)
+    console.error('[Nuxt Users] Error:', error)
     return getOptionsFromEnv()
   }
 }

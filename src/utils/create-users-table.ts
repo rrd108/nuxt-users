@@ -6,7 +6,7 @@ export const createUsersTable = async (options: ModuleOptions) => {
   const db = await useDb(options)
   const tableName = options.tables.users
 
-  console.log(`[DB:Create ${connectorName} Users Table] Creating ${tableName}...`)
+  console.log(`[Nuxt Users] DB:Create ${connectorName} Users Table Creating ${tableName}...`)
 
   if (connectorName === 'sqlite') {
     await db.sql`
@@ -48,5 +48,5 @@ export const createUsersTable = async (options: ModuleOptions) => {
     `
   }
 
-  console.log(`[DB:Create ${connectorName} Users Table] Fields: id, email, name, password, role, created_at, updated_at ✅`)
+  console.log(`[Nuxt Users] DB:Create ${connectorName} Users Table Fields: id, email, name, password, role, created_at, updated_at ✅`)
 }

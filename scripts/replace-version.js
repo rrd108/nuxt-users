@@ -16,4 +16,4 @@ cliContent = cliContent.replace(/__VERSION__/g, version)
 // Write back to the file
 writeFileSync(cliPath, cliContent)
 
-console.log(`Updated CLI version to ${version}`)
+console.log(`[Nuxt Users] Updated CLI version to ${version}`)

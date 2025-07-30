@@ -17,7 +17,7 @@ export default defineCommand({
       console.log('[Nuxt Users] Password reset tokens table created successfully!')
     }
     catch (error) {
-      console.error('[DB:Create Password Reset Tokens Table] Error:', error)
+      console.error('[Nuxt Users] DB:Create Password Reset Tokens Table Error:', error)
       process.exit(1)
     }
   }

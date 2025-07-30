@@ -45,7 +45,7 @@ const handleForgotPassword = async () => {
     else {
       message.value = 'Failed to send password reset link.'
     }
-    console.error(err)
+    console.error('[Nuxt Users] Forgot Password Form Error:', err)
     isError.value = true
   }
   finally {
