@@ -228,4 +228,5 @@ const defaultOptions = {
 
 - [Database Setup](/guide/database-setup) - Learn about database configuration
 - [Authentication](/guide/authentication) - Understand the authentication flow
-- [Password Reset](/guide/password-reset) - Configure password reset functionality 
+- [Password Reset](/guide/password-reset) - Configure password reset functionality
+- [Component Styling](/components/#theme-support) - Learn about theme support and customization 

@@ -218,6 +218,150 @@ All components come with a clean, modern design that works without any CSS frame
 
 3. **Using slots**: Replace any part of the forms with your own custom components.
 
+### Theme Support
+
+The module includes built-in theme support with automatic light/dark mode detection. The components use CSS custom properties that automatically adapt based on the user's system preference.
+
+#### Using Light Theme
+
+To force the light theme in your consuming Nuxt app, you can:
+
+**Option 1: Add the `light` class to your app root**
+
+```vue
+<template>
+  <div class="light">
+    <NuxtPage />
+  </div>
+</template>
+```
+
+**Option 2: Add the `light` class to a specific container**
+
+```vue
+<template>
+  <div class="light">
+    <LoginForm />
+  </div>
+</template>
+```
+
+**Option 3: Override CSS custom properties for light theme**
+
+```vue
+<template>
+  <div class="light-theme">
+    <LoginForm />
+  </div>
+</template>
+
+<style>
+.light-theme {
+  /* Primary Colors */
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-primary-light: #60a5fa;
+
+  /* Secondary Colors */
+  --color-secondary: #059669;
+  --color-secondary-dark: #047857;
+  --color-secondary-light: #10b981;
+
+  /* Neutral Colors */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  /* Background Colors */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-bg-tertiary: #f3f4f6;
+
+  /* Border Colors */
+  --color-border: #e5e7eb;
+  --color-border-light: #d1d5db;
+  --color-border-dark: #ccc;
+}
+</style>
+```
+
+**Option 4: Global light theme in your app**
+
+Add this to your global CSS or `app.vue`:
+
+```css
+/* Force light theme globally */
+:root {
+  /* Primary Colors */
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-primary-light: #60a5fa;
+
+  /* Secondary Colors */
+  --color-secondary: #059669;
+  --color-secondary-dark: #047857;
+  --color-secondary-light: #10b981;
+
+  /* Neutral Colors */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  /* Background Colors */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-bg-tertiary: #f3f4f6;
+
+  /* Border Colors */
+  --color-border: #e5e7eb;
+  --color-border-light: #d1d5db;
+  --color-border-dark: #ccc;
+}
+```
+
+#### Available CSS Custom Properties
+
+The module provides these CSS custom properties that you can override:
+
+| Property | Light Theme Value | Dark Theme Value | Description |
+|----------|------------------|------------------|-------------|
+| `--color-primary` | `#3b82f6` | `#60a5fa` | Primary brand color |
+| `--color-primary-dark` | `#2563eb` | `#3b82f6` | Darker primary variant |
+| `--color-primary-light` | `#60a5fa` | `#93c5fd` | Lighter primary variant |
+| `--color-secondary` | `#059669` | `#10b981` | Secondary brand color |
+| `--color-bg-primary` | `#ffffff` | `#111827` | Main background color |
+| `--color-bg-secondary` | `#f9fafb` | `#1f2937` | Secondary background color |
+| `--color-bg-tertiary` | `#f3f4f6` | `#374151` | Tertiary background color |
+| `--color-border` | `#e5e7eb` | `#374151` | Default border color |
+| `--color-gray-50` | `#f9fafb` | `#111827` | Lightest gray |
+| `--color-gray-900` | `#111827` | `#f9fafb` | Darkest gray |
+
+#### Automatic Theme Detection
+
+By default, the components automatically detect the user's system preference using `@media (prefers-color-scheme: light)`. This means:
+
+- If the user's system is set to light mode, the light theme will be applied
+- If the user's system is set to dark mode, the dark theme will be applied
+- You can override this behavior using the methods above
+
 ### Example with Custom Styling
 
 ```vue

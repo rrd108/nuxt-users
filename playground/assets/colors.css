@@ -1,50 +1,106 @@
 :root {
-    /* Primary Colors */
-    --color-primary: #3b82f6;
-    --color-primary-dark: #2563eb;
-    --color-primary-light: #60a5fa;
+    /* Primary Colors - Adjusted for dark theme */
+    --color-primary: #60a5fa;
+    --color-primary-dark: #3b82f6;
+    --color-primary-light: #93c5fd;
 
-    /* Secondary Colors */
-    --color-secondary: #059669;
-    --color-secondary-dark: #047857;
-    --color-secondary-light: #10b981;
+    /* Secondary Colors - Adjusted for dark theme */
+    --color-secondary: #10b981;
+    --color-secondary-dark: #059669;
+    --color-secondary-light: #34d399;
 
-    /* Neutral Colors */
-    --color-white: #ffffff;
-    --color-black: #000000;
-    --color-gray-50: #f9fafb;
-    --color-gray-100: #f3f4f6;
-    --color-gray-200: #e5e7eb;
-    --color-gray-300: #d1d5db;
-    --color-gray-400: #9ca3af;
-    --color-gray-500: #6b7280;
-    --color-gray-600: #4b5563;
-    --color-gray-700: #374151;
-    --color-gray-800: #1f2937;
-    --color-gray-900: #111827;
+    /* Neutral Colors - Inverted for dark theme */
+    --color-white: #000000;
+    --color-black: #ffffff;
+    --color-gray-50: #111827;
+    --color-gray-100: #1f2937;
+    --color-gray-200: #374151;
+    --color-gray-300: #4b5563;
+    --color-gray-400: #6b7280;
+    --color-gray-500: #9ca3af;
+    --color-gray-600: #d1d5db;
+    --color-gray-700: #e5e7eb;
+    --color-gray-800: #f3f4f6;
+    --color-gray-900: #f9fafb;
 
-    /* Success Colors */
-    --color-success: #059669;
-    --color-success-light: #f0fdf4;
+    /* Success Colors - Adjusted for dark theme */
+    --color-success: #10b981;
+    --color-success-light: #064e3b;
 
-    /* Warning Colors */
-    --color-warning: #f59e0b;
-    --color-warning-light: #fef3c7;
-    --color-warning-text: #92400e;
+    /* Warning Colors - Adjusted for dark theme */
+    --color-warning: #fbbf24;
+    --color-warning-light: #451a03;
+    --color-warning-text: #fef3c7;
 
-    /* Error Colors */
-    --color-error: #dc2626;
-    --color-error-light: #fef2f2;
-    --color-error-border: #fecaca;
-    --color-error-alt: #db5050;
+    /* Error Colors - Adjusted for dark theme */
+    --color-error: #ef4444;
+    --color-error-light: #450a0a;
+    --color-error-border: #7f1d1d;
+    --color-error-alt: #f87171;
 
-    /* Border Colors */
-    --color-border: #e5e7eb;
-    --color-border-light: #d1d5db;
-    --color-border-dark: #ccc;
+    /* Border Colors - Adjusted for dark theme */
+    --color-border: #374151;
+    --color-border-light: #4b5563;
+    --color-border-dark: #6b7280;
 
-    /* Background Colors */
-    --color-bg-primary: #ffffff;
-    --color-bg-secondary: #f9fafb;
-    --color-bg-tertiary: #f3f4f6;
+    /* Background Colors - Inverted for dark theme */
+    --color-bg-primary: #111827;
+    --color-bg-secondary: #1f2937;
+    --color-bg-tertiary: #374151;
+}
+
+/* Auto-switch to light theme based on system preference */
+@media (prefers-color-scheme: light) {
+
+    .light,
+    :root {
+        /* Primary Colors */
+        --color-primary: #3b82f6;
+        --color-primary-dark: #2563eb;
+        --color-primary-light: #60a5fa;
+
+        /* Secondary Colors */
+        --color-secondary: #059669;
+        --color-secondary-dark: #047857;
+        --color-secondary-light: #10b981;
+
+        /* Neutral Colors */
+        --color-white: #ffffff;
+        --color-black: #000000;
+        --color-gray-50: #f9fafb;
+        --color-gray-100: #f3f4f6;
+        --color-gray-200: #e5e7eb;
+        --color-gray-300: #d1d5db;
+        --color-gray-400: #9ca3af;
+        --color-gray-500: #6b7280;
+        --color-gray-600: #4b5563;
+        --color-gray-700: #374151;
+        --color-gray-800: #1f2937;
+        --color-gray-900: #111827;
+
+        /* Success Colors */
+        --color-success: #059669;
+        --color-success-light: #f0fdf4;
+
+        /* Warning Colors */
+        --color-warning: #f59e0b;
+        --color-warning-light: #fef3c7;
+        --color-warning-text: #92400e;
+
+        /* Error Colors */
+        --color-error: #dc2626;
+        --color-error-light: #fef2f2;
+        --color-error-border: #fecaca;
+        --color-error-alt: #db5050;
+
+        /* Border Colors */
+        --color-border: #e5e7eb;
+        --color-border-light: #d1d5db;
+        --color-border-dark: #ccc;
+
+        /* Background Colors */
+        --color-bg-primary: #ffffff;
+        --color-bg-secondary: #f9fafb;
+        --color-bg-tertiary: #f3f4f6;
+    }
 }
