@@ -62,7 +62,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="login-form-container">
+  <section>
     <form @submit.prevent="handleSubmit">
       <!-- Header slot -->
       <slot name="header">
@@ -141,7 +141,9 @@ const handleSubmit = async () => {
             <a
               href="#"
               class="forgot-link"
-            >Forgot your password?</a>
+            >
+              Forgot your password?
+            </a>
           </p>
         </div>
       </slot>
@@ -159,17 +161,16 @@ const handleSubmit = async () => {
         </div>
       </slot>
     </form>
-  </div>
+  </section>
 </template>
 
 <style scoped>
-.login-form-container {
-  width: 100%;
-  max-width: 400px;
+section {
+  max-width: 25rem;
   margin: 0 auto;
-      padding: 2em;
+  padding: 1em;
   background: var(--color-bg-primary);
-  border-radius: 12px;
+  border-radius: 0.75em;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid var(--color-border);
 }

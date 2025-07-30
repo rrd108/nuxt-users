@@ -15,42 +15,38 @@ const handleSubmit = (data) => {
 
 <template>
   <div class="demo-container">
-    <h1>Nuxt Users - Login Component Demo</h1>
+    <h1>Nuxt Users</h1>
 
     <div class="demo-section">
-      <h2>Default Login Form</h2>
+      <h2>Login Component Demo</h2>
       <p>This is the default login form with all default styling and content.</p>
-      <LoginForm
-        @success="handleSuccess"
-        @error="handleError"
-        @submit="handleSubmit"
-      />
-      <div style="text-align: center; margin-top: 1em;">
-        <NuxtLink to="/forgot-password">Forgot Password?</NuxtLink>
-      </div>
     </div>
+
+    <LoginForm
+      @success="handleSuccess"
+      @error="handleError"
+      @submit="handleSubmit"
+    />
   </div>
 </template>
 
 <style scoped>
 .demo-container {
-  max-width: 1200px;
+  max-width: 75rem;
   margin: 0 auto;
-  padding: 2em;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .demo-container h1 {
   text-align: center;
+  margin-bottom: 1em;
   color: var(--color-gray-800);
-  margin-bottom: 3em;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
 }
 
 .demo-section {
-  margin-bottom: 4em;
-  padding: 2em;
+  margin-bottom: 1em;
   border: 1px solid var(--color-border);
   border-radius: 12px;
   background: var(--color-bg-secondary);
@@ -61,22 +57,24 @@ const handleSubmit = (data) => {
   margin-bottom: 0.5em;
   font-size: 1.5rem;
   font-weight: 600;
+  text-align: center;
 }
 
 .demo-section p {
   color: var(--color-gray-500);
   margin-bottom: 2em;
   font-size: 0.875rem;
+  text-align: center;
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
+@media (max-width: 48rem) {
   .demo-container {
-    padding: 1em;
+    padding: .5em;
   }
 
   .demo-section {
-    padding: 1.5em;
+    padding: .5em;
   }
 
   .demo-container h1 {
