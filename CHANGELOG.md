@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v1.2.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.1.6...v1.2.0)
+
+### 🚀 Enhancements
+
+- Adds user role functionality closes #25 ([#25](https://github.com/rrd108/nuxt-users/issues/25))
+- Adds authentication middleware and route whitelisting closes #52 ([#52](https://github.com/rrd108/nuxt-users/issues/52))
+
+### 🩹 Fixes
+
+- **ci:** Adds playground preparation step to CI ([cf9af1f](https://github.com/rrd108/nuxt-users/commit/cf9af1f))
+
+### 💅 Refactors
+
+- Uses default table names as fallback ([dcee2ee](https://github.com/rrd108/nuxt-users/commit/dcee2ee))
+
+### 🏡 Chore
+
+- **release:** V1.1.6 ([1222bcd](https://github.com/rrd108/nuxt-users/commit/1222bcd))
+- Consistently prefixes logs with "[Nuxt Users]" ([9ed1df1](https://github.com/rrd108/nuxt-users/commit/9ed1df1))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.1.6
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.1.5...v1.1.6)
