@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
     sameSite: 'lax', // Adjust as needed
-    maxAge: 60 * 60 * 24 * 7, // Example: 7 days
+    maxAge: 60 * 60 * 24 * 7, // 7 days
     path: '/',
   })
 

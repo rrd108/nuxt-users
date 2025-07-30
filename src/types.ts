@@ -77,3 +77,10 @@ export interface LoginFormProps {
   apiEndpoint?: string
   redirectTo?: string
 }
+
+export interface LogoutLinkProps {
+  redirectTo?: string
+  linkText?: string
+  confirmMessage?: string
+  class?: string
+}

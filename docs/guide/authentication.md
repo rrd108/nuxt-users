@@ -186,23 +186,93 @@ export default defineEventHandler(async (event) => {
 
 ## Logout
 
-To logout, simply clear the authentication cookie:
+The module provides a complete logout system that securely removes authentication tokens and clears user sessions.
 
-```ts
-// In your logout API route
-export default defineEventHandler(async (event) => {
-  // Delete token from database
-  // Clear cookie
-  setCookie(event, 'auth_token', '', {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'strict',
-    maxAge: 0
-  })
-  
-  return { message: 'Logged out successfully' }
-})
+### Using the LogoutLink Component
+
+The module provides a ready-to-use `LogoutLink` component:
+
+```vue
+<template>
+  <LogoutLink 
+    @success="handleSuccess"
+    @error="handleError"
+  />
+</template>
+
+<script setup>
+const handleSuccess = () => {
+  console.log('Logout successful')
+  // Handle successful logout
+}
+
+const handleError = (error) => {
+  console.log('Logout error:', error)
+  // Show error message
+}
+</script>
 ```
+
+### Customizing the LogoutLink
+
+You can customize the appearance and behavior:
+
+```vue
+<LogoutLink 
+  link-text="Sign Out"
+  redirect-to="/home"
+  confirm-message="Are you sure you want to sign out?"
+  class="custom-logout-link"
+/>
+```
+
+### Manual Logout
+
+You can implement custom logout logic using the `useAuth` composable:
+
+```vue
+<script setup>
+const { logout } = useAuth()
+
+const handleLogout = async () => {
+  try {
+    await logout()
+    console.log('Logged out successfully')
+    // Redirect or update UI
+  } catch (error) {
+    console.error('Logout failed:', error)
+  }
+}
+</script>
+```
+
+### Direct API Call
+
+You can also call the logout API directly:
+
+```vue
+<script setup>
+const logout = async () => {
+  try {
+    await $fetch('/api/logout', {
+      method: 'GET'
+    })
+    console.log('Logged out successfully')
+  } catch (error) {
+    console.error('Logout failed:', error)
+  }
+}
+</script>
+```
+
+### Logout Process
+
+When a user logs out:
+
+1. **Token deletion**: The authentication token is removed from the database
+2. **Cookie clearing**: The `auth_token` cookie is cleared from the browser
+3. **State cleanup**: The user state is cleared from the application
+4. **Redirect**: User is optionally redirected to a specified page
 
 ## Security Best Practices
 

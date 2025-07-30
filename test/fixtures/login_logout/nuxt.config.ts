@@ -8,7 +8,7 @@ let dbConfig = {} as DatabaseConfig
 
 if (dbType === 'sqlite') {
   dbConfig = {
-    path: './_login-test',
+    path: './_login_logout-test',
   }
 }
 if (dbType === 'mysql') {

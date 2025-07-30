@@ -85,6 +85,12 @@ export default defineNuxtModule<ModuleOptions>({
       handler: resolver.resolve('./runtime/server/api/auth/reset-password.post')
     })
 
+    addServerHandler({
+      route: '/api/logout',
+      method: 'get',
+      handler: resolver.resolve('./runtime/server/api/logout.get')
+    })
+
     addComponent({
       name: 'LoginForm',
       filePath: resolver.resolve('./runtime/components/LoginForm.vue')
@@ -98,6 +104,11 @@ export default defineNuxtModule<ModuleOptions>({
     addComponent({
       name: 'ResetPasswordForm',
       filePath: resolver.resolve('./runtime/components/ResetPasswordForm.vue')
+    })
+
+    addComponent({
+      name: 'LogoutLink',
+      filePath: resolver.resolve('./runtime/components/LogoutLink.vue')
     })
 
     // TODOAdd global CSS with color variables

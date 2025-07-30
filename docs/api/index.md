@@ -36,6 +36,26 @@ Authenticate a user with email and password.
 - `400 Bad Request`: Missing email or password
 - `401 Unauthorized`: Invalid credentials
 
+### Logout
+
+**Endpoint:** `GET /api/logout`
+
+Logout the current user by removing their authentication token.
+
+**Request:** No request body required
+
+**Response:**
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+**Notes:**
+- Removes the authentication token from the database
+- Clears the `auth_token` cookie
+- No authentication required (works with any valid token)
+
 ## Password Reset Endpoints
 
 ### Forgot Password

@@ -7,6 +7,7 @@ The Nuxt Users module provides several Vue components for authentication and pas
 | Component | Purpose |
 |-----------|---------|
 | `LoginForm` | User login form with validation |
+| `LogoutLink` | User logout link with confirmation |
 | `ForgotPasswordForm` | Password reset request form |
 | `ResetPasswordForm` | Password reset form with token validation |
 
@@ -162,6 +163,123 @@ Customize how error messages are displayed.
     </div>
   </template>
 </LoginForm>
+```
+
+## LogoutLink
+
+A simple logout link component that handles user logout with confirmation.
+
+### Basic Usage
+
+```vue
+<template>
+  <LogoutLink 
+    @success="handleSuccess"
+    @error="handleError"
+  />
+</template>
+
+<script setup>
+const handleSuccess = () => {
+  console.log('Logout successful')
+  // Handle successful logout
+}
+
+const handleError = (error) => {
+  console.log('Logout error:', error)
+  // Show error message
+}
+</script>
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `linkText` | `string` | `'Logout'` | The text to display in the link |
+| `redirectTo` | `string` | `'/login'` | Where to redirect after successful logout |
+| `confirmMessage` | `string` | `'Are you sure you want to logout?'` | Confirmation message before logout |
+| `class` | `string` | `undefined` | Additional CSS classes for styling |
+
+### Events
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `success` | `void` | Emitted when logout is successful |
+| `error` | `string` | Emitted when logout fails |
+| `click` | `void` | Emitted when the link is clicked |
+
+### Customization Examples
+
+#### Custom styling
+
+```vue
+<LogoutLink 
+  link-text="Sign Out"
+  class="custom-logout-link"
+/>
+```
+
+#### Custom redirect
+
+```vue
+<LogoutLink 
+  redirect-to="/home"
+  link-text="Exit"
+/>
+```
+
+#### Custom confirmation
+
+```vue
+<LogoutLink 
+  confirm-message="Are you sure you want to sign out of your account?"
+  link-text="Sign Out"
+/>
+```
+
+#### No confirmation
+
+```vue
+<template>
+  <LogoutLink 
+    :confirm-message="null"
+    link-text="Quick Logout"
+  />
+</template>
+```
+
+### Manual Logout
+
+You can also implement logout manually using the `useAuth` composable:
+
+```vue
+<template>
+  <button @click="handleLogout" :disabled="isLoading">
+    {{ isLoading ? 'Logging out...' : 'Logout' }}
+  </button>
+</template>
+
+<script setup>
+const { logout } = useAuth()
+const isLoading = ref(false)
+
+const handleLogout = async () => {
+  if (!confirm('Are you sure you want to logout?')) {
+    return
+  }
+  
+  isLoading.value = true
+  try {
+    await logout()
+    // Handle successful logout
+  } catch (error) {
+    // Handle error
+  } finally {
+    isLoading.value = false
+  }
+}
+</script>
 ```
 
 ## ForgotPasswordForm

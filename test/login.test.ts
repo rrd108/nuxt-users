@@ -18,14 +18,14 @@ describe('Login API Route', async () => {
   let testUser: Omit<User, 'password'>
 
   await setup({
-    rootDir: fileURLToPath(new URL('./fixtures/login', import.meta.url)),
+    rootDir: fileURLToPath(new URL('./fixtures/login_logout', import.meta.url)),
   })
 
   beforeEach(async () => {
     dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
     if (dbType === 'sqlite') {
       dbConfig = {
-        path: './_login-test',
+        path: './_login_logout-test',
       }
     }
     if (dbType === 'mysql') {
