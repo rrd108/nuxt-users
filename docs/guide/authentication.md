@@ -11,6 +11,23 @@ The module provides a complete authentication system with:
 - HTTP-only cookies for security
 - Automatic token management
 
+## Whitelisting Routes
+
+By default, all pages (except `/login`) require authentication. You can whitelist routes that should be accessible without authentication using the `auth.whitelist` option in your `nuxt.config.ts`.
+
+If you want to add other pages what can be accessed without authentication, like a `/register` page, you can do so like this:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    auth: {
+      whitelist: ['/login', '/register'],
+    },
+  },
+})
+```
+
 ## Authentication Flow
 
 Upon successful login via the `/api/login` endpoint:

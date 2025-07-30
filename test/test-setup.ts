@@ -56,6 +56,9 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
       user: process.env.MAILER_USER || 'test',
       pass: process.env.MAILER_PASSWORD || 'test'
     }
+  },
+  auth: {
+    whitelist: ['/login']
   }
 })
 

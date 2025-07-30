@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir } from '@nuxt/kit'
 import { defu } from 'defu'
 import type { ModuleOptions } from './types'
 
@@ -27,6 +27,9 @@ export const defaultOptions: ModuleOptions = {
       from: '"Nuxt Users Module" <noreply@example.com>',
     },
   },
+  auth: {
+    whitelist: ['/login'],
+  },
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -51,12 +54,17 @@ export default defineNuxtModule<ModuleOptions>({
         personalAccessTokens: options.tables?.personalAccessTokens || defaultOptions.tables.personalAccessTokens,
         passwordResetTokens: options.tables?.passwordResetTokens || defaultOptions.tables.passwordResetTokens,
       },
+      auth: {
+        whitelist: options.auth?.whitelist || defaultOptions.auth?.whitelist || ['/login'],
+      },
     }
 
     addPlugin({
       src: resolver.resolve('./runtime/plugin'),
       mode: 'server'
     })
+
+    addImportsDir(resolver.resolve('./runtime/composables'))
 
     // Register API routes
     addServerHandler({

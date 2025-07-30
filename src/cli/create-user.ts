@@ -40,11 +40,11 @@ export default defineCommand({
 
     try {
       const user = await createUser({ email, name, password, role }, options)
-      console.log(`[DB:Create User] User created successfully: ${user.email} (role: ${user.role})`)
+      console.log(`[Nuxt Users] User created successfully: ${user.email} (role: ${user.role})`)
       process.exit(0)
     }
     catch (error) {
-      console.error('[DB:Create User] Error:', error)
+      console.error('[Nuxt Users] Error:', error)
       process.exit(1)
     }
   }
