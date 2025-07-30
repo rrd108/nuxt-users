@@ -82,7 +82,7 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/your-org/nuxt-users' }
+      { icon: 'github', link: 'https://github.com/rrd108/nuxt-users' }
     ],
     footer: {
       message: 'Released under the MIT License.',
