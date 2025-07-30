@@ -41,19 +41,19 @@ npx nuxt-users create-user admin@example.com "Admin User" adminpass123 admin
 ## 4. Add Login Form to Your App
 
 ```vue
+<script setup lang="ts">
+const handleLoginSuccess = (user) => {
+  console.log('User logged in:', user)
+  // Redirect or update UI
+}
+</script>
+
 <template>
   <div>
     <h1>Welcome to My App</h1>
     <LoginForm @success="handleLoginSuccess" />
   </div>
 </template>
-
-<script setup>
-const handleLoginSuccess = (user) => {
-  console.log('User logged in:', user)
-  // Redirect or update UI
-}
-</script>
 ```
 
 ## 5. Test Your Setup
