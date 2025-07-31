@@ -1,6 +1,33 @@
 # Changelog
 
 
+## v1.4.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.3.0...v1.4.0)
+
+### 🚀 Enhancements
+
+- Implement forgot password closes #57 ([#57](https://github.com/rrd108/nuxt-users/issues/57))
+
+### 🩹 Fixes
+
+- Css color ([1d72336](https://github.com/rrd108/nuxt-users/commit/1d72336))
+- Auth middleware ([113b165](https://github.com/rrd108/nuxt-users/commit/113b165))
+- Enhances auth middleware and improves logging ([f519bbc](https://github.com/rrd108/nuxt-users/commit/f519bbc))
+- Playground colors ([f87ade1](https://github.com/rrd108/nuxt-users/commit/f87ade1))
+
+### 💅 Refactors
+
+- Have a dedicated playground  login page ([487d754](https://github.com/rrd108/nuxt-users/commit/487d754))
+
+### 🏡 Chore
+
+- **release:** V1.3.0 ([b127043](https://github.com/rrd108/nuxt-users/commit/b127043))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.3.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.2.0...v1.3.0)
