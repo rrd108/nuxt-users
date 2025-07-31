@@ -1,7 +1,11 @@
 <script setup>
+import { useAuth } from '#imports'
+
+const { login } = useAuth()
+
 const handleSuccess = (user) => {
   console.log('[Nuxt Users] Login successful:', user)
-  alert(`Welcome back, ${user.name}!`)
+  login(user)
 }
 
 const handleError = (error) => {

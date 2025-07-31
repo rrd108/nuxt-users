@@ -30,6 +30,15 @@ export const defaultOptions: ModuleOptions = {
   auth: {
     whitelist: ['/login'],
   },
+  passwordValidation: {
+    minLength: 8,
+    requireUppercase: true,
+    requireLowercase: true,
+    requireNumbers: true,
+    requireSpecialChars: true,
+    maxLength: 64,
+    preventCommonPasswords: true,
+  },
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -57,6 +66,23 @@ export default defineNuxtModule<ModuleOptions>({
       auth: {
         whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])]
       },
+    }
+
+    // Add public runtime config for client-side access
+    nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {}
+    nuxt.options.runtimeConfig.public.nuxtUsers = {
+      passwordValidation: {
+        minLength: options.passwordValidation?.minLength || defaultOptions.passwordValidation?.minLength || 8,
+        requireUppercase: options.passwordValidation?.requireUppercase ?? defaultOptions.passwordValidation?.requireUppercase ?? true,
+        requireLowercase: options.passwordValidation?.requireLowercase ?? defaultOptions.passwordValidation?.requireLowercase ?? true,
+        requireNumbers: options.passwordValidation?.requireNumbers ?? defaultOptions.passwordValidation?.requireNumbers ?? true,
+        requireSpecialChars: options.passwordValidation?.requireSpecialChars ?? defaultOptions.passwordValidation?.requireSpecialChars ?? true,
+        maxLength: options.passwordValidation?.maxLength || defaultOptions.passwordValidation?.maxLength || 64,
+        preventCommonPasswords: options.passwordValidation?.preventCommonPasswords ?? defaultOptions.passwordValidation?.preventCommonPasswords ?? true,
+      },
+      auth: {
+        whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])]
+      }
     }
 
     addPlugin({
@@ -91,6 +117,18 @@ export default defineNuxtModule<ModuleOptions>({
       handler: resolver.resolve('./runtime/server/api/logout.get')
     })
 
+    addServerHandler({
+      route: '/api/profile',
+      method: 'get',
+      handler: resolver.resolve('./runtime/server/api/profile.get')
+    })
+
+    addServerHandler({
+      route: '/api/profile/update-password',
+      method: 'post',
+      handler: resolver.resolve('./runtime/server/api/profile/update-password.post')
+    })
+
     addComponent({
       name: 'LoginForm',
       filePath: resolver.resolve('./runtime/components/LoginForm.vue')
@@ -109,6 +147,11 @@ export default defineNuxtModule<ModuleOptions>({
     addComponent({
       name: 'LogoutLink',
       filePath: resolver.resolve('./runtime/components/LogoutLink.vue')
+    })
+
+    addComponent({
+      name: 'ProfileForm',
+      filePath: resolver.resolve('./runtime/components/ProfileForm.vue')
     })
 
     // TODOAdd global CSS with color variables

@@ -5,3 +5,4 @@ export { createPersonalAccessTokensTable } from './create-personal-access-tokens
 export { createPasswordResetTokensTable } from './create-password-reset-tokens-table'
 export { createMigrationsTable } from './create-migrations-table'
 export { runMigrations } from './migrate'
+export { validatePassword, getPasswordValidationOptions, getPasswordStrengthColor, getPasswordStrengthText, type PasswordValidationResult, type PasswordValidationOptions } from './password-validation'

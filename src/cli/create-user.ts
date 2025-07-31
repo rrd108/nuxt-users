@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { createUser } from '../utils'
+import { createUser, validatePassword, getPasswordValidationOptions } from '../utils'
 import { loadOptions } from './utils'
 
 export default defineCommand({
@@ -39,6 +39,15 @@ export default defineCommand({
     const options = await loadOptions()
 
     try {
+      // Validate password strength before creating user
+      const passwordOptions = getPasswordValidationOptions(options)
+      const passwordValidation = validatePassword(password, passwordOptions)
+      if (!passwordValidation.isValid) {
+        console.error('[Nuxt Users] Password validation failed:')
+        passwordValidation.errors.forEach(error => console.error(`  - ${error}`))
+        process.exit(1)
+      }
+
       const user = await createUser({ email, name, password, role }, options)
       console.log(`[Nuxt Users] User created successfully: ${user.email} (role: ${user.role})`)
       process.exit(0)

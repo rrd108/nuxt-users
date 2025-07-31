@@ -6,12 +6,18 @@ import { useAuth } from './composables/useAuth'
 
 export default defineNuxtPlugin(async (_nuxtApp) => {
   const { nuxtUsers } = useRuntimeConfig()
+  const { public: { nuxtUsers: publicNuxtUsers } } = useRuntimeConfig()
   const options = nuxtUsers as ModuleOptions
+  const publicOptions = publicNuxtUsers as ModuleOptions
 
   const hasMigrationsTable = await checkTableExists(options, options.tables.migrations)
   if (!hasMigrationsTable) {
     console.warn('[Nuxt Users] ⚠️  Migrations table does not exist, you should run the migration script to create it by running: npx nuxt-users migrate')
   }
+
+  // Initialize user from localStorage on app startup
+  const { initializeUser } = useAuth()
+  initializeUser()
 
   addRouteMiddleware('auth.global', (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
     if (to.path === '/login') {
@@ -22,7 +28,7 @@ export default defineNuxtPlugin(async (_nuxtApp) => {
 
     // TODO add role based access control see #55
     if (
-      user.value || nuxtUsers.auth?.whitelist?.includes(to.path)
+      user.value || publicOptions.auth?.whitelist?.includes(to.path)
     ) {
       console.log('[Nuxt Users] 🔐 Auth middleware: Access allowed')
       return

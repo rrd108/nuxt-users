@@ -10,6 +10,7 @@ The Nuxt Users module provides several Vue components for authentication and pas
 | `LogoutLink` | User logout link with confirmation |
 | `ForgotPasswordForm` | Password reset request form |
 | `ResetPasswordForm` | Password reset form with token validation |
+| `ProfileForm` | User profile display and password change form |
 
 ## LoginForm
 
@@ -528,6 +529,88 @@ By default, the components automatically detect the user's system preference usi
 .branded-button:hover:not(:disabled) {
   background-color: #047857 !important;
   border-color: #047857 !important;
+}
+</style>
+```
+
+## ProfileForm
+
+A comprehensive profile management component that displays user information and allows password changes.
+
+### Basic Usage
+
+```vue
+<template>
+  <ProfileForm 
+    @success="handleProfileSuccess"
+    @error="handleProfileError"
+    @password-updated="handlePasswordUpdated"
+    @password-error="handlePasswordError"
+  />
+</template>
+
+<script setup>
+const handleProfileSuccess = (user) => {
+  console.log('Profile loaded:', user)
+}
+
+const handleProfileError = (error) => {
+  console.log('Profile error:', error)
+}
+
+const handlePasswordUpdated = () => {
+  console.log('Password updated successfully')
+}
+
+const handlePasswordError = (error) => {
+  console.log('Password update error:', error)
+}
+</script>
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `apiEndpoint` | `string` | `'/api/profile'` | The API endpoint for fetching user profile |
+| `updatePasswordEndpoint` | `string` | `'/api/profile/update-password'` | The API endpoint for updating password |
+
+### Events
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `success` | `User` | Emitted when profile is loaded successfully |
+| `error` | `string` | Emitted when profile loading fails |
+| `password-updated` | - | Emitted when password is updated successfully |
+| `password-error` | `string` | Emitted when password update fails |
+
+### Features
+
+The ProfileForm component provides:
+
+- **Profile Information Display**: Shows user name, email, role, and timestamps
+- **Password Change Form**: Secure password update with current password verification
+- **Form Validation**: Client-side validation for password requirements
+- **Error Handling**: Comprehensive error messages for all operations
+- **Loading States**: Visual feedback during API operations
+- **Responsive Design**: Works well on all screen sizes
+
+### Example with Custom Styling
+
+```vue
+<template>
+  <ProfileForm 
+    class="my-profile-form"
+    @success="handleSuccess"
+  />
+</template>
+
+<style scoped>
+.my-profile-form {
+  --color-primary: #059669;
+  --color-primary-dark: #047857;
+  --color-bg-primary: #f0fdf4;
+  --color-border: #10b981;
 }
 </style>
 ```

@@ -56,6 +56,65 @@ Logout the current user by removing their authentication token.
 - Clears the `auth_token` cookie
 - No authentication required (works with any valid token)
 
+## Profile Endpoints
+
+### Get Profile
+
+**Endpoint:** `GET /api/profile`
+
+Get the current user's profile information.
+
+**Request:** No request body required (uses authentication token from cookie)
+
+**Response:**
+```json
+{
+  "user": {
+    "id": 1,
+    "email": "user@example.com",
+    "name": "John Doe",
+    "role": "user",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+- `401 Unauthorized`: No authentication token or invalid token
+
+### Update Password
+
+**Endpoint:** `POST /api/profile/update-password`
+
+Update the current user's password.
+
+**Request Body:**
+```json
+{
+  "currentPassword": "old-password",
+  "newPassword": "new-password",
+  "newPasswordConfirmation": "new-password"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Password updated successfully"
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Missing fields, password mismatch, or weak password
+- `401 Unauthorized`: No authentication token or invalid token
+- `400 Bad Request`: Current password is incorrect
+
+**Notes:**
+- Requires current password verification
+- New password must be at least 8 characters
+- Password confirmation must match new password
+
 ## Password Reset Endpoints
 
 ### Forgot Password

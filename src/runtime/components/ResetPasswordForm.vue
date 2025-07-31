@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from '#app' // Nuxt 3 specific imports
+import { usePasswordValidation } from '../composables/usePasswordValidation'
+import { useRuntimeConfig } from '#imports'
+import type { ModuleOptions } from '../../types'
+import PasswordStrengthIndicator from './PasswordStrengthIndicator.vue'
 
 interface ResetPasswordFormData {
   password: string
@@ -39,6 +43,21 @@ onMounted(() => {
 })
 
 const canSubmit = computed(() => !!tokenFromUrl.value && !!emailFromUrl.value && !formInvalidDueToToken.value)
+
+// Get module options for password validation
+const { public: { nuxtUsers } } = useRuntimeConfig()
+const moduleOptions = nuxtUsers as ModuleOptions
+
+const passwordValidation = usePasswordValidation(moduleOptions)
+
+watch(() => formData.password, (newPassword) => {
+  if (newPassword) {
+    passwordValidation.validate(newPassword)
+  }
+  else {
+    passwordValidation.clearValidation()
+  }
+})
 
 const handleResetPassword = async () => {
   if (!canSubmit.value) {
@@ -116,8 +135,21 @@ const handleResetPassword = async () => {
           name="password"
           placeholder="Enter new password"
           required
-          minlength="8"
+          :minlength="moduleOptions.passwordValidation?.minLength || 8"
+          :class="{ error: passwordValidation.errors.value.length > 0 && formData.password }"
         >
+        <PasswordStrengthIndicator
+          :password="formData.password"
+          :validation-result="passwordValidation.validationResult.value"
+        />
+        <!-- Password requirements -->
+        <small class="form-help">
+          Password must contain at least {{ moduleOptions.passwordValidation?.minLength || 8 }} characters
+          <span v-if="moduleOptions.passwordValidation?.requireUppercase">, including uppercase letters</span>
+          <span v-if="moduleOptions.passwordValidation?.requireLowercase">, lowercase letters</span>
+          <span v-if="moduleOptions.passwordValidation?.requireNumbers">, numbers</span>
+          <span v-if="moduleOptions.passwordValidation?.requireSpecialChars">, and special characters</span>.
+        </small>
       </div>
       <div class="form-group">
         <label for="password_confirm">Confirm New Password</label>
@@ -128,7 +160,7 @@ const handleResetPassword = async () => {
           name="password_confirm"
           placeholder="Confirm new password"
           required
-          minlength="8"
+          :minlength="moduleOptions.passwordValidation?.minLength || 8"
         >
       </div>
       <button
@@ -156,7 +188,7 @@ const handleResetPassword = async () => {
   color: green;
 }
 .form-message {
-      margin-top: 1em;
+  margin-top: 1em;
   font-size: 0.9rem;
 }
 
@@ -176,6 +208,17 @@ input[type="password"] {
   box-sizing: border-box;
   border: 1px solid var(--color-border-dark);
   border-radius: 4px;
+}
+
+input[type="password"].error {
+  border-color: #dc3545;
+}
+
+.form-help {
+  color: #6c757d;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: block;
 }
 
 button[type="submit"] {

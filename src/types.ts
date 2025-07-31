@@ -42,6 +42,46 @@ export interface ModuleOptions {
      */
     whitelist: string[]
   }
+  /**
+   * Password validation configuration
+   */
+  passwordValidation?: {
+    /**
+     * Minimum password length
+     * @default 8
+     */
+    minLength?: number
+    /**
+     * Maximum password length
+     * @default 128
+     */
+    maxLength?: number
+    /**
+     * Require uppercase letters
+     * @default true
+     */
+    requireUppercase?: boolean
+    /**
+     * Require lowercase letters
+     * @default true
+     */
+    requireLowercase?: boolean
+    /**
+     * Require numbers
+     * @default true
+     */
+    requireNumbers?: boolean
+    /**
+     * Require special characters
+     * @default true
+     */
+    requireSpecialChars?: boolean
+    /**
+     * Prevent common passwords
+     * @default true
+     */
+    preventCommonPasswords?: boolean
+  }
 }
 
 export interface MailerOptions {
@@ -84,4 +124,9 @@ export interface LogoutLinkProps {
   linkText?: string
   confirmMessage?: string
   class?: string
+}
+
+export interface ProfileFormProps {
+  apiEndpoint?: string
+  updatePasswordEndpoint?: string
 }

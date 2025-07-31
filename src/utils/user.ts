@@ -1,5 +1,6 @@
 import { useDb } from './db'
 import bcrypt from 'bcrypt'
+import { validatePassword, getPasswordValidationOptions } from './password-validation'
 import type { ModuleOptions, User } from '../types'
 
 interface CreateUserParams {
@@ -16,6 +17,13 @@ interface CreateUserParams {
 export const createUser = async (userData: CreateUserParams, options: ModuleOptions): Promise<Omit<User, 'password'>> => {
   const db = await useDb(options)
   const usersTable = options.tables.users
+
+  // Validate password strength
+  const passwordOptions = getPasswordValidationOptions(options)
+  const passwordValidation = validatePassword(userData.password, passwordOptions)
+  if (!passwordValidation.isValid) {
+    throw new Error(`Password validation failed: ${passwordValidation.errors.join(', ')}`)
+  }
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(userData.password, 10)
@@ -84,6 +92,13 @@ export const updateUserPassword = async (email: string, newPassword: string, opt
   const db = await useDb(options)
   const usersTable = options.tables.users
 
+  // Validate password strength
+  const passwordOptions = getPasswordValidationOptions(options)
+  const passwordValidation = validatePassword(newPassword, passwordOptions)
+  if (!passwordValidation.isValid) {
+    throw new Error(`Password validation failed: ${passwordValidation.errors.join(', ')}`)
+  }
+
   const hashedPassword = await bcrypt.hash(newPassword, 10)
 
   await db.sql`
@@ -108,4 +123,37 @@ export const hasAnyUsers = async (options: ModuleOptions) => {
     // If the table doesn't exist or connection fails, there are no users
     return false
   }
+}
+
+/**
+ * Gets the current user from an authentication token.
+ */
+export const getCurrentUserFromToken = async (token: string, options: ModuleOptions): Promise<User | null> => {
+  const db = await useDb(options)
+  const personalAccessTokensTable = options.tables.personalAccessTokens
+  const usersTable = options.tables.users
+
+  // Find the token in the database
+  const tokenResult = await db.sql`
+    SELECT tokenable_id FROM {${personalAccessTokensTable}}
+    WHERE token = ${token}
+  ` as { rows: Array<{ tokenable_id: number }> }
+
+  if (tokenResult.rows.length === 0) {
+    return null
+  }
+
+  const userId = tokenResult.rows[0].tokenable_id
+
+  // Get the user data
+  const userResult = await db.sql`
+    SELECT * FROM {${usersTable}}
+    WHERE id = ${userId}
+  ` as { rows: User[] }
+
+  if (userResult.rows.length === 0) {
+    return null
+  }
+
+  return userResult.rows[0]
 }

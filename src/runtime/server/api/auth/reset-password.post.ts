@@ -2,6 +2,7 @@ import { defineEventHandler, readBody, createError, H3Error } from 'h3'
 import { resetPassword } from '../../services/password' // Adjusted path
 import type { ModuleOptions } from '../../../../types'
 import { useRuntimeConfig } from '#imports'
+import { validatePassword, getPasswordValidationOptions } from '../../../../utils/password-validation'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -19,13 +20,17 @@ export default defineEventHandler(async (event) => {
   if (password !== password_confirmation) {
     throw createError({ statusCode: 400, statusMessage: 'Passwords do not match.' })
   }
-  // Add password strength validation if desired (e.g., min length)
-  if (password.length < 8) {
-    throw createError({ statusCode: 400, statusMessage: 'Password must be at least 8 characters long.' })
-  }
-
   try {
     const options = useRuntimeConfig().nuxtUsers as ModuleOptions
+    const passwordOptions = getPasswordValidationOptions(options)
+    const passwordValidation = validatePassword(password, passwordOptions)
+    if (!passwordValidation.isValid) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: `Password validation failed: ${passwordValidation.errors.join(', ')}`
+      })
+    }
+
     const success = await resetPassword(token, email, password, options)
 
     if (success) {
