@@ -1,6 +1,40 @@
 # Changelog
 
 
+## v1.5.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.4.0...v1.5.0)
+
+### 🚀 Enhancements
+
+- Implement forgot password closes #57 ([#57](https://github.com/rrd108/nuxt-users/issues/57))
+- Add profile page closes #58 ([#58](https://github.com/rrd108/nuxt-users/issues/58))
+
+### 🩹 Fixes
+
+- Css color ([1d72336](https://github.com/rrd108/nuxt-users/commit/1d72336))
+- Auth middleware ([113b165](https://github.com/rrd108/nuxt-users/commit/113b165))
+- Enhances auth middleware and improves logging ([f519bbc](https://github.com/rrd108/nuxt-users/commit/f519bbc))
+- Playground colors ([f87ade1](https://github.com/rrd108/nuxt-users/commit/f87ade1))
+- Enhances user authentication and data handling ([d15c77f](https://github.com/rrd108/nuxt-users/commit/d15c77f))
+
+### 💅 Refactors
+
+- Have a dedicated playground  login page ([487d754](https://github.com/rrd108/nuxt-users/commit/487d754))
+- Module options and defaults ([00aa094](https://github.com/rrd108/nuxt-users/commit/00aa094))
+
+### 🏡 Chore
+
+- **release:** V1.4.0 ([e07ca9a](https://github.com/rrd108/nuxt-users/commit/e07ca9a))
+
+### ✅ Tests
+
+- Do not run unit tests for various dbs ([5b5e3aa](https://github.com/rrd108/nuxt-users/commit/5b5e3aa))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.4.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.3.0...v1.4.0)
