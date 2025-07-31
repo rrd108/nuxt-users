@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v1.3.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.2.0...v1.3.0)
+
+### 🚀 Enhancements
+
+- Adds theme support with light/dark mode ([005ea87](https://github.com/rrd108/nuxt-users/commit/005ea87))
+- Adds logout functionality ([a61b4e8](https://github.com/rrd108/nuxt-users/commit/a61b4e8))
+
+### 💅 Refactors
+
+- Restyles login form for better UX closes #51 ([#51](https://github.com/rrd108/nuxt-users/issues/51))
+
+### 🏡 Chore
+
+- **release:** V1.2.0 ([54fd5c8](https://github.com/rrd108/nuxt-users/commit/54fd5c8))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.2.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.1.6...v1.2.0)
