@@ -55,7 +55,7 @@ export default defineNuxtModule<ModuleOptions>({
         passwordResetTokens: options.tables?.passwordResetTokens || defaultOptions.tables.passwordResetTokens,
       },
       auth: {
-        whitelist: options.auth?.whitelist || defaultOptions.auth?.whitelist || ['/login'],
+        whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])]
       },
     }
 
