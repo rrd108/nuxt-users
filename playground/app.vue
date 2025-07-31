@@ -10,5 +10,6 @@
 <style scoped>
 div {
   background-color: var(--color-gray-50);
+  color: var(--color-gray-900);
 }
 </style>
