@@ -15,12 +15,22 @@ export default defineNuxtPlugin(async (_nuxtApp) => {
     console.warn('[Nuxt Users] ⚠️  Migrations table does not exist, you should run the migration script to create it by running: npx nuxt-users migrate')
   }
 
-  // Initialize user from localStorage on app startup
+  // Initialize user from localStorage and validate with server on app startup
   const { initializeUser } = useAuth()
-  initializeUser()
+
+  // Only initialize on client-side
+  if (import.meta.client) {
+    await initializeUser()
+  }
 
   addRouteMiddleware('auth.global', (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
     if (to.path === '/login') {
+      return
+    }
+
+    // During SSR, allow the request to proceed - authentication will be checked on client-side
+    if (import.meta.server) {
+      console.log('[Nuxt Users] 🔐 Auth middleware: SSR - allowing request to proceed')
       return
     }
 
@@ -38,4 +48,27 @@ export default defineNuxtPlugin(async (_nuxtApp) => {
     return navigateTo('/login')
   },
   { global: true })
+
+  // Add client-side only middleware for post-hydration authentication check
+  if (import.meta.client) {
+    addRouteMiddleware('auth.client', (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+      if (to.path === '/login') {
+        return
+      }
+
+      const { user } = useAuth()
+
+      // TODO add role based access control see #55
+      if (
+        user.value || publicOptions.auth?.whitelist?.includes(to.path)
+      ) {
+        console.log('[Nuxt Users] 🔐 Client auth middleware: Access allowed')
+        return
+      }
+
+      console.log(`[Nuxt Users] 🔐 Client auth middleware: Redirecting from ${from.path} to login - no user and not whitelisted`)
+      return navigateTo('/login')
+    },
+    { global: true })
+  }
 })

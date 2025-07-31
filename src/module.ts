@@ -36,7 +36,6 @@ export const defaultOptions: ModuleOptions = {
     requireLowercase: true,
     requireNumbers: true,
     requireSpecialChars: true,
-    maxLength: 64,
     preventCommonPasswords: true,
   },
 }
@@ -77,7 +76,6 @@ export default defineNuxtModule<ModuleOptions>({
         requireLowercase: options.passwordValidation?.requireLowercase ?? defaultOptions.passwordValidation?.requireLowercase ?? true,
         requireNumbers: options.passwordValidation?.requireNumbers ?? defaultOptions.passwordValidation?.requireNumbers ?? true,
         requireSpecialChars: options.passwordValidation?.requireSpecialChars ?? defaultOptions.passwordValidation?.requireSpecialChars ?? true,
-        maxLength: options.passwordValidation?.maxLength || defaultOptions.passwordValidation?.maxLength || 64,
         preventCommonPasswords: options.passwordValidation?.preventCommonPasswords ?? defaultOptions.passwordValidation?.preventCommonPasswords ?? true,
       },
       auth: {

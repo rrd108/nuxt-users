@@ -52,11 +52,6 @@ export interface ModuleOptions {
      */
     minLength?: number
     /**
-     * Maximum password length
-     * @default 128
-     */
-    maxLength?: number
-    /**
      * Require uppercase letters
      * @default true
      */
@@ -106,6 +101,8 @@ export interface User {
   created_at: string
   updated_at: string
 }
+
+export type UserWithoutPassword = Omit<User, 'password'>
 
 export interface LoginFormData {
   email: string

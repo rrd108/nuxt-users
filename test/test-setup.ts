@@ -58,7 +58,15 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
     }
   },
   auth: {
-    whitelist: ['/login']
+    whitelist: []
+  },
+  passwordValidation: {
+    minLength: 0,
+    requireUppercase: false,
+    requireLowercase: false,
+    requireNumbers: false,
+    requireSpecialChars: false,
+    preventCommonPasswords: false,
   }
 })
 

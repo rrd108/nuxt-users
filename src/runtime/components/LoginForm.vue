@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { navigateTo } from '#app'
-import type { LoginFormData, LoginFormProps, User } from '../../types'
+import type { LoginFormData, LoginFormProps, UserWithoutPassword } from '../../types'
 
 interface Emits {
-  (e: 'success', user: User): void
+  (e: 'success', user: UserWithoutPassword): void
   (e: 'error' | 'forgot-password-error', error: string): void
   (e: 'submit', data: LoginFormData): void
   (e: 'forgot-password-success'): void
@@ -35,7 +35,7 @@ const handleSubmit = async () => {
   try {
     emit('submit', formData.value)
 
-    const response = await $fetch<{ user: User }>(props.apiEndpoint, {
+    const response = await $fetch<{ user: UserWithoutPassword }>(props.apiEndpoint, {
       method: 'POST',
       body: {
         email: formData.value.email,

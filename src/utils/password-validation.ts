@@ -12,7 +12,6 @@ export interface PasswordValidationOptions {
   requireLowercase?: boolean
   requireNumbers?: boolean
   requireSpecialChars?: boolean
-  maxLength?: number
   preventCommonPasswords?: boolean
 }
 
@@ -22,7 +21,6 @@ const DEFAULT_OPTIONS: Required<PasswordValidationOptions> = {
   requireLowercase: true,
   requireNumbers: true,
   requireSpecialChars: true,
-  maxLength: 128,
   preventCommonPasswords: true
 }
 
@@ -71,11 +69,6 @@ export const validatePassword = (
     if (password.length < 12) {
       hints.push('Use 12 or more characters for extra security')
     }
-  }
-
-  // Check maximum length
-  if (password.length > config.maxLength) {
-    errors.push(`Password must be no more than ${config.maxLength} characters long`)
   }
 
   // Check for uppercase letters

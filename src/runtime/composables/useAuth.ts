@@ -1,17 +1,19 @@
 import { useState } from '#app'
 import { computed, readonly } from 'vue'
-import type { User } from '../../types'
+import type { User, UserWithoutPassword } from '../../types'
 
 export const useAuth = () => {
-  const user = useState<User | null>('user', () => null)
+  const user = useState<UserWithoutPassword | null>('user', () => null)
 
   const isAuthenticated = computed(() => !!user.value)
 
   const login = (userData: User) => {
-    user.value = userData
+    // Remove password from user data before storing
+    const { password: _, ...userWithoutPassword } = userData
+    user.value = userWithoutPassword
     // Store in localStorage for persistence
     if (import.meta.client) {
-      localStorage.setItem('user', JSON.stringify(userData))
+      localStorage.setItem('user', JSON.stringify(userWithoutPassword))
     }
   }
 
@@ -32,17 +34,47 @@ export const useAuth = () => {
     }
   }
 
-  const initializeUser = () => {
-    if (import.meta.client) {
-      const storedUser = localStorage.getItem('user')
-      if (storedUser) {
-        try {
-          user.value = JSON.parse(storedUser)
-        }
-        catch (error) {
-          console.error('Failed to parse stored user:', error)
-          localStorage.removeItem('user')
-        }
+  const fetchUser = async () => {
+    try {
+      const response = await $fetch<{ user: UserWithoutPassword }>('/api/profile', {
+        method: 'GET'
+      })
+      user.value = response.user
+      // Update localStorage with fresh user data
+      if (import.meta.client) {
+        localStorage.setItem('user', JSON.stringify(response.user))
+      }
+      return response.user
+    }
+    catch (error) {
+      console.error('Failed to fetch user:', error)
+      // Clear invalid user data
+      user.value = null
+      if (import.meta.client) {
+        localStorage.removeItem('user')
+      }
+      return null
+    }
+  }
+
+  const initializeUser = async () => {
+    // Only run on client-side
+    if (!import.meta.client) {
+      return
+    }
+
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      try {
+        // First set the user from localStorage for immediate UI response
+        user.value = JSON.parse(storedUser)
+        // Then validate with server to ensure token is still valid
+        await fetchUser()
+      }
+      catch (error) {
+        console.error('Failed to parse stored user:', error)
+        localStorage.removeItem('user')
+        user.value = null
       }
     }
   }
@@ -52,6 +84,7 @@ export const useAuth = () => {
     isAuthenticated,
     login,
     logout,
+    fetchUser,
     initializeUser
   }
 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import type { User, ModuleOptions } from '../../types'
+import type { UserWithoutPassword, ModuleOptions } from '../../types'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
 import { useRuntimeConfig } from '#imports'
 import PasswordStrengthIndicator from './PasswordStrengthIndicator.vue'
@@ -11,7 +11,7 @@ interface ProfileFormProps {
 }
 
 interface Emits {
-  (e: 'success', user: User): void
+  (e: 'success', user: UserWithoutPassword): void
   (e: 'error' | 'password-error', error: string): void
   (e: 'password-updated'): void
 }
@@ -29,7 +29,7 @@ const error = ref('')
 const passwordError = ref('')
 const passwordSuccess = ref('')
 
-const user = ref<User | null>(null)
+const user = ref<UserWithoutPassword | null>(null)
 
 // Password form data
 const passwordForm = ref({
@@ -61,7 +61,7 @@ const loadProfile = async () => {
   error.value = ''
 
   try {
-    const response = await $fetch<{ user: User }>(props.apiEndpoint, {
+    const response = await $fetch<{ user: UserWithoutPassword }>(props.apiEndpoint, {
       method: 'GET'
     })
 
