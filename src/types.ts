@@ -76,6 +76,7 @@ export interface LoginFormData {
 export interface LoginFormProps {
   apiEndpoint?: string
   redirectTo?: string
+  forgotPasswordEndpoint?: string
 }
 
 export interface LogoutLinkProps {
