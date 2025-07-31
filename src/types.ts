@@ -8,16 +8,16 @@ export type DatabaseConfig = {
   password?: string
   database?: string
 }
-export interface ModuleOptions {
+export interface RuntimeModuleOptions {
   connector?: {
     name: DatabaseType
     options: DatabaseConfig
   }
-  tables: {
-    migrations: string
-    users: string
-    personalAccessTokens: string
-    passwordResetTokens: string
+  tables?: {
+    migrations?: string
+    users?: string
+    personalAccessTokens?: string
+    passwordResetTokens?: string
   }
   /**
    * Mailer configuration options for sending emails (e.g., password resets)
@@ -40,7 +40,7 @@ export interface ModuleOptions {
      * @default ['/login']
      * @example ['/login', '/register']
      */
-    whitelist: string[]
+    whitelist?: string[]
   }
   /**
    * Password validation configuration
@@ -76,6 +76,31 @@ export interface ModuleOptions {
      * @default true
      */
     preventCommonPasswords?: boolean
+  }
+}
+
+// Runtime config type with all properties required (after merging with defaults)
+export interface ModuleOptions extends Omit<RuntimeModuleOptions, 'tables' | 'auth' | 'passwordValidation'> {
+  connector: {
+    name: DatabaseType
+    options: DatabaseConfig
+  }
+  tables: {
+    migrations: string
+    users: string
+    personalAccessTokens: string
+    passwordResetTokens: string
+  }
+  auth: {
+    whitelist: string[]
+  }
+  passwordValidation: {
+    minLength: number
+    requireUppercase: boolean
+    requireLowercase: boolean
+    requireNumbers: boolean
+    requireSpecialChars: boolean
+    preventCommonPasswords: boolean
   }
 }
 

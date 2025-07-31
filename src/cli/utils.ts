@@ -1,33 +1,6 @@
-import type { ModuleOptions, DatabaseConfig, DatabaseType } from '../types'
+import { defaultOptions } from '../module'
+import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../types'
 import { loadNuxt } from '@nuxt/kit'
-
-export const defaultOptions: ModuleOptions = {
-  connector: {
-    name: 'sqlite',
-    options: {
-      path: './data/users.sqlite3',
-    },
-  },
-  tables: {
-    migrations: 'migrations',
-    users: 'users',
-    personalAccessTokens: 'personal_access_tokens',
-    passwordResetTokens: 'password_reset_tokens',
-  },
-  mailer: {
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false,
-    auth: {
-      user: 'user@ethereal.email',
-      pass: 'password',
-    },
-    defaults: {
-      from: '"Nuxt Users Module" <noreply@example.com>',
-    },
-  },
-  passwordResetBaseUrl: 'http://localhost:3000',
-}
 
 export const getOptionsFromEnv = (): ModuleOptions => {
   const connectorName = process.env.DB_CONNECTOR || 'sqlite' as DatabaseType
@@ -76,7 +49,7 @@ export const loadOptions = async (): Promise<ModuleOptions> => {
     // Try to load Nuxt configuration first
     console.log('[Nuxt Users] Loading Nuxt project...')
     const nuxt = await loadNuxt({ cwd: process.cwd() })
-    const nuxtUsersConfig = nuxt.options.runtimeConfig?.nuxtUsers as ModuleOptions
+    const nuxtUsersConfig = nuxt.options.nuxtUsers as ModuleOptions
     await nuxt.close()
 
     if (nuxtUsersConfig) {

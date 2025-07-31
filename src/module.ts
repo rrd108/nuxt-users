@@ -27,6 +27,7 @@ export const defaultOptions: ModuleOptions = {
       from: '"Nuxt Users Module" <noreply@example.com>',
     },
   },
+  passwordResetBaseUrl: 'http://localhost:3000',
   auth: {
     whitelist: ['/login'],
   },
@@ -71,12 +72,12 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {}
     nuxt.options.runtimeConfig.public.nuxtUsers = {
       passwordValidation: {
-        minLength: options.passwordValidation?.minLength || defaultOptions.passwordValidation?.minLength || 8,
-        requireUppercase: options.passwordValidation?.requireUppercase ?? defaultOptions.passwordValidation?.requireUppercase ?? true,
-        requireLowercase: options.passwordValidation?.requireLowercase ?? defaultOptions.passwordValidation?.requireLowercase ?? true,
-        requireNumbers: options.passwordValidation?.requireNumbers ?? defaultOptions.passwordValidation?.requireNumbers ?? true,
-        requireSpecialChars: options.passwordValidation?.requireSpecialChars ?? defaultOptions.passwordValidation?.requireSpecialChars ?? true,
-        preventCommonPasswords: options.passwordValidation?.preventCommonPasswords ?? defaultOptions.passwordValidation?.preventCommonPasswords ?? true,
+        minLength: options.passwordValidation?.minLength || defaultOptions.passwordValidation.minLength,
+        requireUppercase: options.passwordValidation?.requireUppercase ?? defaultOptions.passwordValidation.requireUppercase,
+        requireLowercase: options.passwordValidation?.requireLowercase ?? defaultOptions.passwordValidation.requireLowercase,
+        requireNumbers: options.passwordValidation?.requireNumbers ?? defaultOptions.passwordValidation.requireNumbers,
+        requireSpecialChars: options.passwordValidation?.requireSpecialChars ?? defaultOptions.passwordValidation.requireSpecialChars,
+        preventCommonPasswords: options.passwordValidation?.preventCommonPasswords ?? defaultOptions.passwordValidation.preventCommonPasswords,
       },
       auth: {
         whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])]
