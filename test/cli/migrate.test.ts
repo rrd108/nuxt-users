@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
-import { runMigrations, getAppliedMigrations, markMigrationAsApplied } from '../src/utils/migrate'
-import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../src/types'
-import { cleanupTestSetup, createTestSetup } from './test-setup'
+import { runMigrations, getAppliedMigrations, markMigrationAsApplied } from '../../src/utils/migrate'
+import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../../src/types'
+import { cleanupTestSetup, createTestSetup } from '../test-setup'
 
 describe('CLI: Migrate', () => {
   let db: Database

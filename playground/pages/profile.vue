@@ -1,3 +1,23 @@
+<script setup lang="ts">
+import type { UserWithoutPassword } from '../../src/types'
+
+const handleProfileSuccess = (user: UserWithoutPassword) => {
+  console.log('Profile loaded successfully:', user)
+}
+
+const handleProfileError = (error: string) => {
+  console.error('Profile error:', error)
+}
+
+const handlePasswordUpdated = () => {
+  console.log('Password updated successfully')
+}
+
+const handlePasswordError = (error: string) => {
+  console.error('Password update error:', error)
+}
+</script>
+
 <template>
   <div class="profile-page">
     <div class="container">
@@ -23,26 +43,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import type { User } from '../../src/types'
-
-const handleProfileSuccess = (user: User) => {
-  console.log('Profile loaded successfully:', user)
-}
-
-const handleProfileError = (error: string) => {
-  console.error('Profile error:', error)
-}
-
-const handlePasswordUpdated = () => {
-  console.log('Password updated successfully')
-}
-
-const handlePasswordError = (error: string) => {
-  console.error('Password update error:', error)
-}
-</script>
 
 <style scoped>
 .profile-page {

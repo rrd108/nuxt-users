@@ -30,7 +30,7 @@ export default defineCommand({
       }
 
       // Check public runtime config
-      const publicConfig = nuxt.options.runtimeConfig?.public?.nuxtUsers as ModuleOptions
+      const publicConfig = nuxt.options.runtimeConfig?.nuxtUsers as ModuleOptions
       if (publicConfig) {
         console.log('[Nuxt Users] 🌍 Public runtime config:')
         console.log('[Nuxt Users]    Users table exists:', publicConfig.tables?.users)

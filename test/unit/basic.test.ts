@@ -6,7 +6,7 @@ import fs from 'node:fs'
 
 describe('ssr', async () => {
   await setup({
-    rootDir: fileURLToPath(new URL('./fixtures/basic', import.meta.url)),
+    rootDir: fileURLToPath(new URL('../fixtures/basic', import.meta.url)),
   })
 
   afterEach(async () => {

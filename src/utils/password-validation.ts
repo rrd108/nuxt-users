@@ -46,7 +46,6 @@ const COMMON_PASSWORDS = [
   'ranger', 'buster', 'thomas', 'tigger', 'robert', 'soccer', 'batman',
   'test', 'pass', 'user', 'guest', 'login', 'secret', 'god', 'love',
   'sex', 'money', 'password1', '12345678', 'qwerty123', 'admin123',
-  'krisna', 'krisna123', 'krisna123!',
   'password!', 'password1!', 'password123', 'password123!'
 ]
 

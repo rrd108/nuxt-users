@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
-import { createPasswordResetTokensTable } from '../src/utils/create-password-reset-tokens-table'
-import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../src/types'
-import { cleanupTestSetup, createTestSetup } from './test-setup'
+import { createPasswordResetTokensTable } from '../../src/utils/create-password-reset-tokens-table'
+import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../../src/types'
+import { cleanupTestSetup, createTestSetup } from '../test-setup'
 
 describe('CLI: Create Password Reset Tokens Table', () => {
   let db: Database
