@@ -13,18 +13,22 @@ export default defineNuxtPlugin(async (_nuxtApp) => {
     console.warn('[Nuxt Users] ⚠️  Migrations table does not exist, you should run the migration script to create it by running: npx nuxt-users migrate')
   }
 
-  addRouteMiddleware('auth.global', (to: RouteLocationNormalized, _from: RouteLocationNormalized) => {
+  addRouteMiddleware('auth.global', (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+    if (to.path === '/login') {
+      return
+    }
+
     const { user } = useAuth()
 
     // TODO add role based access control see #55
     if (
       user.value || nuxtUsers.auth?.whitelist?.includes(to.path)
     ) {
-      console.log('🔐 [Nuxt Users] Auth middleware: Access allowed')
+      console.log('[Nuxt Users] 🔐 Auth middleware: Access allowed')
       return
     }
 
-    console.log('🔐 [Nuxt Users] Auth middleware: Redirecting to login - no user and not whitelisted')
+    console.log(`[Nuxt Users] 🔐 Auth middleware: Redirecting from ${from.path} to login - no user and not whitelisted`)
     return navigateTo('/login')
   },
   { global: true })
