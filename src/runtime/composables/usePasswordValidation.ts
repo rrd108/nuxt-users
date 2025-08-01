@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import { validatePassword, getPasswordValidationOptions, getPasswordStrengthColor, getPasswordStrengthText, type PasswordValidationResult, type PasswordValidationOptions } from '../../utils/password-validation'
+import { validatePassword, getPasswordValidationOptions, getPasswordStrengthColor, getPasswordStrengthText, type PasswordValidationResult, type PasswordValidationOptions } from '../../utils'
 import type { ModuleOptions } from '../../types'
 
 export const usePasswordValidation = (moduleOptions?: ModuleOptions, options?: PasswordValidationOptions) => {

@@ -2,7 +2,7 @@ import { defineEventHandler, readBody, createError, H3Error } from 'h3'
 import { resetPassword } from '../../services/password' // Adjusted path
 import type { ModuleOptions } from '../../../../types'
 import { useRuntimeConfig } from '#imports'
-import { validatePassword, getPasswordValidationOptions } from '../../../../utils/password-validation'
+import { validatePassword, getPasswordValidationOptions } from '../../../../utils'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

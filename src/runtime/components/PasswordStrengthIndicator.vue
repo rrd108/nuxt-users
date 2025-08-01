@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { PasswordValidationResult } from '../../utils/password-validation'
+import type { PasswordValidationResult } from '../../utils'
 
 interface Props {
   password: string
