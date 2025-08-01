@@ -226,6 +226,7 @@ const defaultOptions = {
 
 ## Next Steps
 
+
 - [Database Setup](/guide/database-setup) - Learn about database configuration
 - [Authentication](/guide/authentication) - Understand the authentication flow
 - [Password Reset](/guide/password-reset) - Configure password reset functionality

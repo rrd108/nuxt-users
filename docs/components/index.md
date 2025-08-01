@@ -635,4 +635,4 @@ export default defineNuxtConfig({
 
 - [Authentication Guide](/guide/authentication) - Learn about the authentication system
 - [Password Reset Guide](/guide/password-reset) - Understand password reset functionality
-- [API Reference](/api/) - Explore the available API endpoints 
+- [API Reference](/api/) - Explore the available API endpoints
