@@ -573,7 +573,7 @@ const handlePasswordError = (error) => {
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `apiEndpoint` | `string` | `'/api/profile'` | The API endpoint for fetching user profile |
-| `updatePasswordEndpoint` | `string` | `'/api/profile/update-password'` | The API endpoint for updating password |
+| `updatePasswordEndpoint` | `string` | `'/api/update-password'` | The API endpoint for updating password |
 
 ### Events
 

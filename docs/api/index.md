@@ -85,7 +85,7 @@ Get the current user's profile information.
 
 ### Update Password
 
-**Endpoint:** `POST /api/profile/update-password`
+**Endpoint:** `POST /api/update-password`
 
 Update the current user's password.
 

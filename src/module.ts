@@ -123,9 +123,9 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     addServerHandler({
-      route: '/api/profile/update-password',
+      route: '/api/update-password',
       method: 'post',
-      handler: resolver.resolve('./runtime/server/api/profile/update-password.post')
+      handler: resolver.resolve('./runtime/server/api/update-password.post')
     })
 
     addComponent({
