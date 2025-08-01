@@ -1,6 +1,35 @@
 # Changelog
 
 
+## v1.6.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.5.0...v1.6.0)
+
+### 🚀 Enhancements
+
+- Add profile page closes #58 ([#58](https://github.com/rrd108/nuxt-users/issues/58))
+
+### 🩹 Fixes
+
+- Enhances user authentication and data handling ([d15c77f](https://github.com/rrd108/nuxt-users/commit/d15c77f))
+
+### 💅 Refactors
+
+- Module options and defaults ([00aa094](https://github.com/rrd108/nuxt-users/commit/00aa094))
+- Move file to one level up ([e9111c0](https://github.com/rrd108/nuxt-users/commit/e9111c0))
+
+### 🏡 Chore
+
+- **release:** V1.5.0 ([c639fcf](https://github.com/rrd108/nuxt-users/commit/c639fcf))
+
+### ✅ Tests
+
+- Do not run unit tests for various dbs ([5b5e3aa](https://github.com/rrd108/nuxt-users/commit/5b5e3aa))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.5.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.4.0...v1.5.0)
