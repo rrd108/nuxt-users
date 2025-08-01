@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.6.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.1...v1.6.2)
+
+### 🩹 Fixes
+
+- Exports `getCurrentUserFromToken` from utils index ([5c67e24](https://github.com/rrd108/nuxt-users/commit/5c67e24))
+
+### 🏡 Chore
+
+- **release:** V1.6.1 ([6e02e68](https://github.com/rrd108/nuxt-users/commit/6e02e68))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.6.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.0...v1.6.1)
