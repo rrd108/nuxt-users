@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.6.3
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.2...v1.6.3)
+
+### 🩹 Fixes
+
+- Import paths ([ab7f530](https://github.com/rrd108/nuxt-users/commit/ab7f530))
+
+### 🏡 Chore
+
+- **release:** V1.6.2 ([e000fad](https://github.com/rrd108/nuxt-users/commit/e000fad))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.6.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.1...v1.6.2)
