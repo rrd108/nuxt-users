@@ -30,6 +30,7 @@ export const defaultOptions: ModuleOptions = {
   passwordResetBaseUrl: 'http://localhost:3000',
   auth: {
     whitelist: ['/login'],
+    tokenExpiration: 24 * 60, // 24 hours
   },
   passwordValidation: {
     minLength: 8,
@@ -64,7 +65,8 @@ export default defineNuxtModule<ModuleOptions>({
         passwordResetTokens: options.tables?.passwordResetTokens || defaultOptions.tables.passwordResetTokens,
       },
       auth: {
-        whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])]
+        whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])],
+        tokenExpiration: options.auth?.tokenExpiration || defaultOptions.auth.tokenExpiration
       },
     }
 
@@ -138,6 +140,16 @@ export default defineNuxtModule<ModuleOptions>({
       route: '/api/auth/update-password',
       method: 'post',
       handler: resolver.resolve('./runtime/server/api/auth/update-password.post')
+    })
+
+    // Register Nitro tasks
+    nuxt.options.nitro = nuxt.options.nitro || {}
+    nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
+    nuxt.options.nitro.experimental.tasks = true
+    
+    // Add task handlers
+    addServerHandler({
+      handler: resolver.resolve('./runtime/server/tasks/cleanup-tokens')
     })
 
     // components

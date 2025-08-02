@@ -66,8 +66,10 @@ CREATE TABLE personal_access_tokens (
 
 - **Cryptographically secure**: Tokens are generated using `crypto.randomBytes(64)`
 - **HTTP-only cookies**: Prevents XSS attacks
-- **Token expiration**: Tokens can have expiration times
-- **Last used tracking**: Monitor token usage
+- **Automatic expiration**: Tokens expire based on `auth.tokenExpiration` setting (default: 24 hours)
+- **Expired token cleanup**: Automatic cleanup of expired tokens during authentication
+- **Last used tracking**: Monitor token usage with automatic timestamp updates
+- **Token revocation**: Ability to revoke all tokens for a user
 
 ## Login API
 
@@ -274,14 +276,122 @@ When a user logs out:
 3. **State cleanup**: The user state is cleared from the application
 4. **Redirect**: User is optionally redirected to a specified page
 
+## Token Management
+
+### Configuring Token Expiration
+
+Set token expiration time in your `nuxt.config.ts`:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    auth: {
+      tokenExpiration: 1440, // 24 hours in minutes
+    }
+  }
+})
+```
+
+### Token Cleanup
+
+The module automatically:
+- Rejects expired tokens during authentication
+- Updates `last_used_at` timestamp for active tokens
+- Provides utility functions for token management
+
+### Manual Token Management
+
+#### Using Nitro Tasks (Recommended)
+
+The module provides a Nitro task for comprehensive token cleanup:
+
+```bash
+# Clean up both expired tokens and tokens without expiration
+npx nuxi task run nuxt-users:cleanup-tokens
+
+# Clean up only expired tokens (keep tokens without expiration)
+npx nuxi task run nuxt-users:cleanup-tokens --payload '{"includeNoExpiration":false}'
+```
+
+You can also run this task programmatically:
+
+```ts
+// In your server code
+const result = await runTask('nuxt-users:cleanup-tokens', {
+  includeNoExpiration: true // optional, defaults to true
+})
+
+console.log(`Cleaned up ${result.totalTokensCleaned} tokens`)
+```
+
+#### Scheduling Token Cleanup
+
+For production applications, you can schedule regular token cleanup using Nitro's scheduled tasks. Add the scheduled tasks to your `nuxt.config.ts`:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nitro: {
+    scheduledTasks: {
+      // Run token cleanup daily at 2 AM
+      '0 2 * * *': ['nuxt-users:cleanup-tokens']
+    }
+  }
+})
+```
+
+You can also schedule with custom payloads:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nitro: {
+    scheduledTasks: {
+      // Clean up expired tokens every 6 hours
+      '0 */6 * * *': [['nuxt-users:cleanup-tokens', { includeNoExpiration: false }]],
+      // Full cleanup (including tokens without expiration) once daily
+      '0 2 * * *': [['nuxt-users:cleanup-tokens', { includeNoExpiration: true }]]
+    }
+  }
+})
+```
+
+#### Using Utility Functions
+
+For advanced use cases, you can use the utility functions directly:
+
+```ts
+import { 
+  deleteExpiredPersonalAccessTokens, 
+  deleteTokensWithoutExpiration,
+  cleanupPersonalAccessTokens,
+  revokeUserTokens 
+} from 'nuxt-users/server/utils'
+
+// Clean up expired tokens only
+const expiredCount = await deleteExpiredPersonalAccessTokens(options)
+
+// Clean up tokens without expiration
+const noExpirationCount = await deleteTokensWithoutExpiration(options)
+
+// Comprehensive cleanup (both expired and no expiration)
+const result = await cleanupPersonalAccessTokens(options, true)
+
+// Revoke all tokens for a specific user
+await revokeUserTokens(userId, options)
+```
+
 ## Security Best Practices
 
 1. **Use HTTPS**: Always use HTTPS in production
 2. **Secure cookies**: HTTP-only, secure, same-site cookies
-3. **Token expiration**: Set reasonable expiration times
-4. **Rate limiting**: Implement rate limiting on login endpoints
-5. **Password requirements**: Enforce strong password policies
-6. **Input validation**: Validate all user inputs
+3. **Token expiration**: Set reasonable expiration times (default: 24 hours)
+4. **Regular cleanup**: Use the `nuxt-users:cleanup-tokens` task to periodically clean expired tokens
+5. **Rate limiting**: Implement rate limiting on login endpoints
+6. **Password requirements**: Enforce strong password policies
+7. **Input validation**: Validate all user inputs
+8. **Token revocation**: Revoke tokens on suspicious activity
 
 ## Next Steps
 

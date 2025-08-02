@@ -137,17 +137,25 @@ export const getCurrentUserFromToken = async <T extends boolean = false>(
   const personalAccessTokensTable = options.tables.personalAccessTokens
   const usersTable = options.tables.users
 
-  // Find the token in the database
+  // Find the token in the database and check if it's not expired
   const tokenResult = await db.sql`
-    SELECT tokenable_id FROM {${personalAccessTokensTable}}
+    SELECT tokenable_id, expires_at FROM {${personalAccessTokensTable}}
     WHERE token = ${token}
-  ` as { rows: Array<{ tokenable_id: number }> }
+    AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
+  ` as { rows: Array<{ tokenable_id: number, expires_at: string | null }> }
 
   if (tokenResult.rows.length === 0) {
     return null
   }
 
   const userId = tokenResult.rows[0].tokenable_id
+
+  // Update last_used_at timestamp for the token
+  await db.sql`
+    UPDATE {${personalAccessTokensTable}}
+    SET last_used_at = CURRENT_TIMESTAMP
+    WHERE token = ${token}
+  `
 
   // Get the user data
   const userResult = await db.sql`
@@ -167,4 +175,69 @@ export const getCurrentUserFromToken = async <T extends boolean = false>(
 
   const { password: _, ...userWithoutPassword } = user
   return userWithoutPassword as T extends true ? User | null : UserWithoutPassword | null
+}
+
+/**
+ * Deletes expired personal access tokens from the database.
+ */
+export const deleteExpiredPersonalAccessTokens = async (options: ModuleOptions): Promise<number> => {
+  const db = await useDb(options)
+  const personalAccessTokensTable = options.tables.personalAccessTokens
+
+  const result = await db.sql`
+    DELETE FROM {${personalAccessTokensTable}}
+    WHERE expires_at IS NOT NULL AND expires_at <= CURRENT_TIMESTAMP
+  `
+
+  const deletedCount = result.rowCount || 0
+  console.log(`[Nuxt Users] ${deletedCount} expired personal access tokens deleted.`)
+  return deletedCount
+}
+
+/**
+ * Deletes tokens without expiration dates (legacy tokens or security cleanup).
+ */
+export const deleteTokensWithoutExpiration = async (options: ModuleOptions): Promise<number> => {
+  const db = await useDb(options)
+  const personalAccessTokensTable = options.tables.personalAccessTokens
+
+  const result = await db.sql`
+    DELETE FROM {${personalAccessTokensTable}}
+    WHERE expires_at IS NULL
+  `
+
+  const deletedCount = result.rowCount || 0
+  console.log(`[Nuxt Users] ${deletedCount} tokens without expiration deleted.`)
+  return deletedCount
+}
+
+/**
+ * Comprehensive token cleanup: removes expired tokens and optionally tokens without expiration.
+ */
+export const cleanupPersonalAccessTokens = async (
+  options: ModuleOptions, 
+  includeNoExpiration: boolean = true
+): Promise<{ expiredCount: number, noExpirationCount: number, totalCount: number }> => {
+  const expiredCount = await deleteExpiredPersonalAccessTokens(options)
+  const noExpirationCount = includeNoExpiration ? await deleteTokensWithoutExpiration(options) : 0
+  const totalCount = expiredCount + noExpirationCount
+
+  console.log(`[Nuxt Users] Token cleanup completed: ${expiredCount} expired + ${noExpirationCount} without expiration = ${totalCount} total tokens removed.`)
+  
+  return { expiredCount, noExpirationCount, totalCount }
+}
+
+/**
+ * Revokes all tokens for a specific user.
+ */
+export const revokeUserTokens = async (userId: number, options: ModuleOptions): Promise<void> => {
+  const db = await useDb(options)
+  const personalAccessTokensTable = options.tables.personalAccessTokens
+
+  await db.sql`
+    DELETE FROM {${personalAccessTokensTable}}
+    WHERE tokenable_type = 'user' AND tokenable_id = ${userId}
+  `
+
+  console.log(`[Nuxt Users] All tokens revoked for user ID: ${userId}`)
 }

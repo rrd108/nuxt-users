@@ -41,6 +41,11 @@ export interface RuntimeModuleOptions {
      * @example ['/login', '/register']
      */
     whitelist?: string[]
+    /**
+     * Token expiration time in minutes
+     * @default 10080 7 days
+     */
+    tokenExpiration?: number
   }
   /**
    * Password validation configuration
@@ -93,6 +98,7 @@ export interface ModuleOptions extends Omit<RuntimeModuleOptions, 'tables' | 'au
   }
   auth: {
     whitelist: string[]
+    tokenExpiration: number
   }
   passwordValidation: {
     minLength: number

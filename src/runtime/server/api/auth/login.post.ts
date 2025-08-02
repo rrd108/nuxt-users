@@ -46,11 +46,15 @@ export default defineEventHandler(async (event) => {
   const token = crypto.randomBytes(64).toString('hex')
   const tokenName = 'auth_token' // Or any other meaningful name
 
+  // Calculate expiration time based on module options
+  const expiresAt = new Date()
+  expiresAt.setMinutes(expiresAt.getMinutes() + options.auth.tokenExpiration)
+
   // Store the token in the personal_access_tokens table
   // Assuming user.id is the primary key of the users table
   await db.sql`
-    INSERT INTO {${personalAccessTokensTable}} (tokenable_type, tokenable_id, name, token, created_at, updated_at)
-    VALUES ('user', ${user.id}, ${tokenName}, ${token}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    INSERT INTO {${personalAccessTokensTable}} (tokenable_type, tokenable_id, name, token, expires_at, created_at, updated_at)
+    VALUES ('user', ${user.id}, ${tokenName}, ${token}, ${expiresAt.toISOString()}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
   `
 
   // Set the cookie

@@ -32,7 +32,11 @@ export default defineNuxtConfig({
         from: '"Your App Name" <noreply@example.com>',
       },
     },
-    passwordResetBaseUrl: 'http://localhost:3000'
+    passwordResetBaseUrl: 'http://localhost:3000',
+    auth: {
+      whitelist: ['/login'],
+      tokenExpiration: 1440 // Token expiration in minutes (default: 24 hours)
+    }
   }
 })
 ```
@@ -147,6 +151,55 @@ nuxtUsers: {
 }
 ```
 
+## Authentication Configuration
+
+Configure authentication behavior with the `auth` option:
+
+```ts
+nuxtUsers: {
+  // ... other options
+  auth: {
+    whitelist: ['/login', '/register'], // Routes that don't require authentication
+    tokenExpiration: 1440, // Token expiration in minutes (default: 24 hours)
+  }
+}
+```
+
+### Token Expiration
+
+Control how long authentication tokens remain valid:
+
+```ts
+nuxtUsers: {
+  auth: {
+    tokenExpiration: 1440, // 24 hours
+  }
+}
+
+// Common values:
+// 60    - 1 hour
+// 1440  - 24 hours (default)
+// 10080 - 7 days
+// 43200 - 30 days
+```
+
+### Route Whitelisting
+
+Specify which routes can be accessed without authentication:
+
+```ts
+nuxtUsers: {
+  auth: {
+    whitelist: [
+      '/login',
+      '/register', 
+      '/about',
+      '/contact'
+    ]
+  }
+}
+```
+
 ## Environment Variables
 
 For production, consider using environment variables:
@@ -221,6 +274,10 @@ const defaultOptions = {
     },
   },
   passwordResetBaseUrl: 'http://localhost:3000',
+  auth: {
+    whitelist: ['/login'],
+    tokenExpiration: 1440, // Token expiration in minutes (default: 24 hours)
+  },
 }
 ```
 
