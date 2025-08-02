@@ -15,10 +15,20 @@ The module includes a complete password reset flow with:
 
 1. **User requests reset** - User enters email on forgot password page
 2. **Token generation** - Secure token is generated and hashed
-3. **Email sending** - Reset link is sent to user's email
+3. **Email sending** - Complete reset link with token and email is sent to user's email
 4. **Token validation** - User clicks link and token is validated
 5. **Password update** - New password is hashed and stored
 6. **Token cleanup** - Used tokens are deleted
+
+## Reset URL Format
+
+The password reset emails now include a complete URL with the token and email parameters:
+
+```
+https://yourapp.com/reset-password?token=abc123...&email=user@example.com
+```
+
+Your reset password page should read these query parameters to populate the reset form.
 
 ## Configuration
 
@@ -49,7 +59,7 @@ export default defineNuxtConfig({
         from: '"Your App" <noreply@yourapp.com>',
       },
     },
-    passwordResetBaseUrl: 'https://yourapp.com',
+    passwordResetBaseUrl: 'https://yourapp.com', // Base URL for reset links
   }
 })
 ```
@@ -204,24 +214,31 @@ const resetPassword = async (token, email, password, passwordConfirmation) => {
 
 ## Customization
 
+### Email Template
+
+The password reset emails now include a professional template with:
+
+- **Clear call-to-action button** for easy clicking
+- **Fallback URL** for copy/paste
+- **Security warnings** about ignoring unwanted emails
+- **Expiration notice** (1 hour by default)
+
+The email includes both HTML and plain text versions for maximum compatibility.
+
 ### Custom Email Templates
 
-You can customize the email content by modifying the password service:
+To customize the email appearance, you can modify the email template in `src/runtime/server/services/password.ts`. The current template includes:
 
 ```ts
-// In src/runtime/server/services/password.ts
-await transporter.sendMail({
-  from: options.mailer.defaults?.from,
-  to: email,
-  subject: 'Reset Your Password',
-  html: `
-    <h1>Password Reset Request</h1>
-    <p>Click the link below to reset your password:</p>
-    <a href="${resetUrl}">Reset Password</a>
-    <p>This link will expire in 1 hour.</p>
-  `
-})
+// Construct the complete password reset URL with token and email
+const resetUrl = new URL('/reset-password', options.passwordResetBaseUrl || 'http://localhost:3000')
+resetUrl.searchParams.set('token', token)
+resetUrl.searchParams.set('email', email)
+
+const resetLink = resetUrl.toString()
 ```
+
+The reset link now properly includes both the token and email as query parameters.
 
 ### Custom Token Expiration
 

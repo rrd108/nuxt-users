@@ -53,13 +53,49 @@ export const sendPasswordResetLink = async (
     },
   })
 
+  // Construct the complete password reset URL with token and email
+  const resetUrl = new URL('/reset-password', options.passwordResetBaseUrl || 'http://localhost:3000')
+  resetUrl.searchParams.set('token', token)
+  resetUrl.searchParams.set('email', email)
+  
+  const resetLink = resetUrl.toString()
+
   try {
     await transporter.sendMail({
       from: options.mailer.defaults?.from || '"Nuxt Users" <noreply@example.com>',
       to: email,
       subject: 'Password Reset Request',
-      text: `Please click the following link to reset your password: ${options.passwordResetBaseUrl}`,
-      html: `<p>Please click the following link to reset your password:</p><p><a href="${options.passwordResetBaseUrl}">${options.passwordResetBaseUrl}</a></p><p>This link will expire in ${TOKEN_EXPIRATION_HOURS} hour(s).</p>`,
+      text: `Please click the following link to reset your password: ${resetLink}
+
+This link will expire in ${TOKEN_EXPIRATION_HOURS} hour(s).
+
+If you did not request this password reset, please ignore this email.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Password Reset Request</h2>
+          <p>You have requested to reset your password. Please click the button below to set a new password:</p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetLink}" 
+               style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              Reset Password
+            </a>
+          </div>
+          
+          <p>Or copy and paste the following link into your browser:</p>
+          <p style="word-break: break-all; background-color: #f8f9fa; padding: 10px; border-radius: 3px;">
+            <a href="${resetLink}">${resetLink}</a>
+          </p>
+          
+          <p style="color: #6c757d; font-size: 14px;">
+            This link will expire in ${TOKEN_EXPIRATION_HOURS} hour(s).
+          </p>
+          
+          <p style="color: #6c757d; font-size: 14px;">
+            If you did not request this password reset, please ignore this email. Your password will remain unchanged.
+          </p>
+        </div>
+      `,
     })
     console.log(`[Nuxt Users] Password reset email sent to ${email}`)
   }
