@@ -10,10 +10,15 @@ const version = packageJson.version
 const cliPath = join(process.cwd(), 'src/cli/main.ts')
 let cliContent = readFileSync(cliPath, 'utf8')
 
-// Replace the version placeholder
-cliContent = cliContent.replace(/__VERSION__/g, version)
+// Replace the version placeholder or update existing version
+const versionPattern = /version:\s*['"`]([^'"`]+)['"`]/
+const newCliContent = cliContent.replace(versionPattern, `version: '${version}'`)
 
-// Write back to the file
-writeFileSync(cliPath, cliContent)
-
-console.log(`[Nuxt Users] Updated CLI version to ${version}`)
+// Only write back if there was a change
+if (newCliContent !== cliContent) {
+  writeFileSync(cliPath, newCliContent)
+  console.log(`[Nuxt Users] Updated CLI version to ${version}`)
+}
+else {
+  console.log(`[Nuxt Users] CLI version already up to date (${version})`)
+}
