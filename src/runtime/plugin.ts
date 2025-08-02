@@ -1,7 +1,7 @@
 import { addRouteMiddleware, defineNuxtPlugin, useRuntimeConfig, navigateTo } from '#app'
 import type { RouteLocationNormalized } from 'vue-router'
 import type { ModuleOptions } from '../types'
-import { checkTableExists } from '../utils'
+import { checkTableExists } from './server/utils'
 import { useAuth } from './composables/useAuth'
 
 export default defineNuxtPlugin(async (_nuxtApp) => {

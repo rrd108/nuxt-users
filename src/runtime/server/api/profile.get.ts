@@ -1,7 +1,7 @@
 import { createError, defineEventHandler, getCookie } from 'h3'
 import type { ModuleOptions } from '../../../types'
 import { useRuntimeConfig } from '#imports'
-import { getCurrentUserFromToken } from '../../../utils'
+import { getCurrentUserFromToken } from '../utils'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()

@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
-import { getConnector, checkTableExists } from '../src/utils/db'
-import { createUsersTable } from '../src/utils/create-users-table'
+import { getConnector, checkTableExists } from '../src/runtime/server/utils/db'
+import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
-import { hasAnyUsers } from '../src/utils/user'
+import { hasAnyUsers } from '../src/runtime/server/utils/user'
 
 describe('Utils: DB', () => {
   let db: Database

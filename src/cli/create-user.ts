@@ -1,5 +1,6 @@
 import { defineCommand } from 'citty'
-import { createUser, validatePassword, getPasswordValidationOptions } from '../utils'
+import { createUser } from '../runtime/server/utils'
+import { validatePassword, getPasswordValidationOptions } from '../utils'
 import { loadOptions } from './utils'
 
 export default defineCommand({

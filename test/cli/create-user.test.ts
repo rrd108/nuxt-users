@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
-import { createUsersTable } from '../../src/utils/create-users-table'
-import { createUser } from '../../src/utils/user'
+import { createUsersTable } from '../../src/runtime/server/utils/create-users-table'
+import { createUser } from '../../src/runtime/server/utils/user'
 import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../../src/types'
 import { cleanupTestSetup, createTestSetup } from '../test-setup'
 

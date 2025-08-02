@@ -1,8 +1,1 @@
-export { useDb, checkTableExists } from './db'
-export { createUser, findUserByEmail, updateUserPassword, getCurrentUserFromToken } from './user'
-export { createUsersTable } from './create-users-table'
-export { createPersonalAccessTokensTable } from './create-personal-access-tokens-table'
-export { createPasswordResetTokensTable } from './create-password-reset-tokens-table'
-export { createMigrationsTable } from './create-migrations-table'
-export { runMigrations } from './migrate'
 export { validatePassword, getPasswordValidationOptions, getPasswordStrengthColor, getPasswordStrengthText, type PasswordValidationResult, type PasswordValidationOptions } from './password-validation'

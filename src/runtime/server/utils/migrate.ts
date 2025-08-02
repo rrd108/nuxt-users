@@ -1,5 +1,5 @@
 import { useDb } from './db'
-import type { ModuleOptions } from '../types'
+import type { ModuleOptions } from '../../../types'
 import { createUsersTable } from './create-users-table'
 import { createPersonalAccessTokensTable } from './create-personal-access-tokens-table'
 import { createPasswordResetTokensTable } from './create-password-reset-tokens-table'

@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { createUsersTable } from '../utils'
+import { createUsersTable } from '../runtime/server/utils'
 import { loadOptions } from './utils'
 
 export default defineCommand({

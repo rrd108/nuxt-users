@@ -1,7 +1,7 @@
 import { useDb } from './db'
 import bcrypt from 'bcrypt'
-import { validatePassword, getPasswordValidationOptions } from './password-validation'
-import type { ModuleOptions, User } from '../types'
+import { validatePassword, getPasswordValidationOptions } from '../../../utils'
+import type { ModuleOptions, User } from '../../../types'
 
 interface CreateUserParams {
   email: string
