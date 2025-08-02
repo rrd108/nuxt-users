@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   nuxtUsers: {
     auth: {
       whitelist: ['/noauth'],
+      tokenExpiration: 10,
     },
     passwordValidation: {
       minLength: 3,

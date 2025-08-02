@@ -146,7 +146,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro = nuxt.options.nitro || {}
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
     nuxt.options.nitro.experimental.tasks = true
-    
+
     // Add task handlers
     addServerHandler({
       handler: resolver.resolve('./runtime/server/tasks/cleanup-tokens')

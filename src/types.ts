@@ -43,7 +43,7 @@ export interface RuntimeModuleOptions {
     whitelist?: string[]
     /**
      * Token expiration time in minutes
-     * @default 10080 7 days
+     * @default 1440
      */
     tokenExpiration?: number
   }
@@ -85,7 +85,7 @@ export interface RuntimeModuleOptions {
 }
 
 // Runtime config type with all properties required (after merging with defaults)
-export interface ModuleOptions extends Omit<RuntimeModuleOptions, 'tables' | 'auth' | 'passwordValidation'> {
+export interface ModuleOptions {
   connector: {
     name: DatabaseType
     options: DatabaseConfig
@@ -96,6 +96,8 @@ export interface ModuleOptions extends Omit<RuntimeModuleOptions, 'tables' | 'au
     personalAccessTokens: string
     passwordResetTokens: string
   }
+  mailer?: MailerOptions
+  passwordResetBaseUrl?: string
   auth: {
     whitelist: string[]
     tokenExpiration: number

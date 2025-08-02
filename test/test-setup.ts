@@ -58,7 +58,8 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
     }
   },
   auth: {
-    whitelist: []
+    whitelist: [],
+    tokenExpiration: 1440
   },
   passwordValidation: {
     minLength: 0,

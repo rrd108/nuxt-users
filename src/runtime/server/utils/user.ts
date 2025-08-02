@@ -189,7 +189,7 @@ export const deleteExpiredPersonalAccessTokens = async (options: ModuleOptions):
     WHERE expires_at IS NOT NULL AND expires_at <= CURRENT_TIMESTAMP
   `
 
-  const deletedCount = result.rowCount || 0
+  const deletedCount = result.rows?.length || 0
   console.log(`[Nuxt Users] ${deletedCount} expired personal access tokens deleted.`)
   return deletedCount
 }
@@ -206,7 +206,7 @@ export const deleteTokensWithoutExpiration = async (options: ModuleOptions): Pro
     WHERE expires_at IS NULL
   `
 
-  const deletedCount = result.rowCount || 0
+  const deletedCount = result.rows?.length || 0
   console.log(`[Nuxt Users] ${deletedCount} tokens without expiration deleted.`)
   return deletedCount
 }
@@ -215,7 +215,7 @@ export const deleteTokensWithoutExpiration = async (options: ModuleOptions): Pro
  * Comprehensive token cleanup: removes expired tokens and optionally tokens without expiration.
  */
 export const cleanupPersonalAccessTokens = async (
-  options: ModuleOptions, 
+  options: ModuleOptions,
   includeNoExpiration: boolean = true
 ): Promise<{ expiredCount: number, noExpirationCount: number, totalCount: number }> => {
   const expiredCount = await deleteExpiredPersonalAccessTokens(options)
@@ -223,7 +223,7 @@ export const cleanupPersonalAccessTokens = async (
   const totalCount = expiredCount + noExpirationCount
 
   console.log(`[Nuxt Users] Token cleanup completed: ${expiredCount} expired + ${noExpirationCount} without expiration = ${totalCount} total tokens removed.`)
-  
+
   return { expiredCount, noExpirationCount, totalCount }
 }
 
