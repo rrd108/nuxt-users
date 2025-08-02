@@ -382,16 +382,82 @@ const result = await cleanupPersonalAccessTokens(options, true)
 await revokeUserTokens(userId, options)
 ```
 
+## Security Enhancements
+
+### Rate Limiting (Recommended)
+
+For production deployments, we strongly recommend using [nuxt-api-shield](https://github.com/rrd108/nuxt-api-shield) to protect authentication endpoints from brute force attacks:
+
+```bash
+# Install the rate limiting module
+npx nuxi module add
+```
+
+Configure rate limiting in your `nuxt.config.ts`:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users', 'nuxt-api-shield'],
+  
+  nuxtUsers: {
+    // ... your nuxt-users config
+  },
+  
+  apiShield: {
+    maxRequests: 5,        // 5 login attempts per duration
+    duration: 60000,       // 1 minute window
+    banDuration: 300000,   // 5 minute ban for violators
+    delay: 1000,           // 1 second delay on banned IPs
+    routes: [
+      '/api/auth/login',           // Protect login endpoint
+      '/api/auth/forgot-password', // Protect password reset requests  
+      '/api/auth/reset-password'   // Protect password reset completion
+    ],
+    log: true // Enable logging for monitoring
+  }
+})
+```
+
+This configuration provides:
+- **Brute force protection**: Limits login attempts per IP
+- **Automatic IP banning**: Temporarily blocks malicious IPs
+- **Password reset protection**: Prevents abuse of reset functionality
+- **Configurable thresholds**: Adjustable for your security needs
+- **Monitoring**: Logs for security analysis
+
+### Advanced Rate Limiting
+
+For different security levels on different endpoints:
+
+```ts
+apiShield: {
+  routes: {
+    '/api/auth/login': {
+      maxRequests: 5,      // Stricter limit for login
+      duration: 60000,     // 1 minute
+      banDuration: 600000  // 10 minute ban
+    },
+    '/api/auth/forgot-password': {
+      maxRequests: 3,      // Very strict for password reset
+      duration: 300000,    // 5 minute window
+      banDuration: 1800000 // 30 minute ban
+    }
+  }
+}
+```
+
 ## Security Best Practices
 
 1. **Use HTTPS**: Always use HTTPS in production
 2. **Secure cookies**: HTTP-only, secure, same-site cookies
 3. **Token expiration**: Set reasonable expiration times (default: 24 hours)
 4. **Regular cleanup**: Use the `nuxt-users:cleanup-tokens` task to periodically clean expired tokens
-5. **Rate limiting**: Implement rate limiting on login endpoints
+5. **Rate limiting**: Use nuxt-api-shield to protect authentication endpoints
 6. **Password requirements**: Enforce strong password policies
 7. **Input validation**: Validate all user inputs
 8. **Token revocation**: Revoke tokens on suspicious activity
+9. **Monitoring**: Log authentication attempts and failures
+10. **Security headers**: Implement proper security headers
 
 ## Next Steps
 

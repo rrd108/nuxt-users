@@ -281,10 +281,36 @@ const defaultOptions = {
 }
 ```
 
-## Next Steps
+## Security Enhancements
 
+### Rate Limiting (Recommended)
+
+For production applications, add rate limiting protection:
+
+```bash
+npx nuxi module add
+```
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users', 'nuxt-api-shield'],
+  
+  nuxtUsers: {
+    // ... your config
+  },
+  
+  apiShield: {
+    maxRequests: 5,
+    duration: 60000,
+    banDuration: 300000,
+    routes: ['/api/auth/login', '/api/auth/forgot-password']
+  }
+})
+```
+
+## Next Steps
 
 - [Database Setup](/guide/database-setup) - Learn about database configuration
 - [Authentication](/guide/authentication) - Understand the authentication flow
 - [Password Reset](/guide/password-reset) - Configure password reset functionality
-- [Component Styling](/components/#theme-support) - Learn about theme support and customization 
+- [Component Styling](/components/#theme-support) - Learn about theme support and customization
