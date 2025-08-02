@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v1.6.5
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.4...v1.6.5)
+
+### 🩹 Fixes
+
+- Authentication middleware ([c7de8a4](https://github.com/rrd108/nuxt-users/commit/c7de8a4))
+- Lint and type errors ([dd6ee40](https://github.com/rrd108/nuxt-users/commit/dd6ee40))
+- Type errors ([65c81fb](https://github.com/rrd108/nuxt-users/commit/65c81fb))
+
+### 🏡 Chore
+
+- Fix formatting ([fdec442](https://github.com/rrd108/nuxt-users/commit/fdec442))
+- **release:** V1.6.4 ([c395d20](https://github.com/rrd108/nuxt-users/commit/c395d20))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.6.4
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.3...v1.6.4)
