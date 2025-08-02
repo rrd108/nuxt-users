@@ -1,6 +1,37 @@
 # Changelog
 
 
+## v1.6.6
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.5...v1.6.6)
+
+### 🩹 Fixes
+
+- Authentication middleware ([c7de8a4](https://github.com/rrd108/nuxt-users/commit/c7de8a4))
+- Lint and type errors ([dd6ee40](https://github.com/rrd108/nuxt-users/commit/dd6ee40))
+- Type errors ([65c81fb](https://github.com/rrd108/nuxt-users/commit/65c81fb))
+- **cli:** Updates CLI version dynamically ([1cca13a](https://github.com/rrd108/nuxt-users/commit/1cca13a))
+- Authentication middleware logic ([18a3bb5](https://github.com/rrd108/nuxt-users/commit/18a3bb5))
+- Password validation and UI ([07b44b3](https://github.com/rrd108/nuxt-users/commit/07b44b3))
+
+### 💅 Refactors
+
+- API routes ([3c7603f](https://github.com/rrd108/nuxt-users/commit/3c7603f))
+- Authentication components and logic ([4da544f](https://github.com/rrd108/nuxt-users/commit/4da544f))
+
+### 🏡 Chore
+
+- **release:** V1.6.5 ([f35e526](https://github.com/rrd108/nuxt-users/commit/f35e526))
+
+### ✅ Tests
+
+- Fix mock ([791dc94](https://github.com/rrd108/nuxt-users/commit/791dc94))
+- Adds unit tests for auth API endpoints ([d844630](https://github.com/rrd108/nuxt-users/commit/d844630))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.6.5
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.4...v1.6.5)
