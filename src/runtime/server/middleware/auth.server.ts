@@ -1,4 +1,5 @@
-import { defineEventHandler, getCookie, sendRedirect, useRuntimeConfig } from '#imports'
+import { defineEventHandler, getCookie, sendRedirect } from 'h3'
+import { useRuntimeConfig } from '#imports'
 import { getCurrentUserFromToken } from '../utils'
 import type { ModuleOptions } from '../../../types'
 

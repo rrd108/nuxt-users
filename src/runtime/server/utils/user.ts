@@ -128,7 +128,11 @@ export const hasAnyUsers = async (options: ModuleOptions) => {
 /**
  * Gets the current user from an authentication token.
  */
-export const getCurrentUserFromToken = async (token: string, options: ModuleOptions): Promise<UserWithoutPassword | null> => {
+export const getCurrentUserFromToken = async <T extends boolean = false>(
+  token: string,
+  options: ModuleOptions,
+  withPass: T = false as T
+): Promise<T extends true ? User | null : UserWithoutPassword | null> => {
   const db = await useDb(options)
   const personalAccessTokensTable = options.tables.personalAccessTokens
   const usersTable = options.tables.users
@@ -155,7 +159,12 @@ export const getCurrentUserFromToken = async (token: string, options: ModuleOpti
     return null
   }
 
-  // remove password from the user object
-  const { password: _, ...userWithoutPassword } = userResult.rows[0]
-  return userWithoutPassword
+  const user = userResult.rows[0]
+
+  if (withPass === true) {
+    return user as T extends true ? User | null : UserWithoutPassword | null
+  }
+
+  const { password: _, ...userWithoutPassword } = user
+  return userWithoutPassword as T extends true ? User | null : UserWithoutPassword | null
 }

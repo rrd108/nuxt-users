@@ -8,9 +8,6 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const { token, email, password, password_confirmation } = body
 
-  if (!token || typeof token !== 'string') {
-    throw createError({ statusCode: 400, statusMessage: 'Token is required.' })
-  }
   if (!email || typeof email !== 'string') {
     throw createError({ statusCode: 400, statusMessage: 'Email is required.' })
   }

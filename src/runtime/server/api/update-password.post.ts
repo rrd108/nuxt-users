@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Get the current user from the token
-  const user = await getCurrentUserFromToken(token, options)
+  const user = await getCurrentUserFromToken(token, options, true)
 
   if (!user) {
     throw createError({

@@ -5,11 +5,14 @@ const mockDefineEventHandler = vi.fn(handler => handler)
 const mockGetCookie = vi.fn()
 const mockSendRedirect = vi.fn()
 
-vi.mock('#imports', () => ({
-  useRuntimeConfig: mockUseRuntimeConfig,
+vi.mock('h3', () => ({
   defineEventHandler: mockDefineEventHandler,
   getCookie: mockGetCookie,
   sendRedirect: mockSendRedirect
+}))
+
+vi.mock('#imports', () => ({
+  useRuntimeConfig: mockUseRuntimeConfig
 }))
 
 // Import middleware after mocking
@@ -20,7 +23,7 @@ vi.mock('../../src/runtime/server/utils', () => ({
 }))
 
 describe('Auth Server Middleware', () => {
-  let mockEvent: { path: string }
+  let mockEvent: any
   let mockOptions: { auth: { whitelist: string[] } }
 
   beforeEach(() => {

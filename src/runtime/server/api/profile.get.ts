@@ -27,7 +27,5 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Return user without password for security
-  const { password: _, ...userWithoutPassword } = user
-  return { user: userWithoutPassword }
+  return user
 })
