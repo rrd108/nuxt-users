@@ -1,6 +1,38 @@
 # Changelog
 
 
+## v1.6.7
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.6...v1.6.7)
+
+### 🩹 Fixes
+
+- Authentication middleware logic ([18a3bb5](https://github.com/rrd108/nuxt-users/commit/18a3bb5))
+- Password validation and UI ([07b44b3](https://github.com/rrd108/nuxt-users/commit/07b44b3))
+- Type errors ([c403645](https://github.com/rrd108/nuxt-users/commit/c403645))
+
+### 💅 Refactors
+
+- API routes ([3c7603f](https://github.com/rrd108/nuxt-users/commit/3c7603f))
+- Authentication components and logic ([4da544f](https://github.com/rrd108/nuxt-users/commit/4da544f))
+- Token cleanup task and middleware ([d47a4a5](https://github.com/rrd108/nuxt-users/commit/d47a4a5))
+
+### 🏡 Chore
+
+- **release:** V1.6.6 ([7b37694](https://github.com/rrd108/nuxt-users/commit/7b37694))
+
+### ✅ Tests
+
+- Fix mock ([791dc94](https://github.com/rrd108/nuxt-users/commit/791dc94))
+- Adds unit tests for auth API endpoints ([d844630](https://github.com/rrd108/nuxt-users/commit/d844630))
+- Remove unused test ([3dc23ad](https://github.com/rrd108/nuxt-users/commit/3dc23ad))
+- Fix response ([db3b03c](https://github.com/rrd108/nuxt-users/commit/db3b03c))
+- Fix mysql field type ([2faf0c6](https://github.com/rrd108/nuxt-users/commit/2faf0c6))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.6.6
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.5...v1.6.6)
