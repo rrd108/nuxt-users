@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
   // Assuming user.id is the primary key of the users table
   await db.sql`
     INSERT INTO {${personalAccessTokensTable}} (tokenable_type, tokenable_id, name, token, expires_at, created_at, updated_at)
-    VALUES ('user', ${user.id}, ${tokenName}, ${token}, ${expiresAt.toISOString()}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    VALUES ('user', ${user.id}, ${tokenName}, ${token}, ${expiresAt.toISOString().slice(0, 19).replace('T', ' ')}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
   `
 
   // Set the cookie
