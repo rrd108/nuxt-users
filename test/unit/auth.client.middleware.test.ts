@@ -53,8 +53,15 @@ describe('Auth Client Middleware', () => {
     mockUser = {
       value: null
     }
+
+    // Mock isAuthenticated as a computed property
+    const mockIsAuthenticated = {
+      value: false
+    }
+
     mockUseAuth.mockReturnValue({
-      user: mockUser
+      user: mockUser,
+      isAuthenticated: mockIsAuthenticated
     })
 
     // Mock defineNuxtRouteMiddleware to return the middleware function
@@ -84,8 +91,12 @@ describe('Auth Client Middleware', () => {
   it('should deny access to /profile with no user', async () => {
     mockTo.path = '/profile'
 
-    // Mock user with no id
+    // Mock user with no id and not authenticated
     mockUser.value = null
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      isAuthenticated: { value: false }
+    })
 
     const result = await clientAuthMiddleware.default(mockTo, mockFrom)
 
@@ -97,8 +108,12 @@ describe('Auth Client Middleware', () => {
   it('should deny access to /profile with user without id', async () => {
     mockTo.path = '/profile'
 
-    // Mock user without id
+    // Mock user without id and not authenticated
     mockUser.value = { id: undefined }
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      isAuthenticated: { value: false }
+    })
 
     const result = await clientAuthMiddleware.default(mockTo, mockFrom)
 
@@ -110,8 +125,12 @@ describe('Auth Client Middleware', () => {
   it('should allow access to /profile with proper auth', async () => {
     mockTo.path = '/profile'
 
-    // Mock user with valid id
+    // Mock user with valid id and authenticated
     mockUser.value = { id: 1 }
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      isAuthenticated: { value: true }
+    })
 
     const result = await clientAuthMiddleware.default(mockTo, mockFrom)
 
