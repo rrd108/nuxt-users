@@ -1,12 +1,24 @@
 import { defineTask } from 'nitropack/runtime/task'
 import type { ModuleOptions } from '../../../types'
 
+interface CleanupTokensPayload {
+  includeNoExpiration?: boolean
+}
+
+interface CleanupTokensResult {
+  result: 'success'
+  expiredTokensRemoved: number
+  noExpirationTokensRemoved: number
+  totalTokensCleaned: number
+  includeNoExpiration: boolean
+}
+
 export default defineTask({
   meta: {
     name: 'nuxt-users:cleanup-tokens',
     description: 'Clean up expired personal access tokens and tokens without expiration'
   },
-  async run({ payload }) {
+  async run({ payload }: { payload?: CleanupTokensPayload }): Promise<CleanupTokensResult> {
     const { useRuntimeConfig } = await import('#imports')
     const { cleanupPersonalAccessTokens } = await import('../utils')
 
@@ -18,7 +30,7 @@ export default defineTask({
     }
 
     // Payload options: { includeNoExpiration?: boolean }
-    const includeNoExpiration = (payload?.includeNoExpiration as boolean) ?? true
+    const includeNoExpiration = payload?.includeNoExpiration ?? true
 
     try {
       const result = await cleanupPersonalAccessTokens(options, includeNoExpiration)

@@ -93,11 +93,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     addImportsDir(resolver.resolve('./runtime/composables'))
 
-    // middlewares
-    addServerHandler({
-      middleware: true,
-      handler: resolver.resolve('./runtime/server/middleware/auth.server'),
-    })
+    // Server middleware is auto-registered by Nitro when placed in server/middleware/
 
     addRouteMiddleware({
       name: 'auth.client',
@@ -143,13 +139,13 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     // Register Nitro tasks
-    nuxt.options.nitro = nuxt.options.nitro || {}
-    nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
-    nuxt.options.nitro.experimental.tasks = true
+    nuxt.hook('nitro:config', async (nitroConfig) => {
+      nitroConfig.experimental = nitroConfig.experimental || {}
+      nitroConfig.experimental.tasks = true
 
-    // Add task handlers
-    addServerHandler({
-      handler: resolver.resolve('./runtime/server/tasks/cleanup-tokens')
+      // Add tasks directory to scan
+      nitroConfig.scanDirs = nitroConfig.scanDirs || []
+      nitroConfig.scanDirs.push(resolver.resolve('./runtime/server/tasks'))
     })
 
     // components
