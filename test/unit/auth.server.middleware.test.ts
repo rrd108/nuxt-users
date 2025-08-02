@@ -62,7 +62,7 @@ describe('Auth Server Middleware', () => {
   })
 
   it('should allow api login requests without authentication', async () => {
-    const event = { path: '/api/login' } as H3Event
+    const event = { path: '/api/auth/login' } as H3Event
     const result = await serverAuthMiddleware.default(event)
 
     expect(result).toBeUndefined()

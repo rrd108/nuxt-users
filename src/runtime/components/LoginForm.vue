@@ -11,7 +11,7 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<LoginFormProps>(), {
-  apiEndpoint: '/api/login',
+  apiEndpoint: '/api/auth/login',
   redirectTo: '/',
   forgotPasswordEndpoint: '/api/auth/forgot-password'
 })

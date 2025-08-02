@@ -30,7 +30,7 @@ export default defineNuxtConfig({
 
 ## Authentication Flow
 
-Upon successful login via the `/api/login` endpoint:
+Upon successful login via the `/api/auth/login` endpoint:
 
 1. **User submits credentials** - Email and password are sent to the server
 2. **Password verification** - bcrypt compares the password with the stored hash
@@ -73,7 +73,7 @@ CREATE TABLE personal_access_tokens (
 
 ### Endpoint
 
-`POST /api/login`
+`POST /api/auth/login`
 
 ### Request Body
 
@@ -147,7 +147,7 @@ You can implement custom login logic:
 <script setup>
 const login = async (email, password) => {
   try {
-    const response = await $fetch('/api/login', {
+    const response = await $fetch('/api/auth/login', {
       method: 'POST',
       body: { email, password }
     })
@@ -254,7 +254,7 @@ You can also call the logout API directly:
 <script setup>
 const logout = async () => {
   try {
-    await $fetch('/api/logout', {
+    await $fetch('/api/auth/logout', {
       method: 'GET'
     })
     console.log('Logged out successfully')

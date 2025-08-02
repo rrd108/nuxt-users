@@ -50,7 +50,7 @@ export default defineConfig({
           {
             text: 'API Reference',
             items: [
-              { text: 'Login', link: '/api/login' },
+              { text: 'Login', link: '/api/auth/login' },
               { text: 'Password Reset', link: '/api/password-reset' }
             ]
           },

@@ -77,7 +77,7 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  apiEndpoint: '/api/login',
+  apiEndpoint: '/api/auth/login',
   redirectTo: '/'
 })
 

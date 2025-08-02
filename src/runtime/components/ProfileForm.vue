@@ -17,8 +17,8 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<ProfileFormProps>(), {
-  apiEndpoint: '/api/profile',
-  updatePasswordEndpoint: '/api/update-password'
+  apiEndpoint: '/api/user/profile',
+  updatePasswordEndpoint: '/api/auth/update-password'
 })
 
 const emit = defineEmits<Emits>()

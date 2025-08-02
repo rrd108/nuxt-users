@@ -43,7 +43,7 @@ const handleError = (error) => {
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `apiEndpoint` | `string` | `'/api/login'` | The API endpoint for login requests |
+| `apiEndpoint` | `string` | `'/api/auth/login'` | The API endpoint for login requests |
 | `redirectTo` | `string` | `'/'` | Where to redirect after successful login |
 
 ### Events
@@ -300,7 +300,7 @@ This component handles its own API calls and message display. It has no specific
 ### Features
 
 - Email validation
-- API calls to `/api/forgot-password`
+- API calls to `/api/auth/forgot-password`
 - Success/error message display
 - Loading states
 - Automatic form reset on success
@@ -323,7 +323,7 @@ This component handles its own API calls, message display, and redirection to lo
 
 - Automatically reads `token` and `email` from URL query parameters
 - Password confirmation validation
-- API calls to `/api/reset-password`
+- API calls to `/api/auth/reset-password`
 - Automatic redirection to login on success
 - Error handling and display
 
@@ -572,8 +572,8 @@ const handlePasswordError = (error) => {
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `apiEndpoint` | `string` | `'/api/profile'` | The API endpoint for fetching user profile |
-| `updatePasswordEndpoint` | `string` | `'/api/update-password'` | The API endpoint for updating password |
+| `apiEndpoint` | `string` | `'/api/user/profile'` | The API endpoint for fetching user profile |
+| `updatePasswordEndpoint` | `string` | `'/api/auth/update-password'` | The API endpoint for updating password |
 
 ### Events
 

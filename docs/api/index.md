@@ -6,7 +6,7 @@ The Nuxt Users module provides several API endpoints for authentication and pass
 
 ### Login
 
-**Endpoint:** `POST /api/login`
+**Endpoint:** `POST /api/auth/login`
 
 Authenticate a user with email and password.
 
@@ -38,7 +38,7 @@ Authenticate a user with email and password.
 
 ### Logout
 
-**Endpoint:** `GET /api/logout`
+**Endpoint:** `GET /api/auth/logout`
 
 Logout the current user by removing their authentication token.
 
@@ -60,7 +60,7 @@ Logout the current user by removing their authentication token.
 
 ### Get Profile
 
-**Endpoint:** `GET /api/profile`
+**Endpoint:** `GET /api/user/profile`
 
 Get the current user's profile information.
 
@@ -85,7 +85,7 @@ Get the current user's profile information.
 
 ### Update Password
 
-**Endpoint:** `POST /api/update-password`
+**Endpoint:** `POST /api/auth/update-password`
 
 Update the current user's password.
 
@@ -119,7 +119,7 @@ Update the current user's password.
 
 ### Forgot Password
 
-**Endpoint:** `POST /api/forgot-password`
+**Endpoint:** `POST /api/auth/forgot-password`
 
 Send a password reset link to the user's email.
 
@@ -144,7 +144,7 @@ Send a password reset link to the user's email.
 
 ### Reset Password
 
-**Endpoint:** `POST /api/reset-password`
+**Endpoint:** `POST /api/auth/reset-password`
 
 Reset user password using a valid token.
 
@@ -195,9 +195,9 @@ The module automatically handles cookie management for login/logout.
 
 Consider implementing rate limiting for these endpoints:
 
-- `/api/login`: Prevent brute force attacks
-- `/api/forgot-password`: Prevent email spam
-- `/api/reset-password`: Prevent token brute force
+- `/api/auth/login`: Prevent brute force attacks
+- `/api/auth/forgot-password`: Prevent email spam
+- `/api/auth/reset-password`: Prevent token brute force
 
 ## Next Steps
 

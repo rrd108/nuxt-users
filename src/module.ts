@@ -105,39 +105,39 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Register API routes
     addServerHandler({
-      route: '/api/login',
+      route: '/api/auth/login',
       method: 'post',
-      handler: resolver.resolve('./runtime/server/api/login.post')
+      handler: resolver.resolve('./runtime/server/api/auth/login.post')
     })
 
     addServerHandler({
-      route: '/api/forgot-password',
+      route: '/api/auth/forgot-password',
       method: 'post',
       handler: resolver.resolve('./runtime/server/api/auth/forgot-password.post')
     })
 
     addServerHandler({
-      route: '/api/reset-password',
+      route: '/api/auth/reset-password',
       method: 'post',
       handler: resolver.resolve('./runtime/server/api/auth/reset-password.post')
     })
 
     addServerHandler({
-      route: '/api/logout',
+      route: '/api/auth/logout',
       method: 'get',
-      handler: resolver.resolve('./runtime/server/api/logout.get')
+      handler: resolver.resolve('./runtime/server/api/auth/logout.get')
     })
 
     addServerHandler({
-      route: '/api/profile',
+      route: '/api/user/profile',
       method: 'get',
-      handler: resolver.resolve('./runtime/server/api/profile.get')
+      handler: resolver.resolve('./runtime/server/api/user/profile.get')
     })
 
     addServerHandler({
-      route: '/api/update-password',
+      route: '/api/auth/update-password',
       method: 'post',
-      handler: resolver.resolve('./runtime/server/api/update-password.post')
+      handler: resolver.resolve('./runtime/server/api/auth/update-password.post')
     })
 
     // components

@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // login page is allowed to access without authentication
-  if (event.path === '/login' || event.path === '/api/login') {
+  if (event.path === '/login' || event.path === '/api/auth/login') {
     console.log('[Nuxt Users] server.middleware.auth.global: /login')
     return
   }

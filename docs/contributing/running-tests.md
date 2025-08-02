@@ -253,7 +253,7 @@ describe('Login API', () => {
   })
 
   it('should login successfully', async () => {
-    const response = await $fetch('/api/login', {
+    const response = await $fetch('/api/auth/login', {
       method: 'POST',
       body: {
         email: 'test@example.com',

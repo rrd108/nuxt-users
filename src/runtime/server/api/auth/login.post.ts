@@ -1,9 +1,9 @@
 import { createError, defineEventHandler, readBody, setCookie } from 'h3'
 import bcrypt from 'bcrypt'
 import crypto from 'node:crypto'
-import type { ModuleOptions, User } from '../../../types'
+import type { ModuleOptions, User } from '../../../../types'
 import { useRuntimeConfig } from '#imports'
-import { useDb } from '../utils'
+import { useDb } from '../../utils'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

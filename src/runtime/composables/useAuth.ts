@@ -19,7 +19,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await $fetch('/api/logout', {
+      await $fetch('/api/auth/logout', {
         method: 'GET'
       })
       user.value = null
@@ -36,7 +36,7 @@ export const useAuth = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await $fetch<{ user: UserWithoutPassword }>('/api/profile', {
+      const response = await $fetch<{ user: UserWithoutPassword }>('/api/user/profile', {
         method: 'GET'
       })
       user.value = response.user

@@ -72,7 +72,7 @@ describe('Login API Route', async () => {
   })
 
   it('should login successfully, set cookie, and store token', async () => {
-    const response = await $fetch('/api/login', {
+    const response = await $fetch('/api/auth/login', {
       method: 'POST',
       body: {
         email: 'rrd@webmania.cc',
@@ -97,7 +97,7 @@ describe('Login API Route', async () => {
 
   it('should return 401 for incorrect email', async () => {
     try {
-      await $fetch('/api/login', {
+      await $fetch('/api/auth/login', {
         method: 'POST',
         body: {
           email: 'wrong@example.com',
@@ -114,7 +114,7 @@ describe('Login API Route', async () => {
 
   it('should return 401 for incorrect password', async () => {
     try {
-      await $fetch('/api/login', {
+      await $fetch('/api/auth/login', {
         method: 'POST',
         body: {
           email: 'rrd@webmania.cc',
@@ -131,7 +131,7 @@ describe('Login API Route', async () => {
 
   it('should return 400 for missing email', async () => {
     try {
-      await $fetch('/api/login', {
+      await $fetch('/api/auth/login', {
         method: 'POST',
         body: {
           password: 'Gauranga-108',
@@ -147,7 +147,7 @@ describe('Login API Route', async () => {
 
   it('should return 400 for missing password', async () => {
     try {
-      await $fetch('/api/login', {
+      await $fetch('/api/auth/login', {
         method: 'POST',
         body: {
           email: 'rrd@webmania.cc',

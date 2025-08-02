@@ -26,7 +26,7 @@ vi.mock('../../src/runtime/server/utils', () => ({
 }))
 
 // Import the profile api endpoint after mocking
-const profileApiEndpoint = await import('../../src/runtime/server/api/profile.get')
+const profileApiEndpoint = await import('../../src/runtime/server/api/user/profile.get')
 
 describe('Profile API Route', () => {
   let testOptions: ModuleOptions

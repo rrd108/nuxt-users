@@ -91,7 +91,7 @@ This component provides a form for users to request a password reset link.
 
 The component handles:
 - Email validation
-- API calls to `/api/forgot-password`
+- API calls to `/api/auth/forgot-password`
 - Success/error message display
 - Loading states
 
@@ -107,7 +107,7 @@ This component provides a form for users to set a new password using a token fro
 
 The component:
 - Automatically reads `token` and `email` from URL query parameters
-- Handles API calls to `/api/reset-password`
+- Handles API calls to `/api/auth/reset-password`
 - Validates password confirmation
 - Redirects to login upon success
 
@@ -115,7 +115,7 @@ The component:
 
 ### Forgot Password
 
-**Endpoint:** `POST /api/forgot-password`
+**Endpoint:** `POST /api/auth/forgot-password`
 
 **Request Body:**
 ```json
@@ -133,7 +133,7 @@ The component:
 
 ### Reset Password
 
-**Endpoint:** `POST /api/reset-password`
+**Endpoint:** `POST /api/auth/reset-password`
 
 **Request Body:**
 ```json
@@ -160,7 +160,7 @@ The component:
 <script setup>
 const requestReset = async (email) => {
   try {
-    await $fetch('/api/forgot-password', {
+    await $fetch('/api/auth/forgot-password', {
       method: 'POST',
       body: { email }
     })
@@ -182,7 +182,7 @@ const requestReset = async (email) => {
 <script setup>
 const resetPassword = async (token, email, password, passwordConfirmation) => {
   try {
-    await $fetch('/api/reset-password', {
+    await $fetch('/api/auth/reset-password', {
       method: 'POST',
       body: {
         token,
