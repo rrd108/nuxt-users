@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v1.6.4
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.3...v1.6.4)
+
+### 💅 Refactors
+
+- Move utils to runtime/server ([78a5b50](https://github.com/rrd108/nuxt-users/commit/78a5b50))
+
+### 🏡 Chore
+
+- **release:** V1.6.3 ([365cfe2](https://github.com/rrd108/nuxt-users/commit/365cfe2))
+- Fix formatting ([fdec442](https://github.com/rrd108/nuxt-users/commit/fdec442))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.6.3
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.2...v1.6.3)
