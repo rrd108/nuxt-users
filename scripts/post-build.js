@@ -13,7 +13,8 @@ const utilsTarget = 'utils.mjs'
 if (existsSync(utilsSymlink)) {
   try {
     unlinkSync(utilsSymlink)
-  } catch (error) {
+  }
+  catch {
     // Ignore errors (might be a directory)
   }
 }
@@ -22,6 +23,7 @@ if (existsSync(utilsSymlink)) {
 try {
   symlinkSync(utilsTarget, utilsSymlink)
   console.log('[Nuxt Users] Created symlink for CLI: dist/utils -> utils.mjs')
-} catch (error) {
+}
+catch (error) {
   console.warn('[Nuxt Users] Warning: Could not create symlink for CLI:', error.message)
 }
