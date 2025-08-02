@@ -2,6 +2,11 @@
 import { ref } from 'vue'
 import { navigateTo } from '#app'
 import type { LoginFormData, LoginFormProps, UserWithoutPassword } from '../../types'
+import { useRuntimeConfig } from '#imports'
+import type { ModuleOptions } from '../../types'
+
+const { public: { nuxtUsers } } = useRuntimeConfig()
+const { passwordValidation } = nuxtUsers as ModuleOptions
 
 interface Emits {
   (e: 'success', user: UserWithoutPassword): void
@@ -141,7 +146,7 @@ const handleForgotPassword = async () => {
             name="password"
             placeholder="Enter your password"
             required
-            minlength="6"
+            :minlength="passwordValidation.minLength"
           >
         </div>
       </slot>

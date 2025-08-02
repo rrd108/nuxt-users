@@ -102,22 +102,18 @@ const handleLogout = async (event: Event) => {
   font-weight: 500;
   transition: all 0.2s;
   border: 2px solid transparent;
-  background: #dc3545;
+  background: var(--color-error);
   color: white;
-  border-color: #c82333;
+  border-color: var(--color-error-dark);
 }
 
 .logout-link:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  opacity: 0.6;
-  cursor: not-allowed;
-  pointer-events: none;
+  border-color: var(--color-primary);
 }
 
 .error-message {
-  color: #dc3545;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
+  color: var(--color-error);
+  font-size: 1rem;
+  margin-bottom: .5em;
 }
 </style>
