@@ -20,7 +20,7 @@ div {
   margin: 2em auto;
   padding: 2em;
   border: 1px solid var(--color-border-dark);
-  border-radius: 8px;
+  border-radius: .5em;
 }
 hr {
   margin: 1.5em 0;

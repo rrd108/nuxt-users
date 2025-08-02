@@ -8,6 +8,13 @@ interface LogoutLinkProps {
   linkText?: string
   confirmMessage?: string
   class?: string
+  style?: string | Record<string, string | number>
+  linkClass?: string
+  linkStyle?: string | Record<string, string | number>
+  errorClass?: string
+  errorStyle?: string | Record<string, string | number>
+  containerClass?: string
+  containerStyle?: string | Record<string, string | number>
 }
 
 interface Emits {
@@ -59,42 +66,50 @@ const handleLogout = async (event: Event) => {
 </script>
 
 <template>
-  <div>
+  <div
+    :class="['logout-container', props.containerClass]"
+    :style="props.containerStyle"
+  >
     <div
       v-if="error"
-      class="error-message"
+      :class="['error-message', props.errorClass]"
+      :style="props.errorStyle"
     >
       {{ error }}
     </div>
 
     <a
       href="#"
-      :class="['logout-link', { loading: isLoading }, props.class]"
+      :class="['logout-link', { loading: isLoading }, props.linkClass]"
+      :style="props.linkStyle"
       :disabled="isLoading"
       @click="handleLogout"
     >
-      <span v-if="isLoading">Logging out...</span>
-      <span v-else>{{ linkText }}</span>
+      <slot>
+        <span v-if="isLoading">Logging out...</span>
+        <span v-else>{{ linkText }}</span>
+      </slot>
     </a>
   </div>
 </template>
 
 <style scoped>
 .logout-link {
-  color: #dc3545;
+  display: inline-block;
+  padding:.5em 1em;
+  border-radius: .5em;
   text-decoration: none;
-  cursor: pointer;
-  font-size: 0.875rem;
   font-weight: 500;
-  transition: color 0.2s;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+  background: #dc3545;
+  color: white;
+  border-color: #c82333;
 }
 
-.logout-link:hover:not(.loading) {
-  color: #c82333;
-  text-decoration: underline;
-}
-
-.logout-link.loading {
+.logout-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
   opacity: 0.6;
   cursor: not-allowed;
   pointer-events: none;

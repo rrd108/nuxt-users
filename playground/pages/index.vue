@@ -98,8 +98,8 @@ h1 {
 
 .btn {
   display: inline-block;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding:.5em 1em;
+  border-radius: .5em;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s;

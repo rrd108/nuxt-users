@@ -148,7 +148,7 @@ export interface LogoutLinkProps {
   class?: string
 }
 
-export interface ProfileFormProps {
+export interface ResetPasswordFormProps {
   apiEndpoint?: string
   updatePasswordEndpoint?: string
 }

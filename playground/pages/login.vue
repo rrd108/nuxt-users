@@ -19,12 +19,12 @@ const handleSubmit = (data) => {
 
 <template>
   <div class="demo-container">
-    <h1>Nuxt Users</h1>
-
     <nav>
       <NuxtLink to="/profile">Profile</NuxtLink>
       <NuxtLink to="/noauth">No Auth</NuxtLink>
     </nav>
+
+    <h1>Nuxt Users</h1>
 
     <div class="demo-section">
       <h2>Login Component Demo</h2>

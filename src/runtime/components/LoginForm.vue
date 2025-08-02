@@ -258,7 +258,7 @@ input[type="password"] {
   padding: 0.75em 1em;
   font-size: 0.875rem;
   border: 1px solid var(--color-border-light);
-  border-radius: 8px;
+  border-radius: .5em;
   background-color: var(--color-bg-secondary);
   color: var(--color-gray-700);
   transition: all 0.2s ease-in-out;
@@ -318,7 +318,7 @@ button[type='submit'] {
   color: var(--color-white);
   background-color: var(--color-primary);
   border: 1px solid var(--color-primary);
-  border-radius: 8px;
+  border-radius: .5em;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   display: flex;
@@ -386,7 +386,7 @@ button[type='submit']:disabled {
   padding: 0.75em 1em;
   background-color: var(--color-error-light);
   border: 1px solid var(--color-error-border);
-  border-radius: 8px;
+  border-radius: .5em;
   color: var(--color-error);
   font-size: 0.875rem;
   text-align: center;
@@ -397,7 +397,7 @@ button[type='submit']:disabled {
   padding: 0.75em 1em;
   background-color: var(--color-success-light);
   border: 1px solid var(--color-success-border);
-  border-radius: 8px;
+  border-radius: .5em;
   color: var(--color-success);
   font-size: 0.875rem;
   text-align: center;

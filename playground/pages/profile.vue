@@ -26,7 +26,9 @@ const handlePasswordError = (error: string) => {
         View and manage your account information
       </p>
 
-      <ProfileForm
+      <ProfileInfo />
+
+      <ResetPasswordForm
         @success="handleProfileSuccess"
         @error="handleProfileError"
         @password-updated="handlePasswordUpdated"
@@ -49,11 +51,6 @@ const handlePasswordError = (error: string) => {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 40px 20px;
-}
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
 }
 
 h1 {
@@ -88,7 +85,7 @@ h1 {
   text-decoration: none;
   font-weight: 500;
   padding: 12px 20px;
-  border-radius: 8px;
+  border-radius: .5em;
   transition: background-color 0.2s;
 }
 

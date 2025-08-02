@@ -58,7 +58,6 @@ export default defineConfig({
             text: 'Components',
             items: [
               { text: 'LoginForm', link: '/components/login-form' },
-              { text: 'ForgotPasswordForm', link: '/components/forgot-password-form' },
               { text: 'ResetPasswordForm', link: '/components/reset-password-form' }
             ]
           },

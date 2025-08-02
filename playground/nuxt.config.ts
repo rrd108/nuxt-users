@@ -10,5 +10,13 @@ export default defineNuxtConfig({
     auth: {
       whitelist: ['/noauth'],
     },
+    passwordValidation: {
+      minLength: 3,
+      requireUppercase: false,
+      requireLowercase: false,
+      requireNumbers: false,
+      requireSpecialChars: false,
+      preventCommonPasswords: false,
+    }
   },
 })

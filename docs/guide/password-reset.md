@@ -79,22 +79,6 @@ nuxtUsers: {
 
 ## Components
 
-### ForgotPasswordForm
-
-This component provides a form for users to request a password reset link.
-
-```vue
-<template>
-  <ForgotPasswordForm />
-</template>
-```
-
-The component handles:
-- Email validation
-- API calls to `/api/auth/forgot-password`
-- Success/error message display
-- Loading states
-
 ### ResetPasswordForm
 
 This component provides a form for users to set a new password using a token from the reset link.

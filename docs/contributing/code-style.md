@@ -256,7 +256,6 @@ database-utils.ts
 
 // Component names
 LoginForm.vue
-ForgotPasswordForm.vue
 
 // Function names
 createUser()

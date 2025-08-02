@@ -6,11 +6,9 @@ The Nuxt Users module provides several Vue components for authentication and pas
 
 | Component | Purpose |
 |-----------|---------|
-| `LoginForm` | User login form with validation |
+| `LoginForm` | User login and forgot password form with validation |
 | `LogoutLink` | User logout link with confirmation |
-| `ForgotPasswordForm` | Password reset request form |
 | `ResetPasswordForm` | Password reset form with token validation |
-| `ProfileForm` | User profile display and password change form |
 
 ## LoginForm
 
@@ -283,28 +281,6 @@ const handleLogout = async () => {
 </script>
 ```
 
-## ForgotPasswordForm
-
-A form for users to request a password reset link.
-
-### Basic Usage
-
-```vue
-<template>
-  <ForgotPasswordForm />
-</template>
-```
-
-This component handles its own API calls and message display. It has no specific props or events to configure for basic use.
-
-### Features
-
-- Email validation
-- API calls to `/api/auth/forgot-password`
-- Success/error message display
-- Loading states
-- Automatic form reset on success
-
 ## ResetPasswordForm
 
 A form for users to set a new password using a token from the reset link.
@@ -531,104 +507,6 @@ By default, the components automatically detect the user's system preference usi
   border-color: #047857 !important;
 }
 </style>
-```
-
-## ProfileForm
-
-A comprehensive profile management component that displays user information and allows password changes.
-
-### Basic Usage
-
-```vue
-<template>
-  <ProfileForm 
-    @success="handleProfileSuccess"
-    @error="handleProfileError"
-    @password-updated="handlePasswordUpdated"
-    @password-error="handlePasswordError"
-  />
-</template>
-
-<script setup>
-const handleProfileSuccess = (user) => {
-  console.log('Profile loaded:', user)
-}
-
-const handleProfileError = (error) => {
-  console.log('Profile error:', error)
-}
-
-const handlePasswordUpdated = () => {
-  console.log('Password updated successfully')
-}
-
-const handlePasswordError = (error) => {
-  console.log('Password update error:', error)
-}
-</script>
-```
-
-### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `apiEndpoint` | `string` | `'/api/user/profile'` | The API endpoint for fetching user profile |
-| `updatePasswordEndpoint` | `string` | `'/api/auth/update-password'` | The API endpoint for updating password |
-
-### Events
-
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `success` | `User` | Emitted when profile is loaded successfully |
-| `error` | `string` | Emitted when profile loading fails |
-| `password-updated` | - | Emitted when password is updated successfully |
-| `password-error` | `string` | Emitted when password update fails |
-
-### Features
-
-The ProfileForm component provides:
-
-- **Profile Information Display**: Shows user name, email, role, and timestamps
-- **Password Change Form**: Secure password update with current password verification
-- **Form Validation**: Client-side validation for password requirements
-- **Error Handling**: Comprehensive error messages for all operations
-- **Loading States**: Visual feedback during API operations
-- **Responsive Design**: Works well on all screen sizes
-
-### Example with Custom Styling
-
-```vue
-<template>
-  <ProfileForm 
-    class="my-profile-form"
-    @success="handleSuccess"
-  />
-</template>
-
-<style scoped>
-.my-profile-form {
-  --color-primary: #059669;
-  --color-primary-dark: #047857;
-  --color-bg-primary: #f0fdf4;
-  --color-border: #10b981;
-}
-</style>
-```
-
-## Dependencies
-
-The components require Formkit to be installed and configured:
-
-```bash
-npm install @formkit/nuxt
-```
-
-```ts
-// nuxt.config.ts
-export default defineNuxtConfig({
-  modules: ['nuxt-users', '@formkit/nuxt'],
-  // ... other config
-})
 ```
 
 ## Next Steps

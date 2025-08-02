@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { PasswordValidationResult } from '../../utils'
+import { useRuntimeConfig } from '#imports'
+import type { ModuleOptions } from '../../types'
 
 interface Props {
   password: string
@@ -14,6 +16,9 @@ const props = withDefaults(defineProps<Props>(), {
   showRules: true
 })
 
+const { public: { nuxtUsers } } = useRuntimeConfig()
+const moduleOptions = nuxtUsers as ModuleOptions
+
 const hasErrors = computed(() => (props.validationResult?.errors?.length || 0) > 0)
 const hasHints = computed(() => (props.validationResult?.hints?.length || 0) > 0)
 const hasPassword = computed(() => props.password.length > 0)
@@ -24,48 +29,51 @@ const validationRules = computed(() => {
 
   const rules = []
 
-  // Minimum length (8 characters)
-  const minLength = 8
-  const hasMinLength = props.password.length >= minLength
-  rules.push({
-    text: `At least ${minLength} characters`,
-    passed: hasMinLength
-  })
+  if (moduleOptions.passwordValidation.minLength) {
+    const hasMinLength = props.password.length >= moduleOptions.passwordValidation.minLength
+    rules.push({
+      text: `At least ${moduleOptions.passwordValidation.minLength} characters`,
+      passed: hasMinLength
+    })
+  }
 
-  // Uppercase letters
-  const hasUppercase = /[A-Z]/.test(props.password)
-  rules.push({
-    text: 'Contains uppercase letter (A-Z)',
-    passed: hasUppercase
-  })
+  if (moduleOptions.passwordValidation.requireUppercase) {
+    const hasUppercase = /[A-Z]/.test(props.password)
+    rules.push({
+      text: 'Contains uppercase letter (A-Z)',
+      passed: hasUppercase
+    })
+  }
 
-  // Lowercase letters
-  const hasLowercase = /[a-z]/.test(props.password)
-  rules.push({
-    text: 'Contains lowercase letter (a-z)',
-    passed: hasLowercase
-  })
+  if (moduleOptions.passwordValidation.requireLowercase) {
+    const hasLowercase = /[a-z]/.test(props.password)
+    rules.push({
+      text: 'Contains lowercase letter (a-z)',
+      passed: hasLowercase
+    })
+  }
 
-  // Numbers
-  const hasNumbers = /\d/.test(props.password)
-  rules.push({
-    text: 'Contains number (0-9)',
-    passed: hasNumbers
-  })
+  if (moduleOptions.passwordValidation.requireNumbers) {
+    const hasNumbers = /\d/.test(props.password)
+    rules.push({
+      text: 'Contains number (0-9)',
+      passed: hasNumbers
+    })
+  }
 
-  // Special characters
-  const hasSpecialChars = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(props.password)
-  rules.push({
-    text: 'Contains special character (!@#$%^&*)',
-    passed: hasSpecialChars
-  })
+  if (moduleOptions.passwordValidation.requireSpecialChars) {
+    const hasSpecialChars = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(props.password)
+    rules.push({
+      text: 'Contains special character (!@#$%^&*)',
+      passed: hasSpecialChars
+    })
+  }
 
   return rules
 })
 </script>
 
 <template>
-  <!-- Password strength indicator -->
   <div
     v-if="hasPassword"
     class="password-strength"

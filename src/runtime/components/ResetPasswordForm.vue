@@ -1,56 +1,43 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed, watch } from 'vue'
-import { useRoute, useRouter } from '#app' // Nuxt 3 specific imports
+import { ref, watch } from 'vue'
+import type { UserWithoutPassword, ModuleOptions, ResetPasswordFormProps } from '../../types'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
 import { useRuntimeConfig } from '#imports'
-import type { ModuleOptions } from '../../types'
 import PasswordStrengthIndicator from './PasswordStrengthIndicator.vue'
 
-interface ResetPasswordFormData {
-  password: string
-  password_confirm: string
+interface Emits {
+  (e: 'success', user: UserWithoutPassword): void
+  (e: 'error' | 'password-error', error: string): void
+  (e: 'password-updated'): void
 }
 
-const formData = reactive<ResetPasswordFormData>({
-  password: '',
-  password_confirm: '',
+const props = withDefaults(defineProps<ResetPasswordFormProps>(), {
+  apiEndpoint: '/api/user/profile',
+  updatePasswordEndpoint: '/api/auth/update-password'
 })
 
-const message = ref('')
-const loading = ref(false)
-const isError = ref(false)
-const formInvalidDueToToken = ref(false)
+const emit = defineEmits<Emits>()
 
-const route = useRoute()
-const router = useRouter()
+const isPasswordLoading = ref(false)
+const passwordError = ref('')
+const passwordSuccess = ref('')
 
-const tokenFromUrl = ref<string | null>(null)
-const emailFromUrl = ref<string | null>(null)
-
-onMounted(() => {
-  if (typeof route.query.token === 'string') {
-    tokenFromUrl.value = route.query.token
-  }
-  if (typeof route.query.email === 'string') {
-    emailFromUrl.value = decodeURIComponent(route.query.email)
-  }
-
-  if (!tokenFromUrl.value || !emailFromUrl.value) {
-    message.value = 'Invalid or missing password reset token or email in URL. Cannot reset password.'
-    isError.value = true
-    formInvalidDueToToken.value = true
-  }
+// Password form data
+const passwordForm = ref({
+  currentPassword: '',
+  newPassword: '',
+  newPasswordConfirmation: ''
 })
-
-const canSubmit = computed(() => !!tokenFromUrl.value && !!emailFromUrl.value && !formInvalidDueToToken.value)
 
 // Get module options for password validation
 const { public: { nuxtUsers } } = useRuntimeConfig()
 const moduleOptions = nuxtUsers as ModuleOptions
 
+// Password validation
 const passwordValidation = usePasswordValidation(moduleOptions)
 
-watch(() => formData.password, (newPassword) => {
+// Watch for password changes and validate
+watch(() => passwordForm.value.newPassword, (newPassword) => {
   if (newPassword) {
     passwordValidation.validate(newPassword)
   }
@@ -59,89 +46,84 @@ watch(() => formData.password, (newPassword) => {
   }
 })
 
-const handleResetPassword = async () => {
-  if (!canSubmit.value) {
-    message.value = 'Token or email is missing or invalid. Cannot reset password.'
-    isError.value = true
-    return
-  }
-
-  if (formData.password !== formData.password_confirm) {
-    message.value = 'Passwords do not match.'
-    isError.value = true
-    return
-  }
-
-  loading.value = true
-  message.value = ''
-  isError.value = false
+// Update password
+const updatePassword = async () => {
+  isPasswordLoading.value = true
+  passwordError.value = ''
+  passwordSuccess.value = ''
 
   try {
-    const response = await fetch('/api/auth/reset-password', {
+    await $fetch(props.updatePasswordEndpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        token: tokenFromUrl.value,
-        email: emailFromUrl.value,
-        password: formData.password,
-        password_confirmation: formData.password_confirm,
-      }),
+      body: passwordForm.value
     })
 
-    const responseData = await response.json()
+    passwordSuccess.value = 'Password updated successfully'
+    emit('password-updated')
 
-    if (!response.ok) {
-      throw new Error(responseData.message || responseData.statusMessage || 'An error occurred.')
+    // Clear form
+    passwordForm.value = {
+      currentPassword: '',
+      newPassword: '',
+      newPasswordConfirmation: ''
     }
-
-    message.value = responseData.message + ' Redirecting to login...'
-    isError.value = false
-    formData.password = ''
-    formData.password_confirm = ''
-
-    setTimeout(() => {
-      router.push('/login')
-    }, 3000)
   }
   catch (err: unknown) {
-    if (err instanceof Error) {
-      message.value = err.message
-    }
-    else {
-      message.value = 'Failed to reset password.'
-    }
-    console.error('[Nuxt Users] Reset Password Form Error:', err)
-    isError.value = true
+    const errorMessage = err && typeof err === 'object' && 'data' in err && err.data && typeof err.data === 'object' && 'statusMessage' in err.data
+      ? String(err.data.statusMessage)
+      : err instanceof Error
+        ? err.message
+        : 'Failed to update password'
+    passwordError.value = errorMessage
+    emit('password-error', errorMessage)
   }
   finally {
-    loading.value = false
+    isPasswordLoading.value = false
   }
 }
 </script>
 
 <template>
   <div>
-    <h2>Reset Password</h2>
-    <form @submit.prevent="handleResetPassword">
+    <h2>Change Password</h2>
+
+    <form @submit.prevent="updatePassword">
       <div class="form-group">
-        <label for="password">New Password</label>
+        <label
+          for="currentPassword"
+          class="form-label"
+        >Current Password</label>
         <input
-          id="password"
-          v-model="formData.password"
+          id="currentPassword"
+          v-model="passwordForm.currentPassword"
           type="password"
-          name="password"
-          placeholder="Enter new password"
+          class="form-input"
+          required
+          :disabled="isPasswordLoading"
+        >
+      </div>
+
+      <div class="form-group">
+        <label
+          for="newPassword"
+          class="form-label"
+        >New Password</label>
+        <input
+          id="newPassword"
+          v-model="passwordForm.newPassword"
+          type="password"
+          class="form-input"
           required
           :minlength="moduleOptions.passwordValidation?.minLength || 8"
-          :class="{ error: passwordValidation.errors.value.length > 0 && formData.password }"
+          :class="{ error: passwordValidation.errors.value.length > 0 && passwordForm.newPassword }"
+          :disabled="isPasswordLoading"
         >
+
         <PasswordStrengthIndicator
-          :password="formData.password"
+          :password="passwordForm.newPassword"
           :validation-result="passwordValidation.validationResult.value"
         />
+
         <!-- Password requirements -->
         <small class="form-help">
           Password must contain at least {{ moduleOptions.passwordValidation?.minLength || 8 }} characters
@@ -151,87 +133,147 @@ const handleResetPassword = async () => {
           <span v-if="moduleOptions.passwordValidation?.requireSpecialChars">, and special characters</span>.
         </small>
       </div>
+
       <div class="form-group">
-        <label for="password_confirm">Confirm New Password</label>
+        <label
+          for="newPasswordConfirmation"
+          class="form-label"
+        >Confirm New Password</label>
         <input
-          id="password_confirm"
-          v-model="formData.password_confirm"
+          id="newPasswordConfirmation"
+          v-model="passwordForm.newPasswordConfirmation"
           type="password"
-          name="password_confirm"
-          placeholder="Confirm new password"
+          class="form-input"
           required
-          :minlength="moduleOptions.passwordValidation?.minLength || 8"
+          :disabled="isPasswordLoading"
         >
       </div>
+
+      <div
+        v-if="passwordError"
+        class="error-message"
+      >
+        {{ passwordError }}
+      </div>
+
+      <div
+        v-if="passwordSuccess"
+        class="success-message"
+      >
+        {{ passwordSuccess }}
+      </div>
+
       <button
         type="submit"
-        :disabled="loading || formInvalidDueToToken"
+        class="btn btn-primary"
+        :disabled="isPasswordLoading"
       >
-        {{ loading ? 'Resetting...' : 'Reset Password' }}
+        <span v-if="isPasswordLoading">Updating...</span>
+        <span v-else>Update Password</span>
       </button>
-      <p
-        v-if="message"
-        :class="{ error: isError, success: !isError }"
-        class="form-message"
-      >
-        {{ message }}
-      </p>
     </form>
   </div>
 </template>
 
 <style scoped>
-.error {
-  color: red;
+div {
+  background-color: var(--color-bg-primary);
+  max-width: 42em;
+  margin: 0 auto;
+  padding: 1em;
+  border-bottom-left-radius: .5em;
+  border-bottom-right-radius: .5em;
 }
-.success {
-  color: green;
+h2 {
+    border-bottom: .1em solid var(--color-border);
 }
-.form-message {
-  margin-top: 1em;
-  font-size: 0.9rem;
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
 
 .form-group {
-  margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+  width: 90%;
 }
 
-label {
-  display: block;
-  margin-bottom: 0.25em;
-  font-weight: bold;
+.form-label {
+  font-weight: 500;
+  color: var(--color-text-primary);
+  font-size: 1rem;
 }
 
-input[type="password"] {
-  width: 100%;
-  padding: 0.75em;
-  box-sizing: border-box;
-  border: 1px solid var(--color-border-dark);
-  border-radius: 4px;
+.form-input {
+  padding: .5em 1em;
+  border: 1px solid var(--color-border);
+  border-radius: .5em;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-input[type="password"].error {
-  border-color: #dc3545;
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 .1em rgba(var(--color-primary-rgb), 0.1);
+}
+
+.form-input:disabled {
+  background-color: var(--color-bg-secondary);
+  cursor: not-allowed;
 }
 
 .form-help {
-  color: #6c757d;
-  font-size: 0.875rem;
-  margin-top: 4px;
-  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-top: .25em;
 }
 
-button[type="submit"] {
-  padding: 0.75em 1.5em;
-  cursor: pointer;
-  background-color: var(--color-gray-800);
-  color: white;
+.btn {
+  padding:.5em 1em;
   border: none;
-  border-radius: 4px;
+  border-radius: .5em;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  align-self: flex-start;
 }
 
-button[type="submit"]:disabled {
-  background-color: var(--color-gray-500);
+.btn:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.error-message {
+    color: var(--color-error);
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  border-radius: .5em;
+  padding: 12px;
+  font-size: 0.875rem;
+}
+
+.success-message {
+  color: #38a169;
+  background-color: #f0fff4;
+  border: 1px solid #9ae6b4;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 0.875rem;
 }
 </style>

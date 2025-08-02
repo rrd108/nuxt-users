@@ -3,6 +3,8 @@ import { useRuntimeConfig } from '#imports'
 import { getCurrentUserFromToken } from '../utils'
 import type { ModuleOptions } from '../../../types'
 
+const noAuthPaths = ['/login', '/api/auth/login', '/api/auth/forgot-password']
+
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
   const options = nuxtUsers as ModuleOptions
@@ -18,7 +20,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // login page is allowed to access without authentication
-  if (event.path === '/login' || event.path === '/api/auth/login') {
+  if (noAuthPaths.includes(event.path)) {
     console.log('[Nuxt Users] server.middleware.auth.global: /login')
     return
   }
