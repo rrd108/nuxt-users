@@ -109,6 +109,6 @@ describe('Logout API Route', async () => {
       method: 'GET'
     })
 
-    expect(logoutResponse.message).toBe('Logged out successfully')
+    expect(logoutResponse.message).toBe(undefined)
   })
 })

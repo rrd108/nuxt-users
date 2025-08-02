@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir, addRouteMiddleware } from '@nuxt/kit'
 import { defu } from 'defu'
 import type { ModuleOptions } from './types'
 
@@ -91,6 +91,18 @@ export default defineNuxtModule<ModuleOptions>({
 
     addImportsDir(resolver.resolve('./runtime/composables'))
 
+    // middlewares
+    addServerHandler({
+      middleware: true,
+      handler: resolver.resolve('./runtime/server/middleware/auth.server'),
+    })
+
+    addRouteMiddleware({
+      name: 'auth.client',
+      path: resolver.resolve('./runtime/middleware/auth.client'),
+      global: true,
+    })
+
     // Register API routes
     addServerHandler({
       route: '/api/login',
@@ -128,6 +140,7 @@ export default defineNuxtModule<ModuleOptions>({
       handler: resolver.resolve('./runtime/server/api/update-password.post')
     })
 
+    // components
     addComponent({
       name: 'LoginForm',
       filePath: resolver.resolve('./runtime/components/LoginForm.vue')

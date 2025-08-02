@@ -6,5 +6,9 @@ export default defineNuxtConfig({
 
   css: ['~/assets/colors.css'],
   ...BASE_CONFIG,
-  nuxtUsers: {},
+  nuxtUsers: {
+    auth: {
+      whitelist: ['/noauth'],
+    },
+  },
 })

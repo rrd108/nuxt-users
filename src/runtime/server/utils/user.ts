@@ -1,7 +1,7 @@
 import { useDb } from './db'
 import bcrypt from 'bcrypt'
 import { validatePassword, getPasswordValidationOptions } from '../../../utils'
-import type { ModuleOptions, User } from '../../../types'
+import type { ModuleOptions, User, UserWithoutPassword } from '../../../types'
 
 interface CreateUserParams {
   email: string
@@ -128,7 +128,7 @@ export const hasAnyUsers = async (options: ModuleOptions) => {
 /**
  * Gets the current user from an authentication token.
  */
-export const getCurrentUserFromToken = async (token: string, options: ModuleOptions): Promise<User | null> => {
+export const getCurrentUserFromToken = async (token: string, options: ModuleOptions): Promise<UserWithoutPassword | null> => {
   const db = await useDb(options)
   const personalAccessTokensTable = options.tables.personalAccessTokens
   const usersTable = options.tables.users
@@ -155,5 +155,7 @@ export const getCurrentUserFromToken = async (token: string, options: ModuleOpti
     return null
   }
 
-  return userResult.rows[0]
+  // remove password from the user object
+  const { password: _, ...userWithoutPassword } = userResult.rows[0]
+  return userWithoutPassword
 }

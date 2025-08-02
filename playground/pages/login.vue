@@ -21,6 +21,11 @@ const handleSubmit = (data) => {
   <div class="demo-container">
     <h1>Nuxt Users</h1>
 
+    <nav>
+      <NuxtLink to="/profile">Profile</NuxtLink>
+      <NuxtLink to="/noauth">No Auth</NuxtLink>
+    </nav>
+
     <div class="demo-section">
       <h2>Login Component Demo</h2>
       <p>This is the default login form with all default styling and content.</p>
@@ -35,6 +40,16 @@ const handleSubmit = (data) => {
 </template>
 
 <style scoped>
+nav {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+}
+nav a {
+  text-decoration: none;
+  color: var(--color-gray-800);
+}
+
 .demo-container {
   max-width: 75rem;
   margin: 0 auto;

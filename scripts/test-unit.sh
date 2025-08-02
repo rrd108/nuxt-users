@@ -5,5 +5,11 @@
 
 echo "Running unit tests (no database required)..."
 
-# Run only database-independent tests
-vitest run test/unit/ 
+# Check if any arguments were passed
+if [ $# -eq 0 ]; then
+    # Run all unit tests
+    vitest run test/unit/
+else
+    # Run only the specified test
+    vitest run "$@"
+fi 

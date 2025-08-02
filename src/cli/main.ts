@@ -12,7 +12,7 @@ const main = defineCommand({
   meta: {
     name: 'nuxt-users',
     description: 'CLI for Nuxt Users Module - Manage users, migrations, and database operations',
-    version: '__VERSION__'
+    version: '1.6.3'
   },
   subCommands: {
     migrate,
