@@ -41,6 +41,6 @@ export default defineEventHandler(async (event) => {
     return sendRedirect(event, '/login')
   }
 
-  console.log(`[Nuxt Users] server.middleware.auth.global: Authenticated request for ${user.id}`)
+  console.log(`[Nuxt Users] server.middleware.auth.global: Authenticated request to ${event.path} for ${user.id}`)
   return
 })

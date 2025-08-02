@@ -19,11 +19,11 @@ export default defineNuxtRouteMiddleware((to) => {
     return
   }
 
-  const { user } = useAuth()
-  if (!user.value?.id) {
-    console.log('[Nuxt Users] client.middleware.auth.global: Unauthenticated, redirecting to /login')
+  const { isAuthenticated } = useAuth()
+  if (!isAuthenticated.value) {
+    console.log(`[Nuxt Users] client.middleware.auth.global: Unauthenticated ${to.path}, redirecting to /login`)
     return navigateTo('/login')
   }
 
-  console.log('[Nuxt Users] client.middleware.auth.global', { user: user.value?.id, to: to.path })
+  console.log('[Nuxt Users] client.middleware.auth.global', { isAuthenticated: isAuthenticated.value, to: to.path })
 })
