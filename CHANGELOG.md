@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v1.8.5
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.8.4...v1.8.5)
+
+### 🩹 Fixes
+
+- Database sharing feature ([3a2e12f](https://github.com/rrd108/nuxt-users/commit/3a2e12f))
+
+### 🏡 Chore
+
+- **release:** V1.8.4 ([ab7fa92](https://github.com/rrd108/nuxt-users/commit/ab7fa92))
+- Fix lint ([beb3e43](https://github.com/rrd108/nuxt-users/commit/beb3e43))
+
+### ✅ Tests
+
+- Add to check cli error ([fd338ca](https://github.com/rrd108/nuxt-users/commit/fd338ca))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.8.4
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.8.3...v1.8.4)
