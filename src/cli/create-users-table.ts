@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { createUsersTable } from '../runtime/server/utils'
+import { createUsersTable } from 'nuxt-users'
 import { loadOptions } from './utils'
 
 export default defineCommand({

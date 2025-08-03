@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { createUser } from '../runtime/server/utils'
+import { createUser } from 'nuxt-users'
 import { validatePassword, getPasswordValidationOptions } from '../utils'
 import { loadOptions } from './utils'
 

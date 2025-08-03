@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { createPasswordResetTokensTable } from '../runtime/server/utils'
+import { createPasswordResetTokensTable } from 'nuxt-users'
 import { loadOptions } from './utils'
 
 export default defineCommand({

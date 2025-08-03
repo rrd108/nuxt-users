@@ -177,3 +177,6 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     nuxt.options.css.push(resolver.resolve('./runtime/assets/colors.css'))
   },
 })
+
+// Export runtime server utils for CLI access
+export * from './runtime/server/utils'

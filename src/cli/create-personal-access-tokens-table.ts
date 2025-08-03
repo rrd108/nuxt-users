@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { createPersonalAccessTokensTable } from '../runtime/server/utils'
+import { createPersonalAccessTokensTable } from 'nuxt-users'
 import { loadOptions } from './utils'
 
 export default defineCommand({
