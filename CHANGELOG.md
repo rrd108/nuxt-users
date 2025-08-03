@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v1.8.3
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.8.2...v1.8.3)
+
+### 🩹 Fixes
+
+- **cli:** Module resolution for CLI and package exports ([697efa2](https://github.com/rrd108/nuxt-users/commit/697efa2))
+- Lint errors ([7713acf](https://github.com/rrd108/nuxt-users/commit/7713acf))
+- Adds post-build script execution ([73a4c76](https://github.com/rrd108/nuxt-users/commit/73a4c76))
+
+### 🏡 Chore
+
+- **release:** V1.8.2 ([02aa056](https://github.com/rrd108/nuxt-users/commit/02aa056))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.8.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.8.1...v1.8.2)
