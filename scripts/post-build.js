@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
-import { existsSync, mkdirSync, writeFileSync, rmdirSync, unlinkSync, readdirSync, readFileSync } from 'node:fs'
+import { existsSync, writeFileSync, rmdirSync, unlinkSync, readdirSync, readFileSync } from 'node:fs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const projectRoot = join(__dirname, '..')
@@ -37,23 +37,24 @@ const runtimeUtilsDir = join(distDir, 'runtime')
 // Function to recursively find and fix import statements
 function fixImportPaths(dir) {
   const items = readdirSync(dir, { withFileTypes: true })
-  
+
   for (const item of items) {
     const fullPath = join(dir, item.name)
-    
+
     if (item.isDirectory()) {
       fixImportPaths(fullPath)
-    } else if (item.isFile() && item.name.endsWith('.js')) {
+    }
+    else if (item.isFile() && item.name.endsWith('.js')) {
       let content = readFileSync(fullPath, 'utf8')
       let modified = false
-      
+
       // Fix relative imports to utils (../../../utils -> ../../../utils.js)
-      const utilsImportRegex = /from\s+["'](\.\.[\/\\]){2,}utils["']/g
+      const utilsImportRegex = /from\s+["'](\.\.[/\\]){2,}utils["']/g
       if (utilsImportRegex.test(content)) {
-        content = content.replace(utilsImportRegex, (match) => match.replace(/utils["']$/, 'utils.js"'))
+        content = content.replace(utilsImportRegex, match => match.replace(/utils["']$/, 'utils.js"'))
         modified = true
       }
-      
+
       if (modified) {
         writeFileSync(fullPath, content)
         console.log(`[Nuxt Users] Fixed import paths in ${fullPath}`)
@@ -61,7 +62,6 @@ function fixImportPaths(dir) {
     }
   }
 }
-
 
 fixImportPaths(runtimeUtilsDir)
 
