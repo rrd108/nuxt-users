@@ -1,6 +1,43 @@
 # Changelog
 
 
+## v1.8.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.7...v1.8.0)
+
+### 🚀 Enhancements
+
+- Implement RBAC closes #55 ([#55](https://github.com/rrd108/nuxt-users/issues/55))
+
+### 🩹 Fixes
+
+- Type errors ([c403645](https://github.com/rrd108/nuxt-users/commit/c403645))
+- **ci:** Incorrect version ([f504cf9](https://github.com/rrd108/nuxt-users/commit/f504cf9))
+- **cli:** Commands to use nuxt-users package ([b435f7c](https://github.com/rrd108/nuxt-users/commit/b435f7c))
+
+### 💅 Refactors
+
+- Token cleanup task and middleware ([d47a4a5](https://github.com/rrd108/nuxt-users/commit/d47a4a5))
+- Renames `useAuth` to `useAuthentication` ([e611e62](https://github.com/rrd108/nuxt-users/commit/e611e62))
+
+### 🏡 Chore
+
+- **release:** V1.6.7 ([def2d5c](https://github.com/rrd108/nuxt-users/commit/def2d5c))
+- Bump cli version number ([b4daec6](https://github.com/rrd108/nuxt-users/commit/b4daec6))
+- Fix for linter ([ce1db37](https://github.com/rrd108/nuxt-users/commit/ce1db37))
+- **release:** V1.7.0 ([967403d](https://github.com/rrd108/nuxt-users/commit/967403d))
+
+### ✅ Tests
+
+- Remove unused test ([3dc23ad](https://github.com/rrd108/nuxt-users/commit/3dc23ad))
+- Fix response ([db3b03c](https://github.com/rrd108/nuxt-users/commit/db3b03c))
+- Fix mysql field type ([2faf0c6](https://github.com/rrd108/nuxt-users/commit/2faf0c6))
+- Refactors test mocks for clarity ([1343482](https://github.com/rrd108/nuxt-users/commit/1343482))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.7.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.7...v1.7.0)
