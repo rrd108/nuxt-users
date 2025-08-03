@@ -36,6 +36,14 @@ export default defineNuxtConfig({
     auth: {
       whitelist: [],  // login and forgot password are always whitelisted
       tokenExpiration: 1440 // Token expiration in minutes (default: 24 hours)
+    },
+    passwordValidation: {
+      minLength: 8,
+      requireUppercase: true,
+      requireLowercase: true,
+      requireNumbers: true,
+      requireSpecialChars: true,
+      preventCommonPasswords: true
     }
   }
 })
@@ -199,6 +207,63 @@ nuxtUsers: {
 }
 ```
 
+## Password Validation Configuration
+
+Configure password strength requirements with the `passwordValidation` option:
+
+```ts
+nuxtUsers: {
+  // ... other options
+  passwordValidation: {
+    minLength: 8,                  // Minimum password length (default: 8)
+    requireUppercase: true,        // Require uppercase letters (default: true)
+    requireLowercase: true,        // Require lowercase letters (default: true)
+    requireNumbers: true,          // Require at least one number (default: true)
+    requireSpecialChars: true,     // Require special characters (default: true)
+    preventCommonPasswords: true   // Prevent common passwords (default: true)
+  }
+}
+```
+
+### Password Validation Options
+
+- `minLength`: Minimum number of characters required (default: 8)
+- `requireUppercase`: Require at least one uppercase letter (A-Z)
+- `requireLowercase`: Require at least one lowercase letter (a-z)
+- `requireNumbers`: Require at least one numeric digit (0-9)
+- `requireSpecialChars`: Require at least one special character (!@#$%^&*)
+- `preventCommonPasswords`: Block commonly used weak passwords
+
+### Example: Relaxed Password Policy
+
+```ts
+nuxtUsers: {
+  passwordValidation: {
+    minLength: 6,
+    requireUppercase: false,
+    requireLowercase: true,
+    requireNumbers: false,
+    requireSpecialChars: false,
+    preventCommonPasswords: true
+  }
+}
+```
+
+### Example: Strict Password Policy
+
+```ts
+nuxtUsers: {
+  passwordValidation: {
+    minLength: 12,
+    requireUppercase: true,
+    requireLowercase: true,
+    requireNumbers: true,
+    requireSpecialChars: true,
+    preventCommonPasswords: true
+  }
+}
+```
+
 ## Authorization Configuration (RBAC)
 
 Configure authorization behavior with the `auth.permissions` option. This allows you to restrict access to pages based on user roles.
@@ -300,6 +365,14 @@ const defaultOptions = {
   auth: {
     tokenExpiration: 1440, // Token expiration in minutes (default: 24 hours)
   },
+  passwordValidation: {
+    minLength: 8,
+    requireUppercase: true,
+    requireLowercase: true,
+    requireNumbers: true,
+    requireSpecialChars: true,
+    preventCommonPasswords: true
+  }
 }
 ```
 
