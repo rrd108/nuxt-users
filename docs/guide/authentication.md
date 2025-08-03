@@ -461,6 +461,7 @@ apiShield: {
 
 ## Next Steps
 
+- [Authorization (RBAC)](/guide/authorization) - Learn about Role-Based Access Control
 - [Password Reset](/guide/password-reset) - Add password reset functionality
 - [Components](/components/) - Learn about available Vue components
 - [API Reference](/api/) - Explore all available API endpoints 

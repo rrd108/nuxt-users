@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Nuxt Users is a comprehensive user management module for Nuxt 3 applications with authentication, database support (SQLite, MySQL, PostgreSQL), and CLI tools. The module provides user authentication with bcrypt password hashing, password reset functionality, and includes pre-built Vue components.
+Nuxt Users is a comprehensive user management module for Nuxt applications with authentication, authorization, database support (SQLite, MySQL, PostgreSQL), and CLI tools. The module provides user authentication with bcrypt password hashing, password reset functionality, and includes pre-built Vue components.
 
 ## Development Environment Setup
 

@@ -43,6 +43,7 @@ export default defineConfig({
               { text: 'Quick Start', link: '/guide/quick-start' },
               { text: 'Configuration', link: '/guide/configuration' },
               { text: 'Authentication', link: '/guide/authentication' },
+              { text: 'Authorization (RBAC)', link: '/guide/authorization' },
               { text: 'Password Reset', link: '/guide/password-reset' },
               { text: 'Database Setup', link: '/guide/database-setup' }
             ]

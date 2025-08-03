@@ -34,7 +34,7 @@ export default defineNuxtConfig({
     },
     passwordResetBaseUrl: 'http://localhost:3000',
     auth: {
-      whitelist: ['/login'],
+      whitelist: [],  // login and forgot password are always whitelisted
       tokenExpiration: 1440 // Token expiration in minutes (default: 24 hours)
     }
   }
@@ -159,7 +159,7 @@ Configure authentication behavior with the `auth` option:
 nuxtUsers: {
   // ... other options
   auth: {
-    whitelist: ['/login', '/register'], // Routes that don't require authentication
+    whitelist: ['/register'], // Routes that don't require authentication
     tokenExpiration: 1440, // Token expiration in minutes (default: 24 hours)
   }
 }
@@ -191,7 +191,6 @@ Specify which routes can be accessed without authentication:
 nuxtUsers: {
   auth: {
     whitelist: [
-      '/login',
       '/register', 
       '/about',
       '/contact'
@@ -199,6 +198,30 @@ nuxtUsers: {
   }
 }
 ```
+
+## Authorization Configuration (RBAC)
+
+Configure authorization behavior with the `auth.permissions` option. This allows you to restrict access to pages based on user roles.
+
+```ts
+nuxtUsers: {
+  // ... other options
+  auth: {
+    whitelist: ['/register'], // Routes that don't require authentication
+    tokenExpiration: 1440, // Token expiration in minutes (default: 24 hours)
+    permissions: {
+      admin: ['*'], // Admin can access everything
+      user: ['/profile', '/settings', '/api/user/profile'],
+      moderator: ['/admin/*', '/api/admin/*']
+    }
+  }
+}
+```
+
+-   The `permissions` object maps a role to an array of allowed paths.
+-   Paths can be exact strings or use wildcards (`*` for all, `/*` for sub-paths).
+
+For more details, see the [Authorization (RBAC)](/guide/authorization) guide.
 
 ## Environment Variables
 
@@ -275,7 +298,6 @@ const defaultOptions = {
   },
   passwordResetBaseUrl: 'http://localhost:3000',
   auth: {
-    whitelist: ['/login'],
     tokenExpiration: 1440, // Token expiration in minutes (default: 24 hours)
   },
 }

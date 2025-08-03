@@ -153,7 +153,7 @@ Stores user account information.
 | `email` | TEXT/VARCHAR(255) | User's email address (unique) |
 | `name` | TEXT/VARCHAR(255) | User's display name |
 | `password` | TEXT/VARCHAR(255) | Hashed password (bcrypt) |
-| `role` | TEXT/VARCHAR(32) | User role (defaults to 'user') |
+| `role` | TEXT/VARCHAR(32) | User role for RBAC (defaults to 'user') |
 | `created_at` | DATETIME | Account creation timestamp |
 | `updated_at` | DATETIME | Last update timestamp |
 
