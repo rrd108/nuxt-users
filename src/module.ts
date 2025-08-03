@@ -141,11 +141,42 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       handler: resolver.resolve('./runtime/server/api/auth/update-password.post')
     })
 
-    // Register Nitro tasks
+    // Register Nitro config
     nuxt.hook('nitro:config', async (nitroConfig) => {
       nitroConfig.experimental = nitroConfig.experimental || {}
-      nitroConfig.experimental.tasks = true
+      nitroConfig.experimental.database = true
 
+      // Configure Nitro database if not already configured by consumer
+      nitroConfig.database = nitroConfig.database || {}
+
+      // Only set default database if not already configured by consumer
+      if (!nitroConfig.database.default) {
+        // Use nuxt-users database configuration for Nitro's default database
+        const connectorOptions = { ...runtimeConfigOptions.connector.options }
+
+        // Map nuxt-users connector format to Nitro database format
+        let nitroConnector: 'better-sqlite3' | 'mysql2' | 'postgresql'
+        switch (runtimeConfigOptions.connector.name) {
+          case 'sqlite':
+            nitroConnector = 'better-sqlite3'
+            break
+          case 'mysql':
+            nitroConnector = 'mysql2'
+            break
+          case 'postgresql':
+            nitroConnector = 'postgresql'
+            break
+          default:
+            nitroConnector = 'better-sqlite3'
+        }
+
+        nitroConfig.database.default = {
+          connector: nitroConnector,
+          options: connectorOptions
+        }
+      }
+
+      nitroConfig.experimental.tasks = true
       // Add tasks directory to scan
       nitroConfig.scanDirs = nitroConfig.scanDirs || []
       nitroConfig.scanDirs.push(resolver.resolve('./runtime/server/tasks'))

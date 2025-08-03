@@ -98,6 +98,47 @@ nuxtUsers: {
 }
 ```
 
+## Database Sharing
+
+The module automatically configures Nitro's database system, enabling zero-config database access:
+
+### Zero-Config (Recommended)
+
+```ts
+// nuxt.config.ts - Just install the module
+export default defineNuxtConfig({
+  modules: ['nuxt-users']
+  // No database config needed!
+})
+```
+
+Your app can now use `useDatabase()` to access the same database as the module.
+
+### Separate Database
+
+To use different databases for the module and your app:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nitro: {
+    database: {
+      default: { connector: 'mysql2', options: {...} }
+    }
+  },
+  nuxtUsers: {
+    connector: { name: 'sqlite', options: {...} }
+  }
+})
+```
+
+### Import Database Utils
+
+```ts
+// For server-side use
+import { useNuxtUsersDatabase } from 'nuxt-users/server'
+```
+
 ## Mailer Configuration
 
 To enable password reset emails, configure the `mailer` option:

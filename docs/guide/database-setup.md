@@ -226,6 +226,87 @@ ls -la data/
 psql -h localhost -p 5432 -U postgres -d myapp -c "\dt"
 ```
 
+## Database Sharing
+
+The module automatically shares its database connection with your application through Nitro's built-in database system. This enables zero-config database access for your custom tables.
+
+### Zero-Config Usage
+
+When you install `nuxt-users`, your app automatically gets database access:
+
+```ts
+// nuxt.config.ts - No database config needed!
+export default defineNuxtConfig({
+  modules: ['nuxt-users']
+})
+```
+
+```ts
+// server/api/posts.post.ts - Create your own tables
+export default defineEventHandler(async (event) => {
+  const db = useDatabase() // Shared with nuxt-users
+  
+  await db.sql`
+    CREATE TABLE IF NOT EXISTS posts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      content TEXT,
+      user_id INTEGER,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `
+  
+  // Your custom logic here
+})
+```
+
+### Access Module's Database
+
+Use the module's database connection directly:
+
+```ts
+// server/api/my-route.post.ts
+import { useNuxtUsersDatabase } from 'nuxt-users/server'
+
+export default defineEventHandler(async (event) => {
+  const { database } = await useNuxtUsersDatabase()
+  
+  // Access both module and custom tables
+  const users = await database.sql`SELECT * FROM users`
+  const posts = await database.sql`SELECT * FROM posts WHERE user_id = ${userId}`
+})
+```
+
+### Separate Database (Optional)
+
+If you want separate databases for your app tables:
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nitro: {
+    database: {
+      default: {
+        connector: 'mysql2',
+        options: { host: 'localhost', database: 'myapp' }
+      }
+    }
+  }
+  // nuxt-users will use its own SQLite database
+})
+```
+
+```ts
+// server/api/example.ts
+export default defineEventHandler(async (event) => {
+  const db = useDatabase() // Your MySQL database
+  const { database } = await useNuxtUsersDatabase() // Module's SQLite
+  
+  // Use both databases as needed
+})
+```
+
 ## Next Steps
 
 - [Database Schema](/database/schema) - Understand the database structure
