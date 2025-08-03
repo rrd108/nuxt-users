@@ -1,6 +1,7 @@
 import { defaultOptions } from '../module'
 import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../types'
 import { loadNuxt } from '@nuxt/kit'
+import { defu } from 'defu'
 
 export const getOptionsFromEnv = (): ModuleOptions => {
   const connectorName = process.env.DB_CONNECTOR || 'sqlite' as DatabaseType
@@ -54,7 +55,8 @@ export const loadOptions = async (): Promise<ModuleOptions> => {
 
     if (nuxtUsersConfig) {
       console.log('[Nuxt Users] Using configuration from Nuxt project')
-      return nuxtUsersConfig
+      // Deep merge with defaultOptions to ensure all required fields are present
+      return defu(nuxtUsersConfig, defaultOptions)
     }
     else {
       console.log('[Nuxt Users] No nuxt-users configuration found, using environment variables')
