@@ -4,31 +4,23 @@ import type { H3Event } from 'h3'
 import { defaultOptions } from '../../src/module'
 
 // Mock h3 functions
-const mockReadBody = vi.fn()
-const mockCreateError = vi.fn()
-const mockDefineEventHandler = vi.fn(handler => handler)
-const mockUseRuntimeConfig = vi.fn()
-const mockResetPassword = vi.fn()
-const mockValidatePassword = vi.fn()
-const mockGetPasswordValidationOptions = vi.fn()
-
 vi.mock('h3', () => ({
-  defineEventHandler: mockDefineEventHandler,
-  readBody: mockReadBody,
-  createError: mockCreateError
+  defineEventHandler: vi.fn(handler => handler),
+  readBody: vi.fn(),
+  createError: vi.fn()
 }))
 
 vi.mock('#imports', () => ({
-  useRuntimeConfig: mockUseRuntimeConfig
+  useRuntimeConfig: vi.fn()
 }))
 
 vi.mock('../../src/runtime/server/services/password', () => ({
-  resetPassword: mockResetPassword
+  resetPassword: vi.fn()
 }))
 
 vi.mock('../../src/utils', () => ({
-  validatePassword: mockValidatePassword,
-  getPasswordValidationOptions: mockGetPasswordValidationOptions
+  validatePassword: vi.fn(),
+  getPasswordValidationOptions: vi.fn()
 }))
 
 // Import the reset-password api endpoint after mocking
@@ -45,9 +37,30 @@ describe('Reset Password API Route', () => {
     requireSpecialChars: boolean
     preventCommonPasswords: boolean
   }
+  let mockReadBody: ReturnType<typeof vi.fn>
+  let mockCreateError: ReturnType<typeof vi.fn>
+  let mockDefineEventHandler: ReturnType<typeof vi.fn>
+  let mockUseRuntimeConfig: ReturnType<typeof vi.fn>
+  let mockResetPassword: ReturnType<typeof vi.fn>
+  let mockValidatePassword: ReturnType<typeof vi.fn>
+  let mockGetPasswordValidationOptions: ReturnType<typeof vi.fn>
 
   beforeEach(async () => {
     vi.clearAllMocks()
+
+    // Get the mocked functions
+    const h3 = await import('h3')
+    const imports = await import('#imports')
+    const passwordService = await import('../../src/runtime/server/services/password')
+    const utils = await import('../../src/utils')
+
+    mockReadBody = h3.readBody as ReturnType<typeof vi.fn>
+    mockCreateError = h3.createError as ReturnType<typeof vi.fn>
+    mockDefineEventHandler = h3.defineEventHandler as ReturnType<typeof vi.fn>
+    mockUseRuntimeConfig = imports.useRuntimeConfig as ReturnType<typeof vi.fn>
+    mockResetPassword = passwordService.resetPassword as ReturnType<typeof vi.fn>
+    mockValidatePassword = utils.validatePassword as ReturnType<typeof vi.fn>
+    mockGetPasswordValidationOptions = utils.getPasswordValidationOptions as ReturnType<typeof vi.fn>
 
     // Mock test options
     testOptions = {

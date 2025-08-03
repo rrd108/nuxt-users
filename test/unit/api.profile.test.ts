@@ -5,24 +5,18 @@ import crypto from 'node:crypto'
 import { defaultOptions } from '../../src/module'
 
 // Mock h3 functions
-const mockGetCookie = vi.fn()
-const mockCreateError = vi.fn()
-const mockDefineEventHandler = vi.fn(handler => handler)
-const mockUseRuntimeConfig = vi.fn()
-const mockGetCurrentUserFromToken = vi.fn()
-
 vi.mock('h3', () => ({
-  defineEventHandler: mockDefineEventHandler,
-  getCookie: mockGetCookie,
-  createError: mockCreateError
+  defineEventHandler: vi.fn(handler => handler),
+  getCookie: vi.fn(),
+  createError: vi.fn()
 }))
 
 vi.mock('#imports', () => ({
-  useRuntimeConfig: mockUseRuntimeConfig
+  useRuntimeConfig: vi.fn()
 }))
 
 vi.mock('../../src/runtime/server/utils', () => ({
-  getCurrentUserFromToken: mockGetCurrentUserFromToken
+  getCurrentUserFromToken: vi.fn()
 }))
 
 // Import the profile api endpoint after mocking
@@ -32,9 +26,25 @@ describe('Profile API Route', () => {
   let testOptions: ModuleOptions
   let testUser: UserWithoutPassword
   let mockEvent: H3Event
+  let mockGetCookie: ReturnType<typeof vi.fn>
+  let mockCreateError: ReturnType<typeof vi.fn>
+  let mockDefineEventHandler: ReturnType<typeof vi.fn>
+  let mockUseRuntimeConfig: ReturnType<typeof vi.fn>
+  let mockGetCurrentUserFromToken: ReturnType<typeof vi.fn>
 
   beforeEach(async () => {
     vi.clearAllMocks()
+
+    // Get the mocked functions
+    const h3 = await import('h3')
+    const imports = await import('#imports')
+    const utils = await import('../../src/runtime/server/utils')
+
+    mockGetCookie = h3.getCookie as ReturnType<typeof vi.fn>
+    mockCreateError = h3.createError as ReturnType<typeof vi.fn>
+    mockDefineEventHandler = h3.defineEventHandler as ReturnType<typeof vi.fn>
+    mockUseRuntimeConfig = imports.useRuntimeConfig as ReturnType<typeof vi.fn>
+    mockGetCurrentUserFromToken = utils.getCurrentUserFromToken as ReturnType<typeof vi.fn>
 
     // Mock test options
     testOptions = defaultOptions
