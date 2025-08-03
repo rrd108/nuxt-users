@@ -57,7 +57,7 @@ export const sendPasswordResetLink = async (
   const resetUrl = new URL('/reset-password', options.passwordResetBaseUrl || 'http://localhost:3000')
   resetUrl.searchParams.set('token', token)
   resetUrl.searchParams.set('email', email)
-  
+
   const resetLink = resetUrl.toString()
 
   try {
