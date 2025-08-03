@@ -24,6 +24,7 @@ interface MockNitroConfig {
   database?: {
     default?: {
       connector: string
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       options: Record<string, any>
     }
   }
@@ -106,7 +107,7 @@ describe('Module: Nitro Database Configuration', () => {
         }
       }
 
-      // Mock runtimeConfigOptions 
+      // Mock runtimeConfigOptions
       const runtimeConfigOptions = {
         connector: {
           name: 'sqlite' as DatabaseType,
@@ -178,7 +179,7 @@ describe('Module: Nitro Database Configuration', () => {
       expect(nitroConfig.database.default!.options.user).toBe('testuser')
       expect(nitroConfig.database.default!.options.password).toBe('testpass')
       expect(nitroConfig.database.default!.options.database).toBe('testdb')
-      
+
       // Verify options were copied, not referenced
       runtimeConfigOptions.connector.options.host = 'modified'
       expect(nitroConfig.database.default!.options.host).toBe('localhost')
