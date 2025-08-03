@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v1.8.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.8.0...v1.8.1)
+
+### 🩹 Fixes
+
+- **cli:** Commands to use nuxt-users package ([b435f7c](https://github.com/rrd108/nuxt-users/commit/b435f7c))
+
+### 🏡 Chore
+
+- **release:** V1.8.0 ([00d60cc](https://github.com/rrd108/nuxt-users/commit/00d60cc))
+
+### ✅ Tests
+
+- Refactors test mocks for clarity ([1343482](https://github.com/rrd108/nuxt-users/commit/1343482))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.8.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.6.7...v1.8.0)
