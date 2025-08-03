@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v1.8.4
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.8.3...v1.8.4)
+
+### 🩹 Fixes
+
+- Adds post-build script execution ([73a4c76](https://github.com/rrd108/nuxt-users/commit/73a4c76))
+
+### 🏡 Chore
+
+- **release:** V1.8.3 ([fd3b973](https://github.com/rrd108/nuxt-users/commit/fd3b973))
+
+### ✅ Tests
+
+- Add to check cli error ([fd338ca](https://github.com/rrd108/nuxt-users/commit/fd338ca))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.8.3
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.8.2...v1.8.3)
