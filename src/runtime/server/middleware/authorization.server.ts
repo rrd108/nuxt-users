@@ -1,6 +1,7 @@
 import { defineEventHandler, getCookie, sendRedirect } from 'h3'
 import { useRuntimeConfig } from '#imports'
 import { getCurrentUserFromToken } from '../utils'
+import { hasPermission, isWhitelisted } from '../../utils/permissions'
 import type { ModuleOptions } from '../../../types'
 import { NO_AUTH_PATHS } from '../../constants'
 
@@ -25,7 +26,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // whitelisted paths are allowed to access without authentication
-  if (options.auth.whitelist.includes(event.path)) {
+  if (isWhitelisted(event.path, options.auth.whitelist)) {
     console.log(`[Nuxt Users] server.middleware.auth.global: whitelisted: ${event.path}`)
     return
   }
@@ -42,6 +43,12 @@ export default defineEventHandler(async (event) => {
     return sendRedirect(event, '/login')
   }
 
-  console.log(`[Nuxt Users] server.middleware.auth.global: Authenticated request to ${event.path} for ${user.id}`)
+  // Check role-based permissions
+  if (!hasPermission(user.role, event.path, options.auth.permissions)) {
+    console.log(`[Nuxt Users] server.middleware.auth.global: ${event.path} User ${user.id} with role ${user.role} denied access`)
+    return sendRedirect(event, '/login')
+  }
+
+  console.log(`[Nuxt Users] server.middleware.auth.global: Authenticated request to ${event.path} for ${user.id} with role ${user.role}`)
   return
 })

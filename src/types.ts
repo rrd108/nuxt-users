@@ -46,6 +46,16 @@ export interface RuntimeModuleOptions {
      * @default 1440
      */
     tokenExpiration?: number
+    /**
+     * Role-based permissions configuration
+     * @default {}
+     * @example {
+     *   admin: ['*'], // admin can access everything
+     *   user: ['/profile', '/api/user/profile'],
+     *   moderator: ['/admin/*', '/api/admin/*']
+     * }
+     */
+    permissions?: Record<string, string[]>
   }
   /**
    * Password validation configuration
@@ -101,6 +111,7 @@ export interface ModuleOptions {
   auth: {
     whitelist: string[]
     tokenExpiration: number
+    permissions: Record<string, string[]>
   }
   passwordValidation: {
     minLength: number

@@ -1,6 +1,6 @@
 import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir, addRouteMiddleware } from '@nuxt/kit'
 import { defu } from 'defu'
-import type { ModuleOptions } from './types'
+import type { RuntimeModuleOptions, ModuleOptions } from './types'
 
 export const defaultOptions: ModuleOptions = {
   connector: {
@@ -31,6 +31,7 @@ export const defaultOptions: ModuleOptions = {
   auth: {
     whitelist: [],
     tokenExpiration: 24 * 60, // 24 hours
+    permissions: {}, // Empty by default - whitelist approach
   },
   passwordValidation: {
     minLength: 8,
@@ -42,7 +43,7 @@ export const defaultOptions: ModuleOptions = {
   },
 }
 
-export default defineNuxtModule<ModuleOptions>({
+export default defineNuxtModule<RuntimeModuleOptions>({
   meta: {
     name: 'nuxt-users',
     configKey: 'nuxtUsers',
@@ -66,7 +67,8 @@ export default defineNuxtModule<ModuleOptions>({
       },
       auth: {
         whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])],
-        tokenExpiration: options.auth?.tokenExpiration || defaultOptions.auth.tokenExpiration
+        tokenExpiration: options.auth?.tokenExpiration || defaultOptions.auth.tokenExpiration,
+        permissions: options.auth?.permissions || defaultOptions.auth.permissions
       },
     }
 
@@ -82,7 +84,8 @@ export default defineNuxtModule<ModuleOptions>({
         preventCommonPasswords: options.passwordValidation?.preventCommonPasswords ?? defaultOptions.passwordValidation.preventCommonPasswords,
       },
       auth: {
-        whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])]
+        whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])],
+        permissions: options.auth?.permissions || defaultOptions.auth.permissions
       }
     }
 
