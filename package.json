@@ -53,7 +53,7 @@
     "nuxt-users": "./dist/cli.mjs"
   },
   "scripts": {
-    "prepack": "nuxt-module-build build",
+    "prepack": "nuxt-module-build build && node scripts/post-build.js",
     "postinstall": "node -e \"try { require('fs').chmodSync('./dist/cli.mjs', '755') } catch(e) {}\"",
     "predev": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for development' && exit 1)",
     "dev": "yarn dev:prepare && nuxi dev playground",
