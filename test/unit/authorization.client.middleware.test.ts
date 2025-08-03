@@ -4,7 +4,7 @@ import type { RouteLocationNormalizedGeneric } from 'vue-router'
 const mockUseRuntimeConfig = vi.fn()
 const mockDefineNuxtRouteMiddleware = vi.fn(middleware => middleware)
 const mockNavigateTo = vi.fn()
-const mockUseAuth = vi.fn()
+const mockuseAuthentication = vi.fn()
 
 vi.mock('#app', () => ({
   useRuntimeConfig: mockUseRuntimeConfig,
@@ -12,12 +12,12 @@ vi.mock('#app', () => ({
   navigateTo: mockNavigateTo
 }))
 
-vi.mock('../../src/runtime/composables/useAuth', () => ({
-  useAuth: mockUseAuth
+vi.mock('../../src/runtime/composables/useAuthentication', () => ({
+  useAuthentication: mockuseAuthentication
 }))
 
 // Import middleware after mocking
-const clientAuthMiddleware = await import('../../src/runtime/middleware/auth.client')
+const clientAuthMiddleware = await import('../../src/runtime/middleware/authorization.client')
 
 describe('Auth Client Middleware', () => {
   let mockTo: RouteLocationNormalizedGeneric
@@ -59,7 +59,7 @@ describe('Auth Client Middleware', () => {
       value: false
     }
 
-    mockUseAuth.mockReturnValue({
+    mockuseAuthentication.mockReturnValue({
       user: mockUser,
       isAuthenticated: mockIsAuthenticated
     })
@@ -74,7 +74,7 @@ describe('Auth Client Middleware', () => {
     const result = await clientAuthMiddleware.default(mockTo, mockFrom)
 
     expect(result).toBeUndefined()
-    expect(mockUseAuth).not.toHaveBeenCalled()
+    expect(mockuseAuthentication).not.toHaveBeenCalled()
     expect(mockNavigateTo).not.toHaveBeenCalled()
   })
 
@@ -84,7 +84,7 @@ describe('Auth Client Middleware', () => {
     const result = await clientAuthMiddleware.default(mockTo, mockFrom)
 
     expect(result).toBeUndefined()
-    expect(mockUseAuth).not.toHaveBeenCalled()
+    expect(mockuseAuthentication).not.toHaveBeenCalled()
     expect(mockNavigateTo).not.toHaveBeenCalled()
   })
 
@@ -93,14 +93,14 @@ describe('Auth Client Middleware', () => {
 
     // Mock user with no id and not authenticated
     mockUser.value = null
-    mockUseAuth.mockReturnValue({
+    mockuseAuthentication.mockReturnValue({
       user: mockUser,
       isAuthenticated: { value: false }
     })
 
     const result = await clientAuthMiddleware.default(mockTo, mockFrom)
 
-    expect(mockUseAuth).toHaveBeenCalled()
+    expect(mockuseAuthentication).toHaveBeenCalled()
     expect(mockNavigateTo).toHaveBeenCalledWith('/login')
     expect(result).toBeUndefined()
   })
@@ -110,14 +110,14 @@ describe('Auth Client Middleware', () => {
 
     // Mock user without id and not authenticated
     mockUser.value = { id: undefined }
-    mockUseAuth.mockReturnValue({
+    mockuseAuthentication.mockReturnValue({
       user: mockUser,
       isAuthenticated: { value: false }
     })
 
     const result = await clientAuthMiddleware.default(mockTo, mockFrom)
 
-    expect(mockUseAuth).toHaveBeenCalled()
+    expect(mockuseAuthentication).toHaveBeenCalled()
     expect(mockNavigateTo).toHaveBeenCalledWith('/login')
     expect(result).toBeUndefined()
   })
@@ -127,14 +127,14 @@ describe('Auth Client Middleware', () => {
 
     // Mock user with valid id and authenticated
     mockUser.value = { id: 1 }
-    mockUseAuth.mockReturnValue({
+    mockuseAuthentication.mockReturnValue({
       user: mockUser,
       isAuthenticated: { value: true }
     })
 
     const result = await clientAuthMiddleware.default(mockTo, mockFrom)
 
-    expect(mockUseAuth).toHaveBeenCalled()
+    expect(mockuseAuthentication).toHaveBeenCalled()
     expect(mockNavigateTo).not.toHaveBeenCalled()
     expect(result).toBeUndefined()
   })

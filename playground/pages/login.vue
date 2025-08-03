@@ -1,7 +1,7 @@
 <script setup>
-import { useAuth } from '#imports'
+import { useAuthentication } from '#imports'
 
-const { login } = useAuth()
+const { login } = useAuthentication()
 
 const handleSuccess = (user) => {
   console.log('[Nuxt Users] Login successful:', user)

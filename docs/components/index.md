@@ -250,7 +250,7 @@ const handleError = (error) => {
 
 ### Manual Logout
 
-You can also implement logout manually using the `useAuth` composable:
+You can also implement logout manually using the `useAuthentication` composable:
 
 ```vue
 <template>
@@ -260,7 +260,7 @@ You can also implement logout manually using the `useAuth` composable:
 </template>
 
 <script setup>
-const { logout } = useAuth()
+const { logout } = useAuthentication()
 const isLoading = ref(false)
 
 const handleLogout = async () => {

@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'Nuxt Users',
-  description: 'A user authentication module for Nuxt 3 with database support for SQLite, MySQL, and PostgreSQL',
+  description: 'A user authentication and authorization module for Nuxt with database support for SQLite, MySQL, and PostgreSQL',
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
     ['link', { rel: 'stylesheet', href: '/styles.css' }],

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { navigateTo } from '#app'
-import { useAuth } from '../composables/useAuth'
+import { useAuthentication } from '../composables/useAuthentication'
 
 interface LogoutLinkProps {
   redirectTo?: string
@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<LogoutLinkProps>(), {
 
 const emit = defineEmits<Emits>()
 
-const { logout } = useAuth()
+const { logout } = useAuthentication()
 const isLoading = ref(false)
 const error = ref('')
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useAuth } from '../composables/useAuth'
+import { useAuthentication } from '../composables/useAuthentication'
 
-const { user } = useAuth()
+const { user } = useAuthentication()
 </script>
 
 <template>

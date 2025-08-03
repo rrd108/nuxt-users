@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useAuth } from '#imports'
+import { useAuthentication } from '#imports'
 
-const { user, initializeUser } = useAuth()
+const { user, initializeUser } = useAuthentication()
 
 // Initialize user from localStorage on page load
 initializeUser()

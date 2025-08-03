@@ -2,7 +2,7 @@ import { useState } from '#app'
 import { computed, readonly } from 'vue'
 import type { User, UserWithoutPassword } from '../../types'
 
-export const useAuth = () => {
+export const useAuthentication = () => {
   const user = useState<UserWithoutPassword | null>('user', () => null)
 
   const isAuthenticated = computed(() => !!user.value)

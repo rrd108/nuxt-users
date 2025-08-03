@@ -230,11 +230,11 @@ You can customize the appearance and behavior:
 
 ### Manual Logout
 
-You can implement custom logout logic using the `useAuth` composable:
+You can implement custom logout logic using the `useAuthentication` composable:
 
 ```vue
 <script setup>
-const { logout } = useAuth()
+const { logout } = useAuthentication()
 
 const handleLogout = async () => {
   try {

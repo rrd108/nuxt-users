@@ -29,7 +29,7 @@ export const defaultOptions: ModuleOptions = {
   },
   passwordResetBaseUrl: 'http://localhost:3000',
   auth: {
-    whitelist: ['/login'],
+    whitelist: [],
     tokenExpiration: 24 * 60, // 24 hours
   },
   passwordValidation: {
@@ -96,8 +96,8 @@ export default defineNuxtModule<ModuleOptions>({
     // Server middleware is auto-registered by Nitro when placed in server/middleware/
 
     addRouteMiddleware({
-      name: 'auth.client',
-      path: resolver.resolve('./runtime/middleware/auth.client'),
+      name: 'authorization.client',
+      path: resolver.resolve('./runtime/middleware/authorization.client'),
       global: true,
     })
 

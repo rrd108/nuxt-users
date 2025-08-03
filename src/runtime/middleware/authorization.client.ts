@@ -1,6 +1,6 @@
 import { defineNuxtRouteMiddleware, navigateTo, useRuntimeConfig } from '#app'
-import { useAuth } from '../composables/useAuth'
-
+import { useAuthentication } from '../composables/useAuthentication'
+import { NO_AUTH_PATHS } from '../constants'
 import type { ModuleOptions } from '../../types'
 
 export default defineNuxtRouteMiddleware((to) => {
@@ -8,8 +8,8 @@ export default defineNuxtRouteMiddleware((to) => {
   const publicOptions = publicNuxtUsers as ModuleOptions
 
   // login page is allowed to access without authentication
-  if (to.path === '/login') {
-    console.log('[Nuxt Users] client.middleware.auth.global: /login')
+  if (NO_AUTH_PATHS.includes(to.path)) {
+    console.log(`[Nuxt Users] client.middleware.auth.global: ${to.path}`)
     return
   }
 
@@ -19,7 +19,7 @@ export default defineNuxtRouteMiddleware((to) => {
     return
   }
 
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuthentication()
   if (!isAuthenticated.value) {
     console.log(`[Nuxt Users] client.middleware.auth.global: Unauthenticated ${to.path}, redirecting to /login`)
     return navigateTo('/login')

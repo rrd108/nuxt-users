@@ -8,6 +8,7 @@
     "nuxt-module",
     "users",
     "authentication",
+    "authorization",
     "auth",
     "user-management",
     "sqlite",
