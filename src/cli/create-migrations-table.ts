@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { createMigrationsTable } from 'nuxt-users'
+import { createMigrationsTable } from '../runtime/server/utils'
 import { loadOptions } from './utils'
 
 export default defineCommand({

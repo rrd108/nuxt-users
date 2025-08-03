@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
-import { runMigrations } from 'nuxt-users'
 import { loadOptions } from './utils'
+import { runMigrations } from '../runtime/server/utils'
 
 export default defineCommand({
   meta: {
