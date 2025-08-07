@@ -51,8 +51,8 @@ export default defineConfig({
           {
             text: 'API Reference',
             items: [
-              { text: 'Login', link: '/api/auth/login' },
-              { text: 'Password Reset', link: '/api/password-reset' }
+              { text: 'HTTP Endpoints', link: '/api/index' },
+              { text: 'Types & Utilities', link: '/api/types-and-utilities' }
             ]
           },
           {

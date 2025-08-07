@@ -148,6 +148,26 @@ export interface User {
 
 export type UserWithoutPassword = Omit<User, 'password'>
 
+export interface PersonalAccessToken {
+  id: number
+  tokenable_type: string
+  tokenable_id: number
+  name: string
+  token: string
+  abilities?: string
+  last_used_at?: string
+  expires_at?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface PasswordResetToken {
+  id: number
+  email: string
+  token: string
+  created_at: string
+}
+
 export interface LoginFormData {
   email: string
   password: string
