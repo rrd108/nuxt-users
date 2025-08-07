@@ -85,6 +85,95 @@ export const findUserByEmail = async (email: string, options: ModuleOptions): Pr
 }
 
 /**
+ * Finds a user by their ID.
+ */
+export const findUserById = async <T extends boolean = false>(
+  id: number,
+  options: ModuleOptions,
+  withPass: T = false as T
+): Promise<T extends true ? User | null : UserWithoutPassword | null> => {
+  const db = await useDb(options)
+  const usersTable = options.tables.users
+
+  const result = await db.sql`SELECT * FROM {${usersTable}} WHERE id = ${id}` as { rows: Array<User> }
+
+  if (result.rows.length === 0) {
+    return null
+  }
+
+  const user = result.rows[0]
+
+  const normalizedUser = {
+    ...user,
+    created_at: user.created_at instanceof Date ? user.created_at.toISOString() : user.created_at,
+    updated_at: user.updated_at instanceof Date ? user.updated_at.toISOString() : user.updated_at
+  }
+
+  if (withPass === true) {
+    return normalizedUser as T extends true ? User | null : UserWithoutPassword | null
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password, ...userWithoutPassword } = normalizedUser
+  return userWithoutPassword as T extends true ? User | null : UserWithoutPassword | null
+}
+
+/**
+ * Updates a user's details.
+ */
+export const updateUser = async (id: number, userData: Partial<User>, options: ModuleOptions): Promise<UserWithoutPassword> => {
+  const db = await useDb(options)
+  const usersTable = options.tables.users
+
+  const currentUser = await findUserById(id, options, true)
+  if (!currentUser) {
+    throw new Error('User not found.')
+  }
+
+  const fieldsToUpdate = { ...userData }
+  // remove id and password from update list
+  delete fieldsToUpdate.id
+  delete fieldsToUpdate.password
+
+  if (Object.keys(fieldsToUpdate).length === 0) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...user } = currentUser
+    return user
+  }
+
+  const entries = Object.entries(fieldsToUpdate)
+  const setClauses = entries.map(([key], i) => db.sql`${db.escapeIdentifier(key)} = ${entries[i][1]}`)
+
+  await db.sql`
+    UPDATE {${usersTable}}
+    SET ${db.join(setClauses, ', ')}, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ${id}
+  `
+
+  const updatedUser = await findUserById(id, options)
+  if (!updatedUser) {
+    throw new Error('Failed to retrieve updated user.')
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password, ...user } = updatedUser
+  return user
+}
+
+/**
+ * Deletes a user by their ID.
+ */
+export const deleteUser = async (id: number, options: ModuleOptions): Promise<void> => {
+  const db = await useDb(options)
+  const usersTable = options.tables.users
+
+  const result = await db.sql`DELETE FROM {${usersTable}} WHERE id = ${id}`
+
+  if (result.rows.length === 0) {
+    throw new Error('User not found or could not be deleted.')
+  }
+}
+
+/**
  * Updates a user's password.
  * Hashes the new password before storing.
  */
