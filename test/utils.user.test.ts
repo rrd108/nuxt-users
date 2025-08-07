@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { createUser, findUserByEmail, updateUserPassword } from '../src/runtime/server/utils/user'
+import { createUser, findUserByEmail, updateUserPassword, getLastLoginTime } from '../src/runtime/server/utils/user'
 import type { Database } from 'db0'
 import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
+import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/create-personal-access-tokens-table'
 
 describe('User Utilities (src/utils/user.ts)', () => {
   let db: Database
@@ -51,6 +52,7 @@ describe('User Utilities (src/utils/user.ts)', () => {
   afterEach(async () => {
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.passwordResetTokens)
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.personalAccessTokens)
   })
 
   describe('createUser', () => {
@@ -216,6 +218,176 @@ describe('User Utilities (src/utils/user.ts)', () => {
 
       expect(updatedUser1!.password).not.toBe(foundUser1!.password)
       expect(unchangedUser2!.password).toBe(foundUser2!.password)
+    })
+  })
+
+  describe('getLastLoginTime', () => {
+    beforeEach(async () => {
+      // Create the personal access tokens table for these tests
+      await createPersonalAccessTokensTable(testOptions)
+    })
+
+    it('should return null for user with no login tokens', async () => {
+      // Create a user but no tokens
+      const userData = { email: 'notoken@webmania.cc', name: 'No Token User', password: 'password123' }
+      const user = await createUser(userData, testOptions)
+
+      const lastLogin = await getLastLoginTime(user.id, testOptions)
+
+      expect(lastLogin).toBeNull()
+    })
+
+    it('should return last login time from most recent token', async () => {
+      // Create a user
+      const userData = { email: 'login@webmania.cc', name: 'Login User', password: 'password123' }
+      const user = await createUser(userData, testOptions)
+
+      // Create a token (simulating a login)
+      const token1Time = '2024-01-01 10:00:00'
+      await db.sql`
+        INSERT INTO {${testOptions.tables.personalAccessTokens}} 
+        (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+        VALUES ('user', ${user.id}, 'auth_token', 'token1', ${token1Time}, ${token1Time})
+      `
+
+      const lastLogin = await getLastLoginTime(user.id, testOptions)
+
+      expect(lastLogin).toBeDefined()
+      expect(typeof lastLogin).toBe('string')
+      // Should be a valid ISO string or database timestamp
+      expect(lastLogin).toMatch(/\d{4}-\d{2}-\d{2}/)  // Date format check
+    })
+
+    it('should return most recent login from multiple tokens', async () => {
+      // Create a user
+      const userData = { email: 'multilogin@webmania.cc', name: 'Multi Login User', password: 'password123' }
+      const user = await createUser(userData, testOptions)
+
+      // Create multiple tokens with different timestamps
+      const olderTime = '2024-01-01 10:00:00'
+      const newerTime = '2024-01-02 15:30:00'
+      
+      await db.sql`
+        INSERT INTO {${testOptions.tables.personalAccessTokens}} 
+        (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+        VALUES ('user', ${user.id}, 'old_token', 'token_old', ${olderTime}, ${olderTime})
+      `
+      
+      await db.sql`
+        INSERT INTO {${testOptions.tables.personalAccessTokens}} 
+        (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+        VALUES ('user', ${user.id}, 'new_token', 'token_new', ${newerTime}, ${newerTime})
+      `
+
+      const lastLogin = await getLastLoginTime(user.id, testOptions)
+
+      expect(lastLogin).toBeDefined()
+      expect(typeof lastLogin).toBe('string')
+      
+      // Should be the newer time (exact comparison depends on database format)
+      // We'll check that it contains the newer date
+      expect(lastLogin).toMatch(/2024-01-02/)  // Should contain the newer date
+    })
+
+    it('should only return tokens for the specified user', async () => {
+      // Create two users
+      const user1Data = { email: 'user1@webmania.cc', name: 'User 1', password: 'password123' }
+      const user2Data = { email: 'user2@webmania.cc', name: 'User 2', password: 'password123' }
+      
+      const user1 = await createUser(user1Data, testOptions)
+      const user2 = await createUser(user2Data, testOptions)
+
+      // Create tokens for both users
+      const user1Time = '2024-01-01 10:00:00'
+      const user2Time = '2024-01-02 15:30:00'  // Later time
+      
+      await db.sql`
+        INSERT INTO {${testOptions.tables.personalAccessTokens}} 
+        (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+        VALUES ('user', ${user1.id}, 'user1_token', 'token1', ${user1Time}, ${user1Time})
+      `
+      
+      await db.sql`
+        INSERT INTO {${testOptions.tables.personalAccessTokens}} 
+        (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+        VALUES ('user', ${user2.id}, 'user2_token', 'token2', ${user2Time}, ${user2Time})
+      `
+
+      // Get last login for user1 - should only return user1's token time
+      const user1LastLogin = await getLastLoginTime(user1.id, testOptions)
+      const user2LastLogin = await getLastLoginTime(user2.id, testOptions)
+
+      expect(user1LastLogin).toBeDefined()
+      expect(user2LastLogin).toBeDefined()
+      
+      // Each should contain their respective dates
+      expect(user1LastLogin).toMatch(/2024-01-01/)
+      expect(user2LastLogin).toMatch(/2024-01-02/)
+    })
+
+    it('should only consider tokens with tokenable_type "user"', async () => {
+      // Create a user
+      const userData = { email: 'typetest@webmania.cc', name: 'Type Test User', password: 'password123' }
+      const user = await createUser(userData, testOptions)
+
+      // Create tokens with different tokenable_types
+      const userTokenTime = '2024-01-01 10:00:00'
+      const adminTokenTime = '2024-01-02 15:30:00'  // Later but different type
+      
+      await db.sql`
+        INSERT INTO {${testOptions.tables.personalAccessTokens}} 
+        (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+        VALUES ('user', ${user.id}, 'user_token', 'user_token', ${userTokenTime}, ${userTokenTime})
+      `
+      
+      await db.sql`
+        INSERT INTO {${testOptions.tables.personalAccessTokens}} 
+        (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+        VALUES ('admin', ${user.id}, 'admin_token', 'admin_token', ${adminTokenTime}, ${adminTokenTime})
+      `
+
+      const lastLogin = await getLastLoginTime(user.id, testOptions)
+
+      expect(lastLogin).toBeDefined()
+      // Should only consider the 'user' type token, not the 'admin' type
+      expect(lastLogin).toMatch(/2024-01-01/)
+    })
+
+    it('should handle database timestamp formats correctly', async () => {
+      // Create a user
+      const userData = { email: 'timestamp@webmania.cc', name: 'Timestamp User', password: 'password123' }
+      const user = await createUser(userData, testOptions)
+
+      // Insert token using CURRENT_TIMESTAMP (real database timestamp)
+      await db.sql`
+        INSERT INTO {${testOptions.tables.personalAccessTokens}} 
+        (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+        VALUES ('user', ${user.id}, 'current_token', 'current_token', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `
+
+      const lastLogin = await getLastLoginTime(user.id, testOptions)
+
+      expect(lastLogin).toBeDefined()
+      expect(typeof lastLogin).toBe('string')
+      
+      // Should be a valid date string that can be parsed
+      const loginDate = new Date(lastLogin!)
+      expect(loginDate.toString()).not.toBe('Invalid Date')
+      
+      // Should be a timestamp (positive number when converted to time)
+      expect(loginDate.getTime()).toBeGreaterThan(0)
+      
+      // Should contain reasonable date format
+      expect(lastLogin).toMatch(/\d{4}/) // Should contain a 4-digit year
+    })
+
+    it('should return null for non-existent user', async () => {
+      // Test with a user ID that doesn't exist
+      const nonExistentUserId = 99999
+
+      const lastLogin = await getLastLoginTime(nonExistentUserId, testOptions)
+
+      expect(lastLogin).toBeNull()
     })
   })
 })

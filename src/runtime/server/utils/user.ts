@@ -241,3 +241,29 @@ export const revokeUserTokens = async (userId: number, options: ModuleOptions): 
 
   console.log(`[Nuxt Users] All tokens revoked for user ID: ${userId}`)
 }
+
+/**
+ * Gets the last login time for a user based on their most recent personal access token creation.
+ * This represents when the user last successfully logged in.
+ */
+export const getLastLoginTime = async (userId: number, options: ModuleOptions): Promise<string | null> => {
+  const db = await useDb(options)
+  const personalAccessTokensTable = options.tables.personalAccessTokens
+
+  const result = await db.sql`
+    SELECT created_at 
+    FROM {${personalAccessTokensTable}} 
+    WHERE tokenable_id = ${userId} AND tokenable_type = 'user'
+    ORDER BY created_at DESC 
+    LIMIT 1
+  ` as { rows: Array<{ created_at: Date | string }> }
+
+  if (result.rows.length === 0) {
+    return null
+  }
+
+  const lastLogin = result.rows[0].created_at
+  
+  // Convert Date objects to ISO strings if needed
+  return lastLogin instanceof Date ? lastLogin.toISOString() : lastLogin
+}
