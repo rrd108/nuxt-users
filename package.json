@@ -1,6 +1,6 @@
 {
   "name": "nuxt-users",
-  "version": "2.0.0",
+  "version": "1.9.0",
   "description": "A comprehensive user management module for Nuxt 3 and Nuxt 4 applications with authentication, authorization, database support, and CLI tools",
   "keywords": [
     "nuxt",
