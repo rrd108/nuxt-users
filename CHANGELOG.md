@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v2.0.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.8.5...v2.0.0)
+
+### 🚀 Enhancements
+
+- ⚠️  Export TypeScript types and utilities for consumers ([729d961](https://github.com/rrd108/nuxt-users/commit/729d961))
+- Add getLastLoginTime function to track user login activity ([001d4f2](https://github.com/rrd108/nuxt-users/commit/001d4f2))
+
+### 🏡 Chore
+
+- Fix lint ([beb3e43](https://github.com/rrd108/nuxt-users/commit/beb3e43))
+- **release:** V1.8.5 ([403cbd3](https://github.com/rrd108/nuxt-users/commit/403cbd3))
+
+### 🎨 Styles
+
+- Fix code formatting and remove trailing whitespace ([ea07a3c](https://github.com/rrd108/nuxt-users/commit/ea07a3c))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Export TypeScript types and utilities for consumers ([729d961](https://github.com/rrd108/nuxt-users/commit/729d961))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.8.5
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.8.4...v1.8.5)
