@@ -263,7 +263,7 @@ export const getLastLoginTime = async (userId: number, options: ModuleOptions): 
   }
 
   const lastLogin = result.rows[0].created_at
-  
+
   // Convert Date objects to ISO strings if needed
   return lastLogin instanceof Date ? lastLogin.toISOString() : lastLogin
 }

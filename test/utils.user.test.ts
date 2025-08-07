@@ -255,7 +255,7 @@ describe('User Utilities (src/utils/user.ts)', () => {
       expect(lastLogin).toBeDefined()
       expect(typeof lastLogin).toBe('string')
       // Should be a valid ISO string or database timestamp
-      expect(lastLogin).toMatch(/\d{4}-\d{2}-\d{2}/)  // Date format check
+      expect(lastLogin).toMatch(/\d{4}-\d{2}-\d{2}/) // Date format check
     })
 
     it('should return most recent login from multiple tokens', async () => {
@@ -266,13 +266,13 @@ describe('User Utilities (src/utils/user.ts)', () => {
       // Create multiple tokens with different timestamps
       const olderTime = '2024-01-01 10:00:00'
       const newerTime = '2024-01-02 15:30:00'
-      
+
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
         VALUES ('user', ${user.id}, 'old_token', 'token_old', ${olderTime}, ${olderTime})
       `
-      
+
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
@@ -283,30 +283,30 @@ describe('User Utilities (src/utils/user.ts)', () => {
 
       expect(lastLogin).toBeDefined()
       expect(typeof lastLogin).toBe('string')
-      
+
       // Should be the newer time (exact comparison depends on database format)
       // We'll check that it contains the newer date
-      expect(lastLogin).toMatch(/2024-01-02/)  // Should contain the newer date
+      expect(lastLogin).toMatch(/2024-01-02/) // Should contain the newer date
     })
 
     it('should only return tokens for the specified user', async () => {
       // Create two users
       const user1Data = { email: 'user1@webmania.cc', name: 'User 1', password: 'password123' }
       const user2Data = { email: 'user2@webmania.cc', name: 'User 2', password: 'password123' }
-      
+
       const user1 = await createUser(user1Data, testOptions)
       const user2 = await createUser(user2Data, testOptions)
 
       // Create tokens for both users
       const user1Time = '2024-01-01 10:00:00'
-      const user2Time = '2024-01-02 15:30:00'  // Later time
-      
+      const user2Time = '2024-01-02 15:30:00' // Later time
+
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
         VALUES ('user', ${user1.id}, 'user1_token', 'token1', ${user1Time}, ${user1Time})
       `
-      
+
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
@@ -319,7 +319,7 @@ describe('User Utilities (src/utils/user.ts)', () => {
 
       expect(user1LastLogin).toBeDefined()
       expect(user2LastLogin).toBeDefined()
-      
+
       // Each should contain their respective dates
       expect(user1LastLogin).toMatch(/2024-01-01/)
       expect(user2LastLogin).toMatch(/2024-01-02/)
@@ -332,14 +332,14 @@ describe('User Utilities (src/utils/user.ts)', () => {
 
       // Create tokens with different tokenable_types
       const userTokenTime = '2024-01-01 10:00:00'
-      const adminTokenTime = '2024-01-02 15:30:00'  // Later but different type
-      
+      const adminTokenTime = '2024-01-02 15:30:00' // Later but different type
+
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
         VALUES ('user', ${user.id}, 'user_token', 'user_token', ${userTokenTime}, ${userTokenTime})
       `
-      
+
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
@@ -369,14 +369,14 @@ describe('User Utilities (src/utils/user.ts)', () => {
 
       expect(lastLogin).toBeDefined()
       expect(typeof lastLogin).toBe('string')
-      
+
       // Should be a valid date string that can be parsed
       const loginDate = new Date(lastLogin!)
       expect(loginDate.toString()).not.toBe('Invalid Date')
-      
+
       // Should be a timestamp (positive number when converted to time)
       expect(loginDate.getTime()).toBeGreaterThan(0)
-      
+
       // Should contain reasonable date format
       expect(lastLogin).toMatch(/\d{4}/) // Should contain a 4-digit year
     })
