@@ -1,6 +1,6 @@
 # API Reference
 
-The Nuxt Users module provides several API endpoints for authentication and password reset functionality.
+The Nuxt Users module provides several API endpoints for authentication, user management, and password reset functionality.
 
 ## Authentication Endpoints
 
@@ -56,11 +56,132 @@ Logout the current user by removing their authentication token.
 - Clears the `auth_token` cookie
 - No authentication required (works with any valid token)
 
-## Profile Endpoints
+## User Management Endpoints
+
+Authentication and authorization are handled by middleware.
+
+### Create User
+
+**Endpoint:** `POST /api/nuxt-users`
+
+Create a new user.
+
+**Request Body:**
+```json
+{
+  "email": "newuser@example.com",
+  "name": "New User",
+  "password": "password123",
+  "role": "user"
+}
+```
+
+**Response:**
+```json
+{
+  "user": {
+    "id": 2,
+    "email": "newuser@example.com",
+    "name": "New User",
+    "role": "user",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Missing required fields (email, name, password)
+- `401 Unauthorized`: No authentication token or invalid token
+- `403 Forbidden`: User doesn't have permission to create users
+
+### Get User
+
+**Endpoint:** `GET /api/nuxt-users/:id`
+
+Get a user by ID. Users can only access their own profile unless they have admin permissions.
+
+**Request:** No request body required (uses authentication token from cookie)
+
+**Response:**
+```json
+{
+  "user": {
+    "id": 1,
+    "email": "user@example.com",
+    "name": "John Doe",
+    "role": "user",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid user ID
+- `401 Unauthorized`: No authentication token or invalid token
+- `403 Forbidden`: User doesn't have permission to access this profile
+- `404 Not Found`: User not found
+
+### Update User
+
+**Endpoint:** `PATCH /api/nuxt-users/:id`
+
+Update a user's information.
+
+**Request Body:**
+```json
+{
+  "name": "Updated Name",
+  "email": "updated@example.com",
+  "role": "admin"
+}
+```
+
+**Response:**
+```json
+{
+  "user": {
+    "id": 1,
+    "email": "updated@example.com",
+    "name": "Updated Name",
+    "role": "admin",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid user ID
+- `401 Unauthorized`: No authentication token or invalid token
+- `403 Forbidden`: User doesn't have permission to update users
+- `404 Not Found`: User not found
+
+### Delete User
+
+**Endpoint:** `DELETE /api/nuxt-users/:id`
+
+Delete a user.
+
+**Request:** No request body required
+
+**Response:**
+```json
+{
+  "success": true
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid user ID
+- `401 Unauthorized`: No authentication token or invalid token
+- `403 Forbidden`: User doesn't have permission to delete users
+- `404 Not Found`: User not found
 
 ### Get Profile
 
-**Endpoint:** `GET /api/user/profile`
+**Endpoint:** `GET /api/nuxt-users/profile`
 
 Get the current user's profile information.
 
@@ -133,7 +254,7 @@ Send a password reset link to the user's email.
 **Response:**
 ```json
 {
-  "message": "Password reset link sent to your email"
+  "message": "If a user with that email exists, a password reset link has been sent."
 }
 ```
 
@@ -161,14 +282,13 @@ Reset user password using a valid token.
 **Response:**
 ```json
 {
-  "message": "Password reset successfully"
+  "message": "Password has been reset successfully. You can now log in with your new password."
 }
 ```
 
 **Error Responses:**
-- `400 Bad Request`: Missing required fields
-- `401 Unauthorized`: Invalid or expired token
-- `422 Unprocessable Entity`: Password confirmation mismatch
+- `400 Bad Request`: Missing required fields or password validation failed
+- `400 Bad Request`: Invalid or expired token, or email mismatch
 
 ## Error Handling
 
@@ -191,6 +311,14 @@ Cookie: auth_token=your-auth-token
 
 The module automatically handles cookie management for login/logout.
 
+## Permission System
+
+The user management endpoints use a role-based permission system:
+
+- **Admin users** (`role: "admin"`) can access all user management endpoints
+- **Regular users** can only access their own profile via `GET /api/nuxt-users/:id`
+- **All users** must be authenticated to access any protected endpoint
+
 ## Rate Limiting
 
 Consider implementing rate limiting for these endpoints:
@@ -198,9 +326,11 @@ Consider implementing rate limiting for these endpoints:
 - `/api/auth/login`: Prevent brute force attacks
 - `/api/auth/forgot-password`: Prevent email spam
 - `/api/auth/reset-password`: Prevent token brute force
+- `/api/nuxt-users/*`: Prevent abuse of user management endpoints
 
 ## Next Steps
 
 - [Authentication Guide](/guide/authentication) - Learn about the authentication flow
+- [Authorization Guide](/guide/authorization) - Understand role-based access control
 - [Password Reset Guide](/guide/password-reset) - Understand password reset functionality
 - [Components](/components/) - Use the provided Vue components 
