@@ -1,9 +1,11 @@
-import { useState } from '#app'
+import { useState, useRuntimeConfig } from '#app'
 import { computed, readonly } from 'vue'
 import type { User, UserWithoutPassword } from '../../types'
 
 export const useAuthentication = () => {
   const user = useState<UserWithoutPassword | null>('user', () => null)
+  const { public: { nuxtUsers } } = useRuntimeConfig()
+  const apiBasePath = (nuxtUsers as { apiBasePath?: string })?.apiBasePath
 
   const isAuthenticated = computed(() => !!user.value)
 
@@ -19,9 +21,7 @@ export const useAuthentication = () => {
 
   const logout = async () => {
     try {
-      await $fetch('/api/auth/logout', {
-        method: 'GET'
-      })
+      await $fetch(`${apiBasePath}/session`, { method: 'DELETE' })
       user.value = null
       if (import.meta.client) {
         localStorage.removeItem('user')
@@ -36,9 +36,7 @@ export const useAuthentication = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await $fetch<{ user: UserWithoutPassword }>('/api/user/profile', {
-        method: 'GET'
-      })
+      const response = await $fetch<{ user: UserWithoutPassword }>(`${apiBasePath}/me`, { method: 'GET' })
       user.value = response.user
       // Update localStorage with fresh user data
       if (import.meta.client) {

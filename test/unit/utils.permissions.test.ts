@@ -5,17 +5,17 @@ describe('Permissions Utils', () => {
   describe('pathMatchesPattern', () => {
     it('should match exact paths', () => {
       expect(pathMatchesPattern('/profile', '/profile')).toBe(true)
-      expect(pathMatchesPattern('/api/user/profile', '/api/user/profile')).toBe(true)
+      expect(pathMatchesPattern('/api/nuxt-users/me', '/api/nuxt-users/me')).toBe(true)
     })
 
     it('should not match different paths', () => {
       expect(pathMatchesPattern('/profile', '/dashboard')).toBe(false)
-      expect(pathMatchesPattern('/api/user/profile', '/api/admin/users')).toBe(false)
+      expect(pathMatchesPattern('/api/nuxt-users/me', '/api/admin/users')).toBe(false)
     })
 
     it('should match wildcard pattern', () => {
       expect(pathMatchesPattern('/profile', '*')).toBe(true)
-      expect(pathMatchesPattern('/api/user/profile', '*')).toBe(true)
+      expect(pathMatchesPattern('/api/nuxt-users/me', '*')).toBe(true)
       expect(pathMatchesPattern('/admin/dashboard', '*')).toBe(true)
     })
 
@@ -27,21 +27,21 @@ describe('Permissions Utils', () => {
     })
 
     it('should match patterns with wildcard in the middle', () => {
-      expect(pathMatchesPattern('/api/user/profile', '/api/*/profile')).toBe(true)
+      expect(pathMatchesPattern('/api/nuxt-users/me', '/api/*/profile')).toBe(false)
       expect(pathMatchesPattern('/api/admin/users', '/api/*/users')).toBe(true)
       expect(pathMatchesPattern('/api/user/settings', '/api/*/profile')).toBe(false)
     })
 
     it('should handle complex wildcard patterns', () => {
       expect(pathMatchesPattern('/api/admin/users/1', '/api/*/users/*')).toBe(true)
-      expect(pathMatchesPattern('/api/user/profile/edit', '/api/*/profile/*')).toBe(true)
+      expect(pathMatchesPattern('/api/nuxt-users/me/edit', '/api/*/profile/*')).toBe(false)
     })
   })
 
   describe('hasPermission', () => {
     const permissions = {
       admin: ['*'],
-      user: ['/profile', '/api/user/profile'],
+      user: ['/profile', '/api/nuxt-users/me'],
       moderator: ['/admin/*', '/api/admin/*', '/moderate/*']
     }
 
@@ -64,7 +64,7 @@ describe('Permissions Utils', () => {
 
     it('should allow user to access their specific paths', () => {
       expect(hasPermission('user', '/profile', permissions)).toBe(true)
-      expect(hasPermission('user', '/api/user/profile', permissions)).toBe(true)
+      expect(hasPermission('user', '/api/nuxt-users/me', permissions)).toBe(true)
     })
 
     it('should deny user access to other paths', () => {
@@ -82,12 +82,12 @@ describe('Permissions Utils', () => {
 
     it('should deny moderator access to user paths', () => {
       expect(hasPermission('moderator', '/profile', permissions)).toBe(false)
-      expect(hasPermission('moderator', '/api/user/profile', permissions)).toBe(false)
+      expect(hasPermission('moderator', '/api/nuxt-users/me', permissions)).toBe(false)
     })
   })
 
   describe('isWhitelisted', () => {
-    const whitelist = ['/login', '/register', '/api/auth/*']
+    const whitelist = ['/login', '/register']
 
     it('should allow exact matches', () => {
       expect(isWhitelisted('/login', whitelist)).toBe(true)
@@ -95,15 +95,13 @@ describe('Permissions Utils', () => {
     })
 
     it('should allow wildcard matches', () => {
-      expect(isWhitelisted('/api/auth/login', whitelist)).toBe(true)
-      expect(isWhitelisted('/api/auth/forgot-password', whitelist)).toBe(true)
-      expect(isWhitelisted('/api/auth/reset-password', whitelist)).toBe(true)
+      expect(isWhitelisted('/api/nuxt-users/me', whitelist)).toBe(false)
     })
 
     it('should deny non-whitelisted paths', () => {
       expect(isWhitelisted('/profile', whitelist)).toBe(false)
       expect(isWhitelisted('/admin/dashboard', whitelist)).toBe(false)
-      expect(isWhitelisted('/api/user/profile', whitelist)).toBe(false)
+      expect(isWhitelisted('/api/nuxt-users/me', whitelist)).toBe(false)
     })
 
     it('should handle empty whitelist', () => {

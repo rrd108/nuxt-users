@@ -24,7 +24,7 @@ vi.mock('../../src/utils', () => ({
 }))
 
 // Import the reset-password api endpoint after mocking
-const resetPasswordApiEndpoint = await import('../../src/runtime/server/api/auth/reset-password.post')
+const resetPasswordApiEndpoint = await import('../../src/runtime/server/api/nuxt-users/password/reset.post')
 
 describe('Reset Password API Route', () => {
   let testOptions: ModuleOptions

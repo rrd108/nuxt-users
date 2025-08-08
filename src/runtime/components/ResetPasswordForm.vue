@@ -11,9 +11,13 @@ interface Emits {
   (e: 'password-updated'): void
 }
 
+const { public: { nuxtUsers } } = useRuntimeConfig()
+const apiBasePath = (nuxtUsers as { apiBasePath?: string })?.apiBasePath
+const moduleOptions = nuxtUsers as ModuleOptions
+
 const props = withDefaults(defineProps<ResetPasswordFormProps>(), {
-  apiEndpoint: '/api/user/profile',
-  updatePasswordEndpoint: '/api/auth/update-password'
+  apiEndpoint: `${apiBasePath}/me`,
+  updatePasswordEndpoint: `${apiBasePath}/password`
 })
 
 const emit = defineEmits<Emits>()
@@ -28,10 +32,6 @@ const passwordForm = ref({
   newPassword: '',
   newPasswordConfirmation: ''
 })
-
-// Get module options for password validation
-const { public: { nuxtUsers } } = useRuntimeConfig()
-const moduleOptions = nuxtUsers as ModuleOptions
 
 // Password validation
 const passwordValidation = usePasswordValidation(moduleOptions)
@@ -54,7 +54,7 @@ const updatePassword = async () => {
 
   try {
     await $fetch(props.updatePasswordEndpoint, {
-      method: 'POST',
+      method: 'PATCH',
       body: passwordForm.value
     })
 

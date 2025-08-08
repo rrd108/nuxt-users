@@ -25,7 +25,7 @@ vi.mock('../../src/runtime/server/services/password', () => ({
 }))
 
 // Import the forgot-password api endpoint after mocking
-const forgotPasswordApiEndpoint = await import('../../src/runtime/server/api/auth/forgot-password.post')
+const forgotPasswordApiEndpoint = await import('../../src/runtime/server/api/nuxt-users/password/forgot.post')
 
 describe('Forgot Password API Route', () => {
   let testOptions: ModuleOptions

@@ -110,9 +110,9 @@ npx nuxt-users create-user user@example.com "John Doe" password123
 - **Table management**: Utilities for checking table existence and managing database schema
 
 ### API Routes
-- **`/api/auth/login`**: POST endpoint for user authentication with bcrypt password verification and token generation
-- **`/api/auth/forgot-password`**: POST endpoint for password reset initiation
-- **`/api/auth/reset-password`**: POST endpoint for password reset completion
+- **`/api/nuxt-users/session`**: POST login, DELETE logout
+- **`/api/nuxt-users/password/forgot`**: POST password reset initiation
+- **`/api/nuxt-users/password/reset`**: POST password reset completion
 
 ### Vue Components
 - **LoginForm**: User authentication and forgot password form
@@ -216,7 +216,7 @@ yarn docs:deploy
 - **Database utilities**: `src/utils/db.ts:28` (useDb function)
 - **CLI entry**: `src/cli/main.ts:11` (command definitions)
 - **Type definitions**: `src/types.ts:11` (ModuleOptions interface)
-- **Login API**: `src/runtime/server/api/auth/login.post.ts:8` (authentication handler)
+- **Login API**: `src/runtime/server/api/nuxt-users/session/index.post.ts:8` (authentication handler)
 
 ## Documentation Mapping
 

@@ -34,7 +34,7 @@ describe('Auth Server Middleware', () => {
       auth: {
         whitelist: ['/register'],
         permissions: {
-          user: ['/profile', '/api/user/profile']
+          user: ['/profile', '/api/nuxt-users/me']
         }
       }
     }
@@ -66,7 +66,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should allow api login requests without authentication', async () => {
-      const event = { path: '/api/auth/login' } as H3Event
+      const event = { path: '/api/nuxt-users/session' } as H3Event
       const result = await serverAuthMiddleware.default(event)
 
       expect(result).toBeUndefined()
@@ -167,7 +167,7 @@ describe('Auth Server Middleware', () => {
           whitelist: ['/register'],
           permissions: {
             admin: ['*'],
-            user: ['/profile', '/api/user/profile'],
+            user: ['/profile', '/api/nuxt-users/me'],
             moderator: ['/admin/*', '/api/admin/*', '/moderate/*']
           }
         }

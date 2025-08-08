@@ -42,6 +42,7 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
     name: dbType,
     options: dbConfig
   },
+  apiBasePath: '/api/nuxt-users',
   tables: {
     migrations: 'migrations',
     users: 'users',

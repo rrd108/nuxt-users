@@ -6,6 +6,7 @@ import { useRuntimeConfig } from '#imports'
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
 const { passwordValidation } = nuxtUsers as ModuleOptions
+const apiBasePath = (nuxtUsers as { apiBasePath?: string })?.apiBasePath
 
 interface Emits {
   (e: 'success', user: UserWithoutPassword): void
@@ -15,9 +16,9 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<LoginFormProps>(), {
-  apiEndpoint: '/api/auth/login',
+  apiEndpoint: `${apiBasePath}/session`,
   redirectTo: '/',
-  forgotPasswordEndpoint: '/api/auth/forgot-password'
+  forgotPasswordEndpoint: `${apiBasePath}/password/forgot`
 })
 
 const emit = defineEmits<Emits>()

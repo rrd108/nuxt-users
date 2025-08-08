@@ -317,7 +317,7 @@ nuxtUsers: {
     tokenExpiration: 1440, // Token expiration in minutes (default: 24 hours)
     permissions: {
       admin: ['*'], // Admin can access everything
-      user: ['/profile', '/settings', '/api/user/profile'],
+      user: ['/profile', '/settings', '/api/nuxt-users/me'],
       moderator: ['/admin/*', '/api/admin/*']
     }
   }
@@ -439,7 +439,7 @@ export default defineNuxtConfig({
     maxRequests: 5,
     duration: 60000,
     banDuration: 300000,
-    routes: ['/api/auth/login', '/api/auth/forgot-password']
+    routes: ['/api/nuxt-users/session', '/api/nuxt-users/password/forgot']
   }
 })
 ```

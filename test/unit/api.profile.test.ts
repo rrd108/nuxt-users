@@ -20,7 +20,7 @@ vi.mock('../../src/runtime/server/utils', () => ({
 }))
 
 // Import the profile api endpoint after mocking
-const profileApiEndpoint = await import('../../src/runtime/server/api/nuxt-users/profile.get')
+const profileApiEndpoint = await import('../../src/runtime/server/api/nuxt-users/me.get')
 
 describe('Profile API Route', () => {
   let testOptions: ModuleOptions

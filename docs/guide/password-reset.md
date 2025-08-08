@@ -101,7 +101,7 @@ This component provides a form for users to set a new password using a token fro
 
 The component:
 - Automatically reads `token` and `email` from URL query parameters
-- Handles API calls to `/api/auth/reset-password`
+- Handles API calls to `/api/nuxt-users/password/reset`
 - Validates password confirmation
 - Redirects to login upon success
 
@@ -109,7 +109,7 @@ The component:
 
 ### Forgot Password
 
-**Endpoint:** `POST /api/auth/forgot-password`
+**Endpoint:** `POST /api/nuxt-users/password/forgot`
 
 **Request Body:**
 ```json
@@ -127,7 +127,7 @@ The component:
 
 ### Reset Password
 
-**Endpoint:** `POST /api/auth/reset-password`
+**Endpoint:** `POST /api/nuxt-users/password/reset`
 
 **Request Body:**
 ```json
@@ -154,7 +154,7 @@ The component:
 <script setup>
 const requestReset = async (email) => {
   try {
-    await $fetch('/api/auth/forgot-password', {
+    await $fetch('/api/nuxt-users/password/forgot', {
       method: 'POST',
       body: { email }
     })
@@ -176,7 +176,7 @@ const requestReset = async (email) => {
 <script setup>
 const resetPassword = async (token, email, password, passwordConfirmation) => {
   try {
-    await $fetch('/api/auth/reset-password', {
+    await $fetch('/api/nuxt-users/password/reset', {
       method: 'POST',
       body: {
         token,

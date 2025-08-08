@@ -30,7 +30,7 @@ export default defineNuxtConfig({
 
 ## Authentication Flow
 
-Upon successful login via the `/api/auth/login` endpoint:
+Upon successful login via the `/api/nuxt-users/session` endpoint:
 
 1. **User submits credentials** - Email and password are sent to the server
 2. **Password verification** - bcrypt compares the password with the stored hash
@@ -75,7 +75,7 @@ CREATE TABLE personal_access_tokens (
 
 ### Endpoint
 
-`POST /api/auth/login`
+`POST /api/nuxt-users/session`
 
 ### Request Body
 
@@ -149,7 +149,7 @@ You can implement custom login logic:
 <script setup>
 const login = async (email, password) => {
   try {
-    const response = await $fetch('/api/auth/login', {
+    const response = await $fetch('/api/nuxt-users/session', {
       method: 'POST',
       body: { email, password }
     })
@@ -256,9 +256,7 @@ You can also call the logout API directly:
 <script setup>
 const logout = async () => {
   try {
-    await $fetch('/api/auth/logout', {
-      method: 'GET'
-    })
+    await $fetch('/api/nuxt-users/session', { method: 'DELETE' })
     console.log('Logged out successfully')
   } catch (error) {
     console.error('Logout failed:', error)
@@ -409,9 +407,9 @@ export default defineNuxtConfig({
     banDuration: 300000,   // 5 minute ban for violators
     delay: 1000,           // 1 second delay on banned IPs
     routes: [
-      '/api/auth/login',           // Protect login endpoint
-      '/api/auth/forgot-password', // Protect password reset requests  
-      '/api/auth/reset-password'   // Protect password reset completion
+      '/api/nuxt-users/session',           // Protect login endpoint
+      '/api/nuxt-users/password/forgot',   // Protect password reset requests  
+      '/api/nuxt-users/password/reset'     // Protect password reset completion
     ],
     log: true // Enable logging for monitoring
   }
@@ -432,12 +430,12 @@ For different security levels on different endpoints:
 ```ts
 apiShield: {
   routes: {
-    '/api/auth/login': {
+    '/api/nuxt-users/session': {
       maxRequests: 5,      // Stricter limit for login
       duration: 60000,     // 1 minute
       banDuration: 600000  // 10 minute ban
     },
-    '/api/auth/forgot-password': {
+    '/api/nuxt-users/password/forgot': {
       maxRequests: 3,      // Very strict for password reset
       duration: 300000,    // 5 minute window
       banDuration: 1800000 // 30 minute ban

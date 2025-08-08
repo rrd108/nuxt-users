@@ -3,11 +3,12 @@ import { useRuntimeConfig } from '#imports'
 import { getCurrentUserFromToken } from '../utils'
 import { hasPermission, isWhitelisted } from '../../utils/permissions'
 import type { ModuleOptions } from '../../../types'
-import { NO_AUTH_PATHS } from '../../constants'
+import { NO_AUTH_PATHS, NO_AUTH_API_PATHS } from '../../constants'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
   const options = nuxtUsers as ModuleOptions
+  const base = options.apiBasePath || '/api/nuxt-users'
 
   // Only apply authentication to pages and API routes
   const isPageOrApiRoute = !event.path.includes('.')
@@ -19,9 +20,15 @@ export default defineEventHandler(async (event) => {
     return
   }
 
-  // login page is allowed to access without authentication
+  // internal no-auth paths (e.g., /login)
   if (NO_AUTH_PATHS.includes(event.path)) {
     console.log('[Nuxt Users] server.middleware.auth.global: /login')
+    return
+  }
+
+  // Always-allowed API endpoints for auth flows
+  const openApiPaths = NO_AUTH_API_PATHS.map(path => `${base}${path}`)
+  if (openApiPaths.includes(event.path)) {
     return
   }
 

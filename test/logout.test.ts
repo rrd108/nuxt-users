@@ -88,8 +88,8 @@ describe('Logout API Route', async () => {
     expect(tokenBeforeLogout.rows.length).toBe(1)
 
     // Now logout with the mock token
-    const logoutResponse = await $fetch<{ message: string }>('/api/auth/logout', {
-      method: 'GET',
+    const logoutResponse = await $fetch<{ message: string }>('/api/nuxt-users/session', {
+      method: 'DELETE',
       headers: {
         Cookie: `auth_token=${mockToken}`
       }
@@ -105,8 +105,8 @@ describe('Logout API Route', async () => {
   })
 
   it('should handle logout without existing token gracefully', async () => {
-    const logoutResponse = await $fetch<{ message: string }>('/api/auth/logout', {
-      method: 'GET'
+    const logoutResponse = await $fetch<{ message: string }>('/api/nuxt-users/session', {
+      method: 'DELETE'
     })
 
     expect(logoutResponse.message).toBe('Logged out successfully')

@@ -192,7 +192,7 @@ getCurrentUserFromToken<T extends boolean = false>(
 
 **Example:**
 ```typescript
-// server/api/user/profile.get.ts
+// server/api/nuxt-users/me.get.ts
 export default defineEventHandler(async (event) => {
   const token = getCookie(event, 'auth_token')
   
@@ -271,7 +271,7 @@ if (!result.isValid) {
 Create a comprehensive user profile API:
 
 ```typescript
-// server/api/user/profile-complete.get.ts
+// server/api/nuxt-users/me-complete.get.ts
 import { getCurrentUserFromToken, getLastLoginTime } from 'nuxt-users/utils'
 import type { UserWithoutPassword } from 'nuxt-users/utils'
 

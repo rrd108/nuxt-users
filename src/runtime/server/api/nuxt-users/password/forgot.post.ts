@@ -1,5 +1,5 @@
 import { defineEventHandler, readBody, createError } from 'h3'
-import { sendPasswordResetLink } from '../../services/password' // Adjusted path
+import { sendPasswordResetLink } from '../../../services/password' // Adjusted path
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

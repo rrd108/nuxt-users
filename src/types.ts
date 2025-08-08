@@ -13,6 +13,11 @@ export interface RuntimeModuleOptions {
     name: DatabaseType
     options: DatabaseConfig
   }
+  /**
+   * Base path for all module API endpoints
+   * @default '/api/nuxt-users'
+   */
+  apiBasePath?: string
   tables?: {
     migrations?: string
     users?: string
@@ -51,7 +56,7 @@ export interface RuntimeModuleOptions {
      * @default {}
      * @example {
      *   admin: ['*'], // admin can access everything
-     *   user: ['/profile', '/api/user/profile'],
+     *   user: ['/profile', '/api/nuxt-users/me'],
      *   moderator: ['/admin/*', '/api/admin/*']
      * }
      */
@@ -100,6 +105,7 @@ export interface ModuleOptions {
     name: DatabaseType
     options: DatabaseConfig
   }
+  apiBasePath: string
   tables: {
     migrations: string
     users: string

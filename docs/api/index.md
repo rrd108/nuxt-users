@@ -6,7 +6,7 @@ The Nuxt Users module provides several API endpoints for authentication, user ma
 
 ### Login
 
-**Endpoint:** `POST /api/auth/login`
+**Endpoint:** `POST /api/nuxt-users/session`
 
 Authenticate a user with email and password.
 
@@ -38,7 +38,7 @@ Authenticate a user with email and password.
 
 ### Logout
 
-**Endpoint:** `GET /api/auth/logout`
+**Endpoint:** `DELETE /api/nuxt-users/session`
 
 Logout the current user by removing their authentication token.
 
@@ -181,7 +181,7 @@ Delete a user.
 
 ### Get Profile
 
-**Endpoint:** `GET /api/nuxt-users/profile`
+**Endpoint:** `GET /api/nuxt-users/me`
 
 Get the current user's profile information.
 
@@ -206,7 +206,7 @@ Get the current user's profile information.
 
 ### Update Password
 
-**Endpoint:** `POST /api/auth/update-password`
+**Endpoint:** `PATCH /api/nuxt-users/password`
 
 Update the current user's password.
 
@@ -240,7 +240,7 @@ Update the current user's password.
 
 ### Forgot Password
 
-**Endpoint:** `POST /api/auth/forgot-password`
+**Endpoint:** `POST /api/nuxt-users/password/forgot`
 
 Send a password reset link to the user's email.
 
@@ -265,7 +265,7 @@ Send a password reset link to the user's email.
 
 ### Reset Password
 
-**Endpoint:** `POST /api/auth/reset-password`
+**Endpoint:** `POST /api/nuxt-users/password/reset`
 
 Reset user password using a valid token.
 
@@ -323,9 +323,9 @@ The user management endpoints use a role-based permission system:
 
 Consider implementing rate limiting for these endpoints:
 
-- `/api/auth/login`: Prevent brute force attacks
-- `/api/auth/forgot-password`: Prevent email spam
-- `/api/auth/reset-password`: Prevent token brute force
+- `/api/nuxt-users/session`: Prevent brute force attacks
+- `/api/nuxt-users/password/forgot`: Prevent email spam
+- `/api/nuxt-users/password/reset`: Prevent token brute force
 - `/api/nuxt-users/*`: Prevent abuse of user management endpoints
 
 ## Next Steps

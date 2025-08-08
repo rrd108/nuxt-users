@@ -34,7 +34,7 @@ export default defineNuxtConfig({
       whitelist: ['/login', '/register', '/public'],
       permissions: {
         admin: ['*'], // Admin can access everything
-        user: ['/profile', '/settings', '/api/user/profile'],
+        user: ['/profile', '/settings', '/api/nuxt-users/me'],
         moderator: ['/admin/*', '/api/admin/*', '/moderate/*'],
         editor: ['/editor/*', '/api/editor/*', '/content/*']
       }
@@ -50,7 +50,7 @@ The system supports various pattern matching for flexible route protection:
 #### Exact Paths
 ```ts
 permissions: {
-  user: ['/profile', '/settings']
+      user: ['/profile', '/settings']
 }
 ```
 
@@ -66,7 +66,7 @@ permissions: {
 #### Complex Wildcards
 ```ts
 permissions: {
-  api_user: ['/api/*/profile'],    // Access to profile endpoints under any API section
+  api_user: ['/api/*/profile'],    // Example pattern
   manager: ['/admin/*/users/*']    // Access to user management under admin
 }
 ```
@@ -95,7 +95,7 @@ nuxtUsers: {
     permissions: {
       admin: ['*'],
       manager: ['/admin/*', '/api/admin/*', '/reports/*'],
-      customer: ['/profile', '/orders', '/api/user/*'],
+      customer: ['/profile', '/orders', '/api/nuxt-users/*'],
       vendor: ['/vendor/*', '/api/vendor/*', '/products/manage']
     }
   }

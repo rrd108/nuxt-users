@@ -9,6 +9,7 @@ export const defaultOptions: ModuleOptions = {
       path: './data/users.sqlite3',
     },
   },
+  apiBasePath: '/api/nuxt-users',
   tables: {
     migrations: 'migrations',
     users: 'users',
@@ -59,6 +60,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
 
     nuxt.options.runtimeConfig.nuxtUsers = {
       ...runtimeConfigOptions,
+      apiBasePath: options.apiBasePath || defaultOptions.apiBasePath,
       tables: {
         migrations: options.tables?.migrations || defaultOptions.tables.migrations,
         users: options.tables?.users || defaultOptions.tables.users,
@@ -86,7 +88,8 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       auth: {
         whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])],
         permissions: options.auth?.permissions || defaultOptions.auth.permissions
-      }
+      },
+      apiBasePath: options.apiBasePath || defaultOptions.apiBasePath
     }
 
     addPlugin({
@@ -104,64 +107,69 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       global: true,
     })
 
-    // Register API routes
+    // Register API routes under configurable base path
+    const base = (nuxt.options.runtimeConfig.nuxtUsers as ModuleOptions).apiBasePath || defaultOptions.apiBasePath
+
+    // Auth/session
     addServerHandler({
-      route: '/api/auth/login',
+      route: `${base}/session`,
       method: 'post',
-      handler: resolver.resolve('./runtime/server/api/auth/login.post')
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/session/index.post')
     })
 
     addServerHandler({
-      route: '/api/auth/forgot-password',
-      method: 'post',
-      handler: resolver.resolve('./runtime/server/api/auth/forgot-password.post')
+      route: `${base}/session`,
+      method: 'delete',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/session/index.delete')
     })
 
+    // Current user
     addServerHandler({
-      route: '/api/auth/reset-password',
-      method: 'post',
-      handler: resolver.resolve('./runtime/server/api/auth/reset-password.post')
-    })
-
-    addServerHandler({
-      route: '/api/auth/logout',
+      route: `${base}/me`,
       method: 'get',
-      handler: resolver.resolve('./runtime/server/api/auth/logout.get')
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/me.get')
+    })
+
+    // Password
+    addServerHandler({
+      route: `${base}/password`,
+      method: 'patch',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/password/index.patch')
     })
 
     addServerHandler({
-      route: '/api/nuxt-users/profile',
-      method: 'get',
-      handler: resolver.resolve('./runtime/server/api/nuxt-users/profile.get')
-    })
-
-    addServerHandler({
-      route: '/api/auth/update-password',
+      route: `${base}/password/forgot`,
       method: 'post',
-      handler: resolver.resolve('./runtime/server/api/auth/update-password.post')
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/password/forgot.post')
     })
 
-    // User management API routes
     addServerHandler({
-      route: '/api/nuxt-users',
+      route: `${base}/password/reset`,
+      method: 'post',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/password/reset.post')
+    })
+
+    // User management
+    addServerHandler({
+      route: `${base}`,
       method: 'post',
       handler: resolver.resolve('./runtime/server/api/nuxt-users/index.post')
     })
 
     addServerHandler({
-      route: '/api/nuxt-users/:id',
+      route: `${base}/:id`,
       method: 'get',
       handler: resolver.resolve('./runtime/server/api/nuxt-users/[id].get')
     })
 
     addServerHandler({
-      route: '/api/nuxt-users/:id',
+      route: `${base}/:id`,
       method: 'patch',
       handler: resolver.resolve('./runtime/server/api/nuxt-users/[id].patch')
     })
 
     addServerHandler({
-      route: '/api/nuxt-users/:id',
+      route: `${base}/:id`,
       method: 'delete',
       handler: resolver.resolve('./runtime/server/api/nuxt-users/[id].delete')
     })

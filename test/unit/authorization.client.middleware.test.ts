@@ -33,7 +33,7 @@ describe('Auth Client Middleware', () => {
       auth: {
         whitelist: ['/register'],
         permissions: {
-          user: ['/profile', '/api/user/profile']
+          user: ['/profile', '/api/nuxt-users/me']
         }
       }
     }
@@ -152,7 +152,7 @@ describe('Auth Client Middleware', () => {
           whitelist: ['/register'],
           permissions: {
             admin: ['*'],
-            user: ['/profile', '/api/user/profile'],
+            user: ['/profile', '/api/nuxt-users/me'],
             moderator: ['/admin/*', '/api/admin/*', '/moderate/*']
           }
         }

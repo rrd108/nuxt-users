@@ -41,7 +41,7 @@ const handleError = (error) => {
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `apiEndpoint` | `string` | `'/api/auth/login'` | The API endpoint for login requests |
+| `apiEndpoint` | `string` | `'/api/nuxt-users/session'` | The API endpoint for login requests |
 | `redirectTo` | `string` | `'/'` | Where to redirect after successful login |
 
 ### Events
@@ -299,7 +299,7 @@ This component handles its own API calls, message display, and redirection to lo
 
 - Automatically reads `token` and `email` from URL query parameters
 - Password confirmation validation
-- API calls to `/api/auth/reset-password`
+- API calls to `/api/nuxt-users/password/reset`
 - Automatic redirection to login on success
 - Error handling and display
 

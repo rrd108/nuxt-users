@@ -1,16 +1,23 @@
 import { defineNuxtRouteMiddleware, navigateTo, useRuntimeConfig } from '#app'
 import { useAuthentication } from '../composables/useAuthentication'
 import { hasPermission, isWhitelisted } from '../utils/permissions'
-import { NO_AUTH_PATHS } from '../constants'
+import { NO_AUTH_PATHS, NO_AUTH_API_PATHS } from '../constants'
 import type { ModuleOptions } from '../../types'
 
 export default defineNuxtRouteMiddleware((to) => {
   const { public: { nuxtUsers: publicNuxtUsers } } = useRuntimeConfig()
   const publicOptions = publicNuxtUsers as ModuleOptions
+  const base = publicOptions.apiBasePath || '/api/nuxt-users'
 
-  // login page is allowed to access without authentication
+  // internal no-auth paths (e.g., /login)
   if (NO_AUTH_PATHS.includes(to.path)) {
     console.log(`[Nuxt Users] client.middleware.auth.global: ${to.path}`)
+    return
+  }
+
+  // Always-allowed API endpoints for auth flows
+  const openApiPaths = NO_AUTH_API_PATHS.map(path => `${base}${path}`)
+  if (openApiPaths.includes(to.path)) {
     return
   }
 
