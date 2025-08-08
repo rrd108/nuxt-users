@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v1.11.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.9.0...v1.11.0)
+
+### 🚀 Enhancements
+
+- Add user CRUD API endpoints ([8cf5e0a](https://github.com/rrd108/nuxt-users/commit/8cf5e0a))
+- Add user API endpoints ([05f326e](https://github.com/rrd108/nuxt-users/commit/05f326e))
+
+### 💅 Refactors
+
+- API endpoints ([784dca4](https://github.com/rrd108/nuxt-users/commit/784dca4))
+
+### 🏡 Chore
+
+- **release:** V1.10.0 ([d6100db](https://github.com/rrd108/nuxt-users/commit/d6100db))
+
+### ✅ Tests
+
+- Skip for jiti error ([ce562c5](https://github.com/rrd108/nuxt-users/commit/ce562c5))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.10.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.9.0...v1.10.0)
