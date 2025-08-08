@@ -152,6 +152,12 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     // User management
     addServerHandler({
       route: `${base}`,
+      method: 'get',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/index.get')
+    })
+
+    addServerHandler({
+      route: `${base}`,
       method: 'post',
       handler: resolver.resolve('./runtime/server/api/nuxt-users/index.post')
     })

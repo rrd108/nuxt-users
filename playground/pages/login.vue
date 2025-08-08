@@ -6,6 +6,7 @@ const { login } = useAuthentication()
 const handleSuccess = (user) => {
   console.log('[Nuxt Users] Login successful:', user)
   login(user)
+  navigateTo('/')
 }
 
 const handleError = (error) => {
@@ -28,7 +29,7 @@ const handleSubmit = (data) => {
 
     <div class="demo-section">
       <h2>Login Component Demo</h2>
-      <p>This is the default login form with all default styling and content.</p>
+      <p>Login with: rrd@webmania.cc / 123</p>
     </div>
 
     <LoginForm

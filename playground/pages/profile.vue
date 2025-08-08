@@ -28,12 +28,15 @@ const handlePasswordError = (error: string) => {
 
       <ProfileInfo />
 
+      <!--
+      TODO: Add reset password form, now this prevents profile to load with no error messages
       <ResetPasswordForm
         @success="handleProfileSuccess"
         @error="handleProfileError"
         @password-updated="handlePasswordUpdated"
         @password-error="handlePasswordError"
       />
+    -->
 
       <div class="navigation">
         <NuxtLink

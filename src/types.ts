@@ -150,6 +150,7 @@ export interface User {
   role: string
   created_at: string
   updated_at: string
+  last_login_at?: string
 }
 
 export type UserWithoutPassword = Omit<User, 'password'>

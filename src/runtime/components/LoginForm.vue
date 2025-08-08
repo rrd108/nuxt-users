@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { navigateTo } from '#app'
 import type { LoginFormData, LoginFormProps, UserWithoutPassword, ModuleOptions } from '../../types'
 import { useRuntimeConfig } from '#imports'
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
 const { passwordValidation } = nuxtUsers as ModuleOptions
-const apiBasePath = (nuxtUsers as { apiBasePath?: string })?.apiBasePath
 
 interface Emits {
   (e: 'success', user: UserWithoutPassword): void
@@ -15,13 +14,13 @@ interface Emits {
   (e: 'forgot-password-success'): void
 }
 
-const props = withDefaults(defineProps<LoginFormProps>(), {
-  apiEndpoint: `${apiBasePath}/session`,
-  redirectTo: '/',
-  forgotPasswordEndpoint: `${apiBasePath}/password/forgot`
-})
+const props = defineProps<LoginFormProps>()
 
 const emit = defineEmits<Emits>()
+
+// Compute default endpoints if not provided
+const apiEndpoint = computed(() => props.apiEndpoint || `${(nuxtUsers as { apiBasePath?: string })?.apiBasePath}/session`)
+const forgotPasswordEndpoint = computed(() => props.forgotPasswordEndpoint || `${(nuxtUsers as { apiBasePath?: string })?.apiBasePath}/password/forgot`)
 
 const isLoading = ref(false)
 const isForgotPasswordLoading = ref(false)
@@ -40,7 +39,7 @@ const handleSubmit = async () => {
   try {
     emit('submit', formData.value)
 
-    const response = await $fetch<{ user: UserWithoutPassword }>(props.apiEndpoint, {
+    const response = await $fetch<{ user: UserWithoutPassword }>(apiEndpoint.value, {
       method: 'POST',
       body: {
         email: formData.value.email,
@@ -80,7 +79,7 @@ const handleForgotPassword = async () => {
   error.value = ''
 
   try {
-    const response = await $fetch<{ message: string }>(props.forgotPasswordEndpoint, {
+    const response = await $fetch<{ message: string }>(forgotPasswordEndpoint.value, {
       method: 'POST',
       body: {
         email: formData.value.email

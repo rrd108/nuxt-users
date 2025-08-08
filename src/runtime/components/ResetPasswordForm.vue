@@ -12,14 +12,9 @@ interface Emits {
 }
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
-const apiBasePath = (nuxtUsers as { apiBasePath?: string })?.apiBasePath
 const moduleOptions = nuxtUsers as ModuleOptions
 
-const props = withDefaults(defineProps<ResetPasswordFormProps>(), {
-  apiEndpoint: `${apiBasePath}/me`,
-  updatePasswordEndpoint: `${apiBasePath}/password`
-})
-
+const props = defineProps<ResetPasswordFormProps>()
 const emit = defineEmits<Emits>()
 
 const isPasswordLoading = ref(false)
@@ -53,7 +48,7 @@ const updatePassword = async () => {
   passwordSuccess.value = ''
 
   try {
-    await $fetch(props.updatePasswordEndpoint, {
+    await $fetch(props.updatePasswordEndpoint || nuxtUsers.apiBasePath + '/password', {
       method: 'PATCH',
       body: passwordForm.value
     })
