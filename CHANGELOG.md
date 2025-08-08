@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v1.10.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.9.0...v1.10.0)
+
+### 🚀 Enhancements
+
+- Add user CRUD API endpoints ([8cf5e0a](https://github.com/rrd108/nuxt-users/commit/8cf5e0a))
+- Add user API endpoints ([05f326e](https://github.com/rrd108/nuxt-users/commit/05f326e))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v2.0.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.8.5...v2.0.0)
