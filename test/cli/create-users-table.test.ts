@@ -11,7 +11,7 @@ describe('CLI: Create Users Table', () => {
   let dbConfig: DatabaseConfig
 
   beforeEach(async () => {
-    dbType = process.env.DB_CONNECTOR as DatabaseType
+    dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
     if (dbType === 'sqlite') {
       dbConfig = {
         path: './_create-users-table',

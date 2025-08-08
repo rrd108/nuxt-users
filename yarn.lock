@@ -1412,7 +1412,7 @@
     unimport "^5.1.0"
     untyped "^2.0.0"
 
-"@nuxt/module-builder@^1.0.1":
+"@nuxt/module-builder@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@nuxt/module-builder/-/module-builder-1.0.2.tgz#16c45c1ba568fd180a660283c3afb0cdd659341e"
   integrity sha512-9M+0oZimbwom1J+HrfDuR5NDPED6C+DlM+2xfXju9wqB6VpVfYkS6WNEmS0URw8kpJcKBuogAc7ADO7vRS4s4A==
