@@ -4,11 +4,13 @@ import type { H3Event } from 'h3'
 const mockUseRuntimeConfig = vi.fn()
 const mockDefineEventHandler = vi.fn(handler => handler)
 const mockGetCookie = vi.fn()
+const mockCreateError = vi.fn()
 const mockSendRedirect = vi.fn()
 
 vi.mock('h3', () => ({
   defineEventHandler: mockDefineEventHandler,
   getCookie: mockGetCookie,
+  createError: mockCreateError,
   sendRedirect: mockSendRedirect
 }))
 
@@ -83,7 +85,7 @@ describe('Auth Server Middleware', () => {
       expect(mockSendRedirect).not.toHaveBeenCalled()
     })
 
-    it('should deny access to /profile', async () => {
+    it('should let client handle /profile with no token', async () => {
       const event = { path: '/profile' } as H3Event
 
       // Mock getCookie to return no token
@@ -92,11 +94,11 @@ describe('Auth Server Middleware', () => {
       const result = await serverAuthMiddleware.default(event)
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
-      expect(mockSendRedirect).toHaveBeenCalledWith(event, '/login')
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
 
-    it('should deny access to /profile with invalid token', async () => {
+    it('should let client handle /profile with invalid token', async () => {
       const event = { path: '/profile' } as H3Event
 
       // Mock getCookie to return an invalid token
@@ -110,11 +112,11 @@ describe('Auth Server Middleware', () => {
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('invalid-token', mockOptions)
-      expect(mockSendRedirect).toHaveBeenCalledWith(event, '/login')
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
 
-    it('should deny access to /profile with invalid user', async () => {
+    it('should let client handle /profile with invalid user', async () => {
       const event = { path: '/profile' } as H3Event
 
       // Mock getCookie to return a token
@@ -128,7 +130,7 @@ describe('Auth Server Middleware', () => {
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
-      expect(mockSendRedirect).toHaveBeenCalledWith(event, '/login')
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
 
@@ -154,8 +156,74 @@ describe('Auth Server Middleware', () => {
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
-      expect(mockSendRedirect).not.toHaveBeenCalled()
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
+    })
+
+    it('should reject API request with no token', async () => {
+      const event = { path: '/api/nuxt-users/me' } as H3Event
+
+      // Mock getCookie to return no token
+      mockGetCookie.mockReturnValue(undefined)
+
+      // Mock createError to return an error object
+      const mockError = new Error('Unauthorized')
+      mockCreateError.mockReturnValue(mockError)
+
+      await expect(serverAuthMiddleware.default(event)).rejects.toThrow('Unauthorized')
+
+      expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
+      expect(mockCreateError).toHaveBeenCalledWith({ statusCode: 401, statusMessage: 'Unauthorized' })
+    })
+
+    it('should reject API request with invalid token', async () => {
+      const event = { path: '/api/nuxt-users/me' } as H3Event
+
+      // Mock getCookie to return an invalid token
+      mockGetCookie.mockReturnValue('invalid-token')
+
+      // Mock getCurrentUserFromToken to return null (invalid user)
+      const { getCurrentUserFromToken } = await import('../../src/runtime/server/utils')
+      vi.mocked(getCurrentUserFromToken).mockResolvedValue(null)
+
+      // Mock createError to return an error object
+      const mockError = new Error('Unauthorized')
+      mockCreateError.mockReturnValue(mockError)
+
+      await expect(serverAuthMiddleware.default(event)).rejects.toThrow('Unauthorized')
+
+      expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
+      expect(getCurrentUserFromToken).toHaveBeenCalledWith('invalid-token', mockOptions)
+      expect(mockCreateError).toHaveBeenCalledWith({ statusCode: 401, statusMessage: 'Unauthorized' })
+    })
+
+    it('should reject API request with insufficient permissions', async () => {
+      const event = { path: '/api/admin/users' } as H3Event
+
+      // Mock getCookie to return a valid token
+      mockGetCookie.mockReturnValue('valid-token')
+
+      // Mock getCurrentUserFromToken to return a regular user
+      const { getCurrentUserFromToken } = await import('../../src/runtime/server/utils')
+      const mockUser = {
+        id: 2,
+        email: 'user@example.com',
+        name: 'Regular User',
+        role: 'user',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      }
+      vi.mocked(getCurrentUserFromToken).mockResolvedValue(mockUser)
+
+      // Mock createError to return an error object
+      const mockError = new Error('Forbidden')
+      mockCreateError.mockReturnValue(mockError)
+
+      await expect(serverAuthMiddleware.default(event)).rejects.toThrow('Forbidden')
+
+      expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
+      expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
+      expect(mockCreateError).toHaveBeenCalledWith({ statusCode: 403, statusMessage: 'Forbidden' })
     })
   })
 
@@ -199,7 +267,7 @@ describe('Auth Server Middleware', () => {
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
-      expect(mockSendRedirect).not.toHaveBeenCalled()
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
 
@@ -225,11 +293,11 @@ describe('Auth Server Middleware', () => {
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
-      expect(mockSendRedirect).not.toHaveBeenCalled()
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
 
-    it('should deny user access to admin paths', async () => {
+    it('should let client handle user access to admin paths', async () => {
       const event = { path: '/admin/dashboard' } as H3Event
 
       // Mock getCookie to return a valid token
@@ -251,7 +319,7 @@ describe('Auth Server Middleware', () => {
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
-      expect(mockSendRedirect).toHaveBeenCalledWith(event, '/login')
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
 
@@ -277,11 +345,11 @@ describe('Auth Server Middleware', () => {
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
-      expect(mockSendRedirect).not.toHaveBeenCalled()
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
 
-    it('should deny moderator access to user-specific paths', async () => {
+    it('should let client handle moderator access to user-specific paths', async () => {
       const event = { path: '/profile' } as H3Event
 
       // Mock getCookie to return a valid token
@@ -303,11 +371,11 @@ describe('Auth Server Middleware', () => {
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
-      expect(mockSendRedirect).toHaveBeenCalledWith(event, '/login')
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
 
-    it('should deny access when user role is not found in permissions', async () => {
+    it('should let client handle access when user role is not found in permissions', async () => {
       const event = { path: '/profile' } as H3Event
 
       // Mock getCookie to return a valid token
@@ -329,11 +397,11 @@ describe('Auth Server Middleware', () => {
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
-      expect(mockSendRedirect).toHaveBeenCalledWith(event, '/login')
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
 
-    it('should deny access when no permissions are configured (whitelist approach)', async () => {
+    it('should let client handle access when no permissions are configured (whitelist approach)', async () => {
       const event = { path: '/profile' } as H3Event
 
       // Mock runtime config with no permissions
@@ -366,7 +434,7 @@ describe('Auth Server Middleware', () => {
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
-      expect(mockSendRedirect).toHaveBeenCalledWith(event, '/login')
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
 
@@ -392,7 +460,7 @@ describe('Auth Server Middleware', () => {
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
-      expect(mockSendRedirect).not.toHaveBeenCalled()
+      expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
   })
