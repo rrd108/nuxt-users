@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { createEvent } from 'h3'
 import type { ModuleOptions } from '../../src/types'
 
 // Mock the database and runtime config
@@ -35,6 +34,7 @@ const testUsers = [
 ]
 
 const testOptions: ModuleOptions = {
+  apiBasePath: '/api/nuxt-users',
   connector: {
     name: 'sqlite',
     options: {
@@ -42,13 +42,15 @@ const testOptions: ModuleOptions = {
     }
   },
   tables: {
+    migrations: 'migrations',
     users: 'users',
     personalAccessTokens: 'personal_access_tokens',
     passwordResetTokens: 'password_reset_tokens'
   },
   auth: {
     whitelist: [],
-    permissions: {}
+    permissions: {},
+    tokenExpiration: 1440
   },
   passwordValidation: {
     minLength: 8,
@@ -63,7 +65,7 @@ const testOptions: ModuleOptions = {
 describe('Users List API Route', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    
+
     // Mock runtime config
     mockUseRuntimeConfig.mockReturnValue({
       nuxtUsers: testOptions
@@ -77,10 +79,7 @@ describe('Users List API Route', () => {
   })
 
   it('should return users with pagination', async () => {
-    const mockEvent = createEvent({
-      method: 'GET',
-      url: '/api/nuxt-users?page=1&limit=2'
-    })
+    const mockEvent = { path: '/api/nuxt-users?page=1&limit=2', context: { params: {} } } as any
 
     // Mock database responses
     const mockDb = {
@@ -121,10 +120,7 @@ describe('Users List API Route', () => {
   })
 
   it('should handle invalid pagination parameters', async () => {
-    const mockEvent = createEvent({
-      method: 'GET',
-      url: '/api/nuxt-users?page=0&limit=200'
-    })
+    const mockEvent = { path: '/api/nuxt-users?page=0&limit=200', context: { params: {} } } as any
 
     // Import the handler
     const { default: usersListApiEndpoint } = await import('../../src/runtime/server/api/nuxt-users/index.get')
@@ -134,10 +130,7 @@ describe('Users List API Route', () => {
   })
 
   it('should handle database errors gracefully', async () => {
-    const mockEvent = createEvent({
-      method: 'GET',
-      url: '/api/nuxt-users?page=1&limit=10'
-    })
+    const mockEvent = { path: '/api/nuxt-users?page=1&limit=10', context: { params: {} } } as any
 
     // Mock database error
     const mockDb = {
@@ -153,10 +146,7 @@ describe('Users List API Route', () => {
   })
 
   it('should use default pagination when no parameters provided', async () => {
-    const mockEvent = createEvent({
-      method: 'GET',
-      url: '/api/nuxt-users'
-    })
+    const mockEvent = { path: '/api/nuxt-users', context: { params: {} } } as any
 
     // Mock database responses
     const mockDb = {
