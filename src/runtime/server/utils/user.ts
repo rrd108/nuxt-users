@@ -105,15 +105,14 @@ export const findUserById = async <T extends boolean = false>(
 
   const normalizedUser = {
     ...user,
-    created_at: user.created_at instanceof Date ? user.created_at.toISOString() : user.created_at,
-    updated_at: user.updated_at instanceof Date ? user.updated_at.toISOString() : user.updated_at
+    created_at: typeof user.created_at === 'object' ? (user.created_at as Date).toISOString() : user.created_at,
+    updated_at: typeof user.updated_at === 'object' ? (user.updated_at as Date).toISOString() : user.updated_at
   }
 
   if (withPass === true) {
     return normalizedUser as T extends true ? User | null : UserWithoutPassword | null
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, ...userWithoutPassword } = normalizedUser
   return userWithoutPassword as T extends true ? User | null : UserWithoutPassword | null
 }
@@ -136,27 +135,25 @@ export const updateUser = async (id: number, userData: Partial<User>, options: M
   delete fieldsToUpdate.password
 
   if (Object.keys(fieldsToUpdate).length === 0) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...user } = currentUser
     return user
   }
 
-  const entries = Object.entries(fieldsToUpdate)
-  const setClauses = entries.map(([key], i) => db.sql`${db.escapeIdentifier(key)} = ${entries[i][1]}`)
-
-  await db.sql`
-    UPDATE {${usersTable}}
-    SET ${db.join(setClauses, ', ')}, updated_at = CURRENT_TIMESTAMP
-    WHERE id = ${id}
-  `
+  // Update each field individually for security
+  for (const [key, value] of Object.entries(fieldsToUpdate)) {
+    await db.sql`
+      UPDATE {${usersTable}}
+      SET ${key} = ${value}, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${id}
+    `
+  }
 
   const updatedUser = await findUserById(id, options)
   if (!updatedUser) {
     throw new Error('Failed to retrieve updated user.')
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password, ...user } = updatedUser
-  return user
+
+  return updatedUser
 }
 
 /**
@@ -168,7 +165,7 @@ export const deleteUser = async (id: number, options: ModuleOptions): Promise<vo
 
   const result = await db.sql`DELETE FROM {${usersTable}} WHERE id = ${id}`
 
-  if (result.rows.length === 0) {
+  if (result.rows?.length === 0) {
     throw new Error('User not found or could not be deleted.')
   }
 }

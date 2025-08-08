@@ -130,15 +130,40 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     })
 
     addServerHandler({
-      route: '/api/user/profile',
+      route: '/api/nuxt-users/profile',
       method: 'get',
-      handler: resolver.resolve('./runtime/server/api/user/profile.get')
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/profile.get')
     })
 
     addServerHandler({
       route: '/api/auth/update-password',
       method: 'post',
       handler: resolver.resolve('./runtime/server/api/auth/update-password.post')
+    })
+
+    // User management API routes
+    addServerHandler({
+      route: '/api/nuxt-users',
+      method: 'post',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/index.post')
+    })
+
+    addServerHandler({
+      route: '/api/nuxt-users/:id',
+      method: 'get',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/[id].get')
+    })
+
+    addServerHandler({
+      route: '/api/nuxt-users/:id',
+      method: 'patch',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/[id].patch')
+    })
+
+    addServerHandler({
+      route: '/api/nuxt-users/:id',
+      method: 'delete',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/[id].delete')
     })
 
     // Register Nitro config

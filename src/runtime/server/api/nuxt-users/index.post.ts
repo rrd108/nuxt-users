@@ -1,38 +1,14 @@
-import { createError, defineEventHandler, getCookie, readBody } from 'h3'
+import { createError, defineEventHandler, readBody } from 'h3'
 import type { ModuleOptions } from '../../../../types'
 import { useRuntimeConfig } from '#imports'
-import { createUser, getCurrentUserFromToken } from '../../utils/user'
-import { hasPermission } from '../../../utils/permissions'
+import { createUser } from '../../utils/user'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
   const options = nuxtUsers as ModuleOptions
 
-  // Check if the user is authenticated
-  const token = getCookie(event, 'auth_token')
-  if (!token) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized'
-    })
-  }
-
-  // Get the current user
-  const user = await getCurrentUserFromToken(token, options)
-  if (!user) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized'
-    })
-  }
-
-  // Check if the user has permission to create users (admin role)
-  if (!hasPermission(user.role, event.path, options.auth.permissions)) {
-    throw createError({
-      statusCode: 403,
-      statusMessage: 'Forbidden'
-    })
-  }
+  // Authentication and authorization are handled by middleware
+  // The current user is available via the middleware
 
   // Get the request body
   const body = await readBody(event)
@@ -55,7 +31,9 @@ export default defineEventHandler(async (event) => {
     }, options)
 
     return { user: newUser }
-  } catch (error: any) {
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  catch (error: any) {
     throw createError({
       statusCode: 500,
       statusMessage: `Error creating user: ${error.message}`
