@@ -19,7 +19,7 @@ const handlePasswordError = (error: string) => {
 </script>
 
 <template>
-  <div class="profile-page">
+  <div>
     <div class="container">
       <h1>Profile</h1>
       <p class="description">
@@ -47,14 +47,7 @@ const handlePasswordError = (error: string) => {
 </template>
 
 <style scoped>
-.profile-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 40px 20px;
-}
-
 h1 {
-  color: white;
   text-align: center;
   font-size: 2.5rem;
   font-weight: 700;
