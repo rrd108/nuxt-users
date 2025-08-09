@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Check role-based permissions
-  if (!hasPermission(user.role, event.path, options.auth.permissions)) {
+  if (!hasPermission(user.role, event.path, event.method, options.auth.permissions)) {
     if (event.path.startsWith('/api/')) {
       console.log(`[Nuxt Users] server.middleware.auth.global: ${event.path} User ${user.id} with role ${user.role} denied access - API request rejected`)
       throw createError({ statusCode: 403, statusMessage: 'Forbidden' })

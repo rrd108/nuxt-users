@@ -1,3 +1,5 @@
+import type { Permission } from '../../types'
+
 /**
  * Checks if a path matches a pattern (supports wildcards)
  * @param path - The path to check
@@ -19,7 +21,7 @@ export const pathMatchesPattern = (path: string, pattern: string): boolean => {
   if ((pattern.match(/\*/g) || []).length > 1) {
     const regexPattern = pattern
       .replace(/\*/g, '[^/]*')
-    const regex = new RegExp(`^${regexPattern}$`)
+    const regex = new RegExp(`^${regexPattern}`)
     return regex.test(path)
   }
 
@@ -33,7 +35,7 @@ export const pathMatchesPattern = (path: string, pattern: string): boolean => {
   if (pattern.includes('*')) {
     const regexPattern = pattern
       .replace(/\*/g, '[^/]*')
-    const regex = new RegExp(`^${regexPattern}$`)
+    const regex = new RegExp(`^${regexPattern}`)
     return regex.test(path)
   }
 
@@ -41,17 +43,25 @@ export const pathMatchesPattern = (path: string, pattern: string): boolean => {
 }
 
 /**
- * Checks if a user has permission to access a specific path
+ * Checks if a user has permission to access a specific path with a given method
  * @param userRole - The user's role
  * @param path - The path being accessed
+ * @param method - The HTTP method being used
  * @param permissions - The permissions configuration
- * @returns true if the user has permission to access the path
+ * @returns true if the user has permission
  */
 export const hasPermission = (
   userRole: string,
   path: string,
-  permissions: Record<string, string[]>
+  method: string,
+  permissions: Record<string, (string | Permission)[]>
 ): boolean => {
+  // Always allow safe, non-data-modifying methods
+  const safeMethods = ['OPTIONS', 'HEAD', 'TRACE']
+  if (safeMethods.includes(method.toUpperCase())) {
+    return true
+  }
+
   // If no permissions are configured, deny access (whitelist approach)
   if (!permissions || Object.keys(permissions).length === 0) {
     return false
@@ -63,8 +73,26 @@ export const hasPermission = (
     return false
   }
 
-  // Check if any permission pattern matches the path
-  return rolePermissions.some(pattern => pathMatchesPattern(path, pattern))
+  // Check if any permission pattern matches the path and method
+  return rolePermissions.some((permission) => {
+    if (typeof permission === 'string') {
+      // Simple path string, allows all methods
+      return pathMatchesPattern(path, permission)
+    }
+
+    if (typeof permission === 'object' && permission.path && permission.methods) {
+      // Permission object with path and methods
+      const pathMatches = pathMatchesPattern(path, permission.path)
+      if (!pathMatches) {
+        return false
+      }
+
+      // Check if the method is allowed (case-insensitive)
+      return permission.methods.some(allowedMethod => allowedMethod.toUpperCase() === method.toUpperCase())
+    }
+
+    return false
+  })
 }
 
 /**

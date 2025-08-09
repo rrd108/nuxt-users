@@ -34,7 +34,7 @@ export default defineNuxtRouteMiddleware((to) => {
   }
 
   // Check role-based permissions
-  if (!user.value || !hasPermission(user.value.role, to.path, publicOptions.auth.permissions)) {
+  if (!user.value || !hasPermission(user.value.role, to.path, 'GET', publicOptions.auth.permissions)) {
     console.log(`[Nuxt Users] client.middleware.auth.global: User with role ${user.value?.role} denied access to ${to.path}`)
     return navigateTo('/login')
   }

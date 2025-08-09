@@ -50,7 +50,7 @@ describe('Auth Server Middleware', () => {
 
   describe('Basic Authentication', () => {
     it('should allow favicon.ico requests without authentication', async () => {
-      const event = { path: '/favicon.ico' } as H3Event
+      const event = { path: '/favicon.ico', method: 'GET' } as H3Event
       const result = await serverAuthMiddleware.default(event)
 
       expect(result).toBeUndefined()
@@ -59,7 +59,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should allow login requests without authentication', async () => {
-      const event = { path: '/login' } as H3Event
+      const event = { path: '/login', method: 'GET' } as H3Event
       const result = await serverAuthMiddleware.default(event)
 
       expect(result).toBeUndefined()
@@ -68,7 +68,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should allow api login requests without authentication', async () => {
-      const event = { path: '/api/nuxt-users/session' } as H3Event
+      const event = { path: '/api/nuxt-users/session', method: 'POST' } as H3Event
       const result = await serverAuthMiddleware.default(event)
 
       expect(result).toBeUndefined()
@@ -77,7 +77,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should allow the whitelisted /register route', async () => {
-      const event = { path: '/register' } as H3Event
+      const event = { path: '/register', method: 'GET' } as H3Event
       const result = await serverAuthMiddleware.default(event)
 
       expect(result).toBeUndefined()
@@ -86,7 +86,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should let client handle /profile with no token', async () => {
-      const event = { path: '/profile' } as H3Event
+      const event = { path: '/profile', method: 'GET' } as H3Event
 
       // Mock getCookie to return no token
       mockGetCookie.mockReturnValue(undefined)
@@ -99,7 +99,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should let client handle /profile with invalid token', async () => {
-      const event = { path: '/profile' } as H3Event
+      const event = { path: '/profile', method: 'GET' } as H3Event
 
       // Mock getCookie to return an invalid token
       mockGetCookie.mockReturnValue('invalid-token')
@@ -117,7 +117,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should let client handle /profile with invalid user', async () => {
-      const event = { path: '/profile' } as H3Event
+      const event = { path: '/profile', method: 'GET' } as H3Event
 
       // Mock getCookie to return a token
       mockGetCookie.mockReturnValue('valid-token')
@@ -135,7 +135,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should allow access to /profile with proper auth', async () => {
-      const event = { path: '/profile' } as H3Event
+      const event = { path: '/profile', method: 'GET' } as H3Event
 
       // Mock getCookie to return a valid token
       mockGetCookie.mockReturnValue('valid-token')
@@ -161,7 +161,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should reject API request with no token', async () => {
-      const event = { path: '/api/nuxt-users/me' } as H3Event
+      const event = { path: '/api/nuxt-users/me', method: 'GET' } as H3Event
 
       // Mock getCookie to return no token
       mockGetCookie.mockReturnValue(undefined)
@@ -177,7 +177,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should reject API request with invalid token', async () => {
-      const event = { path: '/api/nuxt-users/me' } as H3Event
+      const event = { path: '/api/nuxt-users/me', method: 'GET' } as H3Event
 
       // Mock getCookie to return an invalid token
       mockGetCookie.mockReturnValue('invalid-token')
@@ -198,7 +198,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should reject API request with insufficient permissions', async () => {
-      const event = { path: '/api/admin/users' } as H3Event
+      const event = { path: '/api/admin/users', method: 'GET' } as H3Event
 
       // Mock getCookie to return a valid token
       mockGetCookie.mockReturnValue('valid-token')
@@ -246,7 +246,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should allow admin to access any path', async () => {
-      const event = { path: '/admin/dashboard' } as H3Event
+      const event = { path: '/admin/dashboard', method: 'GET' } as H3Event
 
       // Mock getCookie to return a valid token
       mockGetCookie.mockReturnValue('valid-token')
@@ -272,7 +272,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should allow user to access their permitted paths', async () => {
-      const event = { path: '/profile' } as H3Event
+      const event = { path: '/profile', method: 'GET' } as H3Event
 
       // Mock getCookie to return a valid token
       mockGetCookie.mockReturnValue('valid-token')
@@ -298,7 +298,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should let client handle user access to admin paths', async () => {
-      const event = { path: '/admin/dashboard' } as H3Event
+      const event = { path: '/admin/dashboard', method: 'GET' } as H3Event
 
       // Mock getCookie to return a valid token
       mockGetCookie.mockReturnValue('valid-token')
@@ -324,7 +324,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should allow moderator to access admin and moderate paths', async () => {
-      const event = { path: '/admin/users' } as H3Event
+      const event = { path: '/admin/users', method: 'GET' } as H3Event
 
       // Mock getCookie to return a valid token
       mockGetCookie.mockReturnValue('valid-token')
@@ -350,7 +350,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should let client handle moderator access to user-specific paths', async () => {
-      const event = { path: '/profile' } as H3Event
+      const event = { path: '/profile', method: 'GET' } as H3Event
 
       // Mock getCookie to return a valid token
       mockGetCookie.mockReturnValue('valid-token')
@@ -376,7 +376,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should let client handle access when user role is not found in permissions', async () => {
-      const event = { path: '/profile' } as H3Event
+      const event = { path: '/profile', method: 'GET' } as H3Event
 
       // Mock getCookie to return a valid token
       mockGetCookie.mockReturnValue('valid-token')
@@ -402,7 +402,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should let client handle access when no permissions are configured (whitelist approach)', async () => {
-      const event = { path: '/profile' } as H3Event
+      const event = { path: '/profile', method: 'GET' } as H3Event
 
       // Mock runtime config with no permissions
       mockOptions = {
@@ -439,7 +439,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should handle API routes with role-based permissions', async () => {
-      const event = { path: '/api/admin/users' } as H3Event
+      const event = { path: '/api/admin/users', method: 'GET' } as H3Event
 
       // Mock getCookie to return a valid token
       mockGetCookie.mockReturnValue('valid-token')

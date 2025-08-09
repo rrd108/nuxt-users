@@ -1,5 +1,12 @@
 export type DatabaseType = 'sqlite' | 'mysql' | 'postgresql'
 
+export type HttpMethod = 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH'
+
+export type Permission = string | {
+  path: string
+  methods: HttpMethod[]
+}
+
 export type DatabaseConfig = {
   path?: string
   host?: string
@@ -60,7 +67,7 @@ export interface RuntimeModuleOptions {
      *   moderator: ['/admin/*', '/api/admin/*']
      * }
      */
-    permissions?: Record<string, string[]>
+    permissions?: Record<string, (string | Permission)[]>
   }
   /**
    * Password validation configuration
@@ -117,7 +124,7 @@ export interface ModuleOptions {
   auth: {
     whitelist: string[]
     tokenExpiration: number
-    permissions: Record<string, string[]>
+    permissions: Record<string, (string | Permission)[]>
   }
   passwordValidation: {
     minLength: number

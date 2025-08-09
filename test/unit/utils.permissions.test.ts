@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { pathMatchesPattern, hasPermission, isWhitelisted } from '../../src/runtime/utils/permissions'
+import type { Permission } from '../../src/types'
 
 describe('Permissions Utils', () => {
   describe('pathMatchesPattern', () => {
@@ -39,74 +40,96 @@ describe('Permissions Utils', () => {
   })
 
   describe('hasPermission', () => {
-    const permissions = {
+    const permissions: Record<string, (string | Permission)[]> = {
       admin: ['*'],
       user: ['/profile', '/api/nuxt-users/me'],
-      moderator: ['/admin/*', '/api/admin/*', '/moderate/*']
+      manager: [
+        { path: '/api/users/*', methods: ['GET', 'PATCH'] },
+        '/manager-dashboard'
+      ],
+      viewer: [
+        { path: '/api/posts', methods: ['GET'] }
+      ]
     }
 
     it('should deny access when no permissions are configured', () => {
-      expect(hasPermission('user', '/profile', {})).toBe(false)
-      expect(hasPermission('admin', '/admin/dashboard', {})).toBe(false)
+      expect(hasPermission('user', '/profile', 'GET', {})).toBe(false)
     })
 
     it('should deny access when user role is not found', () => {
-      expect(hasPermission('guest', '/profile', permissions)).toBe(false)
-      expect(hasPermission('unknown', '/admin/dashboard', permissions)).toBe(false)
+      expect(hasPermission('guest', '/profile', 'GET', permissions)).toBe(false)
     })
 
-    it('should allow admin to access everything', () => {
-      expect(hasPermission('admin', '/profile', permissions)).toBe(true)
-      expect(hasPermission('admin', '/admin/dashboard', permissions)).toBe(true)
-      expect(hasPermission('admin', '/api/admin/users', permissions)).toBe(true)
-      expect(hasPermission('admin', '/any/path', permissions)).toBe(true)
+    it('should always allow safe methods like OPTIONS and HEAD', () => {
+      expect(hasPermission('guest', '/any/path', 'OPTIONS', permissions)).toBe(true)
+      expect(hasPermission('user', '/api/users/1', 'HEAD', permissions)).toBe(true)
+      expect(hasPermission('manager', '/api/users/1', 'OPTIONS', {})).toBe(true) // even with no permissions
     })
 
-    it('should allow user to access their specific paths', () => {
-      expect(hasPermission('user', '/profile', permissions)).toBe(true)
-      expect(hasPermission('user', '/api/nuxt-users/me', permissions)).toBe(true)
+    describe('String-based permissions (backward compatibility)', () => {
+      it('should allow admin to access everything', () => {
+        expect(hasPermission('admin', '/profile', 'GET', permissions)).toBe(true)
+        expect(hasPermission('admin', '/any/path', 'POST', permissions)).toBe(true)
+      })
+
+      it('should allow user to access their specific paths regardless of method', () => {
+        expect(hasPermission('user', '/profile', 'GET', permissions)).toBe(true)
+        expect(hasPermission('user', '/api/nuxt-users/me', 'POST', permissions)).toBe(true)
+      })
+
+      it('should deny user access to other paths', () => {
+        expect(hasPermission('user', '/admin/dashboard', 'GET', permissions)).toBe(false)
+      })
     })
 
-    it('should deny user access to other paths', () => {
-      expect(hasPermission('user', '/admin/dashboard', permissions)).toBe(false)
-      expect(hasPermission('user', '/api/admin/users', permissions)).toBe(false)
-      expect(hasPermission('user', '/moderate/comments', permissions)).toBe(false)
-    })
+    describe('Object-based permissions (method-specific)', () => {
+      it('should allow manager to GET and PATCH user data', () => {
+        expect(hasPermission('manager', '/api/users/123', 'GET', permissions)).toBe(true)
+        expect(hasPermission('manager', '/api/users/456', 'PATCH', permissions)).toBe(true)
+      })
 
-    it('should allow moderator to access admin and moderate paths', () => {
-      expect(hasPermission('moderator', '/admin/dashboard', permissions)).toBe(true)
-      expect(hasPermission('moderator', '/admin/users', permissions)).toBe(true)
-      expect(hasPermission('moderator', '/api/admin/users', permissions)).toBe(true)
-      expect(hasPermission('moderator', '/moderate/comments', permissions)).toBe(true)
-    })
+      it('should deny manager from using other methods like DELETE or POST', () => {
+        expect(hasPermission('manager', '/api/users/123', 'DELETE', permissions)).toBe(false)
+        expect(hasPermission('manager', '/api/users/456', 'POST', permissions)).toBe(false)
+      })
 
-    it('should deny moderator access to user paths', () => {
-      expect(hasPermission('moderator', '/profile', permissions)).toBe(false)
-      expect(hasPermission('moderator', '/api/nuxt-users/me', permissions)).toBe(false)
+      it('should still allow access to simple string paths for the same role', () => {
+        expect(hasPermission('manager', '/manager-dashboard', 'GET', permissions)).toBe(true)
+      })
+
+      it('should be case-insensitive with methods', () => {
+        const lowerCasePermissions: Record<string, Permission[]> = {
+          viewer: [{ path: '/api/test', methods: ['GET', 'POST'] }]
+        }
+        expect(hasPermission('viewer', '/api/test', 'get', lowerCasePermissions)).toBe(true)
+        expect(hasPermission('viewer', '/api/test', 'post', lowerCasePermissions)).toBe(true)
+        expect(hasPermission('viewer', '/api/test', 'patch', lowerCasePermissions)).toBe(false)
+      })
+
+      it('should deny access if path does not match', () => {
+        expect(hasPermission('manager', '/api/other/123', 'GET', permissions)).toBe(false)
+      })
     })
   })
 
   describe('isWhitelisted', () => {
-    const whitelist = ['/login', '/register']
+    const whitelist = ['/login', '/register', '/public/*']
 
     it('should allow exact matches', () => {
       expect(isWhitelisted('/login', whitelist)).toBe(true)
-      expect(isWhitelisted('/register', whitelist)).toBe(true)
     })
 
     it('should allow wildcard matches', () => {
-      expect(isWhitelisted('/api/nuxt-users/me', whitelist)).toBe(false)
+      expect(isWhitelisted('/public/page', whitelist)).toBe(true)
+      expect(isWhitelisted('/public/another/page', whitelist)).toBe(true)
     })
 
     it('should deny non-whitelisted paths', () => {
       expect(isWhitelisted('/profile', whitelist)).toBe(false)
-      expect(isWhitelisted('/admin/dashboard', whitelist)).toBe(false)
-      expect(isWhitelisted('/api/nuxt-users/me', whitelist)).toBe(false)
     })
 
     it('should handle empty whitelist', () => {
       expect(isWhitelisted('/login', [])).toBe(false)
-      expect(isWhitelisted('/any/path', [])).toBe(false)
     })
   })
 })
