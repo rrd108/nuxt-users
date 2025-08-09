@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/* import type { UserWithoutPassword } from '../../src/types'
+import type { UserWithoutPassword } from '../../src/types'
 
 const handleProfileSuccess = (user: UserWithoutPassword) => {
   console.log('Profile loaded successfully:', user)
@@ -15,7 +15,7 @@ const handlePasswordUpdated = () => {
 
 const handlePasswordError = (error: string) => {
   console.error('Password update error:', error)
-} */
+}
 </script>
 
 <template>
@@ -28,15 +28,12 @@ const handlePasswordError = (error: string) => {
 
       <NUsersProfileInfo />
 
-      <!--
-      TODO: Add reset password form, now this prevents profile to load with no error messages
       <NUsersResetPasswordForm
         @success="handleProfileSuccess"
         @error="handleProfileError"
         @password-updated="handlePasswordUpdated"
         @password-error="handlePasswordError"
       />
-    -->
 
       <div class="navigation">
         <NuxtLink
