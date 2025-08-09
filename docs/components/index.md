@@ -6,11 +6,11 @@ The Nuxt Users module provides several Vue components for authentication and pas
 
 | Component | Purpose |
 |-----------|---------|
-| `LoginForm` | User login and forgot password form with validation |
-| `LogoutLink` | User logout link with confirmation |
-| `ResetPasswordForm` | Password reset form with token validation |
+| `NUsersLoginForm` | User login and forgot password form with validation |
+| `NUsersLogoutLink` | User logout link with confirmation |
+| `NUsersResetPasswordForm` | Password reset form with token validation |
 
-## LoginForm
+## NUsersLoginForm
 
 A flexible login form component with Formkit integration.
 
@@ -18,7 +18,7 @@ A flexible login form component with Formkit integration.
 
 ```vue
 <template>
-  <LoginForm 
+  <NUsersLoginForm 
     @success="handleSuccess"
     @error="handleError"
   />
@@ -60,21 +60,21 @@ The component provides several slots for customization:
 Customize the form header (title and subtitle).
 
 ```vue
-<LoginForm>
+<NUsersLoginForm>
   <template #header>
     <div class="custom-header">
       <h2>Welcome to My App</h2>
       <p>Please sign in to continue</p>
     </div>
   </template>
-</LoginForm>
+</NUsersLoginForm>
 ```
 
 #### `email-field`
 Customize the email input field.
 
 ```vue
-<LoginForm>
+<NUsersLoginForm>
   <template #email-field>
     <FormKit
       type="email"
@@ -84,14 +84,14 @@ Customize the email input field.
       validation="required|email"
     />
   </template>
-</LoginForm>
+</NUsersLoginForm>
 ```
 
 #### `password-field`
 Customize the password input field.
 
 ```vue
-<LoginForm>
+<NUsersLoginForm>
   <template #password-field>
     <FormKit
       type="password"
@@ -101,14 +101,14 @@ Customize the password input field.
       validation="required|length:6"
     />
   </template>
-</LoginForm>
+</NUsersLoginForm>
 ```
 
 #### `remember-me`
 Customize the remember me checkbox.
 
 ```vue
-<LoginForm>
+<NUsersLoginForm>
   <template #remember-me>
     <div class="remember-me">
       <FormKit
@@ -118,14 +118,14 @@ Customize the remember me checkbox.
       />
     </div>
   </template>
-</LoginForm>
+</NUsersLoginForm>
 ```
 
 #### `submit-button`
 Customize the submit button.
 
 ```vue
-<LoginForm>
+<NUsersLoginForm>
   <template #submit-button>
     <FormKit
       type="submit"
@@ -134,37 +134,37 @@ Customize the submit button.
       Sign In to My App
     </FormKit>
   </template>
-</LoginForm>
+</NUsersLoginForm>
 ```
 
 #### `footer`
 Customize the form footer (e.g., forgot password link).
 
 ```vue
-<LoginForm>
+<NUsersLoginForm>
   <template #footer>
     <div class="login-footer">
       <p>Don't have an account? <a href="/signup">Sign up</a></p>
     </div>
   </template>
-</LoginForm>
+</NUsersLoginForm>
 ```
 
 #### `error-message`
 Customize how error messages are displayed.
 
 ```vue
-<LoginForm>
+<NUsersLoginForm>
   <template #error-message="{ error }">
     <div v-if="error" class="custom-error">
       <span class="error-icon">⚠️</span>
       <span>{{ error }}</span>
     </div>
   </template>
-</LoginForm>
+</NUsersLoginForm>
 ```
 
-## LogoutLink
+## NUsersLogoutLink
 
 A simple logout link component that handles user logout with confirmation.
 
@@ -172,7 +172,7 @@ A simple logout link component that handles user logout with confirmation.
 
 ```vue
 <template>
-  <LogoutLink 
+  <NUsersLogoutLink 
     @success="handleSuccess"
     @error="handleError"
   />
@@ -213,7 +213,7 @@ const handleError = (error) => {
 #### Custom styling
 
 ```vue
-<LogoutLink 
+<NUsersLogoutLink 
   link-text="Sign Out"
   class="custom-logout-link"
 />
@@ -222,7 +222,7 @@ const handleError = (error) => {
 #### Custom redirect
 
 ```vue
-<LogoutLink 
+<NUsersLogoutLink 
   redirect-to="/home"
   link-text="Exit"
 />
@@ -231,7 +231,7 @@ const handleError = (error) => {
 #### Custom confirmation
 
 ```vue
-<LogoutLink 
+<NUsersLogoutLink 
   confirm-message="Are you sure you want to sign out of your account?"
   link-text="Sign Out"
 />
@@ -241,7 +241,7 @@ const handleError = (error) => {
 
 ```vue
 <template>
-  <LogoutLink 
+  <NUsersLogoutLink 
     :confirm-message="null"
     link-text="Quick Logout"
   />
@@ -281,7 +281,7 @@ const handleLogout = async () => {
 </script>
 ```
 
-## ResetPasswordForm
+## NUsersResetPasswordForm
 
 A form for users to set a new password using a token from the reset link.
 
@@ -289,7 +289,7 @@ A form for users to set a new password using a token from the reset link.
 
 ```vue
 <template>
-  <ResetPasswordForm />
+  <NUsersResetPasswordForm />
 </template>
 ```
 
@@ -336,7 +336,7 @@ To force the light theme in your consuming Nuxt app, you can:
 ```vue
 <template>
   <div class="light">
-    <LoginForm />
+    <NUsersLoginForm />
   </div>
 </template>
 ```
@@ -346,7 +346,7 @@ To force the light theme in your consuming Nuxt app, you can:
 ```vue
 <template>
   <div class="light-theme">
-    <LoginForm />
+    <NUsersLoginForm />
   </div>
 </template>
 
@@ -461,7 +461,7 @@ By default, the components automatically detect the user's system preference usi
 
 ```vue
 <template>
-  <LoginForm 
+  <NUsersLoginForm 
     class="my-login-form"
     @success="handleSuccess"
   >
@@ -480,7 +480,7 @@ By default, the components automatically detect the user's system preference usi
         Sign In
       </FormKit>
     </template>
-  </LoginForm>
+  </NUsersLoginForm>
 </template>
 
 <style scoped>

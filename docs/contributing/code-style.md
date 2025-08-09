@@ -255,7 +255,7 @@ create-user.ts
 database-utils.ts
 
 // Component names
-LoginForm.vue
+NUsersLoginForm.vue
 
 // Function names
 createUser()

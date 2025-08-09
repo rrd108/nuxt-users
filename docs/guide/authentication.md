@@ -114,13 +114,13 @@ CREATE TABLE personal_access_tokens (
 }
 ```
 
-## Using the LoginForm Component
+## Using the NUsersLoginForm Component
 
-The module provides a ready-to-use `LoginForm` component:
+The module provides a ready-to-use `NUsersLoginForm` component:
 
 ```vue
 <template>
-  <LoginForm 
+  <NUsersLoginForm 
     @success="handleSuccess"
     @error="handleError"
   />
@@ -190,13 +190,13 @@ export default defineEventHandler(async (event) => {
 
 The module provides a complete logout system that securely removes authentication tokens and clears user sessions.
 
-### Using the LogoutLink Component
+### Using the NUsersLogoutLink Component
 
-The module provides a ready-to-use `LogoutLink` component:
+The module provides a ready-to-use `NUsersLogoutLink` component:
 
 ```vue
 <template>
-  <LogoutLink 
+  <NUsersLogoutLink 
     @success="handleSuccess"
     @error="handleError"
   />
@@ -215,12 +215,12 @@ const handleError = (error) => {
 </script>
 ```
 
-### Customizing the LogoutLink
+### Customizing the NUsersLogoutLink
 
 You can customize the appearance and behavior:
 
 ```vue
-<LogoutLink 
+<NUsersLogoutLink 
   link-text="Sign Out"
   redirect-to="/home"
   confirm-message="Are you sure you want to sign out?"

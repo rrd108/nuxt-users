@@ -223,23 +223,28 @@ export default defineNuxtModule<RuntimeModuleOptions>({
 
     // components
     addComponent({
-      name: 'LoginForm',
-      filePath: resolver.resolve('./runtime/components/LoginForm.vue')
+      name: 'NUsersLoginForm',
+      filePath: resolver.resolve('./runtime/components/NUsersLoginForm.vue')
     })
 
     addComponent({
-      name: 'LogoutLink',
-      filePath: resolver.resolve('./runtime/components/LogoutLink.vue')
+      name: 'NUsersLogoutLink',
+      filePath: resolver.resolve('./runtime/components/NUsersLogoutLink.vue')
     })
 
     addComponent({
-      name: 'ProfileInfo',
-      filePath: resolver.resolve('./runtime/components/ProfileInfo.vue')
+      name: 'NUsersProfileInfo',
+      filePath: resolver.resolve('./runtime/components/NUsersProfileInfo.vue')
     })
 
     addComponent({
-      name: 'ResetPasswordForm',
-      filePath: resolver.resolve('./runtime/components/ResetPasswordForm.vue')
+      name: 'NUsersResetPasswordForm',
+      filePath: resolver.resolve('./runtime/components/NUsersResetPasswordForm.vue')
+    })
+
+    addComponent({
+      name: 'NUsersPasswordStrengthIndicator',
+      filePath: resolver.resolve('./runtime/components/NUsersPasswordStrengthIndicator.vue')
     })
 
     // TODOAdd global CSS with color variables

@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import type { UserWithoutPassword, ModuleOptions, ResetPasswordFormProps } from '../../types'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
 import { useRuntimeConfig } from '#imports'
-import PasswordStrengthIndicator from './PasswordStrengthIndicator.vue'
+import NUsersPasswordStrengthIndicator from './NUsersPasswordStrengthIndicator.vue'
 
 interface Emits {
   (e: 'success', user: UserWithoutPassword): void
@@ -114,7 +114,7 @@ const updatePassword = async () => {
           :disabled="isPasswordLoading"
         >
 
-        <PasswordStrengthIndicator
+        <NUsersPasswordStrengthIndicator
           :password="passwordForm.newPassword"
           :validation-result="passwordValidation.validationResult.value"
         />

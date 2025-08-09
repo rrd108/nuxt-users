@@ -51,7 +51,7 @@ const handleLoginSuccess = (user) => {
 <template>
   <div>
     <h1>Welcome to My App</h1>
-    <LoginForm @success="handleLoginSuccess" />
+    <NUsersLoginForm @success="handleLoginSuccess" />
   </div>
 </template>
 ```

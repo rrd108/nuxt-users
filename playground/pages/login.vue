@@ -32,7 +32,7 @@ const handleSubmit = (data) => {
       <p>Login with: rrd@webmania.cc / 123</p>
     </div>
 
-    <LoginForm
+          <NUsersLoginForm
       @success="handleSuccess"
       @error="handleError"
       @submit="handleSubmit"

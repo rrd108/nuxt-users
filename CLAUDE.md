@@ -115,8 +115,8 @@ npx nuxt-users create-user user@example.com "John Doe" password123
 - **`/api/nuxt-users/password/reset`**: POST password reset completion
 
 ### Vue Components
-- **LoginForm**: User authentication and forgot password form
-- **ResetPasswordForm**: Password reset completion form
+- **NUsersLoginForm**: User authentication and forgot password form
+- **NUsersResetPasswordForm**: Password reset completion form
 
 All components are auto-registered via the Nuxt module.
 

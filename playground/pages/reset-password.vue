@@ -2,7 +2,7 @@
   <div>
     <h1>Reset Your Password</h1>
     <p>Enter your new password below.</p>
-    <ResetPasswordForm />
+    <NUsersResetPasswordForm />
     <hr>
     <NuxtLink to="/login">Back to Login</NuxtLink>
   </div>
@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 // No specific script needed for this page wrapper
-// ResetPasswordForm component handles its own logic,
+// NUsersResetPasswordForm component handles its own logic,
 // including reading token from URL query params.
 </script>
 

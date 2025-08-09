@@ -89,13 +89,13 @@ nuxtUsers: {
 
 ## Components
 
-### ResetPasswordForm
+### NUsersResetPasswordForm
 
 This component provides a form for users to set a new password using a token from the reset link.
 
 ```vue
 <template>
-  <ResetPasswordForm />
+  <NUsersResetPasswordForm />
 </template>
 ```
 

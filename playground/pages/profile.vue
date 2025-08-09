@@ -26,11 +26,11 @@ const handlePasswordError = (error: string) => {
         View and manage your account information
       </p>
 
-      <ProfileInfo />
+      <NUsersProfileInfo />
 
       <!--
       TODO: Add reset password form, now this prevents profile to load with no error messages
-      <ResetPasswordForm
+      <NUsersResetPasswordForm
         @success="handleProfileSuccess"
         @error="handleProfileError"
         @password-updated="handlePasswordUpdated"
@@ -43,7 +43,7 @@ const handlePasswordError = (error: string) => {
           to="/"
           class="nav-link"
         >← Back to Home</NuxtLink>
-        <LogoutLink class="nav-link" />
+        <NUsersLogoutLink class="nav-link" />
       </div>
     </div>
   </div>
