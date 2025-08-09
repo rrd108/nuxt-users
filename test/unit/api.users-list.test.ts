@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import type { ModuleOptions } from '../../src/types'
+import type { H3Event } from 'h3'
 
 // Mock the database and runtime config
 const mockUseDb = vi.fn()
@@ -11,6 +12,11 @@ vi.mock('#imports', () => ({
 
 vi.mock('../../src/runtime/server/utils/db', () => ({
   useDb: mockUseDb
+}))
+
+// Mock the user utility function
+vi.mock('../../src/runtime/server/utils/user', () => ({
+  getLastLoginTime: vi.fn().mockResolvedValue(null)
 }))
 
 // Mock test data
@@ -70,16 +76,10 @@ describe('Users List API Route', () => {
     mockUseRuntimeConfig.mockReturnValue({
       nuxtUsers: testOptions
     })
-
-    // Mock database
-    const mockDb = {
-      sql: vi.fn()
-    }
-    mockUseDb.mockResolvedValue(mockDb)
   })
 
   it('should return users with pagination', async () => {
-    const mockEvent = { path: '/api/nuxt-users?page=1&limit=2', context: { params: {} } } as any
+    const mockEvent = { path: '/api/nuxt-users?page=1&limit=2', context: { params: {} } } as H3Event
 
     // Mock database responses
     const mockDb = {
@@ -87,6 +87,8 @@ describe('Users List API Route', () => {
         .mockResolvedValueOnce({ rows: [{ total: 2 }] }) // Count query
         .mockResolvedValueOnce({ rows: testUsers }) // Users query
     }
+
+    // Ensure the mock is properly set up
     mockUseDb.mockResolvedValue(mockDb)
 
     // Import the handler
@@ -120,7 +122,7 @@ describe('Users List API Route', () => {
   })
 
   it('should handle invalid pagination parameters', async () => {
-    const mockEvent = { path: '/api/nuxt-users?page=0&limit=200', context: { params: {} } } as any
+    const mockEvent = { path: '/api/nuxt-users?page=0&limit=200', context: { params: {} } } as H3Event
 
     // Import the handler
     const { default: usersListApiEndpoint } = await import('../../src/runtime/server/api/nuxt-users/index.get')
@@ -130,7 +132,7 @@ describe('Users List API Route', () => {
   })
 
   it('should handle database errors gracefully', async () => {
-    const mockEvent = { path: '/api/nuxt-users?page=1&limit=10', context: { params: {} } } as any
+    const mockEvent = { path: '/api/nuxt-users?page=1&limit=10', context: { params: {} } } as H3Event
 
     // Mock database error
     const mockDb = {
@@ -146,7 +148,7 @@ describe('Users List API Route', () => {
   })
 
   it('should use default pagination when no parameters provided', async () => {
-    const mockEvent = { path: '/api/nuxt-users', context: { params: {} } } as any
+    const mockEvent = { path: '/api/nuxt-users', context: { params: {} } } as H3Event
 
     // Mock database responses
     const mockDb = {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UserWithoutPassword } from '../../src/types'
+/* import type { UserWithoutPassword } from '../../src/types'
 
 const handleProfileSuccess = (user: UserWithoutPassword) => {
   console.log('Profile loaded successfully:', user)
@@ -15,7 +15,7 @@ const handlePasswordUpdated = () => {
 
 const handlePasswordError = (error: string) => {
   console.error('Password update error:', error)
-}
+} */
 </script>
 
 <template>
