@@ -124,34 +124,37 @@ export const updateUser = async (id: number, userData: Partial<User>, options: M
   const db = await useDb(options)
   const usersTable = options.tables.users
 
-  const currentUser = await findUserById(id, options)
-  if (!currentUser) {
-    throw new Error('User not found.')
+  // Explicitly define which fields are allowed to be updated.
+  // This prevents mass-assignment vulnerabilities.
+  const allowedFields: (keyof User)[] = ['name', 'email', 'role']
+  const updates: string[] = []
+  const values: (string | number)[] = []
+
+  for (const field of allowedFields) {
+    if (userData[field] !== undefined) {
+      updates.push(`${field} = ?`)
+      values.push(userData[field])
+    }
   }
 
-  const fieldsToUpdate = { ...userData }
-
-  // remove from update list
-  delete fieldsToUpdate.id
-  delete fieldsToUpdate.created_at
-  delete fieldsToUpdate.updated_at
-  delete fieldsToUpdate.last_login_at
-  delete fieldsToUpdate.password // TODO: handle password update
-
-  if (Object.keys(fieldsToUpdate).length === 0) {
-    return currentUser as UserWithoutPassword
+  // If no valid fields are provided, there's nothing to update.
+  if (updates.length === 0) {
+    const currentUser = await findUserById(id, options)
+    if (!currentUser) {
+      throw new Error('User not found.')
+    }
+    return currentUser
   }
 
-  const dirtyFields = Object.keys(fieldsToUpdate).filter(key => currentUser[key as keyof UserWithoutPassword] != fieldsToUpdate[key as keyof typeof fieldsToUpdate])
+  // Add the updated_at timestamp and the user ID for the WHERE clause
+  updates.push('updated_at = CURRENT_TIMESTAMP')
+  values.push(id)
 
-  // Update each field individually for security
-  for (const key of dirtyFields) {
-    await db.sql`
-      UPDATE {${usersTable}}
-      SET {${key}} = ${fieldsToUpdate[key as keyof typeof fieldsToUpdate]}, updated_at = CURRENT_TIMESTAMP
-      WHERE id = ${id}
-    `
-  }
+  // Use db.sql with template parts for dynamic column names
+  const setClause = updates.map(update => update.replace(' = ?', '')).join(', ')
+
+  await db.sql`UPDATE {${usersTable}} SET {${setClause}} WHERE id = ${id}`
+
   const updatedUser = await findUserById(id, options)
 
   if (!updatedUser) {

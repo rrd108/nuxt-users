@@ -204,6 +204,30 @@ Get the current user's profile information.
 **Error Responses:**
 - `401 Unauthorized`: No authentication token or invalid token
 
+### Update Profile
+
+**Endpoint:** `PATCH /api/nuxt-users/me`
+
+Update the current user's profile information (e.g., name, email).
+
+**Request Body:**
+```json
+{
+  "name": "Johnathan Doe",
+  "email": "john.doe@new-email.com"
+}
+```
+
+**Notes:**
+- Users cannot change their own `role` using this endpoint.
+
+**Response:**
+Returns the updated user object.
+
+**Error Responses:**
+- `400 Bad Request`: Invalid data, such as an email that is already taken.
+- `401 Unauthorized`: No authentication token or invalid token
+
 ### Update Password
 
 **Endpoint:** `PATCH /api/nuxt-users/password`

@@ -130,6 +130,12 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       handler: resolver.resolve('./runtime/server/api/nuxt-users/me.get')
     })
 
+    addServerHandler({
+      route: `${base}/me`,
+      method: 'patch',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/me.patch')
+    })
+
     // Password
     addServerHandler({
       route: `${base}/password`,
