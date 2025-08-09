@@ -1,6 +1,41 @@
 # Changelog
 
 
+## v1.13.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.12.0...v1.13.0)
+
+### 🚀 Enhancements
+
+- Enhances user management and login flow ([894563a](https://github.com/rrd108/nuxt-users/commit/894563a))
+- Implement new components ([87689c9](https://github.com/rrd108/nuxt-users/commit/87689c9))
+- Define allowed HTTP methods for api endpoints permissions ([7feca0a](https://github.com/rrd108/nuxt-users/commit/7feca0a))
+- New api endpoint for user edit own data is added ([3bd13f9](https://github.com/rrd108/nuxt-users/commit/3bd13f9))
+
+### 🩹 Fixes
+
+- Authorization middleware for API routes closes #76 ([#76](https://github.com/rrd108/nuxt-users/issues/76))
+- (temporary) strange test failing ([ff8c376](https://github.com/rrd108/nuxt-users/commit/ff8c376))
+
+### 💅 Refactors
+
+- Component names ([159f334](https://github.com/rrd108/nuxt-users/commit/159f334))
+- Css classes renamed, removed or added ([c5c3334](https://github.com/rrd108/nuxt-users/commit/c5c3334))
+- Remove unused css ([7abc8a5](https://github.com/rrd108/nuxt-users/commit/7abc8a5))
+
+### 🏡 Chore
+
+- **release:** V1.12.0 ([0727c0f](https://github.com/rrd108/nuxt-users/commit/0727c0f))
+
+### ✅ Tests
+
+- Fix ([cbf300c](https://github.com/rrd108/nuxt-users/commit/cbf300c))
+- Fix failing test ([3973eec](https://github.com/rrd108/nuxt-users/commit/3973eec))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.12.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.11.0...v1.12.0)
