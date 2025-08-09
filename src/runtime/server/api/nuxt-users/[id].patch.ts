@@ -6,6 +6,7 @@ import { updateUser } from '../../utils/user'
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
   const options = nuxtUsers as ModuleOptions
+
   const userId = Number(event.context.params?.id)
 
   if (!userId) {

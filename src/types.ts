@@ -198,3 +198,20 @@ export interface ResetPasswordFormProps {
   apiEndpoint?: string
   updatePasswordEndpoint?: string
 }
+
+export interface DisplayFieldsProps {
+  displayFields?: string[]
+  fieldLabels?: Record<string, string>
+}
+
+export const defaultDisplayFields = ['id', 'name', 'email', 'role', 'created_at', 'updated_at', 'last_login_at']
+
+export const defaultFieldLabels = {
+  id: 'ID',
+  name: 'Name',
+  email: 'Email',
+  role: 'Role',
+  created_at: 'Created',
+  updated_at: 'Updated',
+  last_login_at: 'Last Login'
+}

@@ -26,6 +26,12 @@ initializeUser()
           >
             View Profile
           </NuxtLink>
+          <NuxtLink
+            to="/users"
+            class="btn btn-primary"
+          >
+            Users List
+          </NuxtLink>
           <NUsersLogoutLink class="btn btn-secondary" />
         </div>
       </div>

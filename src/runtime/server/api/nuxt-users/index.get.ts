@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     const usersResult = await db.sql`
       SELECT id, email, name, role, created_at, updated_at 
       FROM {${usersTable}} 
-      ORDER BY created_at DESC 
+      ORDER BY name ASC 
       LIMIT ${limit} OFFSET ${offset}
     ` as { rows: Array<{ id: number, email: string, name: string, role: string, created_at: string | Date, updated_at: string | Date }> }
 

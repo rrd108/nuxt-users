@@ -119,7 +119,6 @@ const updatePassword = async () => {
           :validation-result="passwordValidation.validationResult.value"
         />
 
-        <!-- Password requirements -->
         <small class="form-help">
           Password must contain at least {{ moduleOptions.passwordValidation?.minLength || 8 }} characters
           <span v-if="moduleOptions.passwordValidation?.requireUppercase">, including uppercase letters</span>

@@ -110,11 +110,11 @@ export const findUserById = async <T extends boolean = false>(
   }
 
   if (withPass === true) {
-    return normalizedUser as T extends true ? User | null : UserWithoutPassword | null
+    return normalizedUser as (T extends true ? (User | null) : (UserWithoutPassword | null))
   }
 
   const { password, ...userWithoutPassword } = normalizedUser
-  return userWithoutPassword as T extends true ? User | null : UserWithoutPassword | null
+  return userWithoutPassword as (T extends true ? (User | null) : (UserWithoutPassword | null))
 }
 
 /**
@@ -124,31 +124,36 @@ export const updateUser = async (id: number, userData: Partial<User>, options: M
   const db = await useDb(options)
   const usersTable = options.tables.users
 
-  const currentUser = await findUserById(id, options, true)
+  const currentUser = await findUserById(id, options)
   if (!currentUser) {
     throw new Error('User not found.')
   }
 
   const fieldsToUpdate = { ...userData }
-  // remove id and password from update list
+
+  // remove from update list
   delete fieldsToUpdate.id
-  delete fieldsToUpdate.password
+  delete fieldsToUpdate.created_at
+  delete fieldsToUpdate.updated_at
+  delete fieldsToUpdate.last_login_at
+  delete fieldsToUpdate.password // TODO: handle password update
 
   if (Object.keys(fieldsToUpdate).length === 0) {
-    const { password, ...user } = currentUser
-    return user
+    return currentUser as UserWithoutPassword
   }
 
+  const dirtyFields = Object.keys(fieldsToUpdate).filter(key => currentUser[key as keyof UserWithoutPassword] != fieldsToUpdate[key as keyof typeof fieldsToUpdate])
+
   // Update each field individually for security
-  for (const [key, value] of Object.entries(fieldsToUpdate)) {
+  for (const key of dirtyFields) {
     await db.sql`
       UPDATE {${usersTable}}
-      SET ${key} = ${value}, updated_at = CURRENT_TIMESTAMP
+      SET {${key}} = ${fieldsToUpdate[key as keyof typeof fieldsToUpdate]}, updated_at = CURRENT_TIMESTAMP
       WHERE id = ${id}
     `
   }
-
   const updatedUser = await findUserById(id, options)
+
   if (!updatedUser) {
     throw new Error('Failed to retrieve updated user.')
   }

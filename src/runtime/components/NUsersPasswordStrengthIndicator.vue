@@ -21,7 +21,7 @@ const moduleOptions = nuxtUsers as ModuleOptions
 
 const hasErrors = computed(() => (props.validationResult?.errors?.length || 0) > 0)
 const hasHints = computed(() => (props.validationResult?.hints?.length || 0) > 0)
-const hasPassword = computed(() => props.password.length > 0)
+const hasPassword = computed(() => props.password?.length > 0)
 
 // Validation rules checking
 const validationRules = computed(() => {
@@ -164,11 +164,11 @@ const validationRules = computed(() => {
 </template>
 
 <style scoped>
-.password-strength {
+.n-users-password-strength {
   margin-top: 8px;
 }
 
-.strength-bar {
+.n-users-strength-bar {
   width: 100%;
   height: 4px;
   background-color: #e9ecef;
@@ -177,17 +177,17 @@ const validationRules = computed(() => {
   margin-bottom: 4px;
 }
 
-.strength-fill {
+.n-users-strength-fill {
   height: 100%;
   transition: width 0.3s ease, background-color 0.3s ease;
 }
 
-.strength-text {
+.n-users-strength-text {
   font-size: 0.75rem;
   font-weight: 500;
 }
 
-.validation-rules {
+.n-users-validation-rules {
   margin-top: 12px;
   padding: 12px;
   background-color: #f8f9fa;
@@ -195,20 +195,20 @@ const validationRules = computed(() => {
   border-radius: 4px;
 }
 
-.rules-title {
+.n-users-rules-title {
   font-weight: 600;
   color: #495057;
   margin-bottom: 8px;
   font-size: 0.875rem;
 }
 
-.rules-list {
+.n-users-rules-list {
   margin: 0;
   padding-left: 0;
   list-style: none;
 }
 
-.rule-item {
+.n-users-rule-item {
   display: flex;
   align-items: center;
   margin-bottom: 6px;
@@ -216,45 +216,45 @@ const validationRules = computed(() => {
   transition: color 0.2s ease;
 }
 
-.rule-item:last-child {
+.n-users-rule-item:last-child {
   margin-bottom: 0;
 }
 
-.rule-passed {
+.n-users-rule-passed {
   color: #28a745;
 }
 
-.rule-failed {
+.n-users-rule-failed {
   color: #dc3545;
 }
 
-.rule-icon {
+.n-users-rule-icon {
   font-weight: bold;
   margin-right: 8px;
   min-width: 16px;
   text-align: center;
 }
 
-.rule-text {
+.n-users-rule-text {
   flex: 1;
 }
 
-.validation-errors {
+.n-users-validation-errors {
   margin-top: 8px;
 }
 
-.error-text {
+.n-users-error-text {
   color: #dc3545;
   font-size: 0.875rem;
   display: block;
   margin-bottom: 4px;
 }
 
-.error-text:last-child {
+.n-users-error-text:last-child {
   margin-bottom: 0;
 }
 
-.password-hints {
+.n-users-password-hints {
   margin-top: 8px;
   padding: 12px;
   background-color: #f8f9fa;
@@ -262,25 +262,25 @@ const validationRules = computed(() => {
   border-radius: 4px;
 }
 
-.hint-title {
+.n-users-hint-title {
   font-weight: 600;
   color: #495057;
   margin-bottom: 8px;
   font-size: 0.875rem;
 }
 
-.hint-list {
+.n-users-hint-list {
   margin: 0;
   padding-left: 16px;
 }
 
-.hint-item {
+.n-users-hint-item {
   color: #6c757d;
   font-size: 0.875rem;
   margin-bottom: 4px;
 }
 
-.hint-item:last-child {
+.n-users-hint-item:last-child {
   margin-bottom: 0;
 }
 </style>

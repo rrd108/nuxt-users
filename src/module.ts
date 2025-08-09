@@ -247,6 +247,21 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       filePath: resolver.resolve('./runtime/components/NUsersPasswordStrengthIndicator.vue')
     })
 
+    addComponent({
+      name: 'NUsersList',
+      filePath: resolver.resolve('./runtime/components/NUsersList.vue')
+    })
+
+    addComponent({
+      name: 'NUsersUserCard',
+      filePath: resolver.resolve('./runtime/components/NUsersUserCard.vue')
+    })
+
+    addComponent({
+      name: 'NUsersUserForm',
+      filePath: resolver.resolve('./runtime/components/NUsersUserForm.vue')
+    })
+
     // TODOAdd global CSS with color variables
     nuxt.options.css = nuxt.options.css || []
     nuxt.options.css.push(resolver.resolve('./runtime/assets/colors.css'))
