@@ -105,15 +105,15 @@ const handleForgotPassword = async () => {
 </script>
 
 <template>
-  <section>
+  <section class="n-users-login-section n-users-section">
     <form @submit.prevent="handleSubmit">
       <!-- Header slot -->
       <slot name="header">
-        <div class="login-header">
-          <h2 class="login-title">
+        <div class="n-users-login-header">
+          <h2 class="n-users-login-title">
             Welcome Back
           </h2>
-          <p class="login-subtitle">
+          <p class="n-users-login-subtitle">
             Sign in to your account
           </p>
         </div>
@@ -121,7 +121,7 @@ const handleForgotPassword = async () => {
 
       <!-- Email field -->
       <slot name="email-field">
-        <div class="form-group">
+        <div class="n-users-form-group">
           <label for="email">Email</label>
           <input
             id="email"
@@ -136,7 +136,7 @@ const handleForgotPassword = async () => {
 
       <!-- Password field -->
       <slot name="password-field">
-        <div class="form-group">
+        <div class="n-users-form-group">
           <label for="password">Password</label>
           <input
             id="password"
@@ -152,7 +152,7 @@ const handleForgotPassword = async () => {
 
       <!-- Remember me slot -->
       <slot name="remember-me">
-        <div class="remember-me">
+        <div class="n-users-remember-me">
           <input
             id="rememberMe"
             v-model="formData.rememberMe"
@@ -171,7 +171,7 @@ const handleForgotPassword = async () => {
         >
           <span
             v-if="isLoading"
-            class="loading-spinner"
+            class="n-users-loading-spinner"
           />
           {{ isLoading ? 'Signing in...' : 'Sign In' }}
         </button>
@@ -179,17 +179,17 @@ const handleForgotPassword = async () => {
 
       <!-- Footer slot -->
       <slot name="footer">
-        <div class="login-footer">
-          <p class="forgot-password">
+        <div class="n-users-login-footer">
+          <p class="n-users-forgot-password">
             <a
               href="#"
-              class="forgot-link"
+              class="n-users-forgot-link"
               :class="{ loading: isForgotPasswordLoading }"
               @click.prevent="handleForgotPassword"
             >
               <span
                 v-if="isForgotPasswordLoading"
-                class="loading-spinner"
+                class="n-users-loading-spinner"
               />
               {{ isForgotPasswordLoading ? 'Sending...' : 'Forgot your password?' }}
             </a>
@@ -226,197 +226,4 @@ const handleForgotPassword = async () => {
   </section>
 </template>
 
-<style scoped>
-section {
-  max-width: 25rem;
-  margin: 0 auto;
-  padding: 1em;
-  background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
-  border-radius: 0.75em;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--color-border);
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-gray-700);
-  margin-bottom: 0.5em;
-}
-
-input[type="email"],
-input[type="password"] {
-  width: 100%;
-  padding: 0.75em 1em;
-  font-size: 0.875rem;
-  border: 1px solid var(--color-border-light);
-  border-radius: .5em;
-  background-color: var(--color-bg-secondary);
-  color: var(--color-gray-700);
-  transition: all 0.2s ease-in-out;
-  box-sizing: border-box;
-}
-
-input[type="email"]:focus,
-input[type="password"]:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  background-color: var(--color-bg-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.login-header {
-  text-align: center;
-      margin-bottom: 1em;
-}
-
-.login-title {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: var(--color-gray-800);
-      margin: 0 0 0.5em 0;
-  line-height: 1.2;
-}
-
-.login-subtitle {
-  font-size: 0.875rem;
-  color: var(--color-gray-500);
-  margin: 0;
-  line-height: 1.5;
-}
-
-.remember-me {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-input[type="checkbox"] {
-  width: auto;
-  margin: 0;
-}
-
-.remember-me label {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--color-gray-700);
-}
-
-button[type='submit'] {
-  width: 100%;
-  padding: 0.75em 1em;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-white);
-  background-color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  border-radius: .5em;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 44px;
-}
-
-button[type='submit']:hover:not(:disabled) {
-  background-color: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
-}
-
-button[type='submit']:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.loading-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--color-white);
-  border-top: 2px solid transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.login-footer {
-  text-align: center;
-  margin-top: 1em;
-}
-
-.forgot-password {
-  margin: 0;
-}
-
-.forgot-link {
-  font-size: 0.875rem;
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: color 0.2s ease-in-out;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.forgot-link:hover:not(.loading) {
-  color: var(--color-primary-dark);
-  text-decoration: underline;
-}
-
-.forgot-link.loading {
-  opacity: 0.6;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.error-message {
-  padding: 0.75em 1em;
-  background-color: var(--color-error-light);
-  border: 1px solid var(--color-error-border);
-  border-radius: .5em;
-  color: var(--color-error);
-  font-size: 0.875rem;
-  text-align: center;
-  margin-top: 1em;
-}
-
-.success-message {
-  padding: 0.75em 1em;
-  background-color: var(--color-success-light);
-  border: 1px solid var(--color-success-border);
-  border-radius: .5em;
-  color: var(--color-success);
-  font-size: 0.875rem;
-  text-align: center;
-  margin-top: 1em;
-}
-
-/* Responsive design */
-@media (max-width: 480px) {
-  .login-form-container {
-    padding: 1.5em;
-    margin: 1em;
-  }
-
-  .login-title {
-    font-size: 1.5rem;
-  }
-}
-</style>
+<!-- CSS removed - now consolidated in nuxt-users.css -->

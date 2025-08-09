@@ -1,0 +1,691 @@
+:root {
+
+    /* Primary Colors */
+    --color-primary: #3b82f6;
+    --color-primary-dark: #2563eb;
+    --color-primary-light: #60a5fa;
+
+    /* Secondary Colors */
+    --color-secondary: #059669;
+    --color-secondary-dark: #047857;
+    --color-secondary-light: #10b981;
+
+    /* Neutral Colors */
+    --color-white: #ffffff;
+    --color-black: #000000;
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+
+    /* Success Colors */
+    --color-success: #059669;
+    --color-success-light: #f0fdf4;
+    --color-success-border: #9ae6b4;
+
+    /* Warning Colors */
+    --color-warning: #f59e0b;
+    --color-warning-light: #fef3c7;
+    --color-warning-text: #92400e;
+
+    /* Error Colors */
+    --color-error: #dc2626;
+    --color-error-light: #fef2f2;
+    --color-error-border: #fecaca;
+    --color-error-alt: #db5050;
+    --color-error-dark: #b91c1c;
+
+    /* Border Colors */
+    --color-border: #e5e7eb;
+    --color-border-light: #d1d5db;
+    --color-border-dark: #ccc;
+
+    /* Background Colors */
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f9fafb;
+    --color-bg-tertiary: #f3f4f6;
+
+    /* Text Colors */
+    --color-text-primary: #000000;
+    --color-text-secondary: #6b7280;
+
+    /* Strength Bar Colors */
+    --color-strength-weak: #dc3545;
+    --color-strength-medium: #ffc107;
+    --color-strength-strong: #28a745;
+    --color-strength-unknown: #6c757d;
+    --color-strength-bg: #e9ecef;
+
+    /* Validation Colors */
+    --color-validation-passed: #28a745;
+    --color-validation-failed: #dc3545;
+    --color-validation-hint: #6c757d;
+}
+
+/* Auto-switch to light theme based on system preference */
+@media (prefers-color-scheme: dark) {
+
+    .dark,
+    :root {
+        /* Primary Colors - Adjusted for dark theme */
+        --color-primary: #60a5fa;
+        --color-primary-dark: #3b82f6;
+        --color-primary-light: #93c5fd;
+
+        /* Secondary Colors - Adjusted for dark theme */
+        --color-secondary: #10b981;
+        --color-secondary-dark: #059669;
+        --color-secondary-light: #34d399;
+
+        /* Neutral Colors - Inverted for dark theme */
+        --color-white: #000000;
+        --color-black: #ffffff;
+        --color-gray-50: #111827;
+        --color-gray-100: #1f2937;
+        --color-gray-200: #374151;
+        --color-gray-300: #4b5563;
+        --color-gray-400: #6b7280;
+        --color-gray-500: #9ca3af;
+        --color-gray-600: #d1d5db;
+        --color-gray-700: #e5e7eb;
+        --color-gray-800: #f3f4f6;
+        --color-gray-900: #f9fafb;
+
+        /* Success Colors - Adjusted for dark theme */
+        --color-success: #10b981;
+        --color-success-light: #064e3b;
+        --color-success-border: #065f46;
+
+        /* Warning Colors - Adjusted for dark theme */
+        --color-warning: #fbbf24;
+        --color-warning-light: #451a03;
+        --color-warning-text: #fef3c7;
+
+        /* Error Colors - Adjusted for dark theme */
+        --color-error: #ef4444;
+        --color-error-light: #450a0a;
+        --color-error-border: #7f1d1d;
+        --color-error-alt: #f87171;
+        --color-error-dark: #dc2626;
+
+        /* Border Colors - Adjusted for dark theme */
+        --color-border: #374151;
+        --color-border-light: #4b5563;
+        --color-border-dark: #6b7280;
+
+        /* Background Colors - Inverted for dark theme */
+        --color-bg-primary: #111827;
+        --color-bg-secondary: #1f2937;
+        --color-bg-tertiary: #374151;
+
+        /* Text Colors - Inverted for dark theme */
+        --color-text-primary: #ffffff;
+        --color-text-secondary: #9ca3af;
+
+        /* Strength Bar Colors - Adjusted for dark theme */
+        --color-strength-weak: #ef4444;
+        --color-strength-medium: #fbbf24;
+        --color-strength-strong: #22c55e;
+        --color-strength-unknown: #9ca3af;
+        --color-strength-bg: #374151;
+
+        /* Validation Colors - Adjusted for dark theme */
+        --color-validation-passed: #22c55e;
+        --color-validation-failed: #ef4444;
+        --color-validation-hint: #9ca3af;
+    }
+}
+
+/* ===== COMMON COMPONENT STYLES ===== */
+
+/* Form Elements */
+.n-users-form-group {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.n-users-form-group.n-users-form-group-narrow {
+    width: 90%;
+}
+
+.n-users-form-group label,
+.n-users-form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--color-text-primary, #000);
+    font-size: 1rem;
+}
+
+.n-users-form-group input,
+.n-users-form-group select,
+.n-users-form-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border, #ccc);
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.n-users-form-group input:focus,
+.n-users-form-group select:focus,
+.n-users-form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.1rem rgba(59, 130, 246, 0.1);
+}
+
+.n-users-form-group input:disabled,
+.n-users-form-input:disabled {
+    background-color: var(--color-bg-secondary, #f9fafb);
+    cursor: not-allowed;
+}
+
+.n-users-form-group input.error,
+.n-users-form-input.error {
+    border-color: var(--color-error, #dc3545);
+}
+
+/* Enhanced Form Inputs */
+.n-users-form-group input[type="email"],
+.n-users-form-group input[type="password"],
+.n-users-form-group input[type="text"] {
+    width: 100%;
+    padding: 0.75em 1em;
+    font-size: 0.875rem;
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.5em;
+    background-color: var(--color-bg-secondary);
+    color: var(--color-gray-700);
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+}
+
+.n-users-form-group input[type="email"]:focus,
+.n-users-form-group input[type="password"]:focus,
+.n-users-form-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background-color: var(--color-bg-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.n-users-form-group input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+/* Buttons */
+.n-users-btn,
+.n-users-submit-btn,
+.n-users-cancel-btn,
+.n-users-edit-btn,
+.n-users-delete-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s, transform 0.1s;
+    text-decoration: none;
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.n-users-btn:hover,
+.n-users-submit-btn:hover,
+.n-users-edit-btn:hover {
+    background-color: var(--color-primary-dark, #2563eb);
+    transform: translateY(-1px);
+}
+
+.n-users-btn:disabled,
+.n-users-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Primary Button Variants */
+.n-users-btn-primary,
+.n-users-submit-btn,
+.n-users-edit-btn {
+    background-color: var(--color-primary, #3b82f6);
+    color: white;
+}
+
+/* Secondary Button Variants */
+.n-users-btn-secondary,
+.n-users-cancel-btn {
+    background-color: var(--color-gray-500, #6b7280);
+    color: white;
+}
+
+.n-users-cancel-btn:hover {
+    background-color: var(--color-gray-600, #4b5563);
+}
+
+/* Danger Button Variants */
+.n-users-delete-btn {
+    background-color: var(--color-error, #ef4444);
+    color: white;
+}
+
+.n-users-delete-btn:hover {
+    background-color: var(--color-error-alt, #dc2626);
+}
+
+/* Enhanced Submit Button */
+button[type='submit'] {
+    width: 100%;
+    padding: 0.75em 1em;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-white);
+    background-color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: 0.5em;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+}
+
+button[type='submit']:hover:not(:disabled) {
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+}
+
+button[type='submit']:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Error and Success Messages */
+.n-users-error-message,
+.n-users-error-text {
+    color: var(--color-error, #dc3545);
+    background-color: var(--color-error-light, #fef2f2);
+    border: 1px solid var(--color-error-border, #fecaca);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.n-users-success-message {
+    color: var(--color-success, #10b981);
+    background-color: var(--color-success-light, #f0fff4);
+    border: 1px solid var(--color-success-border, #9ae6b4);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Grid Layouts */
+.n-users-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.n-users-grid-2 {
+    grid-template-columns: 1fr 5fr;
+}
+
+.n-users-grid-auto {
+    grid-template-columns: repeat(auto-fill, minmax(12em, 1fr));
+}
+
+/* Form Actions */
+.n-users-form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    align-items: center;
+}
+
+/* Loading States */
+.n-users-loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--color-white, #fff);
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: n-users-spin 1s linear infinite;
+}
+
+@keyframes n-users-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Component-specific common patterns */
+.n-users-card {
+    background-color: var(--color-bg-primary, #ffffff);
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.n-users-section {
+    max-width: 42em;
+    margin: 0 auto;
+    padding: 1em;
+}
+
+.n-users-section-header {
+    border-bottom: 0.1em solid var(--color-border, #e5e7eb);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+/* Form help text */
+.n-users-form-help {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary, #6b7280);
+    margin-top: 0.25rem;
+}
+
+/* Password strength specific styles */
+.n-users-strength-bar {
+    width: 100%;
+    height: 4px;
+    background-color: var(--color-strength-bg, #e9ecef);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.n-users-strength-fill {
+    height: 100%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.n-users-strength-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Validation and hints containers */
+.n-users-validation-container {
+    margin-top: 12px;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+}
+
+.n-users-container-title {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 0.875rem;
+}
+
+.n-users-list-unstyled {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.n-users-list-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 0.875rem;
+    transition: color 0.2s ease;
+}
+
+.n-users-list-item:last-child {
+    margin-bottom: 0;
+}
+
+.n-users-icon {
+    font-weight: bold;
+    margin-right: 8px;
+    min-width: 16px;
+    text-align: center;
+}
+
+.n-users-text {
+    flex: 1;
+}
+
+/* ===== COMPONENT-SPECIFIC STYLES ===== */
+
+/* List Styles */
+.n-users-list ul {
+    list-style: none;
+}
+
+/* Form Layout */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Login Form Styles */
+.n-users-login-section {
+    max-width: 25rem;
+    background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
+    border-radius: 0.75em;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--color-border);
+}
+
+.n-users-login-header {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.n-users-login-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--color-gray-800);
+    margin: 0 0 0.5em 0;
+    line-height: 1.2;
+}
+
+.n-users-login-subtitle {
+    font-size: 0.875rem;
+    color: var(--color-gray-700);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.n-users-remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.n-users-remember-me label {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-gray-700);
+}
+
+.n-users-login-footer {
+    text-align: center;
+    margin-top: 1em;
+}
+
+.n-users-forgot-password {
+    margin: 0;
+}
+
+.n-users-forgot-link {
+    font-size: 0.875rem;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.n-users-forgot-link:hover:not(.loading) {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+.n-users-forgot-link.loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Password Strength Indicator */
+.n-users-password-strength {
+    margin-top: 8px;
+}
+
+.n-users-validation-rules {
+    margin-top: 12px;
+}
+
+.n-users-rules-title {
+    margin-bottom: 8px;
+}
+
+.n-users-rules-list {
+    padding-left: 0;
+}
+
+.n-users-rule-item {
+    margin-bottom: 6px;
+}
+
+.n-users-rule-item:last-child {
+    margin-bottom: 0;
+}
+
+.n-users-rule-passed {
+    color: var(--color-validation-passed, #28a745);
+}
+
+.n-users-rule-failed {
+    color: var(--color-validation-failed, #dc3545);
+}
+
+.n-users-rule-icon {
+    margin-right: 8px;
+}
+
+.n-users-rule-text {
+    flex: 1;
+}
+
+.n-users-validation-errors {
+    margin-top: 8px;
+}
+
+.n-users-error-text:last-child {
+    margin-bottom: 0;
+}
+
+.n-users-password-hints {
+    margin-top: 8px;
+}
+
+.n-users-hint-title {
+    margin-bottom: 8px;
+}
+
+.n-users-hint-list {
+    padding-left: 16px;
+}
+
+.n-users-hint-item {
+    color: var(--color-validation-hint, #6c757d);
+    margin-bottom: 4px;
+}
+
+.n-users-hint-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Logout Link */
+.n-users-logout-link {
+    padding: 0.5em 1em;
+    border-radius: 0.5em;
+    text-decoration: none;
+    border: 2px solid transparent;
+    background: var(--color-error);
+    color: white;
+    border-color: var(--color-error-dark);
+}
+
+.n-users-logout-link:hover {
+    border-color: var(--color-primary);
+}
+
+/* User Card */
+.n-users-user-card dd {
+    margin: 0;
+}
+
+.n-users-user-card-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* User Form */
+.n-users-user-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.n-users-form-group input.error {
+    border-color: #dc3545;
+}
+
+/* Profile Info */
+.n-users-profile-info {
+    background-color: var(--color-bg-primary);
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+
+.n-users-profile-details {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1rem;
+}
+
+/* Reset Password Form */
+.n-users-reset-password-container {
+    background-color: var(--color-bg-primary);
+    border-bottom-left-radius: 0.5em;
+    border-bottom-right-radius: 0.5em;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .n-users-login-title {
+        font-size: 1.5rem;
+    }
+}

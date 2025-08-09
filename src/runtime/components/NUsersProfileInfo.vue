@@ -5,11 +5,13 @@ const { user } = useAuthentication()
 </script>
 
 <template>
-  <div>
-    <h2>Profile Information</h2>
+  <div class="n-users-profile-info n-users-section">
+    <h2 class="n-users-section-header">
+      Profile Information
+    </h2>
     <dl
       v-if="user"
-      class="profile-info"
+      class="n-users-profile-details n-users-grid n-users-grid-2"
     >
       <dt>Name:</dt>
       <dd>{{ user.name }}</dd>
@@ -29,25 +31,4 @@ const { user } = useAuthentication()
   </div>
 </template>
 
-<style scoped>
-div {
-  background-color: var(--color-bg-primary);
-  max-width: 42em;
-  margin: 0 auto;
-  padding: 1em;
-  border-top-left-radius: .5em;
-  border-top-right-radius: .5em;
-}
-h2 {
-    border-bottom: .1em solid var(--color-border);
-}
-dl {
-  display: grid;
-  grid-template-columns: 1fr 5fr;
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: 1rem;
-}
-</style>
+<!-- CSS removed - now consolidated in nuxt-users.css -->

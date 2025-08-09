@@ -98,7 +98,7 @@ onMounted(() => {
 
     <div v-if="users.length">
       <slot name="usersList">
-        <ul>
+        <ul class="n-users-grid n-users-grid-auto">
           <li
             v-for="(user, index) in users"
             :key="user.id"
@@ -163,11 +163,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style>
-.n-users-list ul {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(12em, 1fr));
-  gap: 1em;
-}
-</style>
+<!-- CSS removed - now consolidated in nuxt-users.css -->

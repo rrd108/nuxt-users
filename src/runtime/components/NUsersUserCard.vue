@@ -82,7 +82,7 @@ const deleteUser = async (user: User) => {
     :user="user"
     :index="index"
   >
-    <dl class="n-users-user-card">
+    <dl class="n-users-user-card n-users-grid n-users-grid-2">
       <template
         v-for="field in props.displayFields"
         :key="field"
@@ -117,46 +117,4 @@ const deleteUser = async (user: User) => {
   </slot>
 </template>
 
-<style>
-.n-users-user-card {
-  display: grid;
-  grid-template-columns: 1fr 5fr;
-  gap: 0.5rem;
-}
-.n-users-user-card dd {
-  margin: 0;
-}
-
-.n-users-user-card-actions {
-  margin-top: 1rem;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.n-users-edit-btn,
-.n-users-delete-btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-}
-
-.n-users-edit-btn {
-  background-color: #3b82f6;
-  color: white;
-}
-
-.n-users-edit-btn:hover {
-  background-color: #2563eb;
-}
-
-.n-users-delete-btn {
-  background-color: #ef4444;
-  color: white;
-}
-
-.n-users-delete-btn:hover {
-  background-color: #dc2626;
-}
-</style>
+<!-- CSS removed - now consolidated in nuxt-users.css -->

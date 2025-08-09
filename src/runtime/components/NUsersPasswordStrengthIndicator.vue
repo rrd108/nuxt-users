@@ -76,11 +76,11 @@ const validationRules = computed(() => {
 <template>
   <div
     v-if="hasPassword"
-    class="password-strength"
+    class="n-users-password-strength"
   >
-    <div class="strength-bar">
+    <div class="n-users-strength-bar">
       <div
-        class="strength-fill"
+        class="n-users-strength-fill"
         :style="{
           width: `${validationResult?.score || 0}%`,
           backgroundColor: validationResult?.strength === 'weak' ? '#dc3545'
@@ -90,7 +90,7 @@ const validationRules = computed(() => {
       />
     </div>
     <span
-      class="strength-text"
+      class="n-users-strength-text"
       :style="{
         color: validationResult?.strength === 'weak' ? '#dc3545'
           : validationResult?.strength === 'medium' ? '#ffc107'
@@ -107,22 +107,22 @@ const validationRules = computed(() => {
   <!-- Validation rules -->
   <div
     v-if="showRules && hasPassword"
-    class="validation-rules"
+    class="n-users-validation-rules n-users-validation-container"
   >
-    <div class="rules-title">
+    <div class="n-users-rules-title n-users-container-title">
       Password Requirements:
     </div>
-    <ul class="rules-list">
+    <ul class="n-users-rules-list n-users-list-unstyled">
       <li
         v-for="rule in validationRules"
         :key="rule.text"
-        class="rule-item"
-        :class="{ 'rule-passed': rule.passed, 'rule-failed': !rule.passed }"
+        class="n-users-rule-item n-users-list-item"
+        :class="{ 'n-users-rule-passed': rule.passed, 'n-users-rule-failed': !rule.passed }"
       >
-        <span class="rule-icon">
+        <span class="n-users-rule-icon n-users-icon">
           {{ rule.passed ? '✓' : '✗' }}
         </span>
-        <span class="rule-text">
+        <span class="n-users-rule-text n-users-text">
           {{ rule.text }}
         </span>
       </li>
@@ -132,12 +132,12 @@ const validationRules = computed(() => {
   <!-- Validation errors -->
   <div
     v-if="hasErrors"
-    class="validation-errors"
+    class="n-users-validation-errors"
   >
     <small
       v-for="error in validationResult?.errors || []"
       :key="String(error)"
-      class="error-text"
+      class="n-users-error-text"
     >
       {{ error }}
     </small>
@@ -146,16 +146,16 @@ const validationRules = computed(() => {
   <!-- Password improvement hints -->
   <div
     v-if="showHints && hasPassword && hasHints"
-    class="password-hints"
+    class="n-users-password-hints n-users-validation-container"
   >
-    <div class="hint-title">
+    <div class="n-users-hint-title n-users-container-title">
       How to make your password stronger:
     </div>
-    <ul class="hint-list">
+    <ul class="n-users-hint-list n-users-list-unstyled">
       <li
         v-for="hint in validationResult?.hints || []"
         :key="'hint-' + hint"
-        class="hint-item"
+        class="n-users-hint-item n-users-list-item"
       >
         {{ hint }}
       </li>
@@ -163,124 +163,4 @@ const validationRules = computed(() => {
   </div>
 </template>
 
-<style scoped>
-.n-users-password-strength {
-  margin-top: 8px;
-}
-
-.n-users-strength-bar {
-  width: 100%;
-  height: 4px;
-  background-color: #e9ecef;
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 4px;
-}
-
-.n-users-strength-fill {
-  height: 100%;
-  transition: width 0.3s ease, background-color 0.3s ease;
-}
-
-.n-users-strength-text {
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.n-users-validation-rules {
-  margin-top: 12px;
-  padding: 12px;
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 4px;
-}
-
-.n-users-rules-title {
-  font-weight: 600;
-  color: #495057;
-  margin-bottom: 8px;
-  font-size: 0.875rem;
-}
-
-.n-users-rules-list {
-  margin: 0;
-  padding-left: 0;
-  list-style: none;
-}
-
-.n-users-rule-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 6px;
-  font-size: 0.875rem;
-  transition: color 0.2s ease;
-}
-
-.n-users-rule-item:last-child {
-  margin-bottom: 0;
-}
-
-.n-users-rule-passed {
-  color: #28a745;
-}
-
-.n-users-rule-failed {
-  color: #dc3545;
-}
-
-.n-users-rule-icon {
-  font-weight: bold;
-  margin-right: 8px;
-  min-width: 16px;
-  text-align: center;
-}
-
-.n-users-rule-text {
-  flex: 1;
-}
-
-.n-users-validation-errors {
-  margin-top: 8px;
-}
-
-.n-users-error-text {
-  color: #dc3545;
-  font-size: 0.875rem;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.n-users-error-text:last-child {
-  margin-bottom: 0;
-}
-
-.n-users-password-hints {
-  margin-top: 8px;
-  padding: 12px;
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 4px;
-}
-
-.n-users-hint-title {
-  font-weight: 600;
-  color: #495057;
-  margin-bottom: 8px;
-  font-size: 0.875rem;
-}
-
-.n-users-hint-list {
-  margin: 0;
-  padding-left: 16px;
-}
-
-.n-users-hint-item {
-  color: #6c757d;
-  font-size: 0.875rem;
-  margin-bottom: 4px;
-}
-
-.n-users-hint-item:last-child {
-  margin-bottom: 0;
-}
-</style>
+<!-- CSS removed - now consolidated in nuxt-users.css -->

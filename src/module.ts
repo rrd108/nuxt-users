@@ -264,7 +264,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
 
     // TODOAdd global CSS with color variables
     nuxt.options.css = nuxt.options.css || []
-    nuxt.options.css.push(resolver.resolve('./runtime/assets/colors.css'))
+    nuxt.options.css.push(resolver.resolve('./runtime/assets/nuxt-users.css'))
   },
 })
 

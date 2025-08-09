@@ -72,7 +72,7 @@ const handleLogout = async (event: Event) => {
   >
     <div
       v-if="error"
-      :class="['error-message', props.errorClass]"
+      :class="['n-users-error-message', props.errorClass]"
       :style="props.errorStyle"
     >
       {{ error }}
@@ -80,7 +80,7 @@ const handleLogout = async (event: Event) => {
 
     <a
       href="#"
-      :class="['logout-link', { loading: isLoading }, props.linkClass]"
+      :class="['n-users-logout-link', { loading: isLoading }, props.linkClass]"
       :style="props.linkStyle"
       :disabled="isLoading"
       @click="handleLogout"
@@ -93,27 +93,4 @@ const handleLogout = async (event: Event) => {
   </div>
 </template>
 
-<style scoped>
-.logout-link {
-  display: inline-block;
-  padding:.5em 1em;
-  border-radius: .5em;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s;
-  border: 2px solid transparent;
-  background: var(--color-error);
-  color: white;
-  border-color: var(--color-error-dark);
-}
-
-.logout-link:hover {
-  border-color: var(--color-primary);
-}
-
-.error-message {
-  color: var(--color-error);
-  font-size: 1rem;
-  margin-bottom: .5em;
-}
-</style>
+<!-- CSS removed - now consolidated in nuxt-users.css -->
