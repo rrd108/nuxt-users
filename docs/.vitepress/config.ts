@@ -58,8 +58,12 @@ export default defineConfig({
           {
             text: 'Components',
             items: [
-              { text: 'NUsersLoginForm', link: '/components/login-form' },
-{ text: 'NUsersResetPasswordForm', link: '/components/reset-password-form' }
+              { text: 'NUsersLoginForm', link: '/components/index#nusersloginform' },
+              { text: 'NUsersLogoutLink', link: '/components/index#nuserslogoutlink' },
+              { text: 'NUsersResetPasswordForm', link: '/components/index#nusersresetpasswordform' },
+              { text: 'NUsersList', link: '/components/index#nuserslist' },
+              { text: 'NUsersUserCard', link: '/components/index#nusersusercard' },
+              { text: 'NUsersUserForm', link: '/components/index#nusersuserform' }
             ]
           },
           {

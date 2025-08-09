@@ -9,6 +9,253 @@ The Nuxt Users module provides several Vue components for authentication and pas
 | `NUsersLoginForm` | User login and forgot password form with validation |
 | `NUsersLogoutLink` | User logout link with confirmation |
 | `NUsersResetPasswordForm` | Password reset form with token validation |
+| `NUsersList` | A paginated list of users |
+| `NUsersUserCard` | A card to display user information with edit/delete actions |
+| `NUsersUserForm` | A form for creating and editing users |
+
+## NUsersList
+
+`NUsersList` is a component that fetches and displays a paginated list of users. It's designed to be flexible, allowing for extensive customization through slots. It internally uses `NUsersUserCard` to display each user, but this can be overridden.
+
+It makes a `GET` request to `/api/nuxt-users` to fetch users and supports pagination via `?page=<number>&limit=<number>` query parameters.
+
+### Basic Usage
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const userList = ref(null)
+const editingUser = ref(null)
+
+function handleEdit(user) {
+  editingUser.value = user
+}
+
+function handleUserUpdated() {
+  editingUser.value = null
+  userList.value?.refresh()
+}
+</script>
+<template>
+  <div>
+    <NUsersUserForm v-if="editingUser" :user="editingUser" @submit="handleUserUpdated" />
+    <NUsersList ref="userList" @edit-click="handleEdit" />
+  </div>
+</template>
+```
+
+### Advanced Usage
+
+This example demonstrates how to use props to customize the displayed fields and labels, and how to use slots to change the layout and content.
+
+```vue
+<template>
+  <NUsersList
+    ref="userList"
+    :display-fields="['id', 'name', 'email']"
+    :field-labels="{ name: 'Full Name', email: 'Email Address' }"
+    @edit-click="handleEdit"
+    @delete="handleDelete"
+  >
+    <template #title>
+      <h1>Our Team Members</h1>
+    </template>
+    <template #user="{ user, index }">
+      <div class="custom-user-item">
+        <p>{{ index + 1 }}. {{ user.name }} ({{ user.email }})</p>
+        <button @click="handleEdit(user)">Edit {{ user.name }}</button>
+      </div>
+    </template>
+    <template #pagination="{ pagination, fetchUsers, loading }">
+      <div class="custom-pagination">
+        <button :disabled="loading || !pagination.hasPrev" @click="fetchUsers(pagination.page - 1)">
+          Back
+        </button>
+        <span>Page {{ pagination.page }} of {{ pagination.totalPages }}</span>
+        <button :disabled="loading || !pagination.hasNext" @click="fetchUsers(pagination.page + 1)">
+          Forward
+        </button>
+      </div>
+    </template>
+  </NUsersList>
+</template>
+<script setup>
+  import { ref } from 'vue'
+  const userList = ref(null)
+  const handleEdit = (user) => console.log('Edit:', user)
+  const handleDelete = (user) => {
+    console.log('Deleted:', user)
+    // The list does not refresh automatically on delete, so we do it manually
+    userList.value?.refresh()
+  }
+</script>
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `displayFields` | `string[]` | `['id', 'name', 'email', 'role', 'created_at']` | An array of user fields to display in each card. |
+| `fieldLabels` | `Record<string, string>` | `{ id: 'ID', name: 'Name', ... }` | An object to map field names to custom labels. |
+
+### Events
+
+| Event | Payload | Description |
+|---|---|---|
+| `editClick` | `User` | Fired when the edit button on a user card is clicked. |
+| `delete` | `User` | Fired after a user has been successfully deleted via the `NUsersUserCard` component. |
+
+### Slots
+
+| Slot | Props | Description |
+|---|---|---|
+| `title` | - | Replace the default `<h2>Users List</h2>` title. |
+| `loading` | `{ loading: boolean }` | Customize the loading indicator. |
+| `error` | `{ error: string | null }` | Customize the error message display. |
+| `noUsers` | - | Content to show when no users are found. |
+| `usersList` | - | Completely override the rendering of the user list `<ul>`. |
+| `user` | `{ user: User, index: number }` | Customize the rendering of a single user item `<li>`. Overrides the default `NUsersUserCard`. |
+| `paginationInfo` | `{ pagination: Pagination }` | Customize the pagination summary text. |
+| `pagination` | `{ pagination: Pagination, fetchUsers: function, loading: boolean }` | Customize the pagination controls. |
+
+### Exposed Methods
+
+| Method | Description |
+|---|---|
+| `refresh()` | Programmatically re-fetches the list of users from the server. |
+
+## NUsersUserCard
+
+`NUsersUserCard` displays the details of a single user. It includes buttons for editing and deleting the user, with visibility controlled by the current user's permissions. It's used by default within `NUsersList`.
+
+It makes a `DELETE` request to `/api/nuxt-users/:id` when the delete button is clicked and confirmed.
+
+### Basic Usage
+
+```vue
+<template>
+  <NUsersUserCard :user="someUser" :index="0" />
+</template>
+<script setup>
+  const someUser = { id: 1, name: 'Jane Doe', email: 'jane@example.com', role: 'user' };
+</script>
+```
+
+### Advanced Usage
+
+```vue
+<template>
+  <NUsersUserCard
+    :user="someUser"
+    :index="0"
+    :display-fields="['name', 'role']"
+    :field-labels="{ name: 'User Name', role: 'Access Level' }"
+    @edit-click="handleEdit"
+    @delete="handleDelete"
+  >
+    <template #userCard="{ user }">
+      <div class="custom-card">
+        <h4>{{ user.name }}</h4>
+        <p>Role: {{ user.role }}</p>
+        <div class="n-users-user-card-actions">
+          <button @click="handleEdit(user)">Modify</button>
+          <button @click="handleDelete(user)">Remove</button>
+        </div>
+      </div>
+    </template>
+    <template #editButton>
+      <span>Modify User</span>
+    </template>
+    <template #deleteButton>
+      <span>Remove User</span>
+    </template>
+  </NUsersUserCard>
+</template>
+<script setup>
+  const someUser = { id: 1, name: 'Jane Doe', email: 'jane@example.com', role: 'user' };
+  const handleEdit = (user) => console.log('Edit:', user)
+  const handleDelete = (user) => console.log('Deleted:', user)
+</script>
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `user` | `User` | - | **Required.** The user object to display. |
+| `index` | `number` | - | **Required.** The index of the user in the list. |
+| `displayFields` | `string[]` | `['id', 'name', 'email', 'role', 'created_at']` | An array of user fields to display. |
+| `fieldLabels` | `Record<string, string>` | `{ id: 'ID', name: 'Name', ... }` | An object to map field names to custom labels. |
+
+### Events
+
+| Event | Payload | Description |
+|---|---|---|
+| `editClick` | `User` | Fired when the edit button is clicked. |
+| `delete` | `User` | Fired after the user is successfully deleted via the API call. |
+
+### Slots
+
+| Slot | Props | Description |
+|---|---|---|
+| `userCard` | `{ user: User, index: number }` | Completely override the card's content and structure. |
+| `editButton` | - | Customize the content of the edit button. |
+| `deleteButton` | - | Customize the content of the delete button. |
+
+## NUsersUserForm
+
+`NUsersUserForm` is a complete form for creating and editing users. It includes validation for name and password strength. When editing, the password field is optional.
+
+- **Create:** Makes a `POST` request to `/api/nuxt-users`.
+- **Update:** Makes a `PATCH` request to `/api/nuxt-users/:id`.
+
+### Create User
+
+```vue
+<template>
+  <NUsersUserForm @submit="handleUserCreated" />
+</template>
+<script setup>
+  const handleUserCreated = (userData) => {
+    console.log('User created:', userData)
+    // e.g., refresh a user list
+  }
+</script>
+```
+
+### Edit User
+
+```vue
+<template>
+  <NUsersUserForm :user="userToEdit" @submit="handleUserUpdated" />
+</template>
+<script setup>
+  import { ref } from 'vue'
+  const userToEdit = ref({ id: 1, name: 'Jane Doe', email: 'jane@example.com', role: 'user' });
+  const handleUserUpdated = (userData) => {
+    console.log('User updated:', userData)
+    userToEdit.value = null // Close the form
+  }
+</script>
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `user` | `User | null` | `null` | The user object to edit. If `null` or omitted, the form is in "create" mode. |
+
+### Events
+
+| Event | Payload | Description |
+|---|---|---|
+| `submit` | `Partial<User>` | Fired after a successful create or update API call. |
+| `cancel` | - | Fired when a cancel action is triggered. Note: The component has no built-in cancel button. |
+
+### Slots
+
+This component does not have slots for customization.
 
 ## NUsersLoginForm
 
@@ -304,6 +551,29 @@ This component handles its own API calls, message display, and redirection to lo
 - Error handling and display
 
 ## Styling
+
+All `NUsers*` components share a single, non-scoped stylesheet (`nuxt-users.css`) for a consistent look and feel across the module. The styles are intentionally not scoped to make them easy to override.
+
+All CSS classes used by the components are prefixed with `n-users-` (e.g., `.n-users-list`, `.n-users-user-card`, `.n-users-form-group`) to avoid collisions with your own application's styles.
+
+To customize the appearance, you can override these classes in your own global CSS file. For example, to change the spacing of the user list grid:
+
+```css
+/* In your app's global stylesheet */
+
+/* Change the grid gap in the user list */
+.n-users-grid {
+  gap: 2rem; /* Was 1rem */
+}
+
+/* Add a border to the delete button */
+.n-users-delete-btn {
+  border: 1px solid red;
+  border-radius: 5px;
+}
+```
+
+This approach, combined with the CSS custom properties for theming, gives you full control over the components' appearance.
 
 All components come with a clean, modern design that works without any CSS framework. You can customize the appearance by:
 
