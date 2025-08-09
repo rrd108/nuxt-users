@@ -4,68 +4,36 @@ A user authentication module for Nuxt 3 and Nuxt 4 with database support for SQL
 
 ## Features
 
-- 🔐 User authentication with bcrypt password hashing
-- 🗄️ Database support (SQLite, MySQL, PostgreSQL)
-- 🛠️ CLI commands for database management
-- 🔑 Password Reset Functionality
-- 📦 Zero-config setup with sensible defaults
-- 🔧 TypeScript support
-- 🚀 Nuxt 3 & 4 compatibility
+- 🔐 **Authentication & Security**
+  - User registration, login, and logout
+  - Secure password hashing with bcrypt
+  - Password reset functionality
+  - Session management
 
-## Quick Start
+- 🗄️ **Database Support**
+  - SQLite, MySQL, and PostgreSQL
+  - Automatic migrations and schema management
+  - CLI tools for database operations
 
-```bash
-# Install the module
-npm install nuxt-users
+- 🛡️ **Access Control**
+  - Role-Based Access Control (RBAC)
+  - Middleware for route protection
+  - Permission-based authorization
 
-# Add to your nuxt.config.ts
-export default defineNuxtConfig({
-  modules: ['nuxt-users'],
-  nuxtUsers: {
-    connector: {
-      name: 'sqlite',
-      options: {
-        path: './data/default.sqlite3'
-      }
-    }
-  }
-})
+- 🎨 **UI Components**
+  - Pre-built authentication forms
+  - User management interfaces
+  - Responsive and customizable components
 
-# Run migrations
-npx nuxt-users migrate
-
-# Create your first user
-npx nuxt-users create-user user@example.com "John Doe" password123
-# Create an admin user
-npx nuxt-users create-user admin@example.com "Admin User" adminpass123 admin
-```
+- ⚡ **Developer Experience**
+  - Zero-config setup with sensible defaults
+  - TypeScript support throughout
+  - Nuxt 3 & 4 compatibility
+  - Easy customization and extension
 
 ## Documentation
 
-📚 **Full documentation is available at: [docs/](/docs/)**
-
-- [Installation Guide](/docs/guide/installation)
-- [Configuration Options](/docs/guide/configuration)
-- [API Reference](/docs/api/)
-- [Component Documentation](/docs/components/)
-- [Database Schema](/docs/database/schema)
-- [Contributing Guidelines](/docs/contributing/)
-
-## Development
-
-```bash
-# Install dependencies
-yarn install
-
-# Start development server
-yarn dev
-
-# Run tests
-yarn test
-
-# Build documentation
-cd docs && yarn dev
-```
+📚 **Full documentation is available at: [https://nuxt-users.webmania.cc/](https://nuxt-users.webmania.cc/)**
 
 ## License
 

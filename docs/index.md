@@ -15,20 +15,18 @@ hero:
       link: https://github.com/rrd108/vue-mess-detector
 
 features:
-  - title: ⚡ Zero-config setup
-    details: With sensible defaults
-  - title: 🔷 TypeScript support
-    details: TypeScript support for all components and API
-  - title: 🗄️ SQLite, MySQL, and PostgreSQL support
-    details: Use with your favourite database
-  - title: 🔐 Full stack authentication
-    details: Password reset, email verification, and more
-  - title: 🛡️ Role-Based Access Control (RBAC)
-    details: Easily restrict access to pages based on user roles.
-  - title: 🎨 Zero effort UI
-    details: Zero effort UI components for your Nuxt project
-  - title: 🚀 Easy to use
-    details: Easy to use and customize
+  - title: 🔐 Authentication & Security
+    details: Complete user authentication system with secure password hashing, password reset, and session management
+  - title: 🗄️ Multi-Database Support
+    details: Built-in support for SQLite, MySQL, and PostgreSQL with automatic migrations and CLI tools
+  - title: 🛡️ Role-Based Access Control
+    details: Powerful RBAC system with middleware for route protection and permission-based authorization
+  - title: 🎨 Pre-built UI Components
+    details: Ready-to-use authentication forms, user management interfaces, and customizable components
+  - title: ⚡ Zero-Config Setup
+    details: Get started instantly with sensible defaults and automatic configuration
+  - title: 🔷 TypeScript First
+    details: Full TypeScript support throughout the entire module for better development experience
 ---
 
 <span id="morphBlur"></span>
