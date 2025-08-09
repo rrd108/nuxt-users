@@ -317,8 +317,9 @@ nuxtUsers: {
     tokenExpiration: 1440, // Token expiration in minutes (default: 24 hours)
     permissions: {
       admin: ['*'], // Admin can access everything
-      user: ['/profile', '/settings', '/api/nuxt-users/me'],
-      moderator: ['/admin/*', '/api/admin/*']
+      user: ['/profile', '/settings'],
+      // Allow managers to only GET and PATCH users
+      manager: [{ path: '/api/nuxt-users/*', methods: ['GET', 'PATCH'] }]
     }
   }
 }

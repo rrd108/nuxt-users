@@ -104,6 +104,25 @@ interface LoginFormData {
 }
 ```
 
+### HttpMethod
+
+A union type of possible HTTP methods for permission configuration:
+
+```typescript
+export type HttpMethod = 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH'
+```
+
+### Permission
+
+Represents a permission rule. It can be a simple `string` to allow access to a path for all methods, or an `object` to specify allowed methods for a path.
+
+```typescript
+export type Permission = string | {
+  path: string
+  methods: HttpMethod[]
+}
+```
+
 ## Server Utilities
 
 These utilities are available for server-side use only (API routes, middleware, etc.):

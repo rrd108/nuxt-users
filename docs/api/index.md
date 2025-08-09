@@ -313,7 +313,7 @@ The module automatically handles cookie management for login/logout.
 
 ## Permission System
 
-The user management endpoints use a role-based permission system:
+The user management endpoints use a role-based permission system. Permissions can be configured to be method-specific (e.g., allowing GET but denying DELETE on the same path). See the [Authorization Guide](/guide/authorization) for more details.
 
 - **Admin users** (`role: "admin"`) can access all user management endpoints
 - **Regular users** can only access their own profile via `GET /api/nuxt-users/:id`

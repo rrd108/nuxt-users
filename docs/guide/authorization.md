@@ -22,7 +22,9 @@ You can restrict access to certain routes based on the user's role. The user's r
 
 ### Configuration
 
-You can define permissions in your `nuxt.config.ts` file under the `nuxtUsers.auth.permissions` option. The `permissions` object maps roles to an array of allowed paths.
+You can define permissions in your `nuxt.config.ts` file under the `nuxtUsers.auth.permissions` option. The `permissions` object maps roles to an array of allowed rules.
+
+A rule can be a simple `string` for a path (which allows all methods) or an `object` to specify allowed HTTP methods for a path.
 
 ```ts
 // nuxt.config.ts
@@ -35,8 +37,11 @@ export default defineNuxtConfig({
       permissions: {
         admin: ['*'], // Admin can access everything
         user: ['/profile', '/settings', '/api/nuxt-users/me'],
-        moderator: ['/admin/*', '/api/admin/*', '/moderate/*'],
-        editor: ['/editor/*', '/api/editor/*', '/content/*']
+        manager: [
+          // Manager can only GET and PATCH users, but not DELETE them
+          { path: '/api/nuxt-users/*', methods: ['GET', 'PATCH'] },
+          '/manager-dashboard' // They can access their dashboard normally
+        ]
       }
     }
   }
@@ -45,7 +50,27 @@ export default defineNuxtConfig({
 
 ### Permission Patterns
 
-The system supports various pattern matching for flexible route protection:
+The system supports various patterns for flexible route protection:
+
+#### Method-Based Permissions (Recommended)
+
+For fine-grained control over API endpoints, use the object format. This is the most secure way to grant permissions.
+
+```ts
+permissions: {
+  manager: [
+    { path: '/api/users/*', methods: ['GET', 'PATCH'] },
+    { path: '/api/posts', methods: ['POST'] }
+  ],
+  viewer: [
+    { path: '/api/posts/*', methods: ['GET'] }
+  ]
+}
+```
+
+:::info NOTE
+Requests using safe, non-modifying methods like `OPTIONS` and `HEAD` are always allowed and bypass permission checks.
+:::
 
 #### Exact Paths
 ```ts
