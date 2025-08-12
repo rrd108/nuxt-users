@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir, addRouteMiddleware } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir } from '@nuxt/kit'
 import { defu } from 'defu'
 import type { RuntimeModuleOptions, ModuleOptions } from './types'
 
@@ -98,6 +98,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     })
 
     addImportsDir(resolver.resolve('./runtime/composables'))
+    addServerImportsDir(resolver.resolve('./runtime/server/utils'))
 
     // Server middleware is auto-registered by Nitro when placed in server/middleware/
 

@@ -5,5 +5,5 @@ export { createPersonalAccessTokensTable } from './create-personal-access-tokens
 export { createPasswordResetTokensTable } from './create-password-reset-tokens-table'
 export { createMigrationsTable } from './create-migrations-table'
 export { runMigrations } from './migrate'
-export { useNuxtUsersDatabase } from '../../composables/useNuxtUsersDatabase'
-export { useServerAuth } from '../../composables/useServerAuth'
+export { useNuxtUsersDatabase } from './useNuxtUsersDatabase'
+export { useServerAuth } from './useServerAuth'

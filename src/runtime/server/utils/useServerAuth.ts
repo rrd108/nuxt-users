@@ -1,5 +1,5 @@
-import { getCurrentUserFromToken } from '../server/utils/user'
-import type { ModuleOptions, UserWithoutPassword } from '../../types'
+import { getCurrentUserFromToken } from './user'
+import type { ModuleOptions, UserWithoutPassword } from '../../../types'
 
 /**
  * Server-side composable for authentication utilities
