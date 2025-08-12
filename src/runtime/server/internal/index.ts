@@ -1,0 +1,10 @@
+// Internal exports for CLI access
+export { useDb, checkTableExists } from '../utils/db'
+export { createUser, findUserByEmail, updateUserPassword, getCurrentUserFromToken, hasAnyUsers, deleteExpiredPersonalAccessTokens, deleteTokensWithoutExpiration, cleanupPersonalAccessTokens, revokeUserTokens, getLastLoginTime } from '../utils/user'
+export { createUsersTable } from '../utils/create-users-table'
+export { createPersonalAccessTokensTable } from '../utils/create-personal-access-tokens-table'
+export { createPasswordResetTokensTable } from '../utils/create-password-reset-tokens-table'
+export { createMigrationsTable } from '../utils/create-migrations-table'
+export { runMigrations } from '../utils/migrate'
+export { useNuxtUsersDatabase } from '../composables/useNuxtUsersDatabase'
+export { useServerAuth } from '../composables/useServerAuth'

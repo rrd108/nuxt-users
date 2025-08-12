@@ -18,7 +18,7 @@ import type { ModuleOptions } from '../../../types'
 export const useNuxtUsersDatabase = async () => {
   // This will be available at runtime when used in a Nuxt application
   const { useRuntimeConfig } = await import('#imports')
-  const { useDb } = await import('./db')
+  const { useDb } = await import('../utils/db')
 
   const { nuxtUsers } = useRuntimeConfig()
   const options = nuxtUsers as ModuleOptions

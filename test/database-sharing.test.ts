@@ -3,7 +3,7 @@ import type { Database } from 'db0'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
-import { useNuxtUsersDatabase } from '../src/runtime/server/utils/useNuxtUsersDatabase'
+import { useNuxtUsersDatabase } from '../src/runtime/server/composables/useNuxtUsersDatabase'
 
 describe('Database Sharing Feature', () => {
   let db: Database

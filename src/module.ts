@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir, addRouteMiddleware, addServerImports } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir } from '@nuxt/kit'
 import { defu } from 'defu'
 import type { RuntimeModuleOptions, ModuleOptions } from './types'
 
@@ -98,10 +98,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     })
 
     addImportsDir(resolver.resolve('./runtime/composables'))
-    addServerImports([
-      { from: resolver.resolve('./runtime/server/utils/useNuxtUsersDatabase'), name: 'useNuxtUsersDatabase' },
-      { from: resolver.resolve('./runtime/server/utils/useServerAuth'), name: 'useServerAuth' }
-    ])
+    addServerImportsDir(resolver.resolve('./runtime/server/composables'))
 
     // Server middleware is auto-registered by Nitro when placed in server/middleware/
 
@@ -279,4 +276,4 @@ export default defineNuxtModule<RuntimeModuleOptions>({
 })
 
 // Export runtime server utils for CLI access
-export * from './runtime/server/utils/index'
+export * from './runtime/server/internal/index'

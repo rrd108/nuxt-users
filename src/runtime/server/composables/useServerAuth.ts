@@ -1,4 +1,4 @@
-import { getCurrentUserFromToken } from './user'
+import { getCurrentUserFromToken } from '../utils/user'
 import type { ModuleOptions, UserWithoutPassword } from '../../../types'
 
 /**
