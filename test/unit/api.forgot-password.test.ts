@@ -3,6 +3,10 @@ import type { ModuleOptions } from '../../src/types'
 import type { H3Event } from 'h3'
 import { defaultOptions } from '../../src/module'
 
+vi.mock('#imports', () => ({
+  useRuntimeConfig: mockUseRuntimeConfig
+}))
+
 // Mock h3 functions
 const mockReadBody = vi.fn()
 const mockCreateError = vi.fn()
@@ -14,10 +18,6 @@ vi.mock('h3', () => ({
   defineEventHandler: mockDefineEventHandler,
   readBody: mockReadBody,
   createError: mockCreateError
-}))
-
-vi.mock('#imports', () => ({
-  useRuntimeConfig: mockUseRuntimeConfig
 }))
 
 vi.mock('../../src/runtime/server/services/password', () => ({

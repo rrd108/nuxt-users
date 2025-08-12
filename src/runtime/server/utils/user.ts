@@ -361,3 +361,44 @@ export const getLastLoginTime = async (userId: number, options: ModuleOptions): 
   // Convert Date objects to ISO strings if needed
   return lastLogin instanceof Date ? lastLogin.toISOString() : lastLogin
 }
+
+/**
+ * Gets the current authenticated user from an H3Event.
+ * Handles token extraction and user lookup automatically.
+ *
+ * @example
+ * ```typescript
+ * // server/api/example.get.ts
+ * import { getCurrentUser } from 'nuxt-users/server'
+ *
+ * export default defineEventHandler(async (event) => {
+ *   const user = await getCurrentUser(event)
+ *
+ *   if (!user) {
+ *     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+ *   }
+ *
+ *   return { message: `Hello ${user.name}!` }
+ * })
+ * ```
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getCurrentUser = async (event: any): Promise<UserWithoutPassword | null> => {
+  // Dynamic imports to avoid #imports issues in test environments
+  const { getCookie } = await import('h3')
+  const { useRuntimeConfig } = await import('#imports')
+
+  // Get the auth token from cookies
+  const token = getCookie(event, 'auth_token')
+
+  if (!token) {
+    return null
+  }
+
+  // Get the module options from runtime config
+  const { nuxtUsers } = useRuntimeConfig()
+
+  // Get the current user using the token
+  const user = await getCurrentUserFromToken(token, nuxtUsers as ModuleOptions, false)
+  return user
+}

@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { createUser, findUserByEmail, updateUserPassword, getLastLoginTime } from '../src/runtime/server/utils/user'
 import type { Database } from 'db0'
 import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/create-personal-access-tokens-table'
+import { createUser, findUserByEmail, updateUserPassword, getLastLoginTime, getCurrentUserFromToken } from '../src/runtime/server/utils/user'
 
 describe('User Utilities (src/utils/user.ts)', () => {
   let db: Database
@@ -388,6 +388,72 @@ describe('User Utilities (src/utils/user.ts)', () => {
       const lastLogin = await getLastLoginTime(nonExistentUserId, testOptions)
 
       expect(lastLogin).toBeNull()
+    })
+  })
+
+  describe('getCurrentUserFromToken', () => {
+    beforeEach(async () => {
+      // Create the personal access tokens table for these tests
+      await createPersonalAccessTokensTable(testOptions)
+    })
+
+    it('should get user from valid token without password', async () => {
+      // Create a user
+      const userData = { email: 'currentuser@webmania.cc', name: 'Current User', password: 'password123' }
+      const user = await createUser(userData, testOptions)
+
+      // Create a valid token
+      const token = 'valid_test_token_123'
+      await db.sql`
+        INSERT INTO {${testOptions.tables.personalAccessTokens}} 
+        (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+        VALUES ('user', ${user.id}, 'auth_token', ${token}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `
+
+      const currentUser = await getCurrentUserFromToken(token, testOptions)
+
+      expect(currentUser).toBeDefined()
+      expect(currentUser!.id).toBe(user.id)
+      expect(currentUser!.email).toBe(userData.email)
+      expect(currentUser!.name).toBe(userData.name)
+      expect(currentUser!.role).toBe('user')
+      expect(currentUser).not.toHaveProperty('password') // Always excludes password for security
+
+      // Verify token was used (last_used_at should be updated)
+      const tokenResult = await db.sql`
+        SELECT last_used_at FROM {${testOptions.tables.personalAccessTokens}}
+        WHERE token = ${token}
+      ` as { rows: Array<{ last_used_at: string | null }> }
+
+      expect(tokenResult.rows[0].last_used_at).not.toBeNull()
+    })
+
+    it('should return null for invalid token', async () => {
+      const invalidToken = 'invalid_token_123'
+
+      const currentUser = await getCurrentUserFromToken(invalidToken, testOptions)
+
+      expect(currentUser).toBeNull()
+    })
+
+    it('should return null for expired token', async () => {
+      // Create a user
+      const userData = { email: 'expired@webmania.cc', name: 'Expired User', password: 'password123' }
+      const user = await createUser(userData, testOptions)
+
+      // Create an expired token
+      const expiredToken = 'expired_token_123'
+      const pastDate = '2020-01-01 10:00:00' // Well in the past
+
+      await db.sql`
+        INSERT INTO {${testOptions.tables.personalAccessTokens}} 
+        (tokenable_type, tokenable_id, name, token, expires_at, created_at, updated_at)
+        VALUES ('user', ${user.id}, 'expired_token', ${expiredToken}, ${pastDate}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `
+
+      const currentUser = await getCurrentUserFromToken(expiredToken, testOptions)
+
+      expect(currentUser).toBeNull()
     })
   })
 })
