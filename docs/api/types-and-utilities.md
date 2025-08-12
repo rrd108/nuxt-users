@@ -16,7 +16,7 @@ import type {
 } from 'nuxt-users/utils'
 
 // Import server utilities (server-side only)
-import { getLastLoginTime, findUserByEmail, getCurrentUserFromToken } from 'nuxt-users/utils'
+import { getLastLoginTime, findUserByEmail, getCurrentUserFromToken, getCurrentUser } from 'nuxt-users/utils'
 ```
 
 ## Core Entity Types
@@ -230,6 +230,43 @@ export default defineEventHandler(async (event) => {
   
   return { user }
 })
+```
+
+### getCurrentUser()
+
+Get the current authenticated user from an H3Event. This is a convenient wrapper that handles token extraction and user lookup automatically:
+
+```typescript
+getCurrentUser(event: H3Event): Promise<UserWithoutPassword | null>
+```
+
+**Parameters:**
+- `event` - H3Event object (from Nuxt server route)
+
+**Returns:** User object without password, or `null` if no valid token found
+
+**Example:**
+```typescript
+// server/api/example.get.ts
+import { getCurrentUser } from 'nuxt-users/server'
+
+export default defineEventHandler(async (event) => {
+  const user = await getCurrentUser(event)
+  
+  if (!user) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
+  
+  return { message: `Hello ${user.name}!` }
+})
+```
+
+**What it does:**
+- ✅ Extracts token from `auth_token` cookie automatically
+- ✅ Gets module options from runtime config automatically  
+- ✅ Validates token and returns user (without password)
+- ✅ Returns `null` for invalid/missing tokens
+- ✅ No manual token handling or options needed
 ```
 
 ## Password Validation Utilities
