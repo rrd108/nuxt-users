@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v1.15.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.14.0...v1.15.0)
+
+### 🚀 Enhancements
+
+- Add getCurrentUser utility ([0096fb2](https://github.com/rrd108/nuxt-users/commit/0096fb2))
+
+### 💅 Refactors
+
+- GetCurrentUser from a utility to a composable ([10149d2](https://github.com/rrd108/nuxt-users/commit/10149d2))
+
+### 🏡 Chore
+
+- **release:** V1.14.0 ([6c32154](https://github.com/rrd108/nuxt-users/commit/6c32154))
+- Fix whitespace ([517d60d](https://github.com/rrd108/nuxt-users/commit/517d60d))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.14.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.13.0...v1.14.0)
