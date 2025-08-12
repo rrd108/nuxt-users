@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.14.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.13.0...v1.14.0)
+
+### 🚀 Enhancements
+
+- Add getCurrentUser utility ([0096fb2](https://github.com/rrd108/nuxt-users/commit/0096fb2))
+
+### 🏡 Chore
+
+- **release:** V1.13.0 ([a542d33](https://github.com/rrd108/nuxt-users/commit/a542d33))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.13.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.12.0...v1.13.0)
