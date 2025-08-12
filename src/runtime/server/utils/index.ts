@@ -6,3 +6,4 @@ export { createPasswordResetTokensTable } from './create-password-reset-tokens-t
 export { createMigrationsTable } from './create-migrations-table'
 export { runMigrations } from './migrate'
 export { useNuxtUsersDatabase } from '../../composables/useNuxtUsersDatabase'
+export { useServerAuth } from '../../composables/useServerAuth'

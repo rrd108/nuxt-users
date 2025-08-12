@@ -22,6 +22,7 @@ import type { ModuleOptions, UserWithoutPassword } from '../../types'
  */
 export const useServerAuth = () => {
   const getCurrentUser = async (event: H3Event): Promise<UserWithoutPassword | null> => {
+    // This will be available at runtime when used in a Nuxt application
     const { useRuntimeConfig } = await import('#imports')
     // Get the auth token from cookies
     const token = getCookie(event, 'auth_token')
