@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v1.15.3
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.15.2...v1.15.3)
+
+### 🩹 Fixes
+
+- Add export ([90ce9b0](https://github.com/rrd108/nuxt-users/commit/90ce9b0))
+- Dynamic imports ([26ff073](https://github.com/rrd108/nuxt-users/commit/26ff073))
+
+### 💅 Refactors
+
+- Server utilities path ([f812135](https://github.com/rrd108/nuxt-users/commit/f812135))
+
+### 🏡 Chore
+
+- **release:** V1.15.2 ([67a71fb](https://github.com/rrd108/nuxt-users/commit/67a71fb))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.15.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.15.1...v1.15.2)
