@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v1.15.4
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.15.3...v1.15.4)
+
+### 🩹 Fixes
+
+- Duplicated imports error ([99359f6](https://github.com/rrd108/nuxt-users/commit/99359f6))
+
+### 💅 Refactors
+
+- Server utilities path ([f812135](https://github.com/rrd108/nuxt-users/commit/f812135))
+
+### 🏡 Chore
+
+- **release:** V1.15.3 ([7fb6d2a](https://github.com/rrd108/nuxt-users/commit/7fb6d2a))
+- Remove false info from docs ([e338417](https://github.com/rrd108/nuxt-users/commit/e338417))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.15.3
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.15.2...v1.15.3)
