@@ -1,5 +1,4 @@
 import { getCurrentUserFromToken } from '../server/utils/user'
-import { getCookie, type H3Event } from 'h3'
 import type { ModuleOptions, UserWithoutPassword } from '../../types'
 
 /**
@@ -21,11 +20,14 @@ import type { ModuleOptions, UserWithoutPassword } from '../../types'
  * ```
  */
 export const useServerAuth = () => {
-  const getCurrentUser = async (event: H3Event): Promise<UserWithoutPassword | null> => {
+  const getCurrentUser = async (event: unknown): Promise<UserWithoutPassword | null> => {
     // This will be available at runtime when used in a Nuxt application
     const { useRuntimeConfig } = await import('#imports')
+    const { getCookie } = await import('h3')
+
     // Get the auth token from cookies
-    const token = getCookie(event, 'auth_token')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const token = getCookie(event as any, 'auth_token')
 
     if (!token) {
       return null
