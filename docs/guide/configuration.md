@@ -132,13 +132,6 @@ export default defineNuxtConfig({
 })
 ```
 
-### Import Database Utils
-
-```ts
-// For server-side use
-import { useNuxtUsersDatabase } from 'nuxt-users/server'
-```
-
 ## Mailer Configuration
 
 To enable password reset emails, configure the `mailer` option:

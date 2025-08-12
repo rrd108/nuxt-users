@@ -5,8 +5,6 @@
  *
  * Usage in server-side code (API routes, server middleware):
  * ```typescript
- * import { useNuxtUsersDatabase } from 'nuxt-users/server'
- *
  * export default defineEventHandler(async (event) => {
  *   const { database } = await useNuxtUsersDatabase()
  *   const users = await database.sql`SELECT * FROM my_table`

@@ -266,8 +266,6 @@ Use the module's database connection directly:
 
 ```ts
 // server/api/my-route.post.ts
-import { useNuxtUsersDatabase } from 'nuxt-users/server'
-
 export default defineEventHandler(async (event) => {
   const { database } = await useNuxtUsersDatabase()
   
