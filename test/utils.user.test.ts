@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
 import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
@@ -13,7 +13,7 @@ describe('User Utilities (src/utils/user.ts)', () => {
   let dbType: DatabaseType
   let dbConfig: DatabaseConfig
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
     if (dbType === 'sqlite') {
       dbConfig = {
@@ -52,7 +52,7 @@ describe('User Utilities (src/utils/user.ts)', () => {
     await createPersonalAccessTokensTable(testOptions)
   })
 
-  afterAll(async () => {
+  afterEach(async () => {
     // Clean up tables
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.passwordResetTokens)
@@ -70,12 +70,6 @@ describe('User Utilities (src/utils/user.ts)', () => {
         // Ignore errors during cleanup
       }
     }
-  })
-
-  beforeEach(async () => {
-    // Clean the tables before each test
-    await db.sql`DELETE FROM {${testOptions.tables.personalAccessTokens}}`
-    await db.sql`DELETE FROM {${testOptions.tables.users}}`
   })
 
   describe('createUser', () => {

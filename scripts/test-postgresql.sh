@@ -38,18 +38,41 @@ if ! pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -q; then
 fi
 
 # Recreate the test database to ensure a clean state
-echo "Recreating test database '$DB_NAME'"...
-PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "DROP DATABASE IF EXISTS \"$DB_NAME\";"
-PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "CREATE DATABASE \"$DB_NAME\";"
+echo "Recreating test database '$DB_NAME'..."
+
+# Drop database if exists (ignore errors)
+PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "DROP DATABASE IF EXISTS \"$DB_NAME\";" >/dev/null 2>&1
+
+# Create database with proper encoding to avoid collation issues
+PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "CREATE DATABASE \"$DB_NAME\" WITH ENCODING 'UTF8' LC_COLLATE='C' LC_CTYPE='C';" >/dev/null 2>&1
+
+# Verify database was created
+if ! PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "SELECT 1;" >/dev/null 2>&1; then
+    echo "Error: Failed to create or connect to database '$DB_NAME'"
+    echo "Trying alternative approach..."
+    
+    # Try creating with template0 to avoid collation issues
+    PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "CREATE DATABASE \"$DB_NAME\" TEMPLATE template0;" >/dev/null 2>&1
+    
+    if ! PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "SELECT 1;" >/dev/null 2>&1; then
+        echo "Error: Still cannot create database. Please check PostgreSQL configuration."
+        exit 1
+    fi
+fi
+
+echo "Database '$DB_NAME' created successfully!"
+
+# Wait a moment for database to be ready
+sleep 2
 
 # Configure PostgreSQL for testing (increase connection limits)
 echo "Configuring PostgreSQL for testing..."
-PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER SYSTEM SET max_connections = 500;"
-PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER SYSTEM SET shared_preload_libraries = 'pg_stat_statements';"
-PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER SYSTEM SET log_statement = 'none';"
-PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER SYSTEM SET log_min_duration_statement = -1;"
-PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER SYSTEM SET idle_in_transaction_session_timeout = '10s';"
-PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "SELECT pg_reload_conf();"
+PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER SYSTEM SET max_connections = 500;" >/dev/null 2>&1
+PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER SYSTEM SET shared_preload_libraries = 'pg_stat_statements';" >/dev/null 2>&1
+PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER SYSTEM SET log_statement = 'none';" >/dev/null 2>&1
+PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER SYSTEM SET log_min_duration_statement = -1;" >/dev/null 2>&1
+PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER SYSTEM SET idle_in_transaction_session_timeout = '10s';" >/dev/null 2>&1
+PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "SELECT pg_reload_conf();" >/dev/null 2>&1
 
 # Kill any idle connections to free up slots
 echo "Cleaning up idle connections..."
@@ -57,7 +80,7 @@ PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB
 SELECT pg_terminate_backend(pid) 
 FROM pg_stat_activity 
 WHERE state IN ('idle', 'idle in transaction') AND pid <> pg_backend_pid();
-"
+" >/dev/null 2>&1
 
 echo "Running tests against PostgreSQL..."
 
