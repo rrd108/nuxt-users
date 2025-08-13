@@ -79,7 +79,7 @@ describe('CLI: Migrate', () => {
     expect(appliedMigrations).toContain('create_users_table')
     expect(appliedMigrations).toContain('create_personal_access_tokens_table')
     expect(appliedMigrations).toContain('create_password_reset_tokens_table')
-    expect(appliedMigrations).toHaveLength(4)
+    expect(appliedMigrations).toHaveLength(5)
   })
 
   it('should not run migrations twice', async () => {
@@ -87,13 +87,13 @@ describe('CLI: Migrate', () => {
     await runMigrations(testOptions)
 
     const firstRunMigrations = await getAppliedMigrations(testOptions)
-    expect(firstRunMigrations).toHaveLength(4)
+    expect(firstRunMigrations).toHaveLength(5)
 
     // Run migrations second time
     await runMigrations(testOptions)
 
     const secondRunMigrations = await getAppliedMigrations(testOptions)
-    expect(secondRunMigrations).toHaveLength(4)
+    expect(secondRunMigrations).toHaveLength(5)
 
     // Should be the same migrations
     expect(secondRunMigrations).toEqual(firstRunMigrations)
@@ -184,11 +184,12 @@ describe('CLI: Migrate', () => {
     // Test migrations table structure
     const migrationsResult2 = await db.sql`SELECT id, name, executed_at FROM migrations ORDER BY id`
     const migrations = migrationsResult2.rows || []
-    expect(migrations).toHaveLength(4)
+    expect(migrations).toHaveLength(5)
     expect(migrations[0].name).toBe('create_migrations_table')
     expect(migrations[1].name).toBe('create_users_table')
     expect(migrations[2].name).toBe('create_personal_access_tokens_table')
     expect(migrations[3].name).toBe('create_password_reset_tokens_table')
+    expect(migrations[4].name).toBe('add_active_to_users')
   })
 
   it('should handle partial migrations correctly', async () => {
@@ -231,6 +232,7 @@ describe('CLI: Migrate', () => {
     expect(appliedMigrations).toContain('create_users_table')
     expect(appliedMigrations).toContain('create_personal_access_tokens_table')
     expect(appliedMigrations).toContain('create_password_reset_tokens_table')
-    expect(appliedMigrations).toHaveLength(4)
+    expect(appliedMigrations).toContain('add_active_to_users')
+    expect(appliedMigrations).toHaveLength(5)
   })
 })

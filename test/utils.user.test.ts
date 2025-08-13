@@ -1,10 +1,11 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, afterAll, beforeAll } from 'vitest'
 import type { Database } from 'db0'
 import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/create-personal-access-tokens-table'
 import { createUser, findUserByEmail, updateUserPassword, getLastLoginTime, getCurrentUserFromToken } from '../src/runtime/server/utils/user'
+import { addActiveToUsers } from '../src/runtime/server/utils/add-active-to-users'
 
 describe('User Utilities (src/utils/user.ts)', () => {
   let db: Database
@@ -12,7 +13,7 @@ describe('User Utilities (src/utils/user.ts)', () => {
   let dbType: DatabaseType
   let dbConfig: DatabaseConfig
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
     if (dbType === 'sqlite') {
       dbConfig = {
@@ -45,14 +46,33 @@ describe('User Utilities (src/utils/user.ts)', () => {
 
     db = settings.db
     testOptions = settings.testOptions
+  })
 
+  beforeEach(async () => {
     await createUsersTable(testOptions)
+    await addActiveToUsers(testOptions)
   })
 
   afterEach(async () => {
+    // Clean up tables
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.passwordResetTokens)
-    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.personalAccessTokens)
+  })
+
+  afterAll(async () => {
+    // Ensure all connections are closed
+    if (db) {
+      try {
+        // Close the database connection if the method exists
+        const dbWithDisconnect = db as { disconnect?: () => Promise<void> }
+        if (dbWithDisconnect.disconnect) {
+          await dbWithDisconnect.disconnect()
+        }
+      }
+      catch {
+        // Ignore errors during cleanup
+      }
+    }
   })
 
   describe('createUser', () => {
@@ -87,16 +107,10 @@ describe('User Utilities (src/utils/user.ts)', () => {
         name: userData.name,
         role: 'user',
         created_at: expect.any(String),
-        updated_at: expect.any(String)
+        updated_at: expect.any(String),
+        active: expect.anything()
       })
       expect(user).not.toHaveProperty('password')
-    })
-
-    it('should throw an error if user retrieval fails after creation', async () => {
-      // This test would require complex mocking setup to simulate database failure
-      // For now, we'll skip this test as the happy path is more important
-      // and the error handling is already tested in the integration tests
-      expect(true).toBe(true)
     })
 
     it('should create user with custom role', async () => {

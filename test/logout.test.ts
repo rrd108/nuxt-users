@@ -7,8 +7,8 @@ import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/cre
 import type { DatabaseConfig, DatabaseType, ModuleOptions, User } from '../src/types'
 import { fileURLToPath } from 'node:url'
 import crypto from 'node:crypto'
-
 import { cleanupTestSetup, createTestSetup } from './test-setup'
+import { addActiveToUsers } from '../src/runtime/server/utils/add-active-to-users'
 
 describe('Logout API Route', async () => {
   let db: Database
@@ -57,12 +57,14 @@ describe('Logout API Route', async () => {
 
     await createUsersTable(testOptions)
     await createPersonalAccessTokensTable(testOptions)
+    await addActiveToUsers(testOptions)
 
     // Create a test user
     testUser = await createUser({
       email: 'test@example.com',
       name: 'Test User',
       password: 'password123',
+      active: true
     }, testOptions)
   })
 

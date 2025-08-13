@@ -8,6 +8,7 @@ interface CreateUserParams {
   name: string
   password: string
   role?: string
+  active?: boolean
 }
 
 /**
@@ -38,7 +39,7 @@ export const createUser = async (userData: CreateUserParams, options: ModuleOpti
   `
   // Fetch the created user to return it (especially to get the ID and ensure it was created)
   // Exclude password in the return type
-  const result = await db.sql`SELECT id, email, name, role, created_at, updated_at FROM {${usersTable}} WHERE email = ${userData.email}` as { rows: Array<{ id: number, email: string, name: string, role: string, created_at: Date | string, updated_at: Date | string }> }
+  const result = await db.sql`SELECT id, email, name, role, created_at, updated_at, active FROM {${usersTable}} WHERE email = ${userData.email}` as { rows: Array<{ id: number, email: string, name: string, role: string, created_at: Date | string, updated_at: Date | string, active: boolean }> }
 
   if (result.rows.length === 0) {
     throw new Error('Failed to retrieve created user.')
@@ -53,7 +54,8 @@ export const createUser = async (userData: CreateUserParams, options: ModuleOpti
     name: user.name,
     role: user.role,
     created_at: user.created_at instanceof Date ? user.created_at.toISOString() : user.created_at,
-    updated_at: user.updated_at instanceof Date ? user.updated_at.toISOString() : user.updated_at
+    updated_at: user.updated_at instanceof Date ? user.updated_at.toISOString() : user.updated_at,
+    active: user.active
   }
 }
 
@@ -64,7 +66,7 @@ export const findUserByEmail = async (email: string, options: ModuleOptions): Pr
   const db = await useDb(options)
   const usersTable = options.tables.users
 
-  const result = await db.sql`SELECT * FROM {${usersTable}} WHERE email = ${email}` as { rows: Array<{ id: number, email: string, name: string, password: string, role: string, created_at: Date | string, updated_at: Date | string }> }
+  const result = await db.sql`SELECT * FROM {${usersTable}} WHERE email = ${email}` as { rows: Array<User> }
 
   if (result.rows.length === 0) {
     return null
@@ -79,8 +81,9 @@ export const findUserByEmail = async (email: string, options: ModuleOptions): Pr
     name: user.name,
     password: user.password,
     role: user.role,
-    created_at: user.created_at instanceof Date ? user.created_at.toISOString() : user.created_at,
-    updated_at: user.updated_at instanceof Date ? user.updated_at.toISOString() : user.updated_at
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+    active: user.active
   }
 }
 
