@@ -20,6 +20,7 @@ CREATE TABLE users (
   name TEXT NOT NULL,
   password TEXT NOT NULL,
   role TEXT NOT NULL DEFAULT 'user',
+  active BOOLEAN DEFAULT TRUE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -60,6 +61,7 @@ CREATE TABLE users (
   name VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
   role VARCHAR(32) NOT NULL DEFAULT 'user',
+  active BOOLEAN DEFAULT TRUE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -100,6 +102,7 @@ CREATE TABLE users (
   name VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
   role VARCHAR(32) NOT NULL DEFAULT 'user',
+  active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -154,6 +157,7 @@ Stores user account information.
 | `name` | TEXT/VARCHAR(255) | User's display name |
 | `password` | TEXT/VARCHAR(255) | Hashed password (bcrypt) |
 | `role` | TEXT/VARCHAR(32) | User role for RBAC (defaults to 'user') |
+| `active` | BOOLEAN | Whether the user is active (defaults to TRUE) |
 | `created_at` | DATETIME | Account creation timestamp |
 | `updated_at` | DATETIME | Last update timestamp |
 

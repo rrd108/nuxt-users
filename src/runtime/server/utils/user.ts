@@ -126,15 +126,20 @@ export const updateUser = async (id: number, userData: Partial<User>, options: M
 
   // Explicitly define which fields are allowed to be updated.
   // This prevents mass-assignment vulnerabilities.
-  const allowedFields: (keyof User)[] = ['name', 'email', 'role']
+  const allowedFields: (keyof User)[] = ['name', 'email', 'role', 'active']
   const updates: string[] = []
-  const values: (string | number)[] = []
+  const values: (string | number | boolean)[] = []
 
   for (const field of allowedFields) {
     if (userData[field] !== undefined) {
       updates.push(`${field} = ?`)
       values.push(userData[field])
     }
+  }
+
+  // If the user is being deactivated, revoke their tokens
+  if (userData.active === false) {
+    await revokeUserTokens(id, options)
   }
 
   // If no valid fields are provided, there's nothing to update.
@@ -262,6 +267,10 @@ export const getCurrentUserFromToken = async <T extends boolean = false>(
   }
 
   const user = userResult.rows[0]
+
+  if (!user.active) {
+    return null
+  }
 
   if (withPass === true) {
     return user as T extends true ? User | null : UserWithoutPassword | null

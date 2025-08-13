@@ -6,6 +6,7 @@ import createUsersTable from './create-users-table'
 import createPersonalAccessTokensTable from './create-personal-access-tokens-table'
 import createPasswordResetTokensTable from './create-password-reset-tokens-table'
 import createMigrationsTable from './create-migrations-table'
+import addActiveToUsers from './add-active-to-users'
 import projectInfo from './project-info'
 
 const main = defineCommand({
@@ -21,6 +22,7 @@ const main = defineCommand({
     'create-personal-access-tokens-table': createPersonalAccessTokensTable,
     'create-password-reset-tokens-table': createPasswordResetTokensTable,
     'create-migrations-table': createMigrationsTable,
+    'add-active-to-users': addActiveToUsers,
     'project-info': projectInfo
   }
 })
