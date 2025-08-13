@@ -14,10 +14,6 @@
     --color-white: #ffffff;
     --color-black: #000000;
     --color-gray-50: #f9fafb;
-    --color-gray-100: #f3f4f6;
-    --color-gray-200: #e5e7eb;
-    --color-gray-300: #d1d5db;
-    --color-gray-400: #9ca3af;
     --color-gray-500: #6b7280;
     --color-gray-600: #4b5563;
     --color-gray-700: #374151;
@@ -28,11 +24,6 @@
     --color-success: #059669;
     --color-success-light: #f0fdf4;
     --color-success-border: #9ae6b4;
-
-    /* Warning Colors */
-    --color-warning: #f59e0b;
-    --color-warning-light: #fef3c7;
-    --color-warning-text: #92400e;
 
     /* Error Colors */
     --color-error: #dc2626;
@@ -56,10 +47,6 @@
     --color-text-secondary: #6b7280;
 
     /* Strength Bar Colors */
-    --color-strength-weak: #dc3545;
-    --color-strength-medium: #ffc107;
-    --color-strength-strong: #28a745;
-    --color-strength-unknown: #6c757d;
     --color-strength-bg: #e9ecef;
 
     /* Validation Colors */
@@ -68,10 +55,7 @@
     --color-validation-hint: #6c757d;
 }
 
-/* Auto-switch to light theme based on system preference */
-@media (prefers-color-scheme: dark) {
-
-    .dark,
+.dark {
     :root {
         /* Primary Colors - Adjusted for dark theme */
         --color-primary: #60a5fa;
@@ -87,10 +71,6 @@
         --color-white: #000000;
         --color-black: #ffffff;
         --color-gray-50: #111827;
-        --color-gray-100: #1f2937;
-        --color-gray-200: #374151;
-        --color-gray-300: #4b5563;
-        --color-gray-400: #6b7280;
         --color-gray-500: #9ca3af;
         --color-gray-600: #d1d5db;
         --color-gray-700: #e5e7eb;
@@ -101,11 +81,6 @@
         --color-success: #10b981;
         --color-success-light: #064e3b;
         --color-success-border: #065f46;
-
-        /* Warning Colors - Adjusted for dark theme */
-        --color-warning: #fbbf24;
-        --color-warning-light: #451a03;
-        --color-warning-text: #fef3c7;
 
         /* Error Colors - Adjusted for dark theme */
         --color-error: #ef4444;
@@ -129,10 +104,6 @@
         --color-text-secondary: #9ca3af;
 
         /* Strength Bar Colors - Adjusted for dark theme */
-        --color-strength-weak: #ef4444;
-        --color-strength-medium: #fbbf24;
-        --color-strength-strong: #22c55e;
-        --color-strength-unknown: #9ca3af;
         --color-strength-bg: #374151;
 
         /* Validation Colors - Adjusted for dark theme */

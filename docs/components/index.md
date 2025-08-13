@@ -623,8 +623,6 @@ To force the light theme in your consuming Nuxt app, you can:
 <style>
 .light-theme {
   /* Primary Colors */
-  --color-primary: #3b82f6;
-  --color-primary-dark: #2563eb;
   --color-primary-light: #60a5fa;
 
   /* Secondary Colors */
@@ -636,10 +634,6 @@ To force the light theme in your consuming Nuxt app, you can:
   --color-white: #ffffff;
   --color-black: #000000;
   --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
   --color-gray-500: #6b7280;
   --color-gray-600: #4b5563;
   --color-gray-700: #374151;
@@ -667,8 +661,6 @@ Add this to your global CSS or `app.vue`:
 /* Force light theme globally */
 :root {
   /* Primary Colors */
-  --color-primary: #3b82f6;
-  --color-primary-dark: #2563eb;
   --color-primary-light: #60a5fa;
 
   /* Secondary Colors */
@@ -680,10 +672,6 @@ Add this to your global CSS or `app.vue`:
   --color-white: #ffffff;
   --color-black: #000000;
   --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
   --color-gray-500: #6b7280;
   --color-gray-600: #4b5563;
   --color-gray-700: #374151;
