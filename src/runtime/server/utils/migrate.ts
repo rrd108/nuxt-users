@@ -4,6 +4,7 @@ import { createUsersTable } from './create-users-table'
 import { createPersonalAccessTokensTable } from './create-personal-access-tokens-table'
 import { createPasswordResetTokensTable } from './create-password-reset-tokens-table'
 import { createMigrationsTable } from './create-migrations-table'
+import { addActiveToUsers } from './add-active-to-users'
 
 interface Migration {
   name: string
@@ -26,6 +27,10 @@ const migrations: Migration[] = [
   {
     name: 'create_password_reset_tokens_table',
     run: createPasswordResetTokensTable
+  },
+  {
+    name: 'add_active_to_users',
+    run: addActiveToUsers
   }
 ]
 

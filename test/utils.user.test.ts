@@ -1,10 +1,11 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import type { Database } from 'db0'
 import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/create-personal-access-tokens-table'
 import { createUser, findUserByEmail, updateUserPassword, getLastLoginTime, getCurrentUserFromToken } from '../src/runtime/server/utils/user'
+import { addActiveToUsers } from '../src/runtime/server/utils/add-active-to-users'
 
 describe('User Utilities (src/utils/user.ts)', () => {
   let db: Database
@@ -12,7 +13,7 @@ describe('User Utilities (src/utils/user.ts)', () => {
   let dbType: DatabaseType
   let dbConfig: DatabaseConfig
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
     if (dbType === 'sqlite') {
       dbConfig = {
@@ -47,12 +48,34 @@ describe('User Utilities (src/utils/user.ts)', () => {
     testOptions = settings.testOptions
 
     await createUsersTable(testOptions)
+    await addActiveToUsers(testOptions)
+    await createPersonalAccessTokensTable(testOptions)
   })
 
-  afterEach(async () => {
+  afterAll(async () => {
+    // Clean up tables
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.passwordResetTokens)
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.personalAccessTokens)
+
+    // Close the database connection
+    if (db) {
+      try {
+        const dbWithDisconnect = db as { disconnect?: () => Promise<void> }
+        if (dbWithDisconnect.disconnect) {
+          await dbWithDisconnect.disconnect()
+        }
+      }
+      catch {
+        // Ignore errors during cleanup
+      }
+    }
+  })
+
+  beforeEach(async () => {
+    // Clean the tables before each test
+    await db.sql`DELETE FROM {${testOptions.tables.personalAccessTokens}}`
+    await db.sql`DELETE FROM {${testOptions.tables.users}}`
   })
 
   describe('createUser', () => {
@@ -87,16 +110,10 @@ describe('User Utilities (src/utils/user.ts)', () => {
         name: userData.name,
         role: 'user',
         created_at: expect.any(String),
-        updated_at: expect.any(String)
+        updated_at: expect.any(String),
+        active: expect.anything()
       })
       expect(user).not.toHaveProperty('password')
-    })
-
-    it('should throw an error if user retrieval fails after creation', async () => {
-      // This test would require complex mocking setup to simulate database failure
-      // For now, we'll skip this test as the happy path is more important
-      // and the error handling is already tested in the integration tests
-      expect(true).toBe(true)
     })
 
     it('should create user with custom role', async () => {
@@ -222,11 +239,6 @@ describe('User Utilities (src/utils/user.ts)', () => {
   })
 
   describe('getLastLoginTime', () => {
-    beforeEach(async () => {
-      // Create the personal access tokens table for these tests
-      await createPersonalAccessTokensTable(testOptions)
-    })
-
     it('should return null for user with no login tokens', async () => {
       // Create a user but no tokens
       const userData = { email: 'notoken@webmania.cc', name: 'No Token User', password: 'password123' }
@@ -244,10 +256,11 @@ describe('User Utilities (src/utils/user.ts)', () => {
 
       // Create a token (simulating a login)
       const token1Time = '2024-01-01 10:00:00'
+      const uniqueToken = `token1_${Date.now()}_${Math.random()}`
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
-        VALUES ('user', ${user.id}, 'auth_token', 'token1', ${token1Time}, ${token1Time})
+        VALUES ('user', ${user.id}, 'auth_token', ${uniqueToken}, ${token1Time}, ${token1Time})
       `
 
       const lastLogin = await getLastLoginTime(user.id, testOptions)
@@ -270,13 +283,13 @@ describe('User Utilities (src/utils/user.ts)', () => {
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
-        VALUES ('user', ${user.id}, 'old_token', 'token_old', ${olderTime}, ${olderTime})
+        VALUES ('user', ${user.id}, 'old_token', ${`token_old_${Date.now()}_1`}, ${olderTime}, ${olderTime})
       `
 
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
-        VALUES ('user', ${user.id}, 'new_token', 'token_new', ${newerTime}, ${newerTime})
+        VALUES ('user', ${user.id}, 'new_token', ${`token_new_${Date.now()}_2`}, ${newerTime}, ${newerTime})
       `
 
       const lastLogin = await getLastLoginTime(user.id, testOptions)
@@ -304,13 +317,13 @@ describe('User Utilities (src/utils/user.ts)', () => {
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
-        VALUES ('user', ${user1.id}, 'user1_token', 'token1', ${user1Time}, ${user1Time})
+        VALUES ('user', ${user1.id}, 'user1_token', 'token1_unique', ${user1Time}, ${user1Time})
       `
 
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
-        VALUES ('user', ${user2.id}, 'user2_token', 'token2', ${user2Time}, ${user2Time})
+        VALUES ('user', ${user2.id}, 'user2_token', 'token2_unique', ${user2Time}, ${user2Time})
       `
 
       // Get last login for user1 - should only return user1's token time
@@ -337,13 +350,13 @@ describe('User Utilities (src/utils/user.ts)', () => {
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
-        VALUES ('user', ${user.id}, 'user_token', 'user_token', ${userTokenTime}, ${userTokenTime})
+        VALUES ('user', ${user.id}, 'user_token', 'user_token_unique', ${userTokenTime}, ${userTokenTime})
       `
 
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
-        VALUES ('admin', ${user.id}, 'admin_token', 'admin_token', ${adminTokenTime}, ${adminTokenTime})
+        VALUES ('admin', ${user.id}, 'admin_token', 'admin_token_unique', ${adminTokenTime}, ${adminTokenTime})
       `
 
       const lastLogin = await getLastLoginTime(user.id, testOptions)
@@ -362,7 +375,7 @@ describe('User Utilities (src/utils/user.ts)', () => {
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
-        VALUES ('user', ${user.id}, 'current_token', 'current_token', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        VALUES ('user', ${user.id}, 'current_token', ${`current_token_${Date.now()}`}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `
 
       const lastLogin = await getLastLoginTime(user.id, testOptions)
@@ -392,18 +405,13 @@ describe('User Utilities (src/utils/user.ts)', () => {
   })
 
   describe('getCurrentUserFromToken', () => {
-    beforeEach(async () => {
-      // Create the personal access tokens table for these tests
-      await createPersonalAccessTokensTable(testOptions)
-    })
-
     it('should get user from valid token without password', async () => {
       // Create a user
       const userData = { email: 'currentuser@webmania.cc', name: 'Current User', password: 'password123' }
       const user = await createUser(userData, testOptions)
 
       // Create a valid token
-      const token = 'valid_test_token_123'
+      const token = `valid_test_token_${Date.now()}_${Math.random()}`
       await db.sql`
         INSERT INTO {${testOptions.tables.personalAccessTokens}} 
         (tokenable_type, tokenable_id, name, token, created_at, updated_at)
@@ -442,7 +450,7 @@ describe('User Utilities (src/utils/user.ts)', () => {
       const user = await createUser(userData, testOptions)
 
       // Create an expired token
-      const expiredToken = 'expired_token_123'
+      const expiredToken = `expired_token_${Date.now()}_${Math.random()}`
       const pastDate = '2020-01-01 10:00:00' // Well in the past
 
       await db.sql`

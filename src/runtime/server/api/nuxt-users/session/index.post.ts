@@ -32,6 +32,13 @@ export default defineEventHandler(async (event) => {
   }
 
   const user = userResult.rows[0]
+  if (!user.active) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'User account is inactive',
+    })
+  }
+
   const storedPassword = user.password
   const passwordMatch = await bcrypt.compare(password, storedPassword)
 

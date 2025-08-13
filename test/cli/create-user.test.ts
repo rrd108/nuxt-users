@@ -4,6 +4,7 @@ import { createUsersTable } from '../../src/runtime/server/utils/create-users-ta
 import { createUser } from '../../src/runtime/server/utils/user'
 import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../../src/types'
 import { cleanupTestSetup, createTestSetup } from '../test-setup'
+import { addActiveToUsers } from '../../src/runtime/server/utils/add-active-to-users'
 
 describe('CLI: Create User', () => {
   let db: Database
@@ -46,6 +47,7 @@ describe('CLI: Create User', () => {
     testOptions = settings.testOptions
 
     await createUsersTable(testOptions)
+    await addActiveToUsers(testOptions)
   })
 
   afterEach(async () => {

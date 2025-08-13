@@ -26,6 +26,7 @@ Authenticate a user with email and password.
     "email": "user@example.com",
     "name": "John Doe",
     "role": "user",
+    "active": true,
     "created_at": "2024-01-01T00:00:00.000Z",
     "updated_at": "2024-01-01T00:00:00.000Z"
   }
@@ -134,7 +135,8 @@ Update a user's information.
 {
   "name": "Updated Name",
   "email": "updated@example.com",
-  "role": "admin"
+  "role": "admin",
+  "active": false
 }
 ```
 
@@ -146,6 +148,7 @@ Update a user's information.
     "email": "updated@example.com",
     "name": "Updated Name",
     "role": "admin",
+    "active": false,
     "created_at": "2024-01-01T00:00:00.000Z",
     "updated_at": "2024-01-01T00:00:00.000Z"
   }
@@ -155,8 +158,19 @@ Update a user's information.
 **Error Responses:**
 - `400 Bad Request`: Invalid user ID
 - `401 Unauthorized`: No authentication token or invalid token
-- `403 Forbidden`: User doesn't have permission to update users
+- `403 Forbidden`: User doesn't have permission to update users, or is trying to update their own active status.
 - `404 Not Found`: User not found
+
+### Get Inactive Users
+
+**Endpoint:** `GET /api/nuxt-users/inactive`
+
+Get a list of all inactive users.
+
+**Request:** No request body required
+
+**Response:**
+Returns a paginated list of user objects.
 
 ### Delete User
 

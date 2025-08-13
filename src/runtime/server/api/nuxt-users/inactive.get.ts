@@ -26,15 +26,15 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Get total count for pagination
-    const countResult = await db.sql`SELECT COUNT(*) as total FROM {${usersTable}} WHERE active = TRUE` as { rows: Array<{ total: number }> }
+    const countResult = await db.sql`SELECT COUNT(*) as total FROM {${usersTable}} WHERE active = FALSE` as { rows: Array<{ total: number }> }
     const total = countResult.rows[0].total
 
     // Get users with pagination (excluding passwords)
     const usersResult = await db.sql`
-      SELECT id, email, name, role, created_at, updated_at 
-      FROM {${usersTable}} 
-      WHERE active = TRUE
-      ORDER BY name ASC 
+      SELECT id, email, name, role, created_at, updated_at
+      FROM {${usersTable}}
+      WHERE active = FALSE
+      ORDER BY name ASC
       LIMIT ${limit} OFFSET ${offset}
     ` as { rows: Array<{ id: number, email: string, name: string, role: string, created_at: string | Date, updated_at: string | Date }> }
 

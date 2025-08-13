@@ -75,7 +75,6 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
 
 export const cleanupTestSetup = async (dbType: DatabaseType, db: Database, cleanupFiles: string[], tableName: string) => {
   if (dbType === 'sqlite') {
-    // Clean up SQLite files
     for (const file of cleanupFiles) {
       try {
         fs.unlinkSync(file)
@@ -85,11 +84,15 @@ export const cleanupTestSetup = async (dbType: DatabaseType, db: Database, clean
       }
     }
   }
-  else {
-    // Clean up MySQL data
+  if (dbType === 'mysql' || dbType === 'postgresql') {
     if (db) {
       try {
         await db.sql`DROP TABLE IF EXISTS {${tableName}}`
+        // Close the database connection
+        const dbWithDisconnect = db as { disconnect?: () => Promise<void> }
+        if (dbWithDisconnect.disconnect) {
+          await dbWithDisconnect.disconnect()
+        }
       }
       catch {
         // Ignore errors during cleanup

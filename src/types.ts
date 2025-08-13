@@ -155,6 +155,7 @@ export interface User {
   name: string
   password: string
   role: string
+  active: boolean
   created_at: string
   updated_at: string
   last_login_at?: string
@@ -211,13 +212,14 @@ export interface DisplayFieldsProps {
   fieldLabels?: Record<string, string>
 }
 
-export const defaultDisplayFields = ['id', 'name', 'email', 'role', 'created_at', 'updated_at', 'last_login_at']
+export const defaultDisplayFields = ['id', 'name', 'email', 'role', 'active', 'created_at', 'updated_at', 'last_login_at']
 
 export const defaultFieldLabels = {
   id: 'ID',
   name: 'Name',
   email: 'Email',
   role: 'Role',
+  active: 'Active',
   created_at: 'Created',
   updated_at: 'Updated',
   last_login_at: 'Last Login'

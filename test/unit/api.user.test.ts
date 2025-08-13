@@ -57,7 +57,7 @@ describe('User API Routes', () => {
     testOptions = defaultOptions
     mockUseRuntimeConfig.mockReturnValue({ nuxtUsers: testOptions })
 
-    regularUser = { id: 2, email: 'user@example.com', name: 'User', role: 'user', created_at: '', updated_at: '' }
+    regularUser = { id: 2, email: 'user@example.com', name: 'User', role: 'user', created_at: '', updated_at: '', active: true }
 
     mockEvent = { path: '', context: { params: {} } } as H3Event
   })

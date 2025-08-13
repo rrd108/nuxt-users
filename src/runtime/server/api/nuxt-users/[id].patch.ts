@@ -22,6 +22,16 @@ export default defineEventHandler(async (event) => {
   // Get the request body
   const body = await readBody(event)
 
+  // Prevent users from changing their own active status
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const currentUser = event.context.user as any
+  if (currentUser && currentUser.id === userId && typeof body.active !== 'undefined') {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'You cannot change your own active status.'
+    })
+  }
+
   try {
     // Update the user
     const updatedUser = await updateUser(userId, body, options)
