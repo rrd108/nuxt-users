@@ -48,7 +48,7 @@ nav {
 }
 nav a {
   text-decoration: none;
-  color: var(--color-gray-800);
+  color: var(--nu-color-gray-700);
 }
 
 .demo-container {
@@ -60,20 +60,20 @@ nav a {
 .demo-container h1 {
   text-align: center;
   margin-bottom: 1em;
-  color: var(--color-gray-800);
+  color: var(--nu-color-gray-700);
   font-size: 2rem;
   font-weight: 700;
 }
 
 .demo-section {
   margin-bottom: 1em;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--nu-color-border);
   border-radius: 12px;
-  background: var(--color-bg-secondary);
+  background: var(--nu-color-bg-secondary);
 }
 
 .demo-section h2 {
-  color: var(--color-gray-700);
+  color: var(--nu-color-gray-700);
   margin-bottom: 0.5em;
   font-size: 1.5rem;
   font-weight: 600;
@@ -81,7 +81,7 @@ nav a {
 }
 
 .demo-section p {
-  color: var(--color-gray-500);
+  color: var(--nu-color-gray-500);
   margin-bottom: 2em;
   font-size: 0.875rem;
   text-align: center;

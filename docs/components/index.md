@@ -623,32 +623,26 @@ To force the light theme in your consuming Nuxt app, you can:
 <style>
 .light-theme {
   /* Primary Colors */
-  --color-primary-light: #60a5fa;
-
-  /* Secondary Colors */
-  --color-secondary: #059669;
-  --color-secondary-dark: #047857;
-  --color-secondary-light: #10b981;
+  --nu-color-primary-light: #60a5fa;
 
   /* Neutral Colors */
-  --color-white: #ffffff;
-  --color-black: #000000;
-  --color-gray-50: #f9fafb;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
+  --nu-color-white: #ffffff;
+  --nu-color-gray-50: #f9fafb;
+  --nu-color-gray-500: #6b7280;
+  --nu-color-gray-600: #4b5563;
+  --nu-color-gray-700: #374151;
+  --nu-color-gray-700: #1f2937;
+  --nu-color-gray-900: #111827;
 
   /* Background Colors */
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f9fafb;
-  --color-bg-tertiary: #f3f4f6;
+  --nu-color-bg-primary: #ffffff;
+  --nu-color-bg-secondary: #f9fafb;
+  --nu-color-bg-tertiary: #f3f4f6;
 
   /* Border Colors */
-  --color-border: #e5e7eb;
-  --color-border-light: #d1d5db;
-  --color-border-dark: #ccc;
+  --nu-color-border: #e5e7eb;
+  --nu-color-border-light: #d1d5db;
+  --nu-color-border-dark: #ccc;
 }
 </style>
 ```
@@ -661,32 +655,26 @@ Add this to your global CSS or `app.vue`:
 /* Force light theme globally */
 :root {
   /* Primary Colors */
-  --color-primary-light: #60a5fa;
-
-  /* Secondary Colors */
-  --color-secondary: #059669;
-  --color-secondary-dark: #047857;
-  --color-secondary-light: #10b981;
+  --nu-color-primary-light: #60a5fa;
 
   /* Neutral Colors */
-  --color-white: #ffffff;
-  --color-black: #000000;
-  --color-gray-50: #f9fafb;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
+  --nu-color-white: #ffffff;
+  --nu-color-gray-50: #f9fafb;
+  --nu-color-gray-500: #6b7280;
+  --nu-color-gray-600: #4b5563;
+  --nu-color-gray-700: #374151;
+  --nu-color-gray-700: #1f2937;
+  --nu-color-gray-900: #111827;
 
   /* Background Colors */
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f9fafb;
-  --color-bg-tertiary: #f3f4f6;
+  --nu-color-bg-primary: #ffffff;
+  --nu-color-bg-secondary: #f9fafb;
+  --nu-color-bg-tertiary: #f3f4f6;
 
   /* Border Colors */
-  --color-border: #e5e7eb;
-  --color-border-light: #d1d5db;
-  --color-border-dark: #ccc;
+  --nu-color-border: #e5e7eb;
+  --nu-color-border-light: #d1d5db;
+  --nu-color-border-dark: #ccc;
 }
 ```
 
@@ -696,16 +684,15 @@ The module provides these CSS custom properties that you can override:
 
 | Property | Light Theme Value | Dark Theme Value | Description |
 |----------|------------------|------------------|-------------|
-| `--color-primary` | `#3b82f6` | `#60a5fa` | Primary brand color |
-| `--color-primary-dark` | `#2563eb` | `#3b82f6` | Darker primary variant |
-| `--color-primary-light` | `#60a5fa` | `#93c5fd` | Lighter primary variant |
-| `--color-secondary` | `#059669` | `#10b981` | Secondary brand color |
-| `--color-bg-primary` | `#ffffff` | `#111827` | Main background color |
-| `--color-bg-secondary` | `#f9fafb` | `#1f2937` | Secondary background color |
-| `--color-bg-tertiary` | `#f3f4f6` | `#374151` | Tertiary background color |
-| `--color-border` | `#e5e7eb` | `#374151` | Default border color |
-| `--color-gray-50` | `#f9fafb` | `#111827` | Lightest gray |
-| `--color-gray-900` | `#111827` | `#f9fafb` | Darkest gray |
+| `--nu-color-primary` | `#3b82f6` | `#60a5fa` | Primary brand color |
+| `--nu-color-primary-dark` | `#2563eb` | `#3b82f6` | Darker primary variant |
+| `--nu-color-primary-light` | `#60a5fa` | `#93c5fd` | Lighter primary variant |
+| `--nu-color-bg-primary` | `#ffffff` | `#111827` | Main background color |
+| `--nu-color-bg-secondary` | `#f9fafb` | `#1f2937` | Secondary background color |
+| `--nu-color-bg-tertiary` | `#f3f4f6` | `#374151` | Tertiary background color |
+| `--nu-color-border` | `#e5e7eb` | `#374151` | Default border color |
+| `--nu-color-gray-50` | `#f9fafb` | `#111827` | Lightest gray |
+| `--nu-color-gray-900` | `#111827` | `#f9fafb` | Darkest gray |
 
 #### Automatic Theme Detection
 

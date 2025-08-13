@@ -9,7 +9,7 @@
 
 <style>
 body {
-  background-color: var(--color-gray-50);
-  color: var(--color-gray-900);
+  background-color: var(--nu-color-gray-50);
+  color: var(--nu-color-gray-900);
 }
 </style>

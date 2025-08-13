@@ -19,7 +19,7 @@ div {
   max-width: 500px;
   margin: 2em auto;
   padding: 2em;
-  border: 1px solid var(--color-border-dark);
+  border: 1px solid var(--nu-color-border-dark);
   border-radius: .5em;
 }
 hr {
