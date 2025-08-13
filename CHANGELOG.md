@@ -1,6 +1,35 @@
 # Changelog
 
 
+## v1.17.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.16.0...v1.17.0)
+
+### 🚀 Enhancements
+
+- Add inactive user functionality ([67f8fbe](https://github.com/rrd108/nuxt-users/commit/67f8fbe))
+
+### 💅 Refactors
+
+- Prefix css variables ([556bd1e](https://github.com/rrd108/nuxt-users/commit/556bd1e))
+
+### 🏡 Chore
+
+- Fixes formatting issue in test file ([bfdc4d2](https://github.com/rrd108/nuxt-users/commit/bfdc4d2))
+- **release:** V1.16.0 ([aceb56d](https://github.com/rrd108/nuxt-users/commit/aceb56d))
+- Bump version number ([8f726d4](https://github.com/rrd108/nuxt-users/commit/8f726d4))
+- Remove unused css vars ([4add3c4](https://github.com/rrd108/nuxt-users/commit/4add3c4))
+
+### ✅ Tests
+
+- Fix failing test ([4a0f9e4](https://github.com/rrd108/nuxt-users/commit/4a0f9e4))
+- Fix postgres connection error ([eae0b33](https://github.com/rrd108/nuxt-users/commit/eae0b33))
+- Fix for postgres ([2d60019](https://github.com/rrd108/nuxt-users/commit/2d60019))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.16.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.15.5...v1.16.0)
