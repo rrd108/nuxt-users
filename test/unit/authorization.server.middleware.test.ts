@@ -147,7 +147,7 @@ describe('Auth Server Middleware', () => {
         email: 'test@example.com',
         name: 'Test User',
         role: 'user',
-        created_at: '2024-01-01T00:00:00Z', 
+        created_at: '2024-01-01T00:00:00Z',
         updated_at: '2024-01-01T00:00:00Z',
         active: true
       }
