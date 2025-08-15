@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import type { RuntimeModuleOptions, User } from '../../types'
+import type { RuntimeModuleOptions, User } from '#nuxt-users/types'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
 import { useRuntimeConfig } from '#imports'
 

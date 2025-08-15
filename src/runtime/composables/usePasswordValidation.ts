@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { validatePassword, getPasswordValidationOptions, getPasswordStrengthColor, getPasswordStrengthText, type PasswordValidationResult, type PasswordValidationOptions } from '../../utils'
-import type { RuntimeModuleOptions } from '../../types'
+import type { RuntimeModuleOptions } from '#nuxt-users/types'
 
 export const usePasswordValidation = (moduleOptions?: RuntimeModuleOptions, options?: PasswordValidationOptions) => {
   const passwordOptions = getPasswordValidationOptions(moduleOptions)

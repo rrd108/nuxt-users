@@ -1,7 +1,7 @@
 import { createError, defineEventHandler, readBody, setCookie } from 'h3'
 import bcrypt from 'bcrypt'
 import crypto from 'node:crypto'
-import type { ModuleOptions, User } from '../../../../../types'
+import type { ModuleOptions, User } from '#nuxt-users/types'
 import { useRuntimeConfig } from '#imports'
 import { useDb } from '../../../utils'
 

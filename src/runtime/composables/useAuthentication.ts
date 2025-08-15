@@ -1,6 +1,6 @@
 import { useState, useRuntimeConfig } from '#app'
 import { computed, readonly } from 'vue'
-import type { User, UserWithoutPassword } from '../../types'
+import type { User, UserWithoutPassword } from '#nuxt-users/types'
 
 export const useAuthentication = () => {
   const user = useState<UserWithoutPassword | null>('user', () => null)

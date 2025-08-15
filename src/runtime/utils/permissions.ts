@@ -1,4 +1,4 @@
-import type { Permission } from '../../types'
+import type { Permission } from '#nuxt-users/types'
 
 /**
  * Checks if a path matches a pattern (supports wildcards)

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import type { UserWithoutPassword, ModuleOptions, ResetPasswordFormProps } from '../../types'
+import type { UserWithoutPassword, ModuleOptions, ResetPasswordFormProps } from '#nuxt-users/types'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
 import { useRuntimeConfig } from '#imports'
 import NUsersPasswordStrengthIndicator from './NUsersPasswordStrengthIndicator.vue'

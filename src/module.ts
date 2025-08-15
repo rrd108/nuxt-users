@@ -55,6 +55,9 @@ export default defineNuxtModule<RuntimeModuleOptions>({
   async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
 
+    // Add alias
+    nuxt.options.alias['#nuxt-users/types'] = resolver.resolve('./types.ts')
+
     // Add runtime config (server-side)
     const runtimeConfigOptions = defu(options, nuxt.options.runtimeConfig.nuxtUsers || {}, defaultOptions)
 

@@ -8,4 +8,4 @@ export type {
   PasswordResetToken,
   LoginFormData,
   ModuleOptions
-} from '../types'
+} from '#nuxt-users/types'

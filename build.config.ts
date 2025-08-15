@@ -24,5 +24,8 @@ export default defineBuildConfig({
     ...EXTERNALS,
     'bcrypt',
     'nodemailer'
-  ]
+  ],
+  alias: {
+    '#nuxt-users/types': './src/types'
+  }
 })

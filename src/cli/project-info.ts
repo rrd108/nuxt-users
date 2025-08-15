@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { loadNuxt } from '@nuxt/kit'
-import type { ModuleOptions } from '../types'
+import type { ModuleOptions } from '#nuxt-users/types'
 
 export default defineCommand({
   meta: {

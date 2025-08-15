@@ -1,5 +1,5 @@
 import { defaultOptions } from '../module'
-import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../types'
+import type { DatabaseConfig, DatabaseType, ModuleOptions } from '#nuxt-users/types'
 import { loadNuxt } from '@nuxt/kit'
 import { defu } from 'defu'
 

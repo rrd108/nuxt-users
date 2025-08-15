@@ -28,11 +28,11 @@ import { ref } from 'vue'
 const userList = ref(null)
 const editingUser = ref(null)
 
-function handleEdit(user) {
+const handleEdit = (user) => {
   editingUser.value = user
 }
 
-function handleUserUpdated() {
+const handleUserUpdated = () => {
   editingUser.value = null
   userList.value?.refresh()
 }

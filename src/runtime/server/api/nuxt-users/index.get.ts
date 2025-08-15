@@ -1,5 +1,5 @@
 import { createError, defineEventHandler, getQuery } from 'h3'
-import type { ModuleOptions } from '../../../../types'
+import type { ModuleOptions } from '#nuxt-users/types'
 import { useRuntimeConfig } from '#imports'
 import { useDb } from '../../utils/db'
 import { getLastLoginTime } from '../../utils/user'

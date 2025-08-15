@@ -1,5 +1,5 @@
 import { createError, defineEventHandler, readBody } from 'h3'
-import type { ModuleOptions } from '../../../../types'
+import type { ModuleOptions } from '#nuxt-users/types'
 import { useRuntimeConfig } from '#imports'
 import { createUser } from '../../utils/user'
 

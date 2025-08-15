@@ -2,7 +2,7 @@ import { defineNuxtRouteMiddleware, navigateTo, useRuntimeConfig } from '#app'
 import { useAuthentication } from '../composables/useAuthentication'
 import { hasPermission, isWhitelisted } from '../utils/permissions'
 import { NO_AUTH_PATHS, NO_AUTH_API_PATHS } from '../constants'
-import type { ModuleOptions } from '../../types'
+import type { ModuleOptions } from '#nuxt-users/types'
 
 export default defineNuxtRouteMiddleware((to) => {
   const { public: { nuxtUsers: publicNuxtUsers } } = useRuntimeConfig()

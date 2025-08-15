@@ -1,5 +1,5 @@
 import { getCurrentUserFromToken } from '../utils/user'
-import type { ModuleOptions, UserWithoutPassword } from '../../../types'
+import type { ModuleOptions, UserWithoutPassword } from '#nuxt-users/types'
 
 /**
  * Server-side composable for authentication utilities

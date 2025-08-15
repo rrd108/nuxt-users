@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+      "nuxt": {
+        "url": "https://mcp.nuxt.com/sse"
+      },
+      "context7": {
+        "url": "https://mcp.context7.com/mcp"
+      }
+    }
+  }
+  
