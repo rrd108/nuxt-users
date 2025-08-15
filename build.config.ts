@@ -1,4 +1,5 @@
 import { defineBuildConfig } from 'unbuild'
+import { fileURLToPath } from 'node:url'
 import { EXTERNALS } from './src/constants'
 
 export default defineBuildConfig({
@@ -18,14 +19,16 @@ export default defineBuildConfig({
   clean: true,
   failOnWarn: false,
   rollup: {
-    inlineDependencies: ['citty', 'defu']
+    inlineDependencies: ['citty', 'defu'],
+    alias: {
+      entries: [
+        { find: '#nuxt-users/types', replacement: fileURLToPath(new URL('./src/types.ts', import.meta.url)) }
+      ]
+    }
   },
   externals: [
     ...EXTERNALS,
     'bcrypt',
     'nodemailer'
-  ],
-  alias: {
-    '#nuxt-users/types': './src/types'
-  }
+  ]
 })
