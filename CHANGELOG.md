@@ -1,6 +1,33 @@
 # Changelog
 
 
+## v1.17.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.17.0...v1.17.1)
+
+### 🩹 Fixes
+
+- Component type import errors ([b1e7329](https://github.com/rrd108/nuxt-users/commit/b1e7329))
+- Import errors ([3e7f99a](https://github.com/rrd108/nuxt-users/commit/3e7f99a))
+
+### 💅 Refactors
+
+- Prefix css variables ([556bd1e](https://github.com/rrd108/nuxt-users/commit/556bd1e))
+
+### 🏡 Chore
+
+- Remove unused css vars ([4add3c4](https://github.com/rrd108/nuxt-users/commit/4add3c4))
+- **release:** V1.17.0 ([c06f70d](https://github.com/rrd108/nuxt-users/commit/c06f70d))
+- Bump version number ([7d48235](https://github.com/rrd108/nuxt-users/commit/7d48235))
+
+### ✅ Tests
+
+- Fix for postgres ([2d60019](https://github.com/rrd108/nuxt-users/commit/2d60019))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.17.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.16.0...v1.17.0)
