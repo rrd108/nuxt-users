@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v1.17.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.17.1...v1.17.2)
+
+### 🩹 Fixes
+
+- Component type import errors ([b1e7329](https://github.com/rrd108/nuxt-users/commit/b1e7329))
+- Import errors ([3e7f99a](https://github.com/rrd108/nuxt-users/commit/3e7f99a))
+- Cli version mismatch ([86d49c4](https://github.com/rrd108/nuxt-users/commit/86d49c4))
+- Import paths and exports types ([16b5a28](https://github.com/rrd108/nuxt-users/commit/16b5a28))
+
+### 🏡 Chore
+
+- Bump version number ([7d48235](https://github.com/rrd108/nuxt-users/commit/7d48235))
+- **release:** V1.17.1 ([d1ae8fd](https://github.com/rrd108/nuxt-users/commit/d1ae8fd))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.17.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.17.0...v1.17.1)
