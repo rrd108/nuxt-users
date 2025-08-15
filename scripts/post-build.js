@@ -44,9 +44,16 @@ function fixImportPaths(dir) {
     if (item.isDirectory()) {
       fixImportPaths(fullPath)
     }
-    else if (item.isFile() && item.name.endsWith('.js')) {
+    else if (item.isFile() && (item.name.endsWith('.js') || item.name.endsWith('.vue'))) {
       let content = readFileSync(fullPath, 'utf8')
       let modified = false
+
+      // Fix #nuxt-users/types alias imports to nuxt-users/utils
+      const aliasImportRegex = /from\s+["']#nuxt-users\/types["']/g
+      if (aliasImportRegex.test(content)) {
+        content = content.replace(aliasImportRegex, 'from "nuxt-users/utils"')
+        modified = true
+      }
 
       // Fix relative imports to utils (../../../utils -> ../../../utils.js)
       const utilsImportRegex = /from\s+["'](\.\.[/\\]){2,}utils["']/g

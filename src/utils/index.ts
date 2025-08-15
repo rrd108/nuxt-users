@@ -1,11 +1,17 @@
 export { validatePassword, getPasswordValidationOptions, getPasswordStrengthColor, getPasswordStrengthText, type PasswordValidationResult, type PasswordValidationOptions } from './password-validation'
 
-// Export types for consumers
+// Export types and constants for consumers
 export type {
   User,
   UserWithoutPassword,
   PersonalAccessToken,
   PasswordResetToken,
   LoginFormData,
-  ModuleOptions
-} from '#nuxt-users/types'
+  ModuleOptions,
+  RuntimeModuleOptions,
+  DisplayFieldsProps,
+  LoginFormProps,
+  ResetPasswordFormProps
+} from '../types'
+
+export { defaultDisplayFields, defaultFieldLabels } from '../types'
