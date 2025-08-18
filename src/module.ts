@@ -1,6 +1,6 @@
 import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir } from '@nuxt/kit'
 import { defu } from 'defu'
-import type { RuntimeModuleOptions, ModuleOptions } from './types'
+import type { RuntimeModuleOptions, ModuleOptions } from 'nuxt-users/utils'
 
 export const defaultOptions: ModuleOptions = {
   connector: {

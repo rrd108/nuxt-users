@@ -2,7 +2,7 @@ import { createError, defineEventHandler, getCookie, readBody } from 'h3'
 import bcrypt from 'bcrypt'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { getCurrentUserFromToken, updateUserPassword } from '../../../utils'
+import { getCurrentUserFromToken, updateUserPassword } from '../../../utils/user'
 import { validatePassword, getPasswordValidationOptions } from '../../../../../utils'
 
 export default defineEventHandler(async (event) => {

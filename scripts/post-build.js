@@ -48,12 +48,12 @@ function fixImportPaths(dir) {
       let content = readFileSync(fullPath, 'utf8')
       let modified = false
 
-      // Note: #nuxt-users/types imports are now handled by TypeScript module resolution
+      // Note: nuxt-users/utils imports are already correct for consumers
 
-      // Fix relative imports to utils (../../../utils -> ../../../utils.js)
-      const utilsImportRegex = /from\s+["'](\.\.[/\\]){2,}utils["']/g
+      // Fix remaining relative imports to utils (add .js extensions)
+      const utilsImportRegex = /from\s+["'](\.\.[/\\]){2,}utils\.js["']/g
       if (utilsImportRegex.test(content)) {
-        content = content.replace(utilsImportRegex, match => match.replace(/utils["']$/, 'utils.js"'))
+        content = content.replace(utilsImportRegex, match => match.replace(/utils\.js["']$/, 'utils.js"'))
         modified = true
       }
 

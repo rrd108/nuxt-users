@@ -22,7 +22,7 @@ export default defineBuildConfig({
     inlineDependencies: ['citty', 'defu'],
     alias: {
       entries: [
-        { find: '#nuxt-users/types', replacement: fileURLToPath(new URL('./src/types.ts', import.meta.url)) }
+        { find: 'nuxt-users/utils', replacement: fileURLToPath(new URL('./src/utils/index.ts', import.meta.url)) }
       ]
     }
   },

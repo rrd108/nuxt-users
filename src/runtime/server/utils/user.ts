@@ -1,6 +1,6 @@
 import { useDb } from './db'
 import bcrypt from 'bcrypt'
-import { validatePassword, getPasswordValidationOptions } from '../../../utils'
+import { validatePassword, getPasswordValidationOptions } from 'nuxt-users/utils'
 import type { ModuleOptions, User, UserWithoutPassword } from 'nuxt-users/utils'
 
 interface CreateUserParams {

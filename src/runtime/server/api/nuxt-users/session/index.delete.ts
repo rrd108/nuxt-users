@@ -1,7 +1,7 @@
 import { defineEventHandler, getCookie, setCookie } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { useDb } from '../../../utils'
+import { useDb } from '../../../utils/db'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
