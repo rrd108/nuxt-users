@@ -1,5 +1,5 @@
 import { defineNuxtPlugin, useRuntimeConfig } from '#app'
-import type { ModuleOptions } from 'nuxt-users/utils'
+import type { ModuleOptions } from './utils/imports'
 import { checkTableExists } from './server/utils'
 
 export default defineNuxtPlugin(async (_nuxtApp) => {

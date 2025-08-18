@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { navigateTo } from '#app'
-import type { LoginFormData, LoginFormProps, UserWithoutPassword, ModuleOptions } from 'nuxt-users/utils'
+import type { LoginFormData, LoginFormProps, UserWithoutPassword, ModuleOptions } from "nuxt-users/utils"
 import { useRuntimeConfig } from '#imports'
 
 const { public: { nuxtUsers } } = useRuntimeConfig()

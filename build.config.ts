@@ -18,6 +18,10 @@ export default defineBuildConfig({
   declaration: true,
   clean: true,
   failOnWarn: false,
+  // Configure alias resolution for build process
+  alias: {
+    'nuxt-users/utils': fileURLToPath(new URL('./src/utils/index.ts', import.meta.url))
+  },
   rollup: {
     inlineDependencies: ['citty', 'defu'],
     alias: {

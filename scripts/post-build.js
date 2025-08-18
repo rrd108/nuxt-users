@@ -44,22 +44,27 @@ function fixImportPaths(dir) {
     if (item.isDirectory()) {
       fixImportPaths(fullPath)
     }
-    else if (item.isFile() && (item.name.endsWith('.js') || item.name.endsWith('.vue'))) {
+    else if (item.isFile() && (item.name.endsWith('.js') || item.name.endsWith('.mjs') || item.name.endsWith('.vue') || item.name.endsWith('.ts'))) {
       let content = readFileSync(fullPath, 'utf8')
       let modified = false
 
-      // Note: nuxt-users/utils imports are already correct for consumers
+      // Transform relative imports to utils/imports back to nuxt-users/utils for consumers
+      const relativeImportsRegex = /from\s+["'](\.\.[/\\])*utils[/\\]imports["']/g
+      if (relativeImportsRegex.test(content)) {
+        content = content.replace(relativeImportsRegex, 'from "nuxt-users/utils"')
+        modified = true
+      }
 
-      // Fix remaining relative imports to utils (add .js extensions)
-      const utilsImportRegex = /from\s+["'](\.\.[/\\]){2,}utils\.js["']/g
+      // Transform other relative utils imports
+      const utilsImportRegex = /from\s+["']\.\.[/\\]utils[/\\]imports["']/g
       if (utilsImportRegex.test(content)) {
-        content = content.replace(utilsImportRegex, match => match.replace(/utils\.js["']$/, 'utils.js"'))
+        content = content.replace(utilsImportRegex, 'from "nuxt-users/utils"')
         modified = true
       }
 
       if (modified) {
         writeFileSync(fullPath, content)
-        console.log(`[Nuxt Users] Fixed import paths in ${fullPath}`)
+        console.log(`[Nuxt Users] Transformed import paths in ${fullPath}`)
       }
     }
   }
