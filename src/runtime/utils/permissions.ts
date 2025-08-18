@@ -1,4 +1,4 @@
-import type { Permission } from '#nuxt-users/types'
+import type { Permission } from 'nuxt-users/utils'
 
 /**
  * Checks if a path matches a pattern (supports wildcards)
@@ -88,7 +88,7 @@ export const hasPermission = (
       }
 
       // Check if the method is allowed (case-insensitive)
-      return permission.methods.some(allowedMethod => allowedMethod.toUpperCase() === method.toUpperCase())
+      return permission.methods.some((allowedMethod: string) => allowedMethod.toUpperCase() === method.toUpperCase())
     }
 
     return false

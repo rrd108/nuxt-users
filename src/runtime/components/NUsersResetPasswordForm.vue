@@ -1,8 +1,19 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import type { UserWithoutPassword, ModuleOptions, ResetPasswordFormProps } from '#nuxt-users/types'
+/**
+ * NUsersResetPasswordForm Component
+ *
+ * A dual-purpose password form component that handles both:
+ * 1. Password reset from email links (when token and email are in URL query params)
+ * 2. Password change for logged-in users (when no token/email in URL)
+ *
+ * The component automatically detects which mode to use based on URL parameters.
+ * For password reset: requires token and email in URL query params
+ * For password change: requires user to be logged in and provide current password
+ */
+import { ref, watch, computed } from 'vue'
+import type { UserWithoutPassword, ModuleOptions, ResetPasswordFormProps } from 'nuxt-users/utils'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
-import { useRuntimeConfig } from '#imports'
+import { useRuntimeConfig, useRoute, useRouter } from '#imports'
 import NUsersPasswordStrengthIndicator from './NUsersPasswordStrengthIndicator.vue'
 
 interface Emits {
@@ -17,9 +28,21 @@ const moduleOptions = nuxtUsers as ModuleOptions
 const props = defineProps<ResetPasswordFormProps>()
 const emit = defineEmits<Emits>()
 
+const route = useRoute()
+const router = useRouter()
+
 const isPasswordLoading = ref(false)
 const passwordError = ref('')
 const passwordSuccess = ref('')
+
+// Check if this is a password reset from email link
+const isPasswordReset = computed(() => {
+  return route.query.token && route.query.email
+})
+
+// Get token and email from URL for password reset
+const resetToken = computed(() => route.query.token as string)
+const resetEmail = computed(() => route.query.email as string)
 
 // Password form data
 const passwordForm = ref({
@@ -41,7 +64,7 @@ watch(() => passwordForm.value.newPassword, (newPassword) => {
   }
 })
 
-// Update password
+// Update password (for logged-in users)
 const updatePassword = async () => {
   isPasswordLoading.value = true
   passwordError.value = ''
@@ -76,16 +99,94 @@ const updatePassword = async () => {
     isPasswordLoading.value = false
   }
 }
+
+// Reset password (for email reset links)
+const resetPassword = async () => {
+  if (!resetToken.value || !resetEmail.value) {
+    passwordError.value = 'Missing reset token or email. Please use the link from your email.'
+    return
+  }
+
+  if (passwordForm.value.newPassword !== passwordForm.value.newPasswordConfirmation) {
+    passwordError.value = 'Passwords do not match'
+    return
+  }
+
+  isPasswordLoading.value = true
+  passwordError.value = ''
+  passwordSuccess.value = ''
+
+  try {
+    await $fetch(props.resetPasswordEndpoint || nuxtUsers.apiBasePath + '/password/reset', {
+      method: 'POST',
+      body: {
+        token: resetToken.value,
+        email: resetEmail.value,
+        password: passwordForm.value.newPassword,
+        password_confirmation: passwordForm.value.newPasswordConfirmation
+      }
+    })
+
+    passwordSuccess.value = 'Password reset successfully. You can now log in with your new password.'
+    emit('password-updated')
+
+    // Clear form
+    passwordForm.value = {
+      currentPassword: '',
+      newPassword: '',
+      newPasswordConfirmation: ''
+    }
+
+    // Redirect to login page after a short delay
+    setTimeout(() => {
+      router.push(props.redirectTo || '/login')
+    }, 2000)
+  }
+  catch (err: unknown) {
+    const errorMessage = err && typeof err === 'object' && 'data' in err && err.data && typeof err.data === 'object' && 'statusMessage' in err.data
+      ? String(err.data.statusMessage)
+      : err instanceof Error
+        ? err.message
+        : 'Failed to reset password'
+    passwordError.value = errorMessage
+    emit('password-error', errorMessage)
+  }
+  finally {
+    isPasswordLoading.value = false
+  }
+}
+
+// Handle form submission based on mode
+const handleSubmit = () => {
+  if (isPasswordReset.value) {
+    resetPassword()
+  }
+  else {
+    updatePassword()
+  }
+}
 </script>
 
 <template>
   <div class="n-users-section">
     <h2 class="n-users-section-header">
-      Change Password
+      {{ isPasswordReset ? 'Reset Password' : 'Change Password' }}
     </h2>
 
-    <form @submit.prevent="updatePassword">
-      <div class="n-users-form-group">
+    <div
+      v-if="isPasswordReset"
+      class="n-users-info-message"
+    >
+      <p>You are resetting your password using a secure link.</p>
+      <p><strong>Email:</strong> {{ resetEmail }}</p>
+    </div>
+
+    <form @submit.prevent="handleSubmit">
+      <!-- Current Password field - only show for logged-in users -->
+      <div
+        v-if="!isPasswordReset"
+        class="n-users-form-group"
+      >
         <label
           for="currentPassword"
           class="n-users-form-label"
@@ -104,7 +205,7 @@ const updatePassword = async () => {
         <label
           for="newPassword"
           class="n-users-form-label"
-        >New Password</label>
+        >{{ isPasswordReset ? 'New Password' : 'New Password' }}</label>
         <input
           id="newPassword"
           v-model="passwordForm.newPassword"
@@ -134,7 +235,7 @@ const updatePassword = async () => {
         <label
           for="newPasswordConfirmation"
           class="n-users-form-label"
-        >Confirm New Password</label>
+        >Confirm {{ isPasswordReset ? 'New Password' : 'New Password' }}</label>
         <input
           id="newPasswordConfirmation"
           v-model="passwordForm.newPasswordConfirmation"
@@ -164,8 +265,12 @@ const updatePassword = async () => {
         class="n-users-btn n-users-btn-primary"
         :disabled="isPasswordLoading"
       >
-        <span v-if="isPasswordLoading">Updating...</span>
-        <span v-else>Update Password</span>
+        <span v-if="isPasswordLoading">
+          {{ isPasswordReset ? 'Resetting...' : 'Updating...' }}
+        </span>
+        <span v-else>
+          {{ isPasswordReset ? 'Reset Password' : 'Update Password' }}
+        </span>
       </button>
     </form>
   </div>

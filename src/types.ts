@@ -205,6 +205,8 @@ export interface LogoutLinkProps {
 export interface ResetPasswordFormProps {
   apiEndpoint?: string
   updatePasswordEndpoint?: string
+  resetPasswordEndpoint?: string
+  redirectTo?: string
 }
 
 export interface DisplayFieldsProps {
