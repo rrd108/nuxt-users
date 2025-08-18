@@ -59,7 +59,7 @@
     "dev": "yarn dev:prepare && nuxi dev playground",
     "dev:build": "nuxi build playground",
     "dev:prepare": "yarn nuxt-module-build build --stub && yarn nuxt-module-build prepare && nuxi prepare playground",
-    "build": "nuxt-module-build build",
+    "build": "nuxt-module-build build --stub",
     "postbuild": "node scripts/post-build.js",
     "prerelease": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
     "release": "yarn lint && yarn test && changelogen --release && yarn build && yarn publish && git push --follow-tags",
