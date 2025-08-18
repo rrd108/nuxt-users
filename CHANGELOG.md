@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v1.17.3
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.17.2...v1.17.3)
+
+### 🩹 Fixes
+
+- Cli version mismatch ([86d49c4](https://github.com/rrd108/nuxt-users/commit/86d49c4))
+- Import paths and exports types ([16b5a28](https://github.com/rrd108/nuxt-users/commit/16b5a28))
+- Cli version ([586194f](https://github.com/rrd108/nuxt-users/commit/586194f))
+- Use runtime config for password reset link ([f462f64](https://github.com/rrd108/nuxt-users/commit/f462f64))
+
+### 🏡 Chore
+
+- **release:** V1.17.2 ([f640ba2](https://github.com/rrd108/nuxt-users/commit/f640ba2))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.17.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.17.1...v1.17.2)
