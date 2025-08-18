@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /get-started
+      link: /user-guide/getting-started
     - theme: alt
       text: Open on GitHub →
       link: https://github.com/rrd108/vue-mess-detector

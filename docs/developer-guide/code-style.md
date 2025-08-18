@@ -482,6 +482,6 @@ const validateUserData = (data: unknown): UserData => {
 
 ## Next Steps
 
-- [Development Setup](/contributing/development-setup) - Set up your development environment
-- [Running Tests](/contributing/running-tests) - Learn about testing
-- [Guidelines](/contributing/guidelines) - Understand contribution guidelines 
+- [Development Setup](/developer-guide/development-setup) - Set up your development environment
+- [Testing](/developer-guide/testing) - Learn about testing
+- [Contributing](/developer-guide/contributing) - Understand contribution guidelines

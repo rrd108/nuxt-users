@@ -32,7 +32,7 @@ npm install @formkit/nuxt
 
 ## Add to Nuxt Config
 
-Add the module to your `nuxt.config.ts` (works for both Nuxt 3 and Nuxt 4):
+Add the module to your `nuxt.config.ts`:
 
 ```ts
 export default defineNuxtConfig({
@@ -83,6 +83,7 @@ npx nuxt-users create-user user@example.com "John Doe" password123
 
 ## Next Steps
 
-- [Quick Start Tutorial](/guide/quick-start) - Get up and running quickly
-- [Configuration Options](/guide/configuration) - Learn about all available options
-- [Database Setup](/guide/database-setup) - Detailed database configuration 
+- [Getting Started](/user-guide/getting-started) - Get up and running quickly
+- [Configuration](/user-guide/configuration) - Learn about all available options
+- [Authentication](/user-guide/authentication) - Set up user authentication
+- [Components](/user-guide/components) - Use the provided Vue components

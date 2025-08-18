@@ -6,13 +6,12 @@ This module includes a simple yet powerful Role-Based Access Control (RBAC) syst
 
 The authorization system follows a **whitelist approach** - by default, no routes are accessible unless explicitly configured. This ensures security by default.
 
-## Flow Summary
+## How Authorization Works
 
 The authorization logic follows these rules in order:
 
-1. **`NO_AUTH_PATHS`**: These are internal paths used by the module that are always accessible and bypass all authentication and authorization checks. You don't need to configure anything for these.
-2. **Whitelist Paths**: These paths are defined in your `nuxt.config.ts` (`nuxtUsers.auth.whitelist`) and are always accessible to any user, authenticated or not. They do not require any specific permissions.
-3. **Protected Paths**: Any path that is not in the whitelist requires authentication. Additionally, you can protect routes based on user roles using the `permissions` configuration.
+1. **Whitelist Paths**: These paths are defined in your `nuxt.config.ts` (`nuxtUsers.auth.whitelist`) and are always accessible to any user, authenticated or not. They do not require any specific permissions.
+2. **Protected Paths**: Any path that is not in the whitelist requires authentication. Additionally, you can protect routes based on user roles using the `permissions` configuration.
 
 This means that routes like `/login` or `/register` (if whitelisted) are accessible to everyone, bypassing the permission system entirely.
 
@@ -96,9 +95,9 @@ permissions: {
 }
 ```
 
-### Examples
+## Configuration Examples
 
-#### Basic Setup
+### Basic Setup
 ```ts
 nuxtUsers: {
   auth: {
@@ -112,7 +111,7 @@ nuxtUsers: {
 }
 ```
 
-#### E-commerce Application
+### E-commerce Application
 ```ts
 nuxtUsers: {
   auth: {
@@ -127,7 +126,7 @@ nuxtUsers: {
 }
 ```
 
-#### Content Management System
+### Content Management System
 ```ts
 nuxtUsers: {
   auth: {
@@ -143,51 +142,20 @@ nuxtUsers: {
 }
 ```
 
-### How it Works
+## Security Features
 
-The authorization is enforced by global middleware that runs on both server-side and client-side:
-
-#### Server-Side Middleware
-- Runs on every API request and page request
-- Checks authentication and permissions before processing requests
-- Redirects unauthorized users to `/login`
-
-#### Client-Side Middleware  
-- Runs on every route navigation
-- Prevents unauthorized navigation on the client
-- Redirects to `/login` if access is denied
-
-#### Authorization Process
-
-1. **Path Check**: The middleware first checks if the route is in the `NO_AUTH_PATHS` or the user-defined `whitelist`. If so, access is granted without any further checks.
-
-2. **Authentication Check**: If the route is not whitelisted, it checks if the user is authenticated. If not, it redirects to the login page.
-
-3. **Permission Check**: If the user is authenticated, it checks their role against the `permissions` configuration:
-   - Gets the list of allowed paths for the user's role
-   - Checks if the requested path matches any of the allowed paths for that role
-   - Supports wildcards (`*` and `/*`) for flexible matching
-   - If the user's role has a `*` permission, they are granted access to all routes
-
-4. **Access Decision**: 
-   - If a match is found, access is granted
-   - If no match is found, access is denied and the user is redirected to `/login`
-   - If a route is not mentioned in any role's permissions, only users with a wildcard (`*`) permission can access it
-
-### Security Features
-
-#### Whitelist Approach
+### Whitelist Approach
 - **Default Deny**: By default, `permissions` is an empty object `{}`, meaning no routes are accessible
 - **Explicit Allow**: You must explicitly define permissions to grant access
 - **Secure by Default**: New routes are automatically protected until explicitly permitted
 
-#### Wildcard Support
+### Wildcard Support
 - `*` - Matches any path (full access)
 - `/*` - Matches all sub-paths under a base path
 - `**` - Matches any number of path segments
 - Complex patterns like `/api/*/users/*` for flexible matching
 
-#### Role Hierarchy
+### Role Hierarchy
 You can implement role hierarchies by giving higher-level roles access to lower-level paths:
 
 ```ts
@@ -199,7 +167,7 @@ permissions: {
 }
 ```
 
-### Creating Users with Roles
+## Creating Users with Roles
 
 You can create users with specific roles using the CLI:
 
@@ -219,7 +187,7 @@ npx nuxt-users create-user moderator@example.com "Moderator User" modpass123 mod
 
 The default role is `user` if not specified.
 
-### Best Practices
+## Best Practices
 
 1. **Start with Whitelist**: Begin by whitelisting public routes that don't need authentication
 2. **Use Specific Permissions**: Avoid using `*` for regular users - be specific about what they can access
@@ -227,9 +195,9 @@ The default role is `user` if not specified.
 4. **Document Roles**: Keep a clear documentation of what each role can access
 5. **Regular Review**: Periodically review and update permissions as your application evolves
 
-### Troubleshooting
+## Troubleshooting
 
-#### Common Issues
+### Common Issues
 
 **User can't access a route they should have access to:**
 - Check if the route is in the `whitelist` (whitelisted routes bypass permissions)

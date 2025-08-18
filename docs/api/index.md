@@ -1,6 +1,6 @@
-# API Reference
+# HTTP API Endpoints
 
-The Nuxt Users module provides several API endpoints for authentication, user management, and password reset functionality.
+The Nuxt Users module provides REST API endpoints for authentication, user management, and password reset functionality. These endpoints can be used by external applications or frontend clients to interact with the authentication system.
 
 ## Authentication Endpoints
 
@@ -53,13 +53,12 @@ Logout the current user by removing their authentication token.
 ```
 
 **Notes:**
-- Removes the authentication token from the database
-- Clears the `auth_token` cookie
 - No authentication required (works with any valid token)
+- Invalidates the current session
 
 ## User Management Endpoints
 
-Authentication and authorization are handled by middleware.
+These endpoints require authentication. Include your authentication token in requests.
 
 ### Create User
 
@@ -102,7 +101,7 @@ Create a new user.
 
 Get a user by ID. Users can only access their own profile unless they have admin permissions.
 
-**Request:** No request body required (uses authentication token from cookie)
+**Request:** No request body required
 
 **Response:**
 ```json
@@ -199,7 +198,7 @@ Delete a user.
 
 Get the current user's profile information.
 
-**Request:** No request body required (uses authentication token from cookie)
+**Request:** No request body required
 
 **Response:**
 ```json
@@ -297,8 +296,7 @@ Send a password reset link to the user's email.
 ```
 
 **Notes:**
-- Always returns success message (prevents email enumeration)
-- Sends email only if user exists
+- Always returns success message for security reasons
 - Token expires after 1 hour
 
 ### Reset Password
@@ -339,36 +337,33 @@ All endpoints return consistent error responses:
 }
 ```
 
-## Authentication Headers
+## Authentication
 
-For protected endpoints, include the authentication cookie:
+For protected endpoints, authentication is handled automatically through cookies when using the module's built-in authentication flow. External API consumers should ensure they include the authentication cookie in their requests.
 
-```
-Cookie: auth_token=your-auth-token
-```
+## Authorization
 
-The module automatically handles cookie management for login/logout.
-
-## Permission System
-
-The user management endpoints use a role-based permission system. Permissions can be configured to be method-specific (e.g., allowing GET but denying DELETE on the same path). See the [Authorization Guide](/guide/authorization) for more details.
+The API uses role-based access control:
 
 - **Admin users** (`role: "admin"`) can access all user management endpoints
 - **Regular users** can only access their own profile via `GET /api/nuxt-users/:id`
 - **All users** must be authenticated to access any protected endpoint
 
-## Rate Limiting
+For more details on configuring authorization, see the [Authorization Guide](/user-guide/authorization).
 
-Consider implementing rate limiting for these endpoints:
+## Security Considerations
 
-- `/api/nuxt-users/session`: Prevent brute force attacks
-- `/api/nuxt-users/password/forgot`: Prevent email spam
-- `/api/nuxt-users/password/reset`: Prevent token brute force
-- `/api/nuxt-users/*`: Prevent abuse of user management endpoints
+When using these API endpoints in production:
 
-## Next Steps
+- Implement rate limiting to prevent abuse
+- Use HTTPS for all authentication-related requests
+- Ensure proper CORS configuration for cross-origin requests
+- Monitor for suspicious authentication patterns
 
-- [Authentication Guide](/guide/authentication) - Learn about the authentication flow
-- [Authorization Guide](/guide/authorization) - Understand role-based access control
-- [Password Reset Guide](/guide/password-reset) - Understand password reset functionality
-- [Components](/components/) - Use the provided Vue components 
+## Related Documentation
+
+- [Authentication Guide](/user-guide/authentication) - Learn about the authentication flow
+- [Authorization Guide](/user-guide/authorization) - Understand role-based access control
+- [Password Reset Guide](/user-guide/password-reset) - Understand password reset functionality
+- [Components](/user-guide/components) - Use the provided Vue components
+- [Public Types](/api/types) - TypeScript types for API responses 

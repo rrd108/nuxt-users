@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-We welcome contributions! This guide will help you get started.
+We welcome contributions! This guide will help you get started with contributing to the Nuxt Users module.
 
 ## How to Contribute
 
@@ -246,9 +246,9 @@ docs(api): update login endpoint documentation
 
 ### Resources
 
-- [Development Setup](/contributing/development-setup) - Set up your environment
-- [Running Tests](/contributing/running-tests) - Learn about testing
-- [Code Style](/contributing/code-style) - Follow coding standards
+- [Development Setup](/developer-guide/development-setup) - Set up your environment
+- [Testing](/developer-guide/testing) - Learn about testing
+- [Code Style](/developer-guide/code-style) - Follow coding standards
 
 ## Recognition
 
@@ -258,4 +258,4 @@ Contributors will be recognized in:
 - **Release notes**: Credit for significant contributions
 - **Documentation**: Attribution for major features
 
-We appreciate all contributions, big and small! 🚀 
+We appreciate all contributions, big and small! 🚀

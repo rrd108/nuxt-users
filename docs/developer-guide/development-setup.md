@@ -134,6 +134,6 @@ export DB_NAME=test_db
 
 ## Next Steps
 
-- [Running Tests](/contributing/running-tests) - Learn how to run and write tests
-- [Guidelines](/contributing/guidelines) - Understand contribution guidelines
-- [Code Style](/contributing/code-style) - Follow the project's coding standards 
+- [Testing](/developer-guide/testing) - Learn how to run and write tests
+- [Contributing](/developer-guide/contributing) - Understand contribution guidelines
+- [Code Style](/developer-guide/code-style) - Follow the project's coding standards

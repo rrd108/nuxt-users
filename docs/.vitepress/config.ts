@@ -30,56 +30,52 @@ export default defineConfig({
     logo: '/logo.png',
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Get Started', link: '/get-started' },
+      { text: 'Get Started', link: '/user-guide/getting-started' },
     ],
     sidebar: [
       {
         items: [
           { text: 'Get Started', link: '/get-started' },
           {
-            text: 'Guide',
+            text: 'User Guide',
             items: [
-              { text: 'Installation', link: '/guide/installation' },
-              { text: 'Quick Start', link: '/guide/quick-start' },
-              { text: 'Configuration', link: '/guide/configuration' },
-              { text: 'Authentication', link: '/guide/authentication' },
-              { text: 'Authorization (RBAC)', link: '/guide/authorization' },
-              { text: 'Password Reset', link: '/guide/password-reset' },
-              { text: 'Database Setup', link: '/guide/database-setup' }
+              { text: 'Overview', link: '/user-guide/index' },
+              { text: 'Getting Started', link: '/user-guide/getting-started' },
+              { text: 'Installation', link: '/user-guide/installation' },
+              { text: 'Configuration', link: '/user-guide/configuration' },
+              { text: 'Authentication', link: '/user-guide/authentication' },
+              { text: 'Authorization (RBAC)', link: '/user-guide/authorization' },
+              { text: 'Password Reset', link: '/user-guide/password-reset' },
+              { text: 'Components', link: '/user-guide/components' },
+              { text: 'Troubleshooting', link: '/user-guide/troubleshooting' }
             ]
           },
           {
             text: 'API Reference',
             items: [
               { text: 'HTTP Endpoints', link: '/api/index' },
-              { text: 'Types & Utilities', link: '/api/types-and-utilities' }
+              { text: 'Public Types', link: '/api/types' }
             ]
           },
           {
-            text: 'Components',
+            text: 'Examples',
             items: [
-              { text: 'NUsersLoginForm', link: '/components/index#nusersloginform' },
-              { text: 'NUsersLogoutLink', link: '/components/index#nuserslogoutlink' },
-              { text: 'NUsersResetPasswordForm', link: '/components/index#nusersresetpasswordform' },
-              { text: 'NUsersList', link: '/components/index#nuserslist' },
-              { text: 'NUsersUserCard', link: '/components/index#nusersusercard' },
-              { text: 'NUsersUserForm', link: '/components/index#nusersuserform' }
+              { text: 'Basic Setup', link: '/examples/basic-setup' },
+              { text: 'Custom Components', link: '/examples/custom-components' },
+              { text: 'Advanced Configuration', link: '/examples/advanced-configuration' }
             ]
           },
           {
-            text: 'Database',
+            text: 'Developer Guide',
             items: [
-              { text: 'Schema', link: '/database/schema' },
-              { text: 'Migrations', link: '/database/migrations' },
-              { text: 'CLI Commands', link: '/database/cli-commands' }
-            ]
-          },
-          {
-            text: 'Contributing',
-            items: [
-              { text: 'Development Setup', link: '/contributing/development-setup' },
-              { text: 'Running Tests', link: '/contributing/running-tests' },
-              { text: 'Guidelines', link: '/contributing/guidelines' }
+              { text: 'Overview', link: '/developer-guide/index' },
+              { text: 'Development Setup', link: '/developer-guide/development-setup' },
+              { text: 'Architecture', link: '/developer-guide/architecture' },
+              { text: 'Database Internals', link: '/developer-guide/database-internals' },
+              { text: 'Server Utilities', link: '/developer-guide/server-utilities' },
+              { text: 'Testing', link: '/developer-guide/testing' },
+              { text: 'Contributing', link: '/developer-guide/contributing' },
+              { text: 'Code Style', link: '/developer-guide/code-style' }
             ]
           }
         ]
