@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import type { PasswordValidationResult } from '../../utils'
 import { useRuntimeConfig } from '#imports'
-import type { ModuleOptions } from "nuxt-users/utils"
+import type { ModuleOptions } from 'nuxt-users/utils'
 
 interface Props {
   password: string

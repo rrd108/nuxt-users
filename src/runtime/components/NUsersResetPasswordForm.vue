@@ -11,7 +11,7 @@
  * For password change: requires user to be logged in and provide current password
  */
 import { ref, watch, computed } from 'vue'
-import type { UserWithoutPassword, ModuleOptions, ResetPasswordFormProps } from "nuxt-users/utils"
+import type { UserWithoutPassword, ModuleOptions, ResetPasswordFormProps } from 'nuxt-users/utils'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
 import { useRuntimeConfig, useRoute, useRouter } from '#imports'
 import NUsersPasswordStrengthIndicator from './NUsersPasswordStrengthIndicator.vue'
