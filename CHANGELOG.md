@@ -1,6 +1,35 @@
 # Changelog
 
 
+## v1.18.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.17.3...v1.18.0)
+
+### 🚀 Enhancements
+
+- Handle forgot password ([e9a90b6](https://github.com/rrd108/nuxt-users/commit/e9a90b6))
+
+### 🩹 Fixes
+
+- Cli version ([586194f](https://github.com/rrd108/nuxt-users/commit/586194f))
+- Use runtime config for password reset link ([f462f64](https://github.com/rrd108/nuxt-users/commit/f462f64))
+
+### 💅 Refactors
+
+- Imports ([c5723f9](https://github.com/rrd108/nuxt-users/commit/c5723f9))
+
+### 📖 Documentation
+
+- Reorganizes structure ([bd710cd](https://github.com/rrd108/nuxt-users/commit/bd710cd))
+
+### 🏡 Chore
+
+- **release:** V1.17.3 ([29f0dbc](https://github.com/rrd108/nuxt-users/commit/29f0dbc))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.17.3
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.17.2...v1.17.3)
