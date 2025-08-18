@@ -1,6 +1,35 @@
 # Changelog
 
 
+## v1.19.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.18.0...v1.19.0)
+
+### 🚀 Enhancements
+
+- Handle forgot password ([e9a90b6](https://github.com/rrd108/nuxt-users/commit/e9a90b6))
+
+### 🩹 Fixes
+
+- Updates build command to include stub generation ([c36ac34](https://github.com/rrd108/nuxt-users/commit/c36ac34))
+
+### 💅 Refactors
+
+- Imports ([c5723f9](https://github.com/rrd108/nuxt-users/commit/c5723f9))
+- Utils directory and fixes import paths ([7dd48f6](https://github.com/rrd108/nuxt-users/commit/7dd48f6))
+
+### 📖 Documentation
+
+- Reorganizes structure ([bd710cd](https://github.com/rrd108/nuxt-users/commit/bd710cd))
+
+### 🏡 Chore
+
+- **release:** V1.18.0 ([9f1cdfb](https://github.com/rrd108/nuxt-users/commit/9f1cdfb))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.18.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.17.3...v1.18.0)
