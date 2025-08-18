@@ -1,7 +1,12 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import { sendPasswordResetLink } from '../../../services/password'
+import { useRuntimeConfig } from '#imports'
+import type { ModuleOptions } from '#nuxt-users/types'
 
 export default defineEventHandler(async (event) => {
+  const { nuxtUsers } = useRuntimeConfig()
+  const options = nuxtUsers as ModuleOptions
+
   const body = await readBody(event)
   const { email } = body
 
@@ -13,7 +18,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await sendPasswordResetLink(email, event.context.nuxtUsers)
+    await sendPasswordResetLink(email, options)
     // Always return a success-like message to prevent email enumeration
     return { message: 'If a user with that email exists, a password reset link has been sent.' }
   }
