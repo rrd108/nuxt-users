@@ -1,6 +1,45 @@
 # Changelog
 
 
+## v1.21.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.18.0...v1.21.0)
+
+### 🚀 Enhancements
+
+- Handle forgot password ([e9a90b6](https://github.com/rrd108/nuxt-users/commit/e9a90b6))
+
+### 🩹 Fixes
+
+- Updates build command to include stub generation ([c36ac34](https://github.com/rrd108/nuxt-users/commit/c36ac34))
+- Improves database connection handling ([3982c0c](https://github.com/rrd108/nuxt-users/commit/3982c0c))
+- Imports setup ([dd8e8df](https://github.com/rrd108/nuxt-users/commit/dd8e8df))
+
+### 💅 Refactors
+
+- Imports ([c5723f9](https://github.com/rrd108/nuxt-users/commit/c5723f9))
+- Utils directory and fixes import paths ([7dd48f6](https://github.com/rrd108/nuxt-users/commit/7dd48f6))
+
+### 📖 Documentation
+
+- Reorganizes structure ([bd710cd](https://github.com/rrd108/nuxt-users/commit/bd710cd))
+
+### 🏡 Chore
+
+- **release:** V1.18.0 ([9f1cdfb](https://github.com/rrd108/nuxt-users/commit/9f1cdfb))
+- **release:** V1.19.0 ([ac2d375](https://github.com/rrd108/nuxt-users/commit/ac2d375))
+- **release:** V1.20.0 ([1186e63](https://github.com/rrd108/nuxt-users/commit/1186e63))
+- Remove unused file ([14bea18](https://github.com/rrd108/nuxt-users/commit/14bea18))
+- Lint fix ([a11887b](https://github.com/rrd108/nuxt-users/commit/a11887b))
+
+### ✅ Tests
+
+- **ci:** Fix postgres fail on ([4a1a092](https://github.com/rrd108/nuxt-users/commit/4a1a092))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.20.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.18.0...v1.20.0)
