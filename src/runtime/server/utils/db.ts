@@ -4,10 +4,15 @@ import type { ModuleOptions } from 'nuxt-users/utils'
 
 const dbCache = new Map<string, Database>()
 
+// Type for databases that have a disconnect method
+interface DisconnectableDatabase extends Database {
+  disconnect(): Promise<void>
+}
+
 export const closeAllDbConnections = async () => {
   for (const db of dbCache.values()) {
-    if (db && typeof (db as any).disconnect === 'function') {
-      await (db as any).disconnect()
+    if (db && typeof (db as DisconnectableDatabase).disconnect === 'function') {
+      await (db as DisconnectableDatabase).disconnect()
     }
   }
   dbCache.clear()
@@ -29,8 +34,8 @@ export const getConnector = async (name: string) => {
   catch (error) {
     if (error instanceof Error && error.message.includes('Cannot resolve')) {
       throw new Error(`Database connector "${name}" not found. Please install the required peer dependency:\n`
-        + '- For sqlite: yarn add better-sqlite3\n' 
-        + '- For mysql: yarn add mysql2\n' 
+        + '- For sqlite: yarn add better-sqlite3\n'
+        + '- For mysql: yarn add mysql2\n'
         + '- For postgresql: yarn add pg')
     }
     throw error
