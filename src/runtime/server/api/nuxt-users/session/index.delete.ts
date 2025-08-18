@@ -1,5 +1,5 @@
 import { defineEventHandler, getCookie, setCookie } from 'h3'
-import type { ModuleOptions } from '#nuxt-users/types'
+import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import { useDb } from '../../../utils'
 

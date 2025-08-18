@@ -1,5 +1,5 @@
 import { defineTask } from 'nitropack/runtime/task'
-import type { ModuleOptions } from '#nuxt-users/types'
+import type { ModuleOptions } from 'nuxt-users/utils'
 
 interface CleanupTokensPayload {
   includeNoExpiration?: boolean

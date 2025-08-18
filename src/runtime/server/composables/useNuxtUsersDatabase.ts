@@ -13,7 +13,7 @@
  *
  * Note: This is a server-side only utility and should not be used in client-side code
  */
-import type { ModuleOptions } from '#nuxt-users/types'
+import type { ModuleOptions } from 'nuxt-users/utils'
 
 export const useNuxtUsersDatabase = async () => {
   // This will be available at runtime when used in a Nuxt application

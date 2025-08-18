@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRuntimeConfig } from '#imports'
-import { defaultDisplayFields, defaultFieldLabels, type DisplayFieldsProps, type User } from '#nuxt-users/types'
+import { defaultDisplayFields, defaultFieldLabels, type DisplayFieldsProps, type User } from 'nuxt-users/utils'
 
 interface Pagination {
   page: number

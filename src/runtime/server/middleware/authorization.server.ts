@@ -2,7 +2,7 @@ import { defineEventHandler, getCookie, createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
 import { getCurrentUserFromToken } from '../utils'
 import { hasPermission, isWhitelisted } from '../../utils/permissions'
-import type { ModuleOptions } from '#nuxt-users/types'
+import type { ModuleOptions } from 'nuxt-users/utils'
 import { NO_AUTH_PATHS, NO_AUTH_API_PATHS } from '../../constants'
 
 export default defineEventHandler(async (event) => {

@@ -1,7 +1,7 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import { sendPasswordResetLink } from '../../../services/password'
 import { useRuntimeConfig } from '#imports'
-import type { ModuleOptions } from '#nuxt-users/types'
+import type { ModuleOptions } from 'nuxt-users/utils'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()

@@ -2,7 +2,7 @@ import { createTransport } from 'nodemailer'
 import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
 import { findUserByEmail, updateUserPassword, useDb } from '../utils'
-import type { ModuleOptions } from '#nuxt-users/types'
+import type { ModuleOptions } from 'nuxt-users/utils'
 
 const TOKEN_EXPIRATION_HOURS = 1
 

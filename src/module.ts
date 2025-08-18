@@ -269,7 +269,6 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       filePath: resolver.resolve('./runtime/components/NUsersUserForm.vue')
     })
 
-    // TODOAdd global CSS with color variables
     nuxt.options.css = nuxt.options.css || []
     nuxt.options.css.push(resolver.resolve('./runtime/assets/nuxt-users.css'))
   },

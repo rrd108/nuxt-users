@@ -1,5 +1,5 @@
 import { createDatabase } from 'db0'
-import type { ModuleOptions } from '#nuxt-users/types'
+import type { ModuleOptions } from 'nuxt-users/utils'
 
 export const getConnector = async (name: string) => {
   try {

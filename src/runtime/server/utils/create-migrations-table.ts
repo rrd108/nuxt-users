@@ -1,5 +1,5 @@
 import { useDb } from './db'
-import type { ModuleOptions } from '#nuxt-users/types'
+import type { ModuleOptions } from 'nuxt-users/utils'
 
 export const createMigrationsTable = async (options: ModuleOptions) => {
   const connectorName = options.connector!.name

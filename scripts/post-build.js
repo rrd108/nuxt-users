@@ -48,12 +48,7 @@ function fixImportPaths(dir) {
       let content = readFileSync(fullPath, 'utf8')
       let modified = false
 
-      // Fix #nuxt-users/types alias imports to nuxt-users/utils
-      const aliasImportRegex = /from\s+["']#nuxt-users\/types["']/g
-      if (aliasImportRegex.test(content)) {
-        content = content.replace(aliasImportRegex, 'from "nuxt-users/utils"')
-        modified = true
-      }
+      // Note: #nuxt-users/types imports are now handled by TypeScript module resolution
 
       // Fix relative imports to utils (../../../utils -> ../../../utils.js)
       const utilsImportRegex = /from\s+["'](\.\.[/\\]){2,}utils["']/g

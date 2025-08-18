@@ -1,5 +1,5 @@
 import { useDb } from './db'
-import type { ModuleOptions } from '#nuxt-users/types'
+import type { ModuleOptions } from 'nuxt-users/utils'
 import { createUsersTable } from './create-users-table'
 import { createPersonalAccessTokensTable } from './create-personal-access-tokens-table'
 import { createPasswordResetTokensTable } from './create-password-reset-tokens-table'

@@ -1,5 +1,5 @@
 import { createError, defineEventHandler, getCookie } from 'h3'
-import type { ModuleOptions } from '#nuxt-users/types'
+import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import { getCurrentUserFromToken } from '../../utils'
 

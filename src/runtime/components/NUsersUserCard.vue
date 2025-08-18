@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useAuthentication } from '../composables/useAuthentication'
 import { useRuntimeConfig } from '#imports'
-import { defaultDisplayFields, defaultFieldLabels, type DisplayFieldsProps, type User } from '#nuxt-users/types'
+import { defaultDisplayFields, defaultFieldLabels, type DisplayFieldsProps, type User } from 'nuxt-users/utils'
 
 interface Props extends DisplayFieldsProps {
   user: User

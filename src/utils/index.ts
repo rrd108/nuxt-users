@@ -11,7 +11,10 @@ export type {
   RuntimeModuleOptions,
   DisplayFieldsProps,
   LoginFormProps,
-  ResetPasswordFormProps
+  ResetPasswordFormProps,
+  Permission,
+  DatabaseType,
+  DatabaseConfig
 } from '../types'
 
 export { defaultDisplayFields, defaultFieldLabels } from '../types'
