@@ -1,5 +1,17 @@
 import { createDatabase } from 'db0'
+import type { Database } from 'db0'
 import type { ModuleOptions } from 'nuxt-users/utils'
+
+const dbCache = new Map<string, Database>()
+
+export const closeAllDbConnections = async () => {
+  for (const db of dbCache.values()) {
+    if (db && typeof (db as any).disconnect === 'function') {
+      await (db as any).disconnect()
+    }
+  }
+  dbCache.clear()
+}
 
 export const getConnector = async (name: string) => {
   try {
@@ -17,15 +29,21 @@ export const getConnector = async (name: string) => {
   catch (error) {
     if (error instanceof Error && error.message.includes('Cannot resolve')) {
       throw new Error(`Database connector "${name}" not found. Please install the required peer dependency:\n`
-        + '- For sqlite: yarn add better-sqlite3\n'
-        + '- For mysql: yarn add mysql2\n'
+        + '- For sqlite: yarn add better-sqlite3\n' 
+        + '- For mysql: yarn add mysql2\n' 
         + '- For postgresql: yarn add pg')
     }
     throw error
   }
 }
 
-export const useDb = async (options: ModuleOptions) => {
+export const useDb = async (options: ModuleOptions): Promise<Database> => {
+  const cacheKey = JSON.stringify(options.connector)
+
+  if (dbCache.has(cacheKey)) {
+    return dbCache.get(cacheKey)!
+  }
+
   const connectorName = options.connector!.name
   const connector = await getConnector(connectorName)
 
@@ -36,7 +54,9 @@ export const useDb = async (options: ModuleOptions) => {
   }
 
   try {
-    return createDatabase(connector(connectorOptions))
+    const db = createDatabase(connector(connectorOptions))
+    dbCache.set(cacheKey, db)
+    return db
   }
   catch (error) {
     console.warn(`[Nuxt Users] ⚠️  Failed to connect to ${connectorName} database:`, error instanceof Error ? error.message : 'Unknown error')

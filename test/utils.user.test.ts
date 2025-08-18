@@ -57,19 +57,6 @@ describe('User Utilities (src/utils/user.ts)', () => {
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.passwordResetTokens)
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.personalAccessTokens)
-
-    // Close the database connection
-    if (db) {
-      try {
-        const dbWithDisconnect = db as { disconnect?: () => Promise<void> }
-        if (dbWithDisconnect.disconnect) {
-          await dbWithDisconnect.disconnect()
-        }
-      }
-      catch {
-        // Ignore errors during cleanup
-      }
-    }
   })
 
   describe('createUser', () => {

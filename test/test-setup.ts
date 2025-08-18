@@ -88,11 +88,6 @@ export const cleanupTestSetup = async (dbType: DatabaseType, db: Database, clean
     if (db) {
       try {
         await db.sql`DROP TABLE IF EXISTS {${tableName}}`
-        // Close the database connection
-        const dbWithDisconnect = db as { disconnect?: () => Promise<void> }
-        if (dbWithDisconnect.disconnect) {
-          await dbWithDisconnect.disconnect()
-        }
       }
       catch {
         // Ignore errors during cleanup
