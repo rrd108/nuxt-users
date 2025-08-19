@@ -2,11 +2,15 @@
 import { computed } from 'vue'
 import { useAuthentication } from '../composables/useAuthentication'
 import { useRuntimeConfig } from '#imports'
-import { defaultDisplayFields, defaultFieldLabels, type DisplayFieldsProps, type User } from 'nuxt-users/utils'
+import { defaultDisplayFields, defaultFieldLabels, type User } from 'nuxt-users/utils'
 
-interface Props extends DisplayFieldsProps {
+// Note: We define Props interface inline instead of importing DisplayFieldsProps from 'nuxt-users/utils'
+// because the Vue SFC transformer cannot resolve these imported types during the module build process
+interface Props {
   user: User
   index: number
+  displayFields?: string[]
+  fieldLabels?: Record<string, string>
 }
 
 const props = withDefaults(defineProps<Props>(), {

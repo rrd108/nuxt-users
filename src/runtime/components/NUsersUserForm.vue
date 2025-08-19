@@ -4,9 +4,13 @@ import type { RuntimeModuleOptions, User } from 'nuxt-users/utils'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
 import { useRuntimeConfig } from '#imports'
 
-const props = defineProps<{
+// Note: We define Props interface inline instead of importing types from 'nuxt-users/utils'
+// because the Vue SFC transformer cannot resolve these imported types during the module build process
+interface Props {
   user?: User | null
-}>()
+}
+
+const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'submit', userData: Partial<User>): void

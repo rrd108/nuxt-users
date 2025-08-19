@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { navigateTo } from '#app'
-import type { LoginFormData, LoginFormProps, UserWithoutPassword, ModuleOptions } from 'nuxt-users/utils'
+import type { LoginFormData, UserWithoutPassword, ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
 const { passwordValidation } = nuxtUsers as ModuleOptions
+
+// Note: We define Props interface inline instead of importing LoginFormProps from 'nuxt-users/utils'
+// because the Vue SFC transformer cannot resolve these imported types during the module build process
+interface Props {
+  apiEndpoint?: string
+  forgotPasswordEndpoint?: string
+  redirectTo?: string
+}
 
 interface Emits {
   (e: 'success', user: UserWithoutPassword): void
@@ -14,7 +22,7 @@ interface Emits {
   (e: 'forgot-password-success'): void
 }
 
-const props = defineProps<LoginFormProps>()
+const props = defineProps<Props>()
 
 const emit = defineEmits<Emits>()
 

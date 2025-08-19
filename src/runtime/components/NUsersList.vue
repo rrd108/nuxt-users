@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRuntimeConfig } from '#imports'
-import { defaultDisplayFields, defaultFieldLabels, type DisplayFieldsProps, type User } from 'nuxt-users/utils'
+import { defaultDisplayFields, defaultFieldLabels, type User } from 'nuxt-users/utils'
 
 interface Pagination {
   page: number
@@ -17,7 +17,14 @@ interface UsersResponse {
   pagination: Pagination
 }
 
-withDefaults(defineProps<DisplayFieldsProps>(), {
+// Note: We define Props interface inline instead of importing DisplayFieldsProps from 'nuxt-users/utils'
+// because the Vue SFC transformer cannot resolve these imported types during the module build process
+interface Props {
+  displayFields?: string[]
+  fieldLabels?: Record<string, string>
+}
+
+withDefaults(defineProps<Props>(), {
   displayFields: () => defaultDisplayFields,
   fieldLabels: () => defaultFieldLabels
 })

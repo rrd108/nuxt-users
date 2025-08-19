@@ -11,10 +11,18 @@
  * For password change: requires user to be logged in and provide current password
  */
 import { ref, watch, computed } from 'vue'
-import type { UserWithoutPassword, ModuleOptions, ResetPasswordFormProps } from 'nuxt-users/utils'
+import type { UserWithoutPassword, ModuleOptions } from 'nuxt-users/utils'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
 import { useRuntimeConfig, useRoute, useRouter } from '#imports'
 import NUsersPasswordStrengthIndicator from './NUsersPasswordStrengthIndicator.vue'
+
+// Note: We define Props interface inline instead of importing ResetPasswordFormProps from 'nuxt-users/utils'
+// because the Vue SFC transformer cannot resolve these imported types during the module build process
+interface Props {
+  updatePasswordEndpoint?: string
+  resetPasswordEndpoint?: string
+  redirectTo?: string
+}
 
 interface Emits {
   (e: 'success', user: UserWithoutPassword): void
@@ -25,7 +33,7 @@ interface Emits {
 const { public: { nuxtUsers } } = useRuntimeConfig()
 const moduleOptions = nuxtUsers as ModuleOptions
 
-const props = defineProps<ResetPasswordFormProps>()
+const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 const route = useRoute()
