@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v1.22.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.21.0...v1.22.0)
+
+### 🚀 Enhancements
+
+- Password reset url is configurable ([0a3d443](https://github.com/rrd108/nuxt-users/commit/0a3d443))
+
+### 🩹 Fixes
+
+- Imports setup ([dd8e8df](https://github.com/rrd108/nuxt-users/commit/dd8e8df))
+
+### 💅 Refactors
+
+- Vue SFC type resolution during module build ([533fa36](https://github.com/rrd108/nuxt-users/commit/533fa36))
+
+### 🏡 Chore
+
+- Remove unused file ([14bea18](https://github.com/rrd108/nuxt-users/commit/14bea18))
+- Lint fix ([a11887b](https://github.com/rrd108/nuxt-users/commit/a11887b))
+- **release:** V1.21.0 ([3eb08bd](https://github.com/rrd108/nuxt-users/commit/3eb08bd))
+- Update ip ([3139eab](https://github.com/rrd108/nuxt-users/commit/3139eab))
+- Removes unused import ([61089b4](https://github.com/rrd108/nuxt-users/commit/61089b4))
+- Unused imort removed ([3f3012f](https://github.com/rrd108/nuxt-users/commit/3f3012f))
+- Remove unsued import ([ae1f4e3](https://github.com/rrd108/nuxt-users/commit/ae1f4e3))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.21.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.18.0...v1.21.0)
