@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-SERVER_HOST="34.40.36.131"
+SERVER_HOST="35.198.93.8"
 SERVER_USER="sravanam"
 REMOTE_DOCS_PATH="/var/www/nuxt-users.webmania.cc"
 LOCAL_BUILD_PATH="docs/.vitepress/dist"
