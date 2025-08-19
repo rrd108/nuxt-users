@@ -11,7 +11,8 @@ const TOKEN_EXPIRATION_HOURS = 1
  */
 export const sendPasswordResetLink = async (
   email: string,
-  options: ModuleOptions): Promise<void> => {
+  options: ModuleOptions,
+  baseUrl?: string): Promise<void> => {
   const user = await findUserByEmail(email, options)
 
   if (!user) {
@@ -54,7 +55,9 @@ export const sendPasswordResetLink = async (
   })
 
   // Construct the complete password reset URL with token and email
-  const resetUrl = new URL('/reset-password', options.passwordResetBaseUrl || 'http://localhost:3000')
+  // Use the provided baseUrl, or fall back to a sensible default for development
+  const appBaseUrl = baseUrl || 'http://localhost:3000'
+  const resetUrl = new URL(options.passwordResetUrl, appBaseUrl)
   resetUrl.searchParams.set('token', token)
   resetUrl.searchParams.set('email', email)
 

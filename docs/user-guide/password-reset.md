@@ -30,6 +30,52 @@ https://yourapp.com/reset-password?token=abc123...&email=user@example.com
 
 Your reset password page should read these query parameters to populate the reset form.
 
+## Reset URL Configuration
+
+The module automatically constructs password reset URLs using your application's base URL and the configured path.
+
+### Default Behavior
+
+By default, reset links use `/reset-password` as the path:
+
+```
+https://yourapp.com/reset-password?token=abc123...&email=user@example.com
+```
+
+### Custom Reset URL Path
+
+You can customize the path portion of the reset URL:
+
+```ts
+nuxtUsers: {
+  passwordResetUrl: '/auth/reset-password', // Custom path
+}
+```
+
+This will generate reset links like:
+
+```
+https://yourapp.com/auth/reset-password?token=abc123...&email=user@example.com
+```
+
+### Zero Configuration
+
+The module automatically detects your application's base URL from the incoming request, so you don't need to configure a full base URL. The system intelligently combines:
+
+- **Request host**: Automatically detected from headers
+- **Protocol**: Detected from `x-forwarded-proto` header or defaults to `http`
+- **Reset path**: Your configured `passwordResetUrl` (default: `/reset-password`)
+
+### Development vs Production
+
+**Development** (automatic detection):
+- Request to `http://localhost:3000` → Reset URL: `http://localhost:3000/reset-password`
+
+**Production** (automatic detection):
+- Request to `https://myapp.com` → Reset URL: `https://myapp.com/reset-password`
+
+No manual configuration of base URLs required!
+
 ## Configuration
 
 Configure the mailer in your `nuxt.config.ts`:
@@ -57,7 +103,7 @@ export default defineNuxtConfig({
         from: '"Your App" <noreply@yourapp.com>',
       },
     },
-    passwordResetBaseUrl: 'https://yourapp.com', // Base URL for reset links
+    passwordResetUrl: '/reset-password', // URL path for password reset page
   }
 })
 ```
@@ -81,7 +127,7 @@ nuxtUsers: {
       from: '"My Nuxt App" <noreply@example.com>',
     },
   },
-  passwordResetBaseUrl: 'http://localhost:3000',
+  passwordResetUrl: '/reset-password', // Custom URL path (optional)
 }
 ```
 

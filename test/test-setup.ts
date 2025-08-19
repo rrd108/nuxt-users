@@ -58,6 +58,7 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
       pass: process.env.MAILER_PASSWORD || 'test'
     }
   },
+  passwordResetUrl: '/reset-password',
   auth: {
     whitelist: [],
     tokenExpiration: 1440,

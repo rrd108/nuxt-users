@@ -38,10 +38,10 @@ export interface RuntimeModuleOptions {
   mailer?: MailerOptions
 
   /**
-   * Base URL for password reset links
-   * @default 'http://localhost:3000' // Example, will be set in module defaults
+   * URL path for password reset page
+   * @default '/reset-password'
    */
-  passwordResetBaseUrl?: string
+  passwordResetUrl?: string
   /**
    * Skip database checks during module setup to prevent hanging
    * @default false
@@ -120,7 +120,7 @@ export interface ModuleOptions {
     passwordResetTokens: string
   }
   mailer?: MailerOptions
-  passwordResetBaseUrl?: string
+  passwordResetUrl: string
   auth: {
     whitelist: string[]
     tokenExpiration: number

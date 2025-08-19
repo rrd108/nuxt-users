@@ -65,7 +65,7 @@ describe('Reset Password API Route', () => {
     // Mock test options
     testOptions = {
       ...defaultOptions,
-      passwordResetBaseUrl: 'http://localhost:3000/reset-password'
+      passwordResetUrl: '/reset-password'
     }
 
     // Mock password validation options

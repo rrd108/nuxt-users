@@ -10,6 +10,7 @@ vi.mock('#imports', () => ({
 // Mock h3 functions
 const mockReadBody = vi.fn()
 const mockCreateError = vi.fn()
+const mockGetHeader = vi.fn()
 const mockDefineEventHandler = vi.fn(handler => handler)
 const mockUseRuntimeConfig = vi.fn()
 const mockSendPasswordResetLink = vi.fn()
@@ -17,7 +18,8 @@ const mockSendPasswordResetLink = vi.fn()
 vi.mock('h3', () => ({
   defineEventHandler: mockDefineEventHandler,
   readBody: mockReadBody,
-  createError: mockCreateError
+  createError: mockCreateError,
+  getHeader: mockGetHeader
 }))
 
 vi.mock('../../src/runtime/server/services/password', () => ({
@@ -37,12 +39,19 @@ describe('Forgot Password API Route', () => {
     // Mock test options
     testOptions = {
       ...defaultOptions,
-      passwordResetBaseUrl: 'http://localhost:3000/reset-password'
+      passwordResetUrl: '/reset-password'
     }
 
     // Mock runtime config
     mockUseRuntimeConfig.mockReturnValue({
       nuxtUsers: testOptions
+    })
+
+    // Mock getHeader to return default values
+    mockGetHeader.mockImplementation((event, headerName) => {
+      if (headerName === 'host') return 'localhost:3000'
+      if (headerName === 'x-forwarded-proto') return null
+      return null
     })
 
     // Create mock event
@@ -75,8 +84,8 @@ describe('Forgot Password API Route', () => {
     // Verify readBody was called correctly
     expect(mockReadBody).toHaveBeenCalledWith(mockEvent)
 
-    // Verify sendPasswordResetLink was called with correct parameters
-    expect(mockSendPasswordResetLink).toHaveBeenCalledWith(validEmail, testOptions)
+    // Verify sendPasswordResetLink was called with correct parameters (including baseUrl)
+    expect(mockSendPasswordResetLink).toHaveBeenCalledWith(validEmail, testOptions, 'http://localhost:3000')
 
     // Verify response structure
     expect(response).toBeDefined()
@@ -233,7 +242,7 @@ describe('Forgot Password API Route', () => {
 
     // Verify readBody was called
     expect(mockReadBody).toHaveBeenCalledWith(mockEvent)
-    expect(mockSendPasswordResetLink).toHaveBeenCalledWith(validEmail, testOptions)
+    expect(mockSendPasswordResetLink).toHaveBeenCalledWith(validEmail, testOptions, 'http://localhost:3000')
     expect(mockCreateError).toHaveBeenCalledWith({
       statusCode: 500,
       statusMessage: 'An internal server error occurred.'
@@ -269,7 +278,7 @@ describe('Forgot Password API Route', () => {
 
     // Verify readBody was called
     expect(mockReadBody).toHaveBeenCalledWith(mockEvent)
-    expect(mockSendPasswordResetLink).toHaveBeenCalledWith(validEmail, testOptions)
+    expect(mockSendPasswordResetLink).toHaveBeenCalledWith(validEmail, testOptions, 'http://localhost:3000')
     expect(mockCreateError).toHaveBeenCalledWith({
       statusCode: 500,
       statusMessage: 'An internal server error occurred.'
@@ -292,7 +301,7 @@ describe('Forgot Password API Route', () => {
     expect(mockReadBody).toHaveBeenCalledWith(mockEvent)
 
     // Verify sendPasswordResetLink was called with correct parameters
-    expect(mockSendPasswordResetLink).toHaveBeenCalledWith(specialEmail, testOptions)
+    expect(mockSendPasswordResetLink).toHaveBeenCalledWith(specialEmail, testOptions, 'http://localhost:3000')
 
     // Verify response structure
     expect(response).toBeDefined()
@@ -315,7 +324,7 @@ describe('Forgot Password API Route', () => {
     expect(mockReadBody).toHaveBeenCalledWith(mockEvent)
 
     // Verify sendPasswordResetLink was called with correct parameters
-    expect(mockSendPasswordResetLink).toHaveBeenCalledWith(longEmail, testOptions)
+    expect(mockSendPasswordResetLink).toHaveBeenCalledWith(longEmail, testOptions, 'http://localhost:3000')
 
     // Verify response structure
     expect(response).toBeDefined()

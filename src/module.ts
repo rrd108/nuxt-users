@@ -28,7 +28,7 @@ export const defaultOptions: ModuleOptions = {
       from: '"Nuxt Users Module" <noreply@example.com>',
     },
   },
-  passwordResetBaseUrl: 'http://localhost:3000',
+  passwordResetUrl: '/reset-password',
   auth: {
     whitelist: [],
     tokenExpiration: 24 * 60, // 24 hours
@@ -61,6 +61,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     nuxt.options.runtimeConfig.nuxtUsers = {
       ...runtimeConfigOptions,
       apiBasePath: options.apiBasePath || defaultOptions.apiBasePath,
+      passwordResetUrl: options.passwordResetUrl || defaultOptions.passwordResetUrl,
       tables: {
         migrations: options.tables?.migrations || defaultOptions.tables.migrations,
         users: options.tables?.users || defaultOptions.tables.users,

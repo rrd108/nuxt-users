@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody, createError } from 'h3'
+import { defineEventHandler, readBody, createError, getHeader } from 'h3'
 import { sendPasswordResetLink } from '../../../services/password'
 import { useRuntimeConfig } from '#imports'
 import type { ModuleOptions } from 'nuxt-users/utils'
@@ -18,7 +18,12 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await sendPasswordResetLink(email, options)
+    // Try to determine the base URL from the request
+    const host = getHeader(event, 'host')
+    const protocol = getHeader(event, 'x-forwarded-proto') || 'http'
+    const baseUrl = host ? `${protocol}://${host}` : undefined
+
+    await sendPasswordResetLink(email, options, baseUrl)
     // Always return a success-like message to prevent email enumeration
     return { message: 'If a user with that email exists, a password reset link has been sent.' }
   }

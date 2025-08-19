@@ -59,8 +59,8 @@ export default defineNuxtConfig({
       }
     },
     
-    // Password reset URL
-    passwordResetBaseUrl: 'https://yourapp.com',
+    // Password reset URL path
+    passwordResetUrl: '/reset-password',
     
     // Authentication settings
     auth: {
@@ -159,7 +159,7 @@ nuxtUsers: {
       from: '"My App" <noreply@example.com>'
     }
   },
-  passwordResetBaseUrl: 'http://localhost:3000'
+  passwordResetUrl: '/reset-password'
 }
 ```
 
@@ -181,7 +181,7 @@ nuxtUsers: {
       from: '"Your App" <noreply@yourapp.com>'
     }
   },
-  passwordResetBaseUrl: 'https://yourapp.com'
+  passwordResetUrl: '/reset-password'
 }
 ```
 
@@ -248,7 +248,7 @@ nuxtUsers: {
 }
 ```
 
-**Note:** Login (`/login`) and password reset routes are always whitelisted automatically.
+**Note:** Login (`/login`), password reset page (default `/reset-password` or your custom `passwordResetUrl`), and password reset API endpoints are always whitelisted automatically.
 
 ### Role-Based Access Control (RBAC)
 
@@ -397,7 +397,7 @@ export default defineNuxtConfig({
       }
     },
     
-    passwordResetBaseUrl: process.env.PASSWORD_RESET_BASE_URL,
+    passwordResetUrl: process.env.PASSWORD_RESET_URL || '/reset-password',
     
     auth: {
       tokenExpiration: Number(process.env.TOKEN_EXPIRATION) || 1440
@@ -428,7 +428,7 @@ MAILER_PASS=app_specific_password
 MAILER_FROM="My App <noreply@myapp.com>"
 
 # URLs
-PASSWORD_RESET_BASE_URL=https://myapp.com
+PASSWORD_RESET_URL=/auth/reset-password
 
 # Auth
 TOKEN_EXPIRATION=1440
@@ -474,7 +474,7 @@ const defaults = {
       from: '"Nuxt Users Module" <noreply@example.com>'
     }
   },
-  passwordResetBaseUrl: 'http://localhost:3000',
+  passwordResetUrl: '/reset-password',
   auth: {
     whitelist: [],
     tokenExpiration: 1440,

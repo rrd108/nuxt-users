@@ -58,8 +58,8 @@ export default defineNuxtConfig({
     //     from: '"Your App Name" <noreply@example.com>',
     //   },
     // },
-    // Optional: Configure base URL for password reset links
-    // passwordResetBaseUrl: 'http://localhost:3000', // Default
+    // Optional: Configure URL path for password reset page
+    // passwordResetUrl: '/reset-password', // Default
   }
 })
 ```

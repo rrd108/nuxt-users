@@ -126,7 +126,7 @@ interface RuntimeModuleOptions {
     passwordResetTokens?: string
   }
   mailer?: MailerOptions
-  passwordResetBaseUrl?: string
+  passwordResetUrl?: string
   auth?: {
     whitelist?: string[]
     tokenExpiration?: number
@@ -161,7 +161,7 @@ interface ModuleOptions {
     passwordResetTokens: string
   }
   mailer?: MailerOptions
-  passwordResetBaseUrl?: string
+  passwordResetUrl: string
   auth: {
     whitelist: string[]
     tokenExpiration: number

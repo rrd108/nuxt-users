@@ -39,8 +39,8 @@ export default defineNuxtConfig({
       }
     },
     
-    // Production URLs
-    passwordResetBaseUrl: process.env.PASSWORD_RESET_BASE_URL || 'https://myapp.com',
+    // Password reset URL path
+    passwordResetUrl: process.env.PASSWORD_RESET_URL || '/reset-password',
     
     // Security settings
     auth: {

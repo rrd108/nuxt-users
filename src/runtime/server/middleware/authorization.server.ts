@@ -20,8 +20,14 @@ export default defineEventHandler(async (event) => {
     return
   }
 
-  // internal no-auth paths (e.g., /login)
-  if (NO_AUTH_PATHS.includes(event.path)) {
+  // internal no-auth paths (e.g., /login, /reset-password) and custom password reset URL
+  const noAuthPaths = [...NO_AUTH_PATHS]
+  // Add custom password reset URL if different from default
+  if (options.passwordResetUrl && options.passwordResetUrl !== '/reset-password') {
+    noAuthPaths.push(options.passwordResetUrl)
+  }
+
+  if (noAuthPaths.includes(event.path)) {
     console.log(`[Nuxt Users] server.middleware.auth.global: NO_AUTH_PATH: ${event.path}`)
     return
   }
