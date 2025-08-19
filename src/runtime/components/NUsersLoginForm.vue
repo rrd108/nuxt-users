@@ -212,7 +212,7 @@ const handleForgotPassword = async () => {
       >
         <div
           v-if="forgotPasswordMessage"
-          class="success-message"
+          class="n-users-success-message"
         >
           {{ forgotPasswordMessage }}
         </div>
@@ -225,7 +225,7 @@ const handleForgotPassword = async () => {
       >
         <div
           v-if="error"
-          class="error-message"
+          class="n-users-error-message"
         >
           {{ error }}
         </div>
