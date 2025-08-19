@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, useRuntimeConfig } from 'vue'
 import type { PasswordValidationResult, ModuleOptions } from 'nuxt-users/utils'
 
 // Note: We define Props interface inline to ensure compatibility during the module build process
