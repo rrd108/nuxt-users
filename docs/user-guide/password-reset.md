@@ -135,7 +135,7 @@ nuxtUsers: {
 
 ### NUsersResetPasswordForm
 
-The simplest way to implement password reset is using the provided component:
+The simplest way to implement password reset is creating a new page called `reset-password.vue` and using the `NUsersResetPasswordForm` component:
 
 ```vue
 <template>
