@@ -116,7 +116,7 @@
     "@nuxt/test-utils": "^3.19.2",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "latest",
-    "@types/nodemailer": "^6.4.17",
+    "@types/nodemailer": "^7.0.0",
     "@types/pg": "^8.15.4",
     "changelogen": "^0.6.2",
     "eslint": "^9.30.1",
