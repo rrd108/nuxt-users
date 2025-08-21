@@ -32,7 +32,7 @@ export default defineNuxtConfig({
   nuxtUsers: {
     // ... other options
     auth: {
-      whitelist: ['/login', '/register', '/public'],
+      whitelist: ['/register', '/public'],
       permissions: {
         admin: ['*'], // Admin can access everything
         user: ['/profile', '/settings', '/api/nuxt-users/me'],
@@ -101,7 +101,7 @@ permissions: {
 ```ts
 nuxtUsers: {
   auth: {
-    whitelist: ['/login', '/register', '/about'],
+    whitelist: ['/register', '/about'],
     permissions: {
       admin: ['*'],
       user: ['/profile', '/dashboard'],
@@ -115,7 +115,7 @@ nuxtUsers: {
 ```ts
 nuxtUsers: {
   auth: {
-    whitelist: ['/login', '/register', '/products', '/categories'],
+    whitelist: ['/register', '/products', '/categories'],
     permissions: {
       admin: ['*'],
       manager: ['/admin/*', '/api/admin/*', '/reports/*'],
@@ -130,7 +130,7 @@ nuxtUsers: {
 ```ts
 nuxtUsers: {
   auth: {
-    whitelist: ['/login', '/register', '/public/*'],
+    whitelist: ['/register', '/public/*'],
     permissions: {
       super_admin: ['*'],
       admin: ['/admin/*', '/api/admin/*'],
@@ -213,3 +213,169 @@ The default role is `user` if not specified.
 - Use `/*` for sub-path matching (e.g., `/admin/*` matches `/admin/users`)
 - Use `*` for full access (e.g., `admin: ['*']`)
 - Test complex patterns with the actual paths you're trying to protect
+
+## Programmatic Access Control
+
+### usePublicPaths Composable
+
+The module provides a `usePublicPaths` composable that allows you to programmatically determine which paths are accessible to users. This is useful for building dynamic navigation menus, API endpoint lists, or conditional UI elements.
+
+```vue
+<script setup>
+import { usePublicPaths } from 'nuxt-users/composables'
+
+const { getPublicPaths, getAccessiblePaths, isPublicPath, isAccessiblePath } = usePublicPaths()
+</script>
+```
+
+#### Getting Public Paths
+
+Get all paths that don't require authentication (accessible to everyone):
+
+```js
+const publicPaths = getPublicPaths()
+console.log(publicPaths)
+/*
+{
+  all: ['/login', '/reset-password', '/api/nuxt-users/session', '/about'],
+  builtIn: {
+    pages: ['/login', '/reset-password'],
+    api: ['/api/nuxt-users/session', '/api/nuxt-users/password/forgot', '/api/nuxt-users/password/reset']
+  },
+  whitelist: ['/about', '/contact'], // From your nuxt.config.ts
+  customPasswordResetPath: null,
+  apiBasePath: '/api/nuxt-users'
+}
+*/
+```
+
+#### Getting User-Accessible Paths
+
+Get all paths accessible to the current authenticated user (includes public + role-based paths):
+
+```js
+const accessiblePaths = getAccessiblePaths()
+console.log(accessiblePaths)
+/*
+For authenticated user with 'user' role:
+{
+  all: ['/login', '/about', '/profile', '/dashboard', '/api/nuxt-users/me'],
+  public: ['/login', '/reset-password', '/about'],
+  roleBasedPaths: ['/profile', '/dashboard', '/api/nuxt-users/me'],
+  userRole: 'user'
+}
+*/
+```
+
+#### Checking Individual Paths
+
+Check if specific paths are accessible:
+
+```js
+// Check if a path is truly public (no auth required)
+console.log(isPublicPath('/login'))     // true
+console.log(isPublicPath('/profile'))   // false
+console.log(isPublicPath('/about'))     // true (if whitelisted)
+
+// Check if current user can access a path
+console.log(isAccessiblePath('/profile'))           // true if user role allows
+console.log(isAccessiblePath('/admin'))             // depends on user role
+console.log(isAccessiblePath('/api/users', 'POST')) // check specific HTTP method
+```
+
+#### Practical Examples
+
+**Building Dynamic Navigation:**
+
+```vue
+<template>
+  <nav>
+    <NuxtLink 
+      v-for="item in visibleNavItems" 
+      :key="item.path"
+      :to="item.path"
+    >
+      {{ item.label }}
+    </NuxtLink>
+  </nav>
+</template>
+
+<script setup>
+const { isAccessiblePath } = usePublicPaths()
+
+const allNavItems = [
+  { path: '/dashboard', label: 'Dashboard' },
+  { path: '/profile', label: 'Profile' },
+  { path: '/admin', label: 'Admin Panel' },
+  { path: '/about', label: 'About' }
+]
+
+const visibleNavItems = computed(() => 
+  allNavItems.filter(item => isAccessiblePath(item.path))
+)
+</script>
+```
+
+**Conditional API Endpoints:**
+
+```vue
+<script setup>
+const { isAccessiblePath } = usePublicPaths()
+
+const availableActions = computed(() => {
+  const actions = []
+  
+  if (isAccessiblePath('/api/users', 'GET')) {
+    actions.push({ label: 'View Users', endpoint: '/api/users', method: 'GET' })
+  }
+  
+  if (isAccessiblePath('/api/users', 'POST')) {
+    actions.push({ label: 'Create User', endpoint: '/api/users', method: 'POST' })
+  }
+  
+  return actions
+})
+</script>
+```
+
+**Role-Based UI Components:**
+
+```vue
+<template>
+  <div>
+    <!-- Always visible for public paths -->
+    <PublicContent v-if="isPublicPath($route.path)" />
+    
+    <!-- Only visible if user can access admin routes -->
+    <AdminPanel v-if="canAccessAdmin" />
+    
+    <!-- Conditional buttons based on permissions -->
+    <button v-if="canCreateUsers" @click="createUser">
+      Create User
+    </button>
+  </div>
+</template>
+
+<script setup>
+const { isPublicPath, isAccessiblePath } = usePublicPaths()
+
+const canAccessAdmin = computed(() => 
+  isAccessiblePath('/admin')
+)
+
+const canCreateUsers = computed(() => 
+  isAccessiblePath('/api/users', 'POST')
+)
+</script>
+```
+
+### API Reference
+
+| Method | Description | Returns |
+|--------|-------------|----------|
+| `getPublicPaths()` | Get all truly public paths (no auth required) | Object with categorized public paths |
+| `getAccessiblePaths()` | Get all paths accessible to current user | Object with public + role-based paths |
+| `isPublicPath(path)` | Check if a path is public | Boolean |
+| `isAccessiblePath(path, method?)` | Check if current user can access path | Boolean |
+
+**Note:** Static assets (files with dots) and Nuxt internal routes (starting with `/_`) are always considered public and accessible.
