@@ -1,6 +1,39 @@
 # Changelog
 
 
+## v1.23.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.22.0...v1.23.0)
+
+### 🚀 Enhancements
+
+- Password reset url is configurable ([0a3d443](https://github.com/rrd108/nuxt-users/commit/0a3d443))
+- Adds programmatic access control ([8bb517a](https://github.com/rrd108/nuxt-users/commit/8bb517a))
+
+### 💅 Refactors
+
+- Vue SFC type resolution during module build ([533fa36](https://github.com/rrd108/nuxt-users/commit/533fa36))
+
+### 📖 Documentation
+
+- Reset-password page info added ([9b4e6c2](https://github.com/rrd108/nuxt-users/commit/9b4e6c2))
+
+### 🏡 Chore
+
+- Update ip ([3139eab](https://github.com/rrd108/nuxt-users/commit/3139eab))
+- Removes unused import ([61089b4](https://github.com/rrd108/nuxt-users/commit/61089b4))
+- Unused imort removed ([3f3012f](https://github.com/rrd108/nuxt-users/commit/3f3012f))
+- Remove unsued import ([ae1f4e3](https://github.com/rrd108/nuxt-users/commit/ae1f4e3))
+- **release:** V1.22.0 ([914844f](https://github.com/rrd108/nuxt-users/commit/914844f))
+
+### ✅ Tests
+
+- Fix test cases ([844c3a7](https://github.com/rrd108/nuxt-users/commit/844c3a7))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.22.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.21.0...v1.22.0)
