@@ -67,7 +67,7 @@ const handleLogout = async (event: Event) => {
 
 <template>
   <div
-    :class="['logout-container', props.containerClass]"
+    :class="['n-users-logout-container', props.containerClass]"
     :style="props.containerStyle"
   >
     <div
