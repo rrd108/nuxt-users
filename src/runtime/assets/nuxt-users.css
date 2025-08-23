@@ -646,3 +646,24 @@ form {
         font-size: 1.5rem;
     }
 }
+
+/* Transition animations for user list */
+.n-users-list-move,
+.n-users-list-enter-active,
+.n-users-list-leave-active {
+    transition: all 0.3s ease;
+}
+
+.n-users-list-enter-from,
+.n-users-list-leave-to {
+    opacity: 0;
+    transform: translateX(2rem);
+}
+
+.n-users-list-leave-active {
+    position: absolute;
+}
+
+.n-users-list-move {
+    transition-timing-function: ease;
+}

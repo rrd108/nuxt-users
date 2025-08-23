@@ -29,7 +29,7 @@ withDefaults(defineProps<Props>(), {
   fieldLabels: () => defaultFieldLabels
 })
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'editClick' | 'delete', user: User): void
 }>()
 
@@ -69,6 +69,11 @@ defineExpose({
 onMounted(() => {
   fetchUsers()
 })
+
+const handleDelete = (user: User) => {
+  users.value = users.value.filter(u => u.id !== user.id)
+  emit('delete', user)
+}
 </script>
 
 <template>
@@ -105,7 +110,11 @@ onMounted(() => {
 
     <div v-if="users.length">
       <slot name="usersList">
-        <ul class="n-users-grid n-users-grid-auto">
+        <TransitionGroup
+          name="n-users-list"
+          tag="ul"
+          class="n-users-grid n-users-grid-auto"
+        >
           <li
             v-for="(user, index) in users"
             :key="user.id"
@@ -121,11 +130,11 @@ onMounted(() => {
                 :display-fields="displayFields"
                 :field-labels="fieldLabels"
                 @edit-click="$emit('editClick', user)"
-                @delete="$emit('delete', user)"
+                @delete="handleDelete(user)"
               />
             </slot>
           </li>
-        </ul>
+        </TransitionGroup>
       </slot>
 
       <slot
@@ -169,5 +178,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-<!-- CSS removed - now consolidated in nuxt-users.css -->
