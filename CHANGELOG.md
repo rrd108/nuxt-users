@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v1.24.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.23.1...v1.24.0)
+
+### 🚀 Enhancements
+
+- Remove user form view on deletion ([2066238](https://github.com/rrd108/nuxt-users/commit/2066238))
+
+### 🩹 Fixes
+
+- User patch sql error ([aa506dd](https://github.com/rrd108/nuxt-users/commit/aa506dd))
+
+### 🏡 Chore
+
+- **release:** V1.23.1 ([9b2ed06](https://github.com/rrd108/nuxt-users/commit/9b2ed06))
+
+### ✅ Tests
+
+- New test script added ([618b8dc](https://github.com/rrd108/nuxt-users/commit/618b8dc))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.23.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.23.0...v1.23.1)
