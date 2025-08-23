@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v1.28.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.27.0...v1.28.0)
+
+### 🚀 Enhancements
+
+- Expose useUsers composable ([485d81c](https://github.com/rrd108/nuxt-users/commit/485d81c))
+
+### 🩹 Fixes
+
+- Composables are initialized on mount ([b25eb95](https://github.com/rrd108/nuxt-users/commit/b25eb95))
+
+### 🏡 Chore
+
+- **release:** V1.27.0 ([195a5b7](https://github.com/rrd108/nuxt-users/commit/195a5b7))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.27.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.26.0...v1.27.0)
