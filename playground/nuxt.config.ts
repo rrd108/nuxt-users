@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     auth: {
       whitelist: ['/noauth'],
       tokenExpiration: 10,
-      // TODO: this makes yarn test:types fails for some unknown reason
+      // TODO: if it is uncommented it makes `yarn test:types` fails - for some unknown reason
       // INFO: if it is commented out you can not login to the playground
       /* permissions: {
         admin: ['*'],
