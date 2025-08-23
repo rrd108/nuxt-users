@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, nextTick, ref } from 'vue'
 import { useAuthentication } from '../composables/useAuthentication'
 import { useRuntimeConfig } from '#imports'
 import { defaultDisplayFields, defaultFieldLabels, type User } from 'nuxt-users/utils'
@@ -24,15 +24,15 @@ const emit = defineEmits<{
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
 
-// Initialize the custom composable state as null initially
-let authComposable: ReturnType<typeof useAuthentication> | null = null
+// Initialize the composable state as null initially to avoid build-time issues
+const authComposable = ref<ReturnType<typeof useAuthentication> | null>(null)
 
 // Create computed property that safely accesses the composable
-const currentUser = computed(() => authComposable?.user.value ?? null)
+const currentUser = computed(() => authComposable.value?.user ?? null)
 
-onMounted(() => {
-  // Initialize the custom composable only after the component is mounted
-  authComposable = useAuthentication()
+onMounted(async () => {
+  // Initialize the composable only after the component is mounted
+  authComposable.value = useAuthentication()
 })
 
 const canEdit = computed(() => {

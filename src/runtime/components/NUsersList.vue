@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useUsers } from '../composables/useUsers'
 import { defaultDisplayFields, defaultFieldLabels, type User } from 'nuxt-users/utils'
 
@@ -20,34 +20,34 @@ const emit = defineEmits<{
 }>()
 
 // Initialize the composable state as null initially
-let usersComposable: ReturnType<typeof useUsers> | null = null
+const usersComposable = ref<ReturnType<typeof useUsers> | null>(null)
 
 // Create computed properties that safely access the composable
-const users = computed(() => usersComposable?.users.value ?? [])
-const pagination = computed(() => usersComposable?.pagination.value ?? null)
-const loading = computed(() => usersComposable?.loading.value ?? false)
-const error = computed(() => usersComposable?.error.value ?? null)
+const users = computed(() => usersComposable.value?.users ?? [])
+const pagination = computed(() => usersComposable.value?.pagination ?? null)
+const loading = computed(() => usersComposable.value?.loading ?? false)
+const error = computed(() => usersComposable.value?.error ?? null)
 
-onMounted(() => {
+onMounted(async () => {
   // Initialize the composable only after the component is mounted
-  usersComposable = useUsers()
+  usersComposable.value = useUsers()
 
   // Fetch users only if the list is empty to avoid unnecessary fetches
   if (users.value.length === 0) {
-    usersComposable.fetchUsers()
+    usersComposable.value?.fetchUsers()
   }
 })
 
 const handleDelete = (user: User) => {
-  if (usersComposable) {
-    usersComposable.removeUser(user.id)
+  if (usersComposable.value) {
+    usersComposable.value?.removeUser(user.id)
   }
   emit('delete', user)
 }
 
 const handleFetchUsers = (page?: number, limit?: number) => {
-  if (usersComposable) {
-    usersComposable.fetchUsers(page, limit)
+  if (usersComposable.value) {
+    usersComposable.value.fetchUsers(page, limit)
   }
 }
 </script>
