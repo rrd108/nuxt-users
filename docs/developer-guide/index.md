@@ -20,6 +20,7 @@ If you're looking to contribute to the Nuxt Users module, you'll find everything
 If you need to understand the module's internal architecture or extend its functionality:
 
 - **[Architecture](./architecture.md)** - Comprehensive overview of the module's internal structure and design patterns
+- **[Composables](./composables.md)** - Guide to developing composables, including build-time compatibility issues and solutions
 - **[Database Internals](./database-internals.md)** - Deep dive into database utilities like `useDatabase()` and `useNuxtUsersDatabase()`
 - **[Server Utilities](./server-utilities.md)** - Documentation of internal server functions like `defineEventHandler()` and `getCookie()`
 
@@ -34,6 +35,7 @@ This guide documents the internal APIs and utilities that power the Nuxt Users m
 - **API Handlers**: Internal event handlers and server-side logic
 - **Security Utilities**: Password hashing, token management, and security functions
 - **Migration System**: Database schema management and migration utilities
+- **Composables**: Reactive state management and API interactions
 
 ## Getting Started as a Developer
 
@@ -41,6 +43,7 @@ This guide documents the internal APIs and utilities that power the Nuxt Users m
 2. **Read the [Architecture](./architecture.md)** documentation to understand the overall design
 3. **Review [Contributing Guidelines](./contributing.md)** before making changes
 4. **Check [Testing](./testing.md)** to learn how to validate your changes
+5. **Understand [Composables](./composables.md)** if you're working with reactive state management
 
 ## Difference from User Guide
 

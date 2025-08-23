@@ -72,6 +72,7 @@ export default defineConfig({
               { text: 'Overview', link: '/developer-guide/index' },
               { text: 'Development Setup', link: '/developer-guide/development-setup' },
               { text: 'Architecture', link: '/developer-guide/architecture' },
+              { text: 'Composables', link: '/developer-guide/composables' },
               { text: 'Database Internals', link: '/developer-guide/database-internals' },
               { text: 'Server Utilities', link: '/developer-guide/server-utilities' },
               { text: 'Testing', link: '/developer-guide/testing' },

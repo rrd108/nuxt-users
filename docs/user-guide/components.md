@@ -543,6 +543,41 @@ The components automatically adapt to light and dark themes based on system pref
 </style>
 ```
 
+## Troubleshooting
+
+### Build-Time Errors
+
+If you encounter build-time errors like this:
+
+```
+[Vue Router warn]: uncaught error during route navigation:
+ERROR [nuxt] A composable that requires access to the Nuxt instance was called outside of a plugin, Nuxt hook, Nuxt middleware, or Vue setup function.
+```
+
+This is a known issue that has been fixed in the module. The error occurs when components use composables that require Nuxt to be available during the build process.
+
+**Solution:** Update to the latest version of the module. If you're still experiencing issues, please report it as a bug.
+
+**Note:** This issue only affects certain components (`NUsersList`, `NUsersUserCard`, `NUsersLogoutLink`, `NUsersProfileInfo`) and has been resolved by implementing lazy initialization of composables.
+
+### Component Not Rendering
+
+If a component is not rendering or appears empty:
+
+1. **Check the console** for any JavaScript errors
+2. **Verify the component is properly imported** and registered
+3. **Ensure required props are provided** (check the component documentation)
+4. **Check that the API endpoints are accessible** and returning data
+
+### Authentication Issues
+
+If authentication components are not working:
+
+1. **Verify your configuration** - Check that `apiBasePath` is correctly set
+2. **Check network requests** - Ensure API calls are reaching your server
+3. **Review server logs** - Look for any server-side errors
+4. **Test with the playground** - Try the components in the module's playground
+
 ## Next Steps
 
 - **[Getting Started](/user-guide/getting-started)** - Learn how to set up authentication in your app
