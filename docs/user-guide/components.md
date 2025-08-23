@@ -181,9 +181,14 @@ const handleEdit = (user) => {
   editingUser.value = user
 }
 
-const handleUserUpdated = () => {
+const handleUserUpdated = (updatedUser) => {
   editingUser.value = null
-  userList.value?.refresh()
+  // Update the user in the list for immediate UI update
+  userList.value?.updateUser(updatedUser)
+}
+
+const handleEdit = (user) => {
+  editingUser.value = user
 }
 </script>
 
@@ -281,16 +286,70 @@ const handleUserUpdated = () => {
 | `user` | `{ user: User, index: number }` | Custom user item display |
 | `pagination` | `{ pagination, fetchUsers, loading }` | Custom pagination controls |
 
-**Methods**
+**Events**
 
-| Method | Description |
-|--------|-------------|
-| `refresh()` | Manually refresh the user list |
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `editClick` | `User` | Fired when edit button is clicked |
+| `delete` | `User` | Fired after successful user deletion |
 
 ### NUsersUserCard
 
 Displays individual user information with edit and delete actions. Used internally by `NUsersList` but can be used standalone.
 The `edit` and `delete` events are emitted when the edit or delete button is clicked. The `delete` event is calling the API to delete the user, while the `edit` event is just emitting the user object and let the parent component handle the edit action.
+
+### Automatic UI Updates
+
+The `NUsersList` component follows an event-driven pattern for handling user updates. When a user is edited, the component emits events that the parent can handle to update the local state.
+
+**Event Flow:**
+1. User clicks edit → `NUsersUserCard` emits `editClick`
+2. `NUsersList` forwards the event to parent → Parent receives `editClick`
+3. Parent shows edit form → User submits changes
+4. Parent updates local state → UI automatically reflects changes
+
+**Example with event-driven updates:**
+```vue
+<script setup>
+import { ref } from 'vue'
+import { useUsers } from 'nuxt-users/composables'
+
+const { users, updateUser } = useUsers()
+const editingUser = ref(null)
+
+const handleEdit = (user) => {
+  editingUser.value = user
+}
+
+const handleUserUpdated = (userData) => {
+  editingUser.value = null
+  // Update the local state using the composable
+  if (userData.id) {
+    updateUser(userData)
+  }
+}
+</script>
+
+<template>
+  <div>
+    <NUsersUserForm 
+      v-if="editingUser" 
+      :user="editingUser" 
+      @submit="handleUserUpdated" 
+    />
+    <NUsersList 
+      @edit-click="handleEdit" 
+    />
+  </div>
+</template>
+```
+
+**Benefits of this approach:**
+- **Loose coupling** - Components don't need to know about each other's internal methods
+- **Event-driven** - Clean separation of concerns
+- **Reusable** - Parent can handle events however it wants
+- **Testable** - Easy to test event handling
+- **Flexible** - Parent can implement any update strategy
 
 #### Basic Usage
 

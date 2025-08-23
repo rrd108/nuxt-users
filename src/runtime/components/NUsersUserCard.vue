@@ -71,6 +71,7 @@ const canDelete = computed(() => {
 })
 
 const editUser = async (user: User) => {
+  console.info('The edit event is emitted. Nuxt-users does not automatically calls the API to update the user, you should do it at the upper component.')
   emit('editClick', user)
 }
 

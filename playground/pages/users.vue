@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useUsers } from '../../src/runtime/composables/useUsers'
 import type { User } from '../../src/types'
 
-const usersListRef = ref()
-
-const refreshUserList = () => {
-  console.log('refreshUserList')
-  if (usersListRef.value) {
-    usersListRef.value.refresh()
-  }
-}
+const { updateUser } = useUsers()
 
 const selectedUser = ref<User | null>(null)
 const handleEditClick = (user: User) => {
   selectedUser.value = user
+}
+
+const handleUserUpdated = (userData: Partial<User>) => {
+  console.log('User updated:', userData)
+  selectedUser.value = null
+  // Update the user in the local state using the composable
+  if (userData.id) {
+    updateUser(userData as User)
+  }
 }
 </script>
 
@@ -21,12 +24,11 @@ const handleEditClick = (user: User) => {
   <div>
     <NUsersUserForm
       :user="selectedUser"
-      @submit="refreshUserList"
+      @submit="handleUserUpdated"
     />
     <NUsersList
-      ref="usersListRef"
       @edit-click="handleEditClick"
-      @delete="refreshUserList"
+      @delete="() => {}"
     />
   </div>
 </template>
