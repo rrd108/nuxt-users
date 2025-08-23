@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, nextTick, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAuthentication } from '../composables/useAuthentication'
 import { useRuntimeConfig } from '#imports'
 import { defaultDisplayFields, defaultFieldLabels, type User } from 'nuxt-users/utils'
