@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { navigateTo } from '#app'
 import { useAuthentication } from '../composables/useAuthentication'
 
@@ -30,9 +30,15 @@ const props = withDefaults(defineProps<LogoutLinkProps>(), {
 
 const emit = defineEmits<Emits>()
 
-const { logout } = useAuthentication()
+// Initialize the composable state as null initially
+let authComposable: ReturnType<typeof useAuthentication> | null = null
 const isLoading = ref(false)
 const error = ref('')
+
+onMounted(() => {
+  // Initialize the composable only after the component is mounted
+  authComposable = useAuthentication()
+})
 
 const handleLogout = async (event: Event) => {
   event.preventDefault()
@@ -41,12 +47,17 @@ const handleLogout = async (event: Event) => {
     return
   }
 
+  if (!authComposable) {
+    error.value = 'Authentication not initialized'
+    return
+  }
+
   isLoading.value = true
   error.value = ''
 
   try {
     emit('click')
-    await logout()
+    await authComposable.logout()
     emit('success')
 
     // Redirect if specified

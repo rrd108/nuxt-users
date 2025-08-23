@@ -1,7 +1,17 @@
 <script setup lang="ts">
+import { computed, onMounted } from 'vue'
 import { useAuthentication } from '../composables/useAuthentication'
 
-const { user } = useAuthentication()
+// Initialize the composable state as null initially
+let authComposable: ReturnType<typeof useAuthentication> | null = null
+
+// Create computed property that safely accesses the composable
+const user = computed(() => authComposable?.user.value ?? null)
+
+onMounted(() => {
+  // Initialize the composable only after the component is mounted
+  authComposable = useAuthentication()
+})
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useUsers } from '../composables/useUsers'
 import { defaultDisplayFields, defaultFieldLabels, type User } from 'nuxt-users/utils'
 
@@ -19,25 +19,36 @@ const emit = defineEmits<{
   (e: 'editClick' | 'delete', user: User): void
 }>()
 
-const {
-  users,
-  pagination,
-  loading,
-  error,
-  fetchUsers,
-  removeUser
-} = useUsers()
+// Initialize the composable state as null initially
+let usersComposable: ReturnType<typeof useUsers> | null = null
+
+// Create computed properties that safely access the composable
+const users = computed(() => usersComposable?.users.value ?? [])
+const pagination = computed(() => usersComposable?.pagination.value ?? null)
+const loading = computed(() => usersComposable?.loading.value ?? false)
+const error = computed(() => usersComposable?.error.value ?? null)
 
 onMounted(() => {
+  // Initialize the composable only after the component is mounted
+  usersComposable = useUsers()
+
   // Fetch users only if the list is empty to avoid unnecessary fetches
   if (users.value.length === 0) {
-    fetchUsers()
+    usersComposable.fetchUsers()
   }
 })
 
 const handleDelete = (user: User) => {
-  removeUser(user.id)
+  if (usersComposable) {
+    usersComposable.removeUser(user.id)
+  }
   emit('delete', user)
+}
+
+const handleFetchUsers = (page?: number, limit?: number) => {
+  if (usersComposable) {
+    usersComposable.fetchUsers(page, limit)
+  }
 }
 </script>
 
@@ -117,7 +128,7 @@ const handleDelete = (user: User) => {
       <slot
         name="pagination"
         :pagination="pagination"
-        :fetch-users="fetchUsers"
+        :fetch-users="handleFetchUsers"
         :loading="loading"
       >
         <div v-if="pagination && pagination.totalPages > 1">
@@ -125,7 +136,7 @@ const handleDelete = (user: User) => {
             <button
               v-if="pagination.hasPrev"
               :disabled="loading"
-              @click="fetchUsers(pagination.page - 1)"
+              @click="handleFetchUsers(pagination.page - 1)"
             >
               Previous
             </button>
@@ -133,7 +144,7 @@ const handleDelete = (user: User) => {
             <button
               v-if="pagination.hasNext"
               :disabled="loading"
-              @click="fetchUsers(pagination.page + 1)"
+              @click="handleFetchUsers(pagination.page + 1)"
             >
               Next
             </button>
