@@ -88,7 +88,7 @@ export default defineNuxtConfig({
     connector: {
       name: 'sqlite',
       options: {
-        path: './data/default.sqlite3'
+        path: './data/users.sqlite3'
       }
     },
     mailer: {

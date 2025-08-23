@@ -42,7 +42,7 @@ export default defineNuxtConfig({
     connector: {
       name: 'sqlite', // | 'mysql' | 'postgresql'
       options: {
-        path: './data/default.sqlite3'
+        path: './data/users.sqlite3'
       }
     }
     // Optional: Configure mailer for password resets

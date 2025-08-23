@@ -11,7 +11,7 @@ export const getOptionsFromEnv = (): ModuleOptions => {
   switch (connectorName) {
     case 'sqlite':
       connectorOptions = {
-        path: process.env.DB_PATH || './data/default.sqlite3',
+        path: process.env.DB_PATH || './data/users.sqlite3',
       }
       break
     case 'mysql':
