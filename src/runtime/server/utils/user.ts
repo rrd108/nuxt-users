@@ -127,26 +127,11 @@ export const updateUser = async (id: number, userData: Partial<User>, options: M
   const db = await useDb(options)
   const usersTable = options.tables.users
 
-  // Explicitly define which fields are allowed to be updated.
-  // This prevents mass-assignment vulnerabilities.
   const allowedFields: (keyof User)[] = ['name', 'email', 'role', 'active']
-  const updates: string[] = []
-  const values: (string | number | boolean)[] = []
-
-  for (const field of allowedFields) {
-    if (userData[field] !== undefined) {
-      updates.push(`${field} = ?`)
-      values.push(userData[field])
-    }
-  }
-
-  // If the user is being deactivated, revoke their tokens
-  if (userData.active === false) {
-    await revokeUserTokens(id, options)
-  }
+  const fieldsToUpdate = allowedFields.filter(field => userData[field] !== undefined)
 
   // If no valid fields are provided, there's nothing to update.
-  if (updates.length === 0) {
+  if (fieldsToUpdate.length === 0) {
     const currentUser = await findUserById(id, options)
     if (!currentUser) {
       throw new Error('User not found.')
@@ -154,14 +139,15 @@ export const updateUser = async (id: number, userData: Partial<User>, options: M
     return currentUser
   }
 
-  // Add the updated_at timestamp and the user ID for the WHERE clause
-  updates.push('updated_at = CURRENT_TIMESTAMP')
-  values.push(id)
+  // If the user is being deactivated, revoke their tokens
+  if (userData.active === false) {
+    await revokeUserTokens(id, options)
+  }
 
-  // Use db.sql with template parts for dynamic column names
-  const setClause = updates.map(update => update.replace(' = ?', '')).join(', ')
-
-  await db.sql`UPDATE {${usersTable}} SET {${setClause}} WHERE id = ${id}`
+  for (const field of fieldsToUpdate) {
+    await db.sql`UPDATE {${usersTable}} SET {${field}} = ${userData[field]} WHERE id = ${id}`
+  }
+  await db.sql`UPDATE {${usersTable}} SET updated_at = CURRENT_TIMESTAMP WHERE id = ${id}`
 
   const updatedUser = await findUserById(id, options)
 

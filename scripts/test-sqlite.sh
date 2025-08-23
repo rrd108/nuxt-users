@@ -20,4 +20,4 @@ if [ $# -eq 0 ]; then
     vitest run --exclude="test/unit/"
 else
     vitest run "$@"
-fi 
+fi

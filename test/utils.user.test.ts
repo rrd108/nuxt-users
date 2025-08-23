@@ -4,7 +4,7 @@ import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/create-personal-access-tokens-table'
-import { createUser, findUserByEmail, updateUserPassword, getLastLoginTime, getCurrentUserFromToken } from '../src/runtime/server/utils/user'
+import { createUser, findUserByEmail, updateUser, updateUserPassword, getLastLoginTime, getCurrentUserFromToken } from '../src/runtime/server/utils/user'
 import { addActiveToUsers } from '../src/runtime/server/utils/add-active-to-users'
 
 describe('User Utilities (src/utils/user.ts)', () => {
@@ -158,6 +158,26 @@ describe('User Utilities (src/utils/user.ts)', () => {
       expect(updatedPasswordHash).not.toBe(originalPasswordHash)
       expect(updatedPasswordHash).toMatch(/^\$2[aby]\$\d{1,2}\$/) // bcrypt hash pattern
       expect(updatedPasswordHash).not.toBe(newPassword) // Should be hashed, not plain text
+    })
+  })
+
+  describe('updateUser', () => {
+    it('should update user details in the database', async () => {
+      // 1. Create a user
+      const userData = { email: 'update@example.com', name: 'Original Name', password: 'password123' }
+      const createdUser = await createUser(userData, testOptions)
+
+      // 2. Update the user's name and role
+      const updates = { name: 'Updated Name', role: 'admin' }
+      await updateUser(createdUser.id, updates, testOptions)
+
+      // 3. Fetch the user directly from the database to verify the update
+      const result = await db.sql`SELECT * FROM {${testOptions.tables.users}} WHERE id = ${createdUser.id}`
+      const dbUser = result.rows![0]
+
+      // 4. Assert that the details are updated
+      expect(dbUser.name).toBe(updates.name)
+      expect(dbUser.role).toBe(updates.role)
     })
   })
 
