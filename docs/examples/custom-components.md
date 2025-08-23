@@ -10,6 +10,12 @@ The components use CSS custom properties for easy theming:
 
 ```vue
 <!-- pages/login.vue -->
+<script setup>
+const handleLogin = (user) => {
+  // Handle login success
+}
+</script>
+
 <template>
   <div class="custom-login">
     <NUsersLoginForm @success="handleLogin" />
@@ -48,6 +54,13 @@ The components use CSS custom properties for easy theming:
 
 ```vue
 <!-- components/DarkLoginForm.vue -->
+<script setup>
+const handleLogin = (user) => {
+  console.log('Login successful:', user)
+  // Handle login
+}
+</script>
+
 <template>
   <div class="dark-theme">
     <NUsersLoginForm @success="handleLogin">
@@ -891,6 +904,13 @@ const handleError = (error) => {
 
 ```vue
 <!-- components/MobileLoginForm.vue -->
+<script setup>
+const handleLogin = (user) => {
+  console.log('Login successful:', user)
+  // Handle login success
+}
+</script>
+
 <template>
   <div class="mobile-login">
     <NUsersLoginForm @success="handleLogin">
@@ -968,6 +988,13 @@ const handleError = (error) => {
 
 ```vue
 <!-- components/TailwindLoginForm.vue -->
+<script setup>
+const handleLogin = (user) => {
+  console.log('Login successful:', user)
+  // Handle login success
+}
+</script>
+
 <template>
   <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
     <div class="w-full max-w-md">

@@ -22,13 +22,6 @@ A complete login form with built-in validation, error handling, and forgot passw
 #### Basic Usage
 
 ```vue
-<template>
-  <NUsersLoginForm 
-    @success="handleLoginSuccess"
-    @error="handleLoginError"
-  />
-</template>
-
 <script setup>
 const handleLoginSuccess = (user) => {
   console.log('Login successful:', user)
@@ -40,6 +33,13 @@ const handleLoginError = (error) => {
   // Show error message to user
 }
 </script>
+
+<template>
+  <NUsersLoginForm 
+    @success="handleLoginSuccess"
+    @error="handleLoginError"
+  />
+</template>
 ```
 
 #### Customization Options
@@ -94,13 +94,6 @@ A simple logout component that handles user logout with optional confirmation.
 #### Basic Usage
 
 ```vue
-<template>
-  <NUsersLogoutLink 
-    @success="handleLogoutSuccess"
-    @error="handleLogoutError"
-  />
-</template>
-
 <script setup>
 const handleLogoutSuccess = () => {
   console.log('Logout successful')
@@ -112,6 +105,13 @@ const handleLogoutError = (error) => {
   // Handle logout errors
 }
 </script>
+
+<template>
+  <NUsersLogoutLink 
+    @success="handleLogoutSuccess"
+    @error="handleLogoutError"
+  />
+</template>
 ```
 
 #### Customization Options
@@ -170,20 +170,6 @@ A comprehensive component for displaying and managing users with pagination, sea
 #### Basic Usage
 
 ```vue
-<template>
-  <div>
-    <NUsersUserForm 
-      v-if="editingUser" 
-      :user="editingUser" 
-      @submit="handleUserUpdated" 
-    />
-    <NUsersList 
-      ref="userList" 
-      @edit-click="handleEdit" 
-    />
-  </div>
-</template>
-
 <script setup>
 import { ref } from 'vue'
 
@@ -199,6 +185,20 @@ const handleUserUpdated = () => {
   userList.value?.refresh()
 }
 </script>
+
+<template>
+  <div>
+    <NUsersUserForm 
+      v-if="editingUser" 
+      :user="editingUser" 
+      @submit="handleUserUpdated" 
+    />
+    <NUsersList 
+      ref="userList" 
+      @edit-click="handleEdit" 
+    />
+  </div>
+</template>
 ```
 
 #### Advanced Customization
@@ -295,15 +295,6 @@ Displays individual user information with edit and delete actions. Used internal
 #### Basic Usage
 
 ```vue
-<template>
-  <NUsersUserCard 
-    :user="user" 
-    :index="0"
-    @edit-click="handleEdit"
-    @delete="handleDelete"
-  />
-</template>
-
 <script setup>
 const user = { 
   id: 1, 
@@ -320,6 +311,15 @@ const handleDelete = (user) => {
   console.log('User deleted:', user)
 }
 </script>
+
+<template>
+  <NUsersUserCard 
+    :user="user" 
+    :index="0"
+    @edit-click="handleEdit"
+    @delete="handleDelete"
+  />
+</template>
 ```
 
 #### Customization
@@ -360,28 +360,21 @@ A complete form for creating new users or editing existing ones with validation.
 #### Creating New Users
 
 ```vue
-<template>
-  <NUsersUserForm @submit="handleUserCreated" />
-</template>
-
 <script setup>
 const handleUserCreated = (userData) => {
   console.log('New user created:', userData)
   // Refresh user list or redirect
 }
 </script>
+
+<template>
+  <NUsersUserForm @submit="handleUserCreated" />
+</template>
 ```
 
 #### Editing Existing Users
 
 ```vue
-<template>
-  <NUsersUserForm 
-    :user="userToEdit" 
-    @submit="handleUserUpdated" 
-  />
-</template>
-
 <script setup>
 import { ref } from 'vue'
 
@@ -397,6 +390,13 @@ const handleUserUpdated = (userData) => {
   userToEdit.value = null // Close form
 }
 </script>
+
+<template>
+  <NUsersUserForm 
+    :user="userToEdit" 
+    @submit="handleUserUpdated" 
+  />
+</template>
 ```
 
 #### Props and Events
