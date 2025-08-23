@@ -12,7 +12,7 @@ Import `useUsers` in your Vue components or other composables:
 
 ```vue
 <script setup>
-import { useUsers } from '#imports' // Nuxt auto-imports
+import { useUsers } from 'nuxt-users/composables'
 
 const { users, fetchUsers, loading, error, updateUser, addUser, removeUser } = useUsers()
 
@@ -66,9 +66,9 @@ The `useUsers` composable returns the following reactive properties and function
 | Name | Type | Description |
 |---|---|---|
 | `users` | `Ref<User[]>` | A reactive array containing the list of users. |
-| `pagination` | `Ref<Pagination | null>` | A reactive object containing pagination information (page, limit, total, etc.). |
+| `pagination` | `Ref<Pagination \| null>` | A reactive object containing pagination information (page, limit, total, etc.). |
 | `loading` | `Ref<boolean>` | A reactive boolean indicating if data is currently being fetched. |
-| `error` | `Ref<string | null>` | A reactive string containing an error message if fetching fails. |
+| `error` | `Ref<string \| null>` | A reactive string containing an error message if fetching fails. |
 | `fetchUsers(page?: number, limit?: number)` | `Function` | Fetches users from the API and updates the `users` and `pagination` state. Can take optional `page` and `limit` parameters. |
 | `updateUser(updatedUser: User)` | `Function` | Updates a user in the local `users` state. This should typically be called after a successful API update. |
 | `addUser(newUser: User)` | `Function` | Adds a new user to the beginning of the local `users` state. This should typically be called after a successful API creation. |
@@ -82,7 +82,7 @@ The `useAuthentication` composable provides a reactive way to manage the authent
 
 ```vue
 <script setup>
-import { useAuthentication } from '#imports'
+import { useAuthentication } from 'nuxt-users/composables'
 
 const { login, user, isAuthenticated } = useAuthentication()
 
@@ -121,7 +121,7 @@ The `useAuthentication` composable returns the following reactive properties and
 
 | Name | Type | Description |
 |---|---|---|
-| `user` | `Ref<UserWithoutPassword | null>` | A reactive object containing the current user's data (excluding password), or `null` if not authenticated. |
+| `user` | `Ref<UserWithoutPassword \| null>` | A reactive object containing the current user's data (excluding password), or `null` if not authenticated. |
 | `isAuthenticated` | `Ref<boolean>` | A reactive boolean indicating if the user is currently authenticated. |
 | `login(email: string, password: string)` | `Function` | Authenticates a user with the provided credentials. |
 | `logout()` | `Function` | Logs out the current user, clearing their session. |
@@ -303,7 +303,7 @@ The `usePasswordValidation` composable provides utilities for validating passwor
 ```vue
 <script setup>
 import { ref, computed } from 'vue'
-import { usePasswordValidation } from '#imports'
+import { usePasswordValidation } from 'nuxt-users/composables'
 
 const password = ref('')
 const { validate, isValid, errors, hints, strength, score, strengthColor, strengthText, clearValidation } = usePasswordValidation()
@@ -340,7 +340,7 @@ The `usePasswordValidation` composable returns the following reactive properties
 | Name | Type | Description |
 |---|---|---|
 | `password` | `Ref<string>` | A reactive ref that holds the password being validated. |
-| `validationResult` | `Ref<PasswordValidationResult | null>` | A reactive object containing the full validation result (isValid, errors, strength, score, hints). |
+| `validationResult` | `Ref<PasswordValidationResult \| null>` | A reactive object containing the full validation result (isValid, errors, strength, score, hints). |
 | `validate(passwordToValidate: string)` | `Function` | Triggers the password validation for the given string. |
 | `isValid` | `Ref<boolean>` | A computed property indicating if the password meets all validation criteria. |
 | `errors` | `Ref<string[]>` | A computed array of error messages if validation fails. |
