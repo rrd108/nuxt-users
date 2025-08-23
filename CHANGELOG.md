@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v1.27.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.26.0...v1.27.0)
+
+### 🚀 Enhancements
+
+- Emit error ([0818b80](https://github.com/rrd108/nuxt-users/commit/0818b80))
+- Expose useUsers composable ([485d81c](https://github.com/rrd108/nuxt-users/commit/485d81c))
+
+### 🏡 Chore
+
+- **release:** V1.26.0 ([3f90a9c](https://github.com/rrd108/nuxt-users/commit/3f90a9c))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.26.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.25.0...v1.26.0)
