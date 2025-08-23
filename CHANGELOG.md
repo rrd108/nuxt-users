@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v1.25.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.24.0...v1.25.0)
+
+### 🚀 Enhancements
+
+- Remove user form view on deletion ([2066238](https://github.com/rrd108/nuxt-users/commit/2066238))
+- Use soft delete by default ([5c9f0da](https://github.com/rrd108/nuxt-users/commit/5c9f0da))
+
+### 🏡 Chore
+
+- **release:** V1.24.0 ([ca9ee73](https://github.com/rrd108/nuxt-users/commit/ca9ee73))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.24.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.23.1...v1.24.0)
