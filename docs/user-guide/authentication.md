@@ -156,30 +156,7 @@ const handleLogin = async () => {
 </script>
 ```
 
-### Using the Authentication Composable
-
-The module provides a `useAuthentication` composable for easier authentication management:
-
-```vue
-<script setup>
-const { login, user, isAuthenticated } = useAuthentication()
-
-const handleLogin = async (email, password) => {
-  try {
-    await login(email, password)
-    console.log('Login successful:', user.value)
-    await navigateTo('/dashboard')
-  } catch (error) {
-    console.error('Login failed:', error)
-  }
-}
-
-// Check if user is authenticated
-if (isAuthenticated.value) {
-  console.log('User is logged in:', user.value)
-}
-</script>
-```
+For detailed usage of the `useAuthentication` composable, refer to the [Composables documentation](/user-guide/composables.md#useauthentication).
 
 ## Logout
 
@@ -226,23 +203,7 @@ You can customize the appearance and behavior:
 
 ### Manual Logout
 
-You can implement custom logout logic using the `useAuthentication` composable:
-
-```vue
-<script setup>
-const { logout } = useAuthentication()
-
-const handleLogout = async () => {
-  try {
-    await logout()
-    console.log('Logged out successfully')
-    await navigateTo('/login')
-  } catch (error) {
-    console.error('Logout failed:', error)
-  }
-}
-</script>
-```
+For manual logout using the `useAuthentication` composable, refer to the [Composables documentation](/user-guide/composables.md#useauthentication).
 
 ### Direct API Call
 
@@ -360,103 +321,11 @@ apiShield: {
 
 ## Checking Authentication Status
 
-### In Components
-
-```vue
-<template>
-  <div>
-    <div v-if="isAuthenticated">
-      <p>Welcome, {{ user.name }}!</p>
-      <NUsersLogoutLink />
-    </div>
-    <div v-else>
-      <p>Please log in to continue</p>
-      <NUsersLoginForm @success="handleLoginSuccess" />
-    </div>
-  </div>
-</template>
-
-<script setup>
-const { user, isAuthenticated } = useAuthentication()
-
-const handleLoginSuccess = (userData) => {
-  console.log('User logged in:', userData)
-  // Handle post-login logic
-}
-</script>
-```
-
-### In Pages with Middleware
-
-You can protect pages using the built-in authorization middleware:
-
-```vue
-<!-- pages/dashboard.vue -->
-<template>
-  <div>
-    <h1>Dashboard</h1>
-    <p>Welcome, {{ user.name }}!</p>
-  </div>
-</template>
-
-<script setup>
-// This page will automatically redirect to login if user is not authenticated
-definePageMeta({
-  middleware: 'authorization'
-})
-
-const { user } = useAuthentication()
-</script>
-```
+For checking authentication status using the `useAuthentication` composable, refer to the [Composables documentation](/user-guide/composables.md#useauthentication).
 
 ## Error Handling
 
-### Handling Authentication Errors
-
-```vue
-<script setup>
-const { login } = useAuthentication()
-
-const handleLogin = async (email, password) => {
-  try {
-    await login(email, password)
-    // Success - user is now authenticated
-  } catch (error) {
-    // Handle different types of errors
-    if (error.statusCode === 401) {
-      console.error('Invalid credentials')
-      // Show "Invalid email or password" message
-    } else if (error.statusCode === 400) {
-      console.error('Missing email or password')
-      // Show "Please fill in all fields" message
-    } else {
-      console.error('Login failed:', error.message)
-      // Show generic error message
-    }
-  }
-}
-</script>
-```
-
-### Network Error Handling
-
-```vue
-<script setup>
-const handleLogin = async (email, password) => {
-  try {
-    await login(email, password)
-  } catch (error) {
-    if (error.name === 'FetchError') {
-      console.error('Network error - please check your connection')
-      // Show network error message
-    } else {
-      console.error('Authentication error:', error)
-      // Show authentication error message
-    }
-  }
-}
-</script>
-```
+For error handling with the `useAuthentication` composable, refer to the [Composables documentation](/user-guide/composables.md#useauthentication).
 
 ## Security Best Practices
 

@@ -49,6 +49,9 @@ With Nuxt Users, you can easily create:
 ### 🎨 User Interface
 - [Components](./components.md) - Ready-made Vue components for forms and user management
 
+### 📊 Data Management
+- [Composables](./composables.md) - Reactive data management with composables
+
 ### ⚙️ Configuration
 - [Configuration Guide](./configuration.md) - Customize every aspect of the module
 

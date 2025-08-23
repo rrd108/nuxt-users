@@ -12,6 +12,7 @@ The Nuxt Users module provides several Vue components to help you quickly implem
 | `NUsersList` | Paginated list of users with management actions |
 | `NUsersUserCard` | Individual user display card with edit/delete actions |
 | `NUsersUserForm` | Form for creating and editing user accounts |
+| `NUsersPasswordStrengthIndicator` | Displays real-time password strength feedback (uses `usePasswordValidation` composable) |
 
 ## Authentication Components
 
@@ -226,9 +227,7 @@ const handleUserUpdated = () => {
           <span class="role-badge">{{ user.role }}</span>
         </div>
         <div class="user-actions">
-          <button @click="handleEdit(user)" class="edit-btn">
-            Edit
-          </button>
+          <button @click="handleEdit(user)">Edit</button>
         </div>
       </div>
     </template>

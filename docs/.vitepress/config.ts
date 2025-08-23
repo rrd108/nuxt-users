@@ -47,6 +47,7 @@ export default defineConfig({
               { text: 'Authorization (RBAC)', link: '/user-guide/authorization' },
               { text: 'Password Reset', link: '/user-guide/password-reset' },
               { text: 'Components', link: '/user-guide/components' },
+              { text: 'Composables', link: '/user-guide/composables' },
               { text: 'Troubleshooting', link: '/user-guide/troubleshooting' }
             ]
           },

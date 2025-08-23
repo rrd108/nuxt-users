@@ -1,21 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRuntimeConfig } from '#imports'
+import { onMounted } from 'vue'
+import { useUsers } from '../composables/useUsers'
 import { defaultDisplayFields, defaultFieldLabels, type User } from 'nuxt-users/utils'
-
-interface Pagination {
-  page: number
-  limit: number
-  total: number
-  totalPages: number
-  hasNext: boolean
-  hasPrev: boolean
-}
-
-interface UsersResponse {
-  users: User[]
-  pagination: Pagination
-}
 
 // Note: We define Props interface inline instead of importing DisplayFieldsProps from 'nuxt-users/utils'
 // because the Vue SFC transformer cannot resolve these imported types during the module build process
@@ -33,45 +19,24 @@ const emit = defineEmits<{
   (e: 'editClick' | 'delete', user: User): void
 }>()
 
-const { public: { nuxtUsers } } = useRuntimeConfig()
-const users = ref<User[]>([])
-const pagination = ref<Pagination | null>(null)
-const loading = ref(false)
-const error = ref<string | null>(null)
-
-const fetchUsers = async (page = 1, limit = 100) => {
-  loading.value = true
-  error.value = null
-
-  try {
-    const response = await $fetch<UsersResponse>(`${nuxtUsers.apiBasePath}?page=${page}&limit=${limit}`)
-    users.value = response.users
-    pagination.value = response.pagination
-  }
-  catch (err) {
-    error.value = err instanceof Error ? err.message : 'Failed to fetch users'
-  }
-  finally {
-    loading.value = false
-  }
-}
-
-// Expose refresh method for parent components
-const refresh = () => {
-  fetchUsers()
-}
-
-// Expose methods to parent component
-defineExpose({
-  refresh
-})
+const {
+  users,
+  pagination,
+  loading,
+  error,
+  fetchUsers,
+  removeUser
+} = useUsers()
 
 onMounted(() => {
-  fetchUsers()
+  // Fetch users only if the list is empty to avoid unnecessary fetches
+  if (users.value.length === 0) {
+    fetchUsers()
+  }
 })
 
 const handleDelete = (user: User) => {
-  users.value = users.value.filter(u => u.id !== user.id)
+  removeUser(user.id)
   emit('delete', user)
 }
 </script>
