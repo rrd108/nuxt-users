@@ -24,6 +24,11 @@ export default defineEventHandler(async (event) => {
     delete body.role
   }
 
+  // Users should not be able to change their active status via this endpoint.
+  if (body.active) {
+    delete body.active
+  }
+
   try {
     const updatedUser = await updateUser(user.id, body, options)
     return { user: updatedUser }

@@ -42,6 +42,7 @@ export const defaultOptions: ModuleOptions = {
     requireSpecialChars: true,
     preventCommonPasswords: true,
   },
+  hardDelete: false,
 }
 
 export default defineNuxtModule<RuntimeModuleOptions>({
@@ -73,6 +74,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
         tokenExpiration: options.auth?.tokenExpiration || defaultOptions.auth.tokenExpiration,
         permissions: options.auth?.permissions || defaultOptions.auth.permissions
       },
+      hardDelete: options.hardDelete ?? defaultOptions.hardDelete,
     }
 
     // Add public runtime config for client-side access

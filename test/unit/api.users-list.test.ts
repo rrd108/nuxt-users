@@ -44,8 +44,8 @@ const testOptions: ModuleOptions = {
   connector: {
     name: 'sqlite',
     options: {
-      path: './test.sqlite'
-    }
+      path: './_test-users-list',
+    },
   },
   tables: {
     migrations: 'migrations',
@@ -56,17 +56,18 @@ const testOptions: ModuleOptions = {
   passwordResetUrl: '/reset-password',
   auth: {
     whitelist: [],
-    permissions: {},
-    tokenExpiration: 1440
+    tokenExpiration: 1440,
+    permissions: {}
   },
   passwordValidation: {
     minLength: 8,
-    requireUppercase: true,
-    requireLowercase: true,
-    requireNumbers: true,
-    requireSpecialChars: true,
-    preventCommonPasswords: true
-  }
+    requireUppercase: false,
+    requireLowercase: false,
+    requireNumbers: false,
+    requireSpecialChars: false,
+    preventCommonPasswords: false,
+  },
+  hardDelete: false
 }
 
 describe('Users List API Route', () => {

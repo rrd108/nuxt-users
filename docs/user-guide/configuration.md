@@ -77,7 +77,10 @@ export default defineNuxtConfig({
       requireNumbers: true,
       requireSpecialChars: true,
       preventCommonPasswords: true
-    }
+    },
+    
+    // User deletion behavior
+    hardDelete: false // true = permanent deletion, false = soft delete (default)
   }
 })
 ```
@@ -340,6 +343,88 @@ nuxtUsers: {
 | `requireNumbers` | Require numeric digits (0-9) | `true` |
 | `requireSpecialChars` | Require special characters (!@#$%^&*) | `true` |
 | `preventCommonPasswords` | Block common weak passwords | `true` |
+
+## User Deletion Behavior
+
+The module supports two types of user deletion: **soft delete** (default) and **hard delete**.
+
+### Soft Delete (Default - Recommended)
+
+By default, when a user is "deleted", they are actually **soft deleted**:
+
+```ts
+nuxtUsers: {
+  hardDelete: false // Default behavior
+}
+```
+
+**What happens during soft delete:**
+- User's `active` field is set to `false`
+- User record remains in the database
+- All user tokens are revoked (user is logged out)
+- User cannot log in anymore
+- User data is preserved for compliance/audit purposes
+
+**Benefits of soft delete:**
+- **Data preservation** - Important for compliance and audit trails
+- **Reversible** - Can reactivate users by setting `active: true`
+- **Reference integrity** - Foreign keys to user records remain valid
+- **Analytics** - Historical data remains available
+
+### Hard Delete (Permanent)
+
+For applications that require permanent user removal:
+
+```ts
+nuxtUsers: {
+  hardDelete: true // Enable permanent deletion
+}
+```
+
+**What happens during hard delete:**
+- All user tokens are revoked first
+- User record is permanently removed from database
+- Action cannot be undone
+- Any foreign key references will break
+
+**Use cases for hard delete:**
+- **GDPR "right to be forgotten"** compliance
+- **Data minimization** requirements
+- **Storage optimization** for high-volume applications
+- **Security-sensitive** applications
+
+### Important Considerations
+
+⚠️ **Before enabling hard delete:**
+
+1. **Check foreign keys** - Ensure your app handles missing user references
+2. **Backup strategy** - Have proper backups before permanent deletion
+3. **Compliance** - Verify hard delete meets your legal requirements
+4. **Audit trail** - Consider logging deletion events separately
+
+### Database Behavior Notes
+
+**SQLite Boolean Handling:**
+When using soft delete with SQLite, the `active` field is stored as integers (1 for `true`, 0 for `false`). This is normal SQLite behavior and doesn't affect functionality.
+
+**Cross-database compatibility:**
+The module handles boolean values consistently across SQLite, MySQL, and PostgreSQL, but the underlying storage may differ.
+
+### Example Usage
+
+```ts
+// Soft delete configuration (default)
+nuxtUsers: {
+  hardDelete: false,
+  // User deletion sets active: false, preserves data
+}
+
+// Hard delete configuration 
+nuxtUsers: {
+  hardDelete: true,
+  // User deletion permanently removes record
+}
+```
 
 ## Custom Table Names
 

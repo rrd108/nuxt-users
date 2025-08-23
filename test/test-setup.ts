@@ -71,7 +71,8 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
     requireNumbers: false,
     requireSpecialChars: false,
     preventCommonPasswords: false,
-  }
+  },
+  hardDelete: false
 })
 
 export const cleanupTestSetup = async (dbType: DatabaseType, db: Database, cleanupFiles: string[], tableName: string) => {

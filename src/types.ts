@@ -104,6 +104,13 @@ export interface RuntimeModuleOptions {
      */
     preventCommonPasswords?: boolean
   }
+  /**
+   * Enable hard delete for user deletion
+   * When false (default), users are soft deleted (active set to false)
+   * When true, users are permanently deleted from database
+   * @default false
+   */
+  hardDelete?: boolean
 }
 
 // Runtime config type with all properties required (after merging with defaults)
@@ -134,6 +141,7 @@ export interface ModuleOptions {
     requireSpecialChars: boolean
     preventCommonPasswords: boolean
   }
+  hardDelete: boolean
 }
 
 export interface MailerOptions {

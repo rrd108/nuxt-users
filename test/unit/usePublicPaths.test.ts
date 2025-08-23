@@ -54,7 +54,8 @@ describe('usePublicPaths', () => {
         requireNumbers: true,
         requireSpecialChars: true,
         preventCommonPasswords: true
-      }
+      },
+      hardDelete: false
     }
 
     mockUseRuntimeConfig.mockReturnValue({

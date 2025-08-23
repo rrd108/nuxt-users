@@ -4,7 +4,7 @@ import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/create-personal-access-tokens-table'
-import { createUser, findUserByEmail, updateUser, updateUserPassword, getLastLoginTime, getCurrentUserFromToken } from '../src/runtime/server/utils/user'
+import { createUser, findUserByEmail, findUserById, deleteUser, updateUser, updateUserPassword, getLastLoginTime, getCurrentUserFromToken } from '../src/runtime/server/utils/user'
 import { addActiveToUsers } from '../src/runtime/server/utils/add-active-to-users'
 
 describe('User Utilities (src/utils/user.ts)', () => {
@@ -178,6 +178,74 @@ describe('User Utilities (src/utils/user.ts)', () => {
       // 4. Assert that the details are updated
       expect(dbUser.name).toBe(updates.name)
       expect(dbUser.role).toBe(updates.role)
+    })
+  })
+
+  describe('deleteUser', () => {
+    it('should soft delete user by default (set active to false)', async () => {
+      const userData = { email: 'softdelete@example.com', name: 'Soft Delete User', password: 'password123' }
+      const user = await createUser(userData, testOptions)
+
+      // Verify user is active initially (SQLite may return 1 instead of true)
+      expect(user.active).toBeTruthy()
+
+      // Delete user (should be soft delete by default)
+      await deleteUser(user.id, testOptions)
+
+      // Verify user still exists but is inactive
+      const deletedUser = await findUserById(user.id, testOptions)
+      expect(deletedUser).not.toBeNull()
+      expect(deletedUser?.active).toBeFalsy()
+
+      // Verify user still exists in database
+      const result = await db.sql`SELECT * FROM {${testOptions.tables.users}} WHERE id = ${user.id}`
+      expect(result.rows?.length).toBe(1)
+    })
+
+    it('should hard delete user when hardDelete option is true', async () => {
+      const userData = { email: 'harddelete@example.com', name: 'Hard Delete User', password: 'password123' }
+      const user = await createUser(userData, testOptions)
+
+      // Set hardDelete option
+      const hardDeleteOptions = { ...testOptions, hardDelete: true }
+
+      // Delete user with hard delete
+      await deleteUser(user.id, hardDeleteOptions)
+
+      // Verify user no longer exists
+      const deletedUser = await findUserById(user.id, testOptions)
+      expect(deletedUser).toBeNull()
+
+      // Verify user is removed from database
+      const result = await db.sql`SELECT * FROM {${testOptions.tables.users}} WHERE id = ${user.id}`
+      expect(result.rows?.length).toBe(0)
+    })
+
+    it('should throw error when trying to delete non-existent user', async () => {
+      await expect(deleteUser(999, testOptions)).rejects.toThrow('User not found.')
+    })
+
+    it('should revoke user tokens on both soft and hard delete', async () => {
+      const userData = { email: 'tokenrevoke@example.com', name: 'Token Revoke User', password: 'password123' }
+      const user = await createUser(userData, testOptions)
+
+      // Create a token for the user
+      await db.sql`
+        INSERT INTO {${testOptions.tables.personalAccessTokens}} 
+        (tokenable_type, tokenable_id, name, token, created_at, updated_at) 
+        VALUES ('user', ${user.id}, 'test-token', 'abc123', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `
+
+      // Verify token exists
+      let tokenResult = await db.sql`SELECT * FROM {${testOptions.tables.personalAccessTokens}} WHERE tokenable_id = ${user.id}`
+      expect(tokenResult.rows?.length).toBe(1)
+
+      // Soft delete user
+      await deleteUser(user.id, testOptions)
+
+      // Verify tokens are revoked
+      tokenResult = await db.sql`SELECT * FROM {${testOptions.tables.personalAccessTokens}} WHERE tokenable_id = ${user.id}`
+      expect(tokenResult.rows?.length).toBe(0)
     })
   })
 

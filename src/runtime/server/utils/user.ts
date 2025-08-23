@@ -160,16 +160,32 @@ export const updateUser = async (id: number, userData: Partial<User>, options: M
 
 /**
  * Deletes a user by their ID.
+ * By default performs soft delete (sets active to false).
+ * If hardDelete option is true, performs hard delete (removes from database).
+ * In both cases, user tokens are revoked.
  */
 export const deleteUser = async (id: number, options: ModuleOptions): Promise<void> => {
   const db = await useDb(options)
   const usersTable = options.tables.users
 
-  const result = await db.sql`DELETE FROM {${usersTable}} WHERE id = ${id}`
+  // Check if user exists first
+  const userExists = await db.sql`SELECT id FROM {${usersTable}} WHERE id = ${id}` as { rows: Array<{ id: number }> }
 
-  if (result.rows?.length === 0) {
-    throw new Error('User not found or could not be deleted.')
+  if (userExists.rows.length === 0) {
+    throw new Error('User not found.')
   }
+
+  // Always revoke user tokens first
+  await revokeUserTokens(id, options)
+
+  if (options.hardDelete) {
+    // Hard delete - permanently remove from database
+    await db.sql`DELETE FROM {${usersTable}} WHERE id = ${id}`
+    return
+  }
+
+  // Soft delete - set active to false
+  await db.sql`UPDATE {${usersTable}} SET active = false, updated_at = CURRENT_TIMESTAMP WHERE id = ${id}`
 }
 
 /**
