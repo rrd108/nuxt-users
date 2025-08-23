@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v1.26.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.25.0...v1.26.0)
+
+### 🚀 Enhancements
+
+- Use soft delete by default ([5c9f0da](https://github.com/rrd108/nuxt-users/commit/5c9f0da))
+- Emit error ([0818b80](https://github.com/rrd108/nuxt-users/commit/0818b80))
+
+### 🏡 Chore
+
+- **release:** V1.25.0 ([20be66a](https://github.com/rrd108/nuxt-users/commit/20be66a))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.25.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.24.0...v1.25.0)
