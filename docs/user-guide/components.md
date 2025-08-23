@@ -171,38 +171,9 @@ A comprehensive component for displaying and managing users with pagination, sea
 #### Basic Usage
 
 ```vue
-<script setup>
-import { ref } from 'vue'
-
-const userList = ref(null)
-const editingUser = ref(null)
-
-const handleEdit = (user) => {
-  editingUser.value = user
-}
-
-const handleUserUpdated = (updatedUser) => {
-  editingUser.value = null
-  // Update the user in the list for immediate UI update
-  userList.value?.updateUser(updatedUser)
-}
-
-const handleEdit = (user) => {
-  editingUser.value = user
-}
-</script>
-
 <template>
   <div>
-    <NUsersUserForm 
-      v-if="editingUser" 
-      :user="editingUser" 
-      @submit="handleUserUpdated" 
-    />
-    <NUsersList 
-      ref="userList" 
-      @edit-click="handleEdit" 
-    />
+    <NUsersList />
   </div>
 </template>
 ```
@@ -210,9 +181,47 @@ const handleEdit = (user) => {
 #### Advanced Customization
 
 ```vue
+<script setup>
+import { ref } from 'vue'
+
+const { updateUser } = useUsers()
+
+const selectedUser = ref(null)
+const handleEditClick = (user) => {
+  selectedUser.value = user
+}
+
+const handleUserUpdated = async (userData) => {
+  selectedUser.value = null
+  // Update the user in the local state using the composable - optimistic update
+  if (userData.id) {
+    updateUser(userData)
+  }
+  // call the API to update the user
+  await $fetch(`/api/nuxt-users/${userData.id}`, {
+    method: 'patch',
+    body: userData,
+  })
+}
+
+const handleEdit = (user) => {
+  selectedUser.value = user
+}
+
+const handleDelete = (user) => {
+  // API call is done by the module
+  console.log('User deleted:', user)
+}
+</script>
+
 <template>
+    <NUsersUserForm
+      v-if="selectedUser"
+      :user="selectedUser"
+      @submit="handleUserUpdated"
+    />
+
   <NUsersList
-    ref="userList"
     :display-fields="['name', 'email', 'role']"
     :field-labels="{ name: 'Full Name', email: 'Email Address', role: 'Access Level' }"
     @edit-click="handleEdit"
