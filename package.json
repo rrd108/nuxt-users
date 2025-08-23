@@ -66,6 +66,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "pretest": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for testing' && exit 1)",
+    "test:release": "yarn test:types && yarn test:unit && yarn test:sqlite && yarn build && yarn lint:fix",
     "test:types": "yarn dev:prepare && vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
     "test:unit": "./scripts/test-unit.sh",
     "test:sqlite": "./scripts/test-sqlite.sh",
