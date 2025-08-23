@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v1.23.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.23.0...v1.23.1)
+
+### 🩹 Fixes
+
+- User patch sql error ([aa506dd](https://github.com/rrd108/nuxt-users/commit/aa506dd))
+
+### 💅 Refactors
+
+- Change css class name ([1bc28ba](https://github.com/rrd108/nuxt-users/commit/1bc28ba))
+
+### ✅ Tests
+
+- New test script added ([618b8dc](https://github.com/rrd108/nuxt-users/commit/618b8dc))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.23.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.22.0...v1.23.0)
