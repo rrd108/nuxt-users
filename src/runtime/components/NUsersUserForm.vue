@@ -15,6 +15,7 @@ const props = defineProps<Props>()
 const emit = defineEmits<{
   (e: 'submit', userData: Partial<User>): void
   (e: 'cancel'): void
+  (e: 'error', error: unknown): void
 }>()
 
 const emptyFormData = {
@@ -99,7 +100,7 @@ const handleSubmit = async () => {
   }
   catch (error) {
     console.error('Failed to save user:', error)
-    // You could emit an error event here if needed
+    emit('error', error)
   }
 }
 </script>
