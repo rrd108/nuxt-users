@@ -291,6 +291,7 @@ const handleUserUpdated = () => {
 ### NUsersUserCard
 
 Displays individual user information with edit and delete actions. Used internally by `NUsersList` but can be used standalone.
+The `edit` and `delete` events are emitted when the edit or delete button is clicked. The `delete` event is calling the API to delete the user, while the `edit` event is just emitting the user object and let the parent component handle the edit action.
 
 #### Basic Usage
 
