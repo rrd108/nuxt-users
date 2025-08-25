@@ -22,11 +22,13 @@ export default defineNuxtConfig({
   modules: ['nuxt-users'],
   nuxtUsers: {
     auth: {
-      whitelist: ['/login', '/register'],
+      whitelist: ['/register'], // /confirm-email is automatically added when /register is present
     },
   },
 })
 ```
+
+**Note:** When you add `/register` to the whitelist, the module automatically adds `/confirm-email` as well, since users need to access email confirmation links without authentication.
 
 ## Authentication Flow
 
@@ -157,6 +159,133 @@ const handleLogin = async () => {
 ```
 
 For detailed usage of the `useAuthentication` composable, refer to the [Composables documentation](/user-guide/composables.md#useauthentication).
+
+## User Registration
+
+The module provides a complete user registration system with email confirmation to ensure valid email addresses and prevent spam accounts.
+
+### Registration Flow
+
+1. **User submits registration form** - Email, name, and password are validated
+2. **Password strength validation** - Ensures password meets security requirements
+3. **User account created** - Account is created in inactive state
+4. **Confirmation email sent** - User receives email with secure confirmation link
+5. **User clicks confirmation link** - Account is activated and ready for login
+
+### Using the NUsersRegisterForm Component
+
+The module provides a ready-to-use `NUsersRegisterForm` component:
+
+```vue
+<template>
+  <NUsersRegisterForm 
+    @success="handleRegistrationSuccess"
+    @error="handleRegistrationError"
+  />
+</template>
+
+<script setup>
+const handleRegistrationSuccess = (data) => {
+  console.log('Registration successful:', data.user)
+  console.log('Message:', data.message)
+  // Show success message to user
+}
+
+const handleRegistrationError = (error) => {
+  console.log('Registration failed:', error)
+  // Show error message to user
+}
+</script>
+```
+
+### Configuration Requirements
+
+To enable registration, you need to:
+
+1. **Whitelist the registration route** in your `nuxt.config.ts`
+2. **Configure email settings** for sending confirmation emails
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    auth: {
+      whitelist: ['/register'], // Also auto-whitelists /confirm-email
+    },
+    // Email configuration for confirmation emails
+    mailer: {
+      host: 'smtp.your-provider.com',
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: 'your-email@example.com',
+        pass: 'your-password'
+      },
+      defaults: {
+        from: '"Your App" <noreply@yourapp.com>'
+      }
+    },
+    // Configure password requirements
+    passwordValidation: {
+      minLength: 8,
+      requireUppercase: true,
+      requireLowercase: true,
+      requireNumbers: true,
+      requireSpecialChars: true,
+      preventCommonPasswords: true
+    }
+  }
+})
+```
+
+### Registration API
+
+**Endpoint:** `POST /api/nuxt-users/register`
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "name": "John Doe",
+  "password": "securePassword123!"
+}
+```
+
+**Response:**
+```json
+{
+  "user": {
+    "id": 1,
+    "email": "user@example.com",
+    "name": "John Doe",
+    "role": "user",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z"
+  },
+  "message": "Registration successful! Please check your email to confirm your account."
+}
+```
+
+### Email Confirmation
+
+**Endpoint:** `GET /api/nuxt-users/confirm-email`
+
+**Query Parameters:**
+- `token`: Email confirmation token from the registration email
+- `email`: User's email address
+
+**Example:**
+```
+GET /api/nuxt-users/confirm-email?token=abc123def456&email=user@example.com
+```
+
+### Security Features
+
+- **Email verification required**: Prevents fake email registrations
+- **Inactive accounts**: New accounts remain inactive until email confirmation
+- **Secure tokens**: Confirmation tokens are hashed and expire after 24 hours
+- **Password strength validation**: Enforces strong password requirements
+- **Duplicate prevention**: Prevents registration with existing email addresses
 
 ## Logout
 

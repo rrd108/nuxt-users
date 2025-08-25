@@ -354,7 +354,7 @@ import type { RuntimeModuleOptions } from 'nuxt-users/utils'
 
 const nuxtUsersConfig: RuntimeModuleOptions = {
   auth: {
-    whitelist: ['/login', '/register'],
+    whitelist: ['/register'],
     tokenExpiration: 1440, // 24 hours
     permissions: {
       admin: ['*'],
