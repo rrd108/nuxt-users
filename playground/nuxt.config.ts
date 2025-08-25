@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   ...BASE_CONFIG,
   nuxtUsers: {
     auth: {
-      whitelist: ['/noauth'],
+      whitelist: ['/noauth', '/register'],
       tokenExpiration: 10,
       // TODO: if it is uncommented it makes `yarn test:types` fails - for some unknown reason
       // INFO: if it is commented out you can not login to the playground

@@ -70,7 +70,14 @@ export default defineNuxtModule<RuntimeModuleOptions>({
         passwordResetTokens: options.tables?.passwordResetTokens || defaultOptions.tables.passwordResetTokens,
       },
       auth: {
-        whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])],
+        whitelist: (() => {
+          const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])]
+          // Auto-whitelist /confirm-email if /register is whitelisted
+          if (combinedWhitelist.includes('/register') && !combinedWhitelist.includes('/confirm-email')) {
+            combinedWhitelist.push('/confirm-email')
+          }
+          return combinedWhitelist
+        })(),
         tokenExpiration: options.auth?.tokenExpiration || defaultOptions.auth.tokenExpiration,
         permissions: options.auth?.permissions || defaultOptions.auth.permissions
       },
@@ -89,7 +96,14 @@ export default defineNuxtModule<RuntimeModuleOptions>({
         preventCommonPasswords: options.passwordValidation?.preventCommonPasswords ?? defaultOptions.passwordValidation.preventCommonPasswords,
       },
       auth: {
-        whitelist: [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])],
+        whitelist: (() => {
+          const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])]
+          // Auto-whitelist /confirm-email if /register is whitelisted
+          if (combinedWhitelist.includes('/register') && !combinedWhitelist.includes('/confirm-email')) {
+            combinedWhitelist.push('/confirm-email')
+          }
+          return combinedWhitelist
+        })(),
         permissions: options.auth?.permissions || defaultOptions.auth.permissions
       },
       apiBasePath: options.apiBasePath || defaultOptions.apiBasePath
@@ -157,6 +171,20 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       route: `${base}/password/reset`,
       method: 'post',
       handler: resolver.resolve('./runtime/server/api/nuxt-users/password/reset.post')
+    })
+
+    // Registration
+    addServerHandler({
+      route: `${base}/register`,
+      method: 'post',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/register.post')
+    })
+
+    // Email confirmation
+    addServerHandler({
+      route: `${base}/confirm-email`,
+      method: 'get',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/confirm-email.get')
     })
 
     // User management
@@ -270,6 +298,11 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     addComponent({
       name: 'NUsersUserForm',
       filePath: resolver.resolve('./runtime/components/NUsersUserForm.vue')
+    })
+
+    addComponent({
+      name: 'NUsersRegisterForm',
+      filePath: resolver.resolve('./runtime/components/NUsersRegisterForm.vue')
     })
 
     nuxt.options.css = nuxt.options.css || []
