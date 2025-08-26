@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v1.29.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.29.0...v1.29.1)
+
+### 🩹 Fixes
+
+- Missing server middleware ([50e22d5](https://github.com/rrd108/nuxt-users/commit/50e22d5))
+- Auto whitelist urls on register ([8a05dab](https://github.com/rrd108/nuxt-users/commit/8a05dab))
+- Add missing endpoint ([a0a371c](https://github.com/rrd108/nuxt-users/commit/a0a371c))
+- Auto whitelist /me endpoint ([5453da9](https://github.com/rrd108/nuxt-users/commit/5453da9))
+
+### 🏡 Chore
+
+- Lint fixes ([bf5786f](https://github.com/rrd108/nuxt-users/commit/bf5786f))
+- **release:** V1.29.0 ([b468e52](https://github.com/rrd108/nuxt-users/commit/b468e52))
+
+### ✅ Tests
+
+- Add integration tests runner ([e6cfbfb](https://github.com/rrd108/nuxt-users/commit/e6cfbfb))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.29.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.28.2...v1.29.0)
