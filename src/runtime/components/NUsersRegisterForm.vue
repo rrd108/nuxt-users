@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { navigateTo } from '#app'
-import type { UserWithoutPassword, ModuleOptions } from 'nuxt-users/utils'
+import type { UserWithoutPassword, ModuleOptions, PasswordValidationResult } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import { validatePassword } from 'nuxt-users/utils'
 
@@ -38,7 +38,7 @@ const apiEndpoint = computed(() => props.apiEndpoint || `${(nuxtUsers as { apiBa
 const isLoading = ref(false)
 const error = ref('')
 const successMessage = ref('')
-const passwordValidationResult = ref<{ isValid: boolean, score: number, validations: Record<string, boolean>, feedback: string[] } | null>(null)
+const passwordValidationResult = ref<PasswordValidationResult | null>(null)
 
 const formData = ref<RegistrationFormData>({
   email: '',
