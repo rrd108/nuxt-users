@@ -76,12 +76,12 @@ export default defineNuxtModule<RuntimeModuleOptions>({
           if (combinedWhitelist.includes('/register')) {
             const apiBasePath = options.apiBasePath || defaultOptions.apiBasePath
             const registrationEndpoints = [
-              '/confirm-email',  // Page route for email confirmation
-              `${apiBasePath}/register`,  // API endpoint for registration
-              `${apiBasePath}/confirm-email`  // API endpoint for email confirmation
+              '/confirm-email', // Page route for email confirmation
+              `${apiBasePath}/register`, // API endpoint for registration
+              `${apiBasePath}/confirm-email` // API endpoint for email confirmation
             ]
-            
-            registrationEndpoints.forEach(endpoint => {
+
+            registrationEndpoints.forEach((endpoint) => {
               if (!combinedWhitelist.includes(endpoint)) {
                 combinedWhitelist.push(endpoint)
               }
@@ -113,12 +113,12 @@ export default defineNuxtModule<RuntimeModuleOptions>({
           if (combinedWhitelist.includes('/register')) {
             const apiBasePath = options.apiBasePath || defaultOptions.apiBasePath
             const registrationEndpoints = [
-              '/confirm-email',  // Page route for email confirmation
-              `${apiBasePath}/register`,  // API endpoint for registration
-              `${apiBasePath}/confirm-email`  // API endpoint for email confirmation
+              '/confirm-email', // Page route for email confirmation
+              `${apiBasePath}/register`, // API endpoint for registration
+              `${apiBasePath}/confirm-email` // API endpoint for email confirmation
             ]
-            
-            registrationEndpoints.forEach(endpoint => {
+
+            registrationEndpoints.forEach((endpoint) => {
               if (!combinedWhitelist.includes(endpoint)) {
                 combinedWhitelist.push(endpoint)
               }
