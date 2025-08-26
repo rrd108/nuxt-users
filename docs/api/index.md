@@ -4,6 +4,82 @@ The Nuxt Users module provides REST API endpoints for authentication, user manag
 
 ## Authentication Endpoints
 
+### Registration
+
+**Endpoint:** `POST /api/nuxt-users/register`
+
+Register a new user account with email confirmation.
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "name": "John Doe",
+  "password": "securePassword123!"
+}
+```
+
+**Response:**
+```json
+{
+  "user": {
+    "id": 1,
+    "email": "user@example.com",
+    "name": "John Doe",
+    "role": "user",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z"
+  },
+  "message": "Registration successful! Please check your email to confirm your account."
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Missing required fields (email, name, password)
+- `400 Bad Request`: Invalid email format
+- `400 Bad Request`: Password validation failed
+- `400 Bad Request`: User with this email already exists
+
+**Notes:**
+- User account is created in inactive state
+- Confirmation email is sent automatically
+- Password must meet strength requirements
+- Requires `/register` to be in the auth whitelist
+- Automatically whitelists `/confirm-email` route
+
+### Email Confirmation
+
+**Endpoint:** `GET /api/nuxt-users/confirm-email`
+
+Confirm user's email address and activate their account.
+
+**Query Parameters:**
+- `token` (required): Email confirmation token from the registration email
+- `email` (required): User's email address
+
+**Example URL:**
+```
+GET /api/nuxt-users/confirm-email?token=abc123def456&email=user@example.com
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Email confirmed successfully! Your account is now active. You can now log in."
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Missing token or email parameter
+- `400 Bad Request`: Invalid or expired confirmation token
+
+**Notes:**
+- Token expires after 24 hours
+- User account becomes active after confirmation
+- Token is automatically deleted after successful confirmation
+- No authentication required for this endpoint
+
 ### Login
 
 **Endpoint:** `POST /api/nuxt-users/session`

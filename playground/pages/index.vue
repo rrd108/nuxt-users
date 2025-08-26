@@ -41,12 +41,20 @@ initializeUser()
         class="login-section"
       >
         <p>Please log in to access your profile</p>
-        <NuxtLink
-          to="/login"
-          class="btn btn-primary"
-        >
-          Login
-        </NuxtLink>
+        <div class="auth-actions">
+          <NuxtLink
+            to="/login"
+            class="btn btn-primary"
+          >
+            Login
+          </NuxtLink>
+          <NuxtLink
+            to="/register"
+            class="btn btn-secondary"
+          >
+            Register
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </div>
@@ -85,7 +93,8 @@ h1 {
   opacity: 0.9;
 }
 
-.actions {
+.actions,
+.auth-actions {
   display: flex;
   gap: 16px;
   justify-content: center;

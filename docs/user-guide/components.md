@@ -7,6 +7,7 @@ The Nuxt Users module provides several Vue components to help you quickly implem
 | Component | Purpose |
 |-----------|---------|
 | `NUsersLoginForm` | Complete login form with validation and forgot password functionality |
+| `NUsersRegisterForm` | User registration form with email confirmation and password validation |
 | `NUsersLogoutLink` | Simple logout link with confirmation |
 | `NUsersResetPasswordForm` | Password reset form for users with reset tokens |
 | `NUsersList` | Paginated list of users with management actions |
@@ -86,6 +87,316 @@ The login form provides several slots for customization:
     </div>
   </template>
 </NUsersLoginForm>
+```
+
+### NUsersRegisterForm
+
+A complete user registration form with email confirmation, real-time password validation, and built-in error handling.
+
+#### Basic Usage
+
+```vue
+<script setup>
+const handleRegistrationSuccess = (data) => {
+  console.log('Registration successful:', data.user)
+  console.log('Message:', data.message)
+  // Show success message or redirect
+}
+
+const handleRegistrationError = (error) => {
+  console.log('Registration failed:', error)
+  // Show error message to user
+}
+</script>
+
+<template>
+  <NUsersRegisterForm 
+    @success="handleRegistrationSuccess"
+    @error="handleRegistrationError"
+  />
+</template>
+```
+
+#### Customization Options
+
+**Props**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `apiEndpoint` | `string` | `'/api/nuxt-users/register'` | Registration API endpoint |
+| `redirectTo` | `string` | `undefined` | Where to redirect after successful registration |
+| `loginLink` | `string` | `'/login'` | Link to login page |
+
+**Events**
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `success` | `{ user: User, message: string }` | Emitted when registration is successful |
+| `error` | `string` | Emitted when registration fails |
+| `submit` | `RegistrationFormData` | Emitted when form is submitted |
+
+**Features**
+
+- **Real-time password validation** - Shows strength indicator and requirements
+- **Password confirmation** - Ensures passwords match
+- **Email validation** - Validates email format
+- **Name validation** - Ensures name is provided
+- **Form state management** - Handles loading states and validation
+- **Email confirmation flow** - Automatically sends confirmation email
+
+**Customization Slots**
+
+The registration form provides several slots for customization:
+
+```vue
+<NUsersRegisterForm>
+  <!-- Custom header -->
+  <template #header>
+    <div class="custom-header">
+      <h2>Join Our Community</h2>
+      <p>Create your account to get started</p>
+    </div>
+  </template>
+  
+  <!-- Custom name field -->
+  <template #name-field>
+    <div class="form-group">
+      <label for="fullName">Full Name *</label>
+      <input
+        id="fullName"
+        v-model="formData.name"
+        type="text"
+        placeholder="Enter your full name"
+        required
+        class="custom-input"
+      >
+    </div>
+  </template>
+  
+  <!-- Custom password strength display -->
+  <template #password-strength>
+    <!-- Use your own password strength component -->
+    <CustomPasswordStrength :password="formData.password" />
+  </template>
+  
+  <!-- Custom submit button -->
+  <template #submit-button>
+    <button
+      type="submit"
+      :disabled="isLoading || !isFormValid"
+      class="custom-register-btn"
+    >
+      <LoadingSpinner v-if="isLoading" />
+      {{ isLoading ? 'Creating Account...' : 'Create My Account' }}
+    </button>
+  </template>
+  
+  <!-- Custom footer with links -->
+  <template #footer>
+    <div class="register-footer">
+      <p>Already have an account? <NuxtLink to="/login">Sign in</NuxtLink></p>
+      <p class="terms-notice">
+        By registering, you agree to our 
+        <a href="/terms">Terms of Service</a> and 
+        <a href="/privacy">Privacy Policy</a>.
+      </p>
+    </div>
+  </template>
+</NUsersRegisterForm>
+```
+
+#### Configuration Requirements
+
+To enable registration, you must whitelist the `/register` route in your `nuxt.config.ts`:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    auth: {
+      whitelist: ['/register'], // This automatically whitelists /confirm-email too
+    },
+    // Configure email settings for confirmation emails
+    mailer: {
+      host: 'smtp.your-provider.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'your-email@example.com',
+        pass: 'your-password'
+      },
+      defaults: {
+        from: '"Your App" <noreply@yourapp.com>'
+      }
+    }
+  }
+})
+```
+
+**Note:** When you add `/register` to the whitelist, `/confirm-email` is automatically added as well, since users need to access the email confirmation link without authentication.
+
+#### Password Validation
+
+The registration form includes real-time password validation using the `NUsersPasswordStrengthIndicator` component. The validation rules are configurable:
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  nuxtUsers: {
+    passwordValidation: {
+      minLength: 8,
+      requireUppercase: true,
+      requireLowercase: true,
+      requireNumbers: true,
+      requireSpecialChars: true,
+      preventCommonPasswords: true
+    }
+  }
+})
+```
+
+#### Email Confirmation Flow
+
+1. **User submits registration form** - Email, name, and password are validated
+2. **User account created** - Account is created in inactive state
+3. **Confirmation email sent** - User receives email with confirmation link
+4. **User clicks link** - Account is activated via `/api/nuxt-users/confirm-email`
+5. **User can log in** - Account is now active and can be used for login
+
+#### Complete Example
+
+```vue
+<template>
+  <div class="registration-page">
+    <div class="registration-container">
+      <NUsersRegisterForm 
+        redirect-to="/welcome"
+        login-link="/login"
+        @success="handleSuccess"
+        @error="handleError"
+        @submit="handleSubmit"
+      >
+        <template #header>
+          <div class="brand-header">
+            <img src="/logo.png" alt="Logo" />
+            <h1>Create Your Account</h1>
+            <p>Join thousands of satisfied users</p>
+          </div>
+        </template>
+        
+        <template #footer>
+          <div class="register-footer">
+            <p>Already have an account? 
+              <NuxtLink to="/login" class="login-link">Sign in here</NuxtLink>
+            </p>
+            <div class="legal-notice">
+              <small>
+                By creating an account, you agree to our 
+                <a href="/terms">Terms of Service</a> and 
+                <a href="/privacy">Privacy Policy</a>.
+              </small>
+            </div>
+          </div>
+        </template>
+      </NUsersRegisterForm>
+    </div>
+  </div>
+</template>
+
+<script setup>
+// SEO and meta
+useHead({
+  title: 'Register - Your App',
+  meta: [
+    { name: 'description', content: 'Create a new account to get started with Your App' }
+  ]
+})
+
+const handleSuccess = (data) => {
+  // Show success notification
+  console.log('Registration successful:', data)
+  // The component will auto-redirect if redirectTo prop is set
+}
+
+const handleError = (error) => {
+  // Handle error (could show toast notification)
+  console.error('Registration error:', error)
+}
+
+const handleSubmit = (formData) => {
+  // Optional: Track registration attempts
+  console.log('Registration attempt:', formData.email)
+}
+</script>
+
+<style scoped>
+.registration-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.registration-container {
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.brand-header {
+  text-align: center;
+  padding: 2rem 2rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.brand-header img {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 1rem;
+}
+
+.brand-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.register-footer {
+  text-align: center;
+  padding-top: 1rem;
+}
+
+.login-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
+
+.legal-notice {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.legal-notice a {
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.legal-notice a:hover {
+  text-decoration: underline;
+}
+</style>
 ```
 
 ### NUsersLogoutLink
