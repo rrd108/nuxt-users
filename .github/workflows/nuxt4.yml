@@ -39,7 +39,54 @@ jobs:
           npm install $(npm pack .. | tail -1)
           echo "export default defineNuxtConfig({ modules: ['../dist/module.mjs'] })" > nuxt.config.ts
 
-      - name: Build Nuxt 4 app
+      - name: Test Nuxt 4 app builds
         run: |
           cd nuxt4-app
           npm run build
+
+      - name: Test playground integration
+        run: |
+          cd playground
+          npm run build
+          
+          # Start the built server in background
+          node .output/server/index.mjs &
+          SERVER_PID=$!
+          sleep 10
+          
+          # Test that middleware is working - protected endpoint should return 401
+          echo "Testing protected endpoint /api/nuxt-users/me..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/nuxt-users/me")
+          echo "Response code: $response"
+          if [ "$response" != "401" ]; then
+            echo "❌ Middleware NOT working - /me endpoint should return 401, got $response"
+            kill $SERVER_PID
+            exit 1
+          fi
+          echo "✅ Middleware is working - /me endpoint properly protected"
+          
+          # Test that session endpoint is accessible (not blocked by auth)
+          echo "Testing session endpoint /api/nuxt-users/session..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/nuxt-users/session" -X POST)
+          echo "Response code: $response"
+          if [ "$response" = "401" ]; then
+            echo "❌ Session endpoint blocked by auth - should be accessible for login"
+            kill $SERVER_PID
+            exit 1
+          fi
+          echo "✅ Session endpoint is accessible (got $response - not 401 unauthorized)"
+          
+          # Test that registration endpoint is accessible (auto-whitelisted)
+          echo "Testing registration endpoint /api/nuxt-users/register..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/nuxt-users/register" -X POST)
+          echo "Response code: $response"
+          if [ "$response" = "401" ]; then
+            echo "❌ Registration endpoint blocked by auth - auto-whitelisting not working"
+            kill $SERVER_PID
+            exit 1
+          fi
+          echo "✅ Registration endpoint is accessible (got $response - not 401 unauthorized)"
+          
+          # Clean up
+          kill $SERVER_PID
+          echo "🎉 All playground integration tests passed!"
