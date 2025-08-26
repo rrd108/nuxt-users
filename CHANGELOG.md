@@ -1,6 +1,37 @@
 # Changelog
 
 
+## v1.29.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.28.2...v1.29.0)
+
+### 🚀 Enhancements
+
+- Implement register functionality ([8ea4f89](https://github.com/rrd108/nuxt-users/commit/8ea4f89))
+
+### 🩹 Fixes
+
+- Lost reactivity for user ([742cd1e](https://github.com/rrd108/nuxt-users/commit/742cd1e))
+- Types and test ([db71fe4](https://github.com/rrd108/nuxt-users/commit/db71fe4))
+- Type annotations ([d4a408b](https://github.com/rrd108/nuxt-users/commit/d4a408b))
+- Missing server middleware ([50e22d5](https://github.com/rrd108/nuxt-users/commit/50e22d5))
+- Auto whitelist urls on register ([8a05dab](https://github.com/rrd108/nuxt-users/commit/8a05dab))
+
+### 🏡 Chore
+
+- Remove login from example ([8d4611a](https://github.com/rrd108/nuxt-users/commit/8d4611a))
+- **release:** V1.28.2 ([b1e25cc](https://github.com/rrd108/nuxt-users/commit/b1e25cc))
+- Fix linting issues ([7e45645](https://github.com/rrd108/nuxt-users/commit/7e45645))
+- Lint fixes ([bf5786f](https://github.com/rrd108/nuxt-users/commit/bf5786f))
+
+### ✅ Tests
+
+- Add test for register ([ac29f3a](https://github.com/rrd108/nuxt-users/commit/ac29f3a))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.28.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.28.1...v1.28.2)
