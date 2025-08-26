@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v1.28.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.28.1...v1.28.2)
+
+### 🩹 Fixes
+
+- Lost reactivity ([8049526](https://github.com/rrd108/nuxt-users/commit/8049526))
+- Lost reactivity for user ([742cd1e](https://github.com/rrd108/nuxt-users/commit/742cd1e))
+
+### 🏡 Chore
+
+- Rename default to users ([4f5345a](https://github.com/rrd108/nuxt-users/commit/4f5345a))
+- Change info comment ([56c3d35](https://github.com/rrd108/nuxt-users/commit/56c3d35))
+- Comment out ([2534222](https://github.com/rrd108/nuxt-users/commit/2534222))
+- Remove unsused import ([cddaf9c](https://github.com/rrd108/nuxt-users/commit/cddaf9c))
+- **release:** V1.28.1 ([d7d33d2](https://github.com/rrd108/nuxt-users/commit/d7d33d2))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.28.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.28.0...v1.28.1)
