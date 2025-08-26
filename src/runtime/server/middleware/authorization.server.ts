@@ -69,6 +69,12 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  // Auto-whitelist /me endpoint for any authenticated user
+  if (event.path === `${base}/me`) {
+    console.log(`[Nuxt Users] server.middleware.auth.global: Auto-whitelisted /me endpoint for authenticated user ${user.id}`)
+    return
+  }
+
   // Check role-based permissions
   if (!hasPermission(user.role, event.path, event.method, options.auth.permissions)) {
     if (event.path.startsWith('/api/')) {

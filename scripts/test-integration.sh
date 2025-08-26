@@ -72,14 +72,14 @@ sleep 2
 
 print_status $BLUE "🧪 Running integration tests..."
 
-# Test 1: Protected endpoint should return 401
-print_status $YELLOW "🔐 Testing protected endpoint /api/nuxt-users/me..."
+# Test 1: /me endpoint should require authentication (401 without token)
+print_status $YELLOW "🔐 Testing /me endpoint requires authentication..."
 response=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/nuxt-users/me" || echo "000")
 
 if [ "$response" = "401" ]; then
-    print_status $GREEN "✅ Middleware working - protected endpoint returns 401"
+    print_status $GREEN "✅ /me endpoint properly requires authentication (401 without token)"
 else
-    print_status $RED "❌ Middleware NOT working - expected 401, got $response"
+    print_status $RED "❌ /me endpoint should require authentication - expected 401, got $response"
     print_status $RED "   This means server middleware is not properly registered!"
     exit 1
 fi

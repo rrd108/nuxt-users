@@ -473,5 +473,32 @@ describe('Auth Server Middleware', () => {
       expect(mockCreateError).not.toHaveBeenCalled()
       expect(result).toBeUndefined()
     })
+
+    it('should auto-whitelist /me endpoint for any authenticated user', async () => {
+      const event = { path: '/api/nuxt-users/me', method: 'GET' } as H3Event
+
+      // Mock getCookie to return a valid token
+      mockGetCookie.mockReturnValue('valid-token')
+
+      // Mock getCurrentUserFromToken to return a user with unknown role (not in permissions)
+      const { getCurrentUserFromToken } = await import('../../src/runtime/server/utils')
+      const mockUser = {
+        id: 5,
+        email: 'unknown@example.com',
+        name: 'Unknown Role User',
+        role: 'unknown', // This role is not in permissions but /me should still work
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z',
+        active: true
+      }
+      vi.mocked(getCurrentUserFromToken).mockResolvedValue(mockUser)
+
+      const result = await serverAuthMiddleware.default(event)
+
+      expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
+      expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
+      expect(mockCreateError).not.toHaveBeenCalled()
+      expect(result).toBeUndefined()
+    })
   })
 })
