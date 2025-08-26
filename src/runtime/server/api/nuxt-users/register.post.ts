@@ -1,9 +1,12 @@
+import { createError, defineEventHandler, readBody, getHeader } from 'h3'
+import { useRuntimeConfig } from '#imports'
 import { registerUser } from '../../services/registration'
-import { useServerAuth } from '../../composables/useServerAuth'
+import type { ModuleOptions } from 'nuxt-users/utils'
 
 export default defineEventHandler(async (event) => {
   try {
-    const { options } = useServerAuth(event)
+    const { nuxtUsers } = useRuntimeConfig()
+    const options = nuxtUsers as ModuleOptions
     const body = await readBody(event)
     
     // Validate required fields
