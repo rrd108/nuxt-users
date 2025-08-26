@@ -38,7 +38,7 @@ const apiEndpoint = computed(() => props.apiEndpoint || `${(nuxtUsers as { apiBa
 const isLoading = ref(false)
 const error = ref('')
 const successMessage = ref('')
-const passwordValidationResult = ref<any>(null)
+const passwordValidationResult = ref<{ isValid: boolean, score: number, validations: Record<string, boolean>, feedback: string[] } | null>(null)
 
 const formData = ref<RegistrationFormData>({
   email: '',
@@ -51,7 +51,8 @@ const formData = ref<RegistrationFormData>({
 watch(() => formData.value.password, (newPassword) => {
   if (newPassword) {
     passwordValidationResult.value = validatePassword(newPassword, passwordValidation)
-  } else {
+  }
+  else {
     passwordValidationResult.value = null
   }
 }, { immediate: true })
@@ -62,12 +63,12 @@ const passwordsMatch = computed(() => {
 })
 
 const isFormValid = computed(() => {
-  return formData.value.email && 
-         formData.value.name && 
-         formData.value.password && 
-         formData.value.confirmPassword &&
-         passwordsMatch.value &&
-         (passwordValidationResult.value?.isValid ?? false)
+  return formData.value.email
+    && formData.value.name
+    && formData.value.password
+    && formData.value.confirmPassword
+    && passwordsMatch.value
+    && (passwordValidationResult.value?.isValid ?? false)
 })
 
 const handleSubmit = async () => {
@@ -210,7 +211,7 @@ const handleSubmit = async () => {
             required
             :class="{ 'n-users-input-error': !passwordsMatch }"
           >
-          <small 
+          <small
             v-if="!passwordsMatch && formData.confirmPassword"
             class="n-users-error-text"
           >
@@ -237,8 +238,8 @@ const handleSubmit = async () => {
       <slot name="footer">
         <div class="n-users-register-footer">
           <p class="n-users-login-link">
-            Already have an account? 
-            <a 
+            Already have an account?
+            <a
               :href="loginLink || '/login'"
               class="n-users-link"
             >

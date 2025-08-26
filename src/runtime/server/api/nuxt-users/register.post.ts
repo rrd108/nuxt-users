@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     const { nuxtUsers } = useRuntimeConfig()
     const options = nuxtUsers as ModuleOptions
     const body = await readBody(event)
-    
+
     // Validate required fields
     if (!body.email || !body.name || !body.password) {
       throw createError({
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const emailRegex = /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/
     if (!emailRegex.test(body.email)) {
       throw createError({
         statusCode: 400,
@@ -50,16 +50,17 @@ export default defineEventHandler(async (event) => {
     )
 
     return result
-  } catch (error) {
+  }
+  catch (error) {
     console.error('[Nuxt Users] Registration error:', error)
-    
+
     if (error instanceof Error) {
       throw createError({
         statusCode: 400,
         statusMessage: error.message
       })
     }
-    
+
     throw createError({
       statusCode: 500,
       statusMessage: 'Registration failed'

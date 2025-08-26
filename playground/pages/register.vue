@@ -3,11 +3,11 @@
     <Head>
       <Title>Register - Nuxt Users</Title>
     </Head>
-    
+
     <div class="container">
       <h1>Register</h1>
-      
-      <NUsersRegisterForm 
+
+      <NUsersRegisterForm
         redirect-to="/login"
         login-link="/login"
         @success="onRegistrationSuccess"

@@ -73,9 +73,10 @@ export const registerUser = async (
   // Send confirmation email
   try {
     await sendConfirmationEmail(userData.email, userData.name, confirmationToken, options, baseUrl)
-  } catch (emailError) {
+  }
+  catch (emailError) {
     // Log email error but don't fail the registration
-    console.error(`[Nuxt Users] Failed to send confirmation email, but user was created successfully:`, emailError)
+    console.error('[Nuxt Users] Failed to send confirmation email, but user was created successfully:', emailError)
     // In test environments or when email is misconfigured, we still want to return success
     // The user was created successfully, just the email sending failed
   }
@@ -168,7 +169,8 @@ If you did not create an account, please ignore this email.`,
       `,
     })
     console.log(`[Nuxt Users] Confirmation email sent to ${email}`)
-  } catch (error) {
+  }
+  catch (error) {
     console.error(`[Nuxt Users] Failed to send confirmation email to ${email}:`, error)
     throw error
   }

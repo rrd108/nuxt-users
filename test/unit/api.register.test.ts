@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { setup, $fetch, createPage } from '@nuxt/test-utils'
+import { setup, $fetch } from '@nuxt/test-utils'
 
 describe('API: Registration', async () => {
   await setup({

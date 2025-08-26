@@ -26,7 +26,7 @@ describe('Auto-whitelist functionality', () => {
     }
 
     const result = getWhitelistWithAutoConfirmEmail(options)
-    
+
     expect(result).toContain('/register')
     expect(result).toContain('/confirm-email')
     expect(result).toContain('/noauth')
@@ -40,7 +40,7 @@ describe('Auto-whitelist functionality', () => {
     }
 
     const result = getWhitelistWithAutoConfirmEmail(options)
-    
+
     expect(result.filter(route => route === '/confirm-email')).toHaveLength(1)
   })
 
@@ -52,7 +52,7 @@ describe('Auto-whitelist functionality', () => {
     }
 
     const result = getWhitelistWithAutoConfirmEmail(options)
-    
+
     expect(result).not.toContain('/confirm-email')
     expect(result).toContain('/noauth')
     expect(result).toContain('/login')
@@ -66,7 +66,7 @@ describe('Auto-whitelist functionality', () => {
     }
 
     const result = getWhitelistWithAutoConfirmEmail(options)
-    
+
     expect(result).not.toContain('/confirm-email')
     expect(result).toHaveLength(0)
   })
