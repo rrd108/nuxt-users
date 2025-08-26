@@ -117,7 +117,11 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     addImportsDir(resolver.resolve('./runtime/composables'))
     addServerImportsDir(resolver.resolve('./runtime/server/composables'))
 
-    // Server middleware is auto-registered by Nitro when placed in server/middleware/
+    // Add server middleware for authentication
+    addServerHandler({
+      middleware: true,
+      handler: resolver.resolve('./runtime/server/middleware/authorization.server')
+    })
 
     addRouteMiddleware({
       name: 'authorization.client',
