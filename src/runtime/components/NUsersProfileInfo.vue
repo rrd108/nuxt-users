@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAuthentication } from '../composables/useAuthentication'
 
 // Initialize the composable state as null initially
-let authComposable: ReturnType<typeof useAuthentication> | null = null
+const authComposable = ref<ReturnType<typeof useAuthentication> | null>(null)
 
 // Create computed property that safely accesses the composable
-const user = computed(() => authComposable?.user.value ?? null)
+const user = computed(() => authComposable.value?.user ?? null)
 
 onMounted(() => {
   // Initialize the composable only after the component is mounted
-  authComposable = useAuthentication()
+  authComposable.value = useAuthentication()
 })
 </script>
 
@@ -37,6 +37,12 @@ onMounted(() => {
 
       <dt>Last updated:</dt>
       <dd>{{ Intl.DateTimeFormat().format(new Date(user.updated_at)) }}</dd>
+
+      <dt>Active:</dt>
+      <dd>{{ user.active ? 'Yes' : 'No' }}</dd>
+
+      <dt>ID:</dt>
+      <dd>{{ user.id }}</dd>
     </dl>
   </div>
 </template>
