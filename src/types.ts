@@ -50,7 +50,7 @@ export interface RuntimeModuleOptions {
     /**
      * Whitelisted routes that do not require authentication
      * @default ['/login']
-     * @example ['/login', '/register']
+     * @example ['/register']
      */
     whitelist?: string[]
     /**
