@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (noAuthPaths.includes(event.path)) {
-    console.log(`[Nuxt Users] server.middleware.auth.global: NO_AUTH_PATH: ${event.path}`)
+    console.debug(`[Nuxt Users] authorization: NO_AUTH_PATH: ${event.path}`)
     return
   }
 
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
 
   // whitelisted paths are allowed to access without authentication
   if (isWhitelisted(event.path, options.auth.whitelist)) {
-    console.log(`[Nuxt Users] server.middleware.auth.global: whitelisted: ${event.path}`)
+    console.debug(`[Nuxt Users] authorization: whitelisted: ${event.path}`)
     return
   }
 
@@ -48,11 +48,11 @@ export default defineEventHandler(async (event) => {
   const token = getCookie(event, 'auth_token')
   if (!token) {
     if (event.path.startsWith('/api/')) {
-      console.log(`[Nuxt Users] server.middleware.auth.global: ${event.path} No token found - API request rejected`)
+      console.warn(`[Nuxt Users] authorization: ${event.path} No token found - API request rejected`)
       throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
     }
     else {
-      console.log(`[Nuxt Users] server.middleware.auth.global: ${event.path} No token found - letting client handle page redirect`)
+      console.debug(`[Nuxt Users] authorization: ${event.path} No token found - letting client handle page redirect`)
       return
     }
   }
@@ -60,33 +60,33 @@ export default defineEventHandler(async (event) => {
   const user = await getCurrentUserFromToken(token, options)
   if (!user) {
     if (event.path.startsWith('/api/')) {
-      console.log(`[Nuxt Users] server.middleware.auth.global: ${event.path} Invalid token - API request rejected`)
+      console.warn(`[Nuxt Users] authorization: ${event.path} Invalid token - API request rejected`)
       throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
     }
     else {
-      console.log(`[Nuxt Users] server.middleware.auth.global: ${event.path} Invalid token - letting client handle page redirect`)
+      console.debug(`[Nuxt Users] authorization: ${event.path} Invalid token - letting client handle page redirect`)
       return
     }
   }
 
   // Auto-whitelist /me endpoint for any authenticated user
   if (event.path === `${base}/me`) {
-    console.log(`[Nuxt Users] server.middleware.auth.global: Auto-whitelisted /me endpoint for authenticated user ${user.id}`)
+    console.debug(`[Nuxt Users] authorization: Auto-whitelisted /me endpoint for authenticated user ${user.id}`)
     return
   }
 
   // Check role-based permissions
   if (!hasPermission(user.role, event.path, event.method, options.auth.permissions)) {
     if (event.path.startsWith('/api/')) {
-      console.log(`[Nuxt Users] server.middleware.auth.global: ${event.path} User ${user.id} with role ${user.role} denied access - API request rejected`)
+      console.warn(`[Nuxt Users] authorization: ${event.path} User ${user.id} with role ${user.role} denied access - API request rejected`)
       throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
     }
     else {
-      console.log(`[Nuxt Users] server.middleware.auth.global: ${event.path} User ${user.id} with role ${user.role} denied access - letting client handle page redirect`)
+      console.debug(`[Nuxt Users] authorization: ${event.path} User ${user.id} with role ${user.role} denied access - letting client handle page redirect`)
       return
     }
   }
 
-  console.log(`[Nuxt Users] server.middleware.auth.global: Authenticated request to ${event.path} for ${user.id} with role ${user.role}`)
+  console.debug(`[Nuxt Users] authorization: Authenticated request to ${event.path} for ${user.id} with role ${user.role}`)
   return
 })
