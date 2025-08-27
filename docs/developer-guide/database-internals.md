@@ -397,7 +397,7 @@ The module supports three database connectors with automatic schema adaptation:
 The database utilities include comprehensive error handling:
 
 - **Connection Errors**: Descriptive messages for database connection failures
-- **Missing Dependencies**: Clear instructions for installing required peer dependencies
+- **Missing Dependencies**: Clear instructions for installing required peer dependencies (bcrypt, database drivers, nodemailer)
 - **Migration Failures**: Detailed error reporting with rollback capabilities
 - **Validation Errors**: Password and data validation with specific error messages
 - **Table Existence**: Graceful handling of missing tables

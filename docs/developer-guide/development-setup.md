@@ -21,6 +21,15 @@ cd nuxt-users
 yarn install
 ```
 
+### Peer Dependencies for Development
+
+When developing the module, you'll need all peer dependencies installed to test different database connectors:
+
+```bash
+# Install all peer dependencies for comprehensive testing
+yarn add db0 better-sqlite3 mysql2 pg bcrypt nodemailer @formkit/nuxt
+```
+
 ## 3. Build the Module
 
 ```bash

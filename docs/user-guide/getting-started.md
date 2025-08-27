@@ -6,14 +6,22 @@ Welcome to Nuxt Users! This guide will get you up and running with a complete au
 
 The fastest way to get started is with our zero-config approach. Just install the module and you're ready to go!
 
-### 1. Install the Module
+### 1. Install the Module and Dependencies
 
 ```bash
+# Install the module
 npm install nuxt-users
 # or
 yarn add nuxt-users
 # or
 pnpm add nuxt-users
+
+# Install required peer dependencies
+npm install db0 better-sqlite3 bcrypt nodemailer
+# or
+yarn add db0 better-sqlite3 bcrypt nodemailer
+# or
+pnpm add db0 better-sqlite3 bcrypt nodemailer
 ```
 
 ### 2. Add to Your Nuxt Config
@@ -32,6 +40,8 @@ The module automatically sets up:
 - Authentication API endpoints
 - Vue components for login/logout
 - Session management
+
+> **Note**: While this is called "zero-config", you still need to install the required peer dependencies (`db0`, `better-sqlite3`, `bcrypt`, `nodemailer`) as shown in step 1. This gives you control over which database and email providers to use.
 
 ### 3. Initialize Your Database
 

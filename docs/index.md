@@ -24,7 +24,7 @@ features:
   - title: 🎨 Pre-built UI Components
     details: Ready-to-use authentication forms, user management interfaces, and customizable components
   - title: ⚡ Zero-Config Setup
-    details: Get started instantly with sensible defaults and automatic configuration
+    details: Get started instantly with sensible defaults and automatic configuration (peer dependencies required)
   - title: 🔷 TypeScript First
     details: Full TypeScript support throughout the entire module for better development experience
 ---

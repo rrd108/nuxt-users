@@ -4,6 +4,24 @@ This guide covers common issues you might encounter when setting up and using th
 
 ## Installation Issues
 
+### Missing Peer Dependencies
+
+**Problem:** Getting errors like "Cannot find module 'bcrypt'" or "Cannot find module 'mysql2'".
+
+**Solution:**
+```bash
+# Install all required peer dependencies
+npm install db0 better-sqlite3 mysql2 pg bcrypt nodemailer
+
+# For specific database types, you only need:
+# SQLite: db0 better-sqlite3
+# MySQL: db0 mysql2  
+# PostgreSQL: db0 pg
+
+# Optional but recommended:
+npm install @formkit/nuxt
+```
+
 ### Module Not Found
 
 **Problem:** Getting "Cannot resolve module 'nuxt-users'" error.

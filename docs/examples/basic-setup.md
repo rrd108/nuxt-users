@@ -9,8 +9,9 @@ The fastest way to get authentication working in your Nuxt app.
 ### 1. Complete Minimal Setup
 
 ```bash
-# Install the module
+# Install the module and peer dependencies
 npm install nuxt-users
+npm install db0 better-sqlite3 bcrypt nodemailer
 
 # Initialize database
 npx nuxt-users migrate

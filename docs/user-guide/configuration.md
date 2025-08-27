@@ -20,6 +20,8 @@ This gives you:
 - 24-hour token expiration
 - Ready-to-use authentication system
 
+> **Important**: Even with zero-config, you must install the required peer dependencies (`db0`, `better-sqlite3`, `bcrypt`, `nodemailer`) as described in the [Installation Guide](/user-guide/installation#peer-dependencies).
+
 ## Complete Configuration Options
 
 When you need more control, here's the full configuration structure:
@@ -91,6 +93,8 @@ export default defineNuxtConfig({
 
 Perfect for development and small applications:
 
+> **Required peer dependencies**: `db0`, `better-sqlite3`
+
 ```ts
 nuxtUsers: {
   connector: {
@@ -105,6 +109,8 @@ nuxtUsers: {
 ### MySQL
 
 For production applications with MySQL:
+
+> **Required peer dependencies**: `db0`, `mysql2`
 
 ```ts
 nuxtUsers: {
@@ -125,6 +131,8 @@ nuxtUsers: {
 
 For production applications with PostgreSQL:
 
+> **Required peer dependencies**: `db0`, `pg`
+
 ```ts
 nuxtUsers: {
   connector: {
@@ -143,6 +151,8 @@ nuxtUsers: {
 ## Email Configuration
 
 Configure email settings to enable password reset functionality:
+
+> **Required peer dependency**: `nodemailer` (for all email functionality)
 
 ### Development Setup (Ethereal Email)
 

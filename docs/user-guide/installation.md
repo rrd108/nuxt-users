@@ -12,23 +12,43 @@ npm install nuxt-users
 yarn add nuxt-users
 ```
 
-## Required Dependencies
+## Peer Dependencies
 
-This module requires the following dependencies to be installed in your project:
+This module uses peer dependencies to avoid bundling unnecessary packages and to give you control over which database and email providers you want to use. You must manually install these dependencies in your project:
+
+### Required Peer Dependencies
 
 ```bash
-# For database support
-npm install db0 better-sqlite3 mysql2
+# Database support (choose one or more based on your needs)
+npm install db0 better-sqlite3 mysql2 pg
 
-# For password hashing
+# Password hashing
 npm install bcrypt
 
-# For email functionality (password resets)
+# Email functionality (required for password reset features)
 npm install nodemailer
+```
 
-# For form components (optional but recommended)
+### Optional Peer Dependencies
+
+```bash
+# Form components (recommended for better UX)
 npm install @formkit/nuxt
 ```
+
+### Why Peer Dependencies?
+
+- **Database flexibility**: You only install the database drivers you need
+- **Bundle size optimization**: Avoids bundling unused database connectors
+- **Version control**: You control the exact versions of database drivers
+- **Security**: You can audit and update dependencies independently
+
+### What Happens If Dependencies Are Missing?
+
+If you try to use features that require missing peer dependencies, the module will throw descriptive errors with installation instructions. For example:
+- Using MySQL without `mysql2` installed
+- Using password reset without `nodemailer` installed
+- Using password hashing without `bcrypt` installed
 
 ## Add to Nuxt Config
 
