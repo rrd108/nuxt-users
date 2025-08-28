@@ -1,6 +1,6 @@
 import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir } from '@nuxt/kit'
 import { defu } from 'defu'
-import type { RuntimeModuleOptions, ModuleOptions, DatabaseConfig } from './types'
+import type { RuntimeModuleOptions, ModuleOptions } from './types'
 
 export const defaultOptions: ModuleOptions = {
   connector: {
@@ -88,20 +88,13 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     // Add public runtime config for client-side access
     nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {}
     nuxt.options.runtimeConfig.public.nuxtUsers = {
-      passwordValidation: {
-        minLength: options.passwordValidation?.minLength || defaultOptions.passwordValidation.minLength,
-        requireUppercase: options.passwordValidation?.requireUppercase ?? defaultOptions.passwordValidation.requireUppercase,
-        requireLowercase: options.passwordValidation?.requireLowercase ?? defaultOptions.passwordValidation.requireLowercase,
-        requireNumbers: options.passwordValidation?.requireNumbers ?? defaultOptions.passwordValidation.requireNumbers,
-        requireSpecialChars: options.passwordValidation?.requireSpecialChars ?? defaultOptions.passwordValidation.requireSpecialChars,
-        preventCommonPasswords: options.passwordValidation?.preventCommonPasswords ?? defaultOptions.passwordValidation.preventCommonPasswords,
-      },
+      passwordValidation: runtimeConfigOptions.passwordValidation,
       auth: {
         whitelist: (() => {
-          const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])]
+          const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]
           // Auto-whitelist related endpoints if /register is whitelisted
           if (combinedWhitelist.includes('/register')) {
-            const apiBasePath = options.apiBasePath || defaultOptions.apiBasePath
+            const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
             const registrationEndpoints = [
               '/confirm-email', // Page route for email confirmation
               `${apiBasePath}/register`, // API endpoint for registration
@@ -116,9 +109,9 @@ export default defineNuxtModule<RuntimeModuleOptions>({
           }
           return combinedWhitelist
         })(),
-        permissions: options.auth?.permissions || defaultOptions.auth.permissions
+        permissions: runtimeConfigOptions.auth?.permissions || defaultOptions.auth.permissions
       },
-      apiBasePath: options.apiBasePath || defaultOptions.apiBasePath
+      apiBasePath: runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
     }
 
     addPlugin({
