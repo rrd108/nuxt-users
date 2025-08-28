@@ -1,6 +1,6 @@
 import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir } from '@nuxt/kit'
 import { defu } from 'defu'
-import type { RuntimeModuleOptions, ModuleOptions } from './types'
+import type { RuntimeModuleOptions, ModuleOptions, DatabaseConfig } from './types'
 
 export const defaultOptions: ModuleOptions = {
   connector: {
@@ -61,20 +61,13 @@ export default defineNuxtModule<RuntimeModuleOptions>({
 
     nuxt.options.runtimeConfig.nuxtUsers = {
       ...runtimeConfigOptions,
-      apiBasePath: options.apiBasePath || defaultOptions.apiBasePath,
-      passwordResetUrl: options.passwordResetUrl || defaultOptions.passwordResetUrl,
-      tables: {
-        migrations: options.tables?.migrations || defaultOptions.tables.migrations,
-        users: options.tables?.users || defaultOptions.tables.users,
-        personalAccessTokens: options.tables?.personalAccessTokens || defaultOptions.tables.personalAccessTokens,
-        passwordResetTokens: options.tables?.passwordResetTokens || defaultOptions.tables.passwordResetTokens,
-      },
       auth: {
+        ...runtimeConfigOptions.auth,
         whitelist: (() => {
-          const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(options.auth?.whitelist || [])]
+          const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]
           // Auto-whitelist related endpoints if /register is whitelisted
           if (combinedWhitelist.includes('/register')) {
-            const apiBasePath = options.apiBasePath || defaultOptions.apiBasePath
+            const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
             const registrationEndpoints = [
               '/confirm-email', // Page route for email confirmation
               `${apiBasePath}/register`, // API endpoint for registration
@@ -89,10 +82,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
           }
           return combinedWhitelist
         })(),
-        tokenExpiration: options.auth?.tokenExpiration || defaultOptions.auth.tokenExpiration,
-        permissions: options.auth?.permissions || defaultOptions.auth.permissions
       },
-      hardDelete: options.hardDelete ?? defaultOptions.hardDelete,
     }
 
     // Add public runtime config for client-side access
@@ -255,11 +245,12 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       // Only set default database if not already configured by consumer
       if (!nitroConfig.database.default) {
         // Use nuxt-users database configuration for Nitro's default database
-        const connectorOptions = { ...runtimeConfigOptions.connector.options }
+        const finalConnectorConfig = nuxt.options.runtimeConfig.nuxtUsers as ModuleOptions
+        const connectorOptions = { ...finalConnectorConfig.connector.options }
 
         // Map nuxt-users connector format to Nitro database format
         let nitroConnector: 'better-sqlite3' | 'mysql2' | 'postgresql'
-        switch (runtimeConfigOptions.connector.name) {
+        switch (finalConnectorConfig.connector.name) {
           case 'sqlite':
             nitroConnector = 'better-sqlite3'
             break
