@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import type { User } from 'nuxt-users/utils'
 
 // Example: Filter users based on connected data
 const showOnlyAdmins = ref(false)
 
 const adminFilter = (obj: unknown) => {
-  const item = obj as any
-  return item.role === 'admin' || item.permissions?.includes('admin')
+  const item = obj as User
+  return item.role === 'admin'
 }
 
 // Combined filter function
 const userFilter = (obj: unknown) => {
-  if (!showOnlyAdmins.value ) {
+  if (!showOnlyAdmins.value) {
     return true // Show all users
   }
 
@@ -20,7 +21,6 @@ const userFilter = (obj: unknown) => {
   if (showOnlyAdmins.value) {
     shouldShow = shouldShow && adminFilter(obj)
   }
-
 
   return shouldShow
 }
