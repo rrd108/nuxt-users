@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v1.30.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.29.1...v1.30.0)
+
+### 🚀 Enhancements
+
+- Extends NUsersList with customizable user actions ([1ea4f61](https://github.com/rrd108/nuxt-users/commit/1ea4f61))
+- Adds filtering functionality to user list ([c3d25a9](https://github.com/rrd108/nuxt-users/commit/c3d25a9))
+
+### 🩹 Fixes
+
+- Add missing endpoint ([a0a371c](https://github.com/rrd108/nuxt-users/commit/a0a371c))
+- Auto whitelist /me endpoint ([5453da9](https://github.com/rrd108/nuxt-users/commit/5453da9))
+- Check peer dependencies on install ([9e6d596](https://github.com/rrd108/nuxt-users/commit/9e6d596))
+- Missing connector.options closes #96 ([#96](https://github.com/rrd108/nuxt-users/issues/96))
+- Using user provided properties ([07dd6a2](https://github.com/rrd108/nuxt-users/commit/07dd6a2))
+
+### 🏡 Chore
+
+- **release:** V1.29.1 ([b8f72c2](https://github.com/rrd108/nuxt-users/commit/b8f72c2))
+- Change console.logs ([7918808](https://github.com/rrd108/nuxt-users/commit/7918808))
+
+### ✅ Tests
+
+- Add integration tests runner ([e6cfbfb](https://github.com/rrd108/nuxt-users/commit/e6cfbfb))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.29.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.29.0...v1.29.1)
