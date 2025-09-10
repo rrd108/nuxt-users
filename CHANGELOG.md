@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.31.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.31.0...v1.31.1)
+
+### 🩹 Fixes
+
+- Includes scripts directory in the published package ([ceaa188](https://github.com/rrd108/nuxt-users/commit/ceaa188))
+
+### 🏡 Chore
+
+- **release:** V1.31.0 ([21907d3](https://github.com/rrd108/nuxt-users/commit/21907d3))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.31.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.30.0...v1.31.0)
