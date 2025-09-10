@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.31.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.31.1...v1.31.2)
+
+### 🩹 Fixes
+
+- Usercard shows action buttons by default ([d824b1e](https://github.com/rrd108/nuxt-users/commit/d824b1e))
+
+### 🏡 Chore
+
+- **release:** V1.31.1 ([da02db7](https://github.com/rrd108/nuxt-users/commit/da02db7))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.31.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.31.0...v1.31.1)
