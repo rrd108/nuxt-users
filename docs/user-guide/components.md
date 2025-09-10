@@ -589,6 +589,310 @@ const handleDelete = (user) => {
 |------|------|---------|-------------|
 | `displayFields` | `string[]` | `['id', 'name', 'email', 'role', 'created_at']` | Fields to display for each user |
 | `fieldLabels` | `Record<string, string>` | Default labels | Custom labels for fields |
+| `filter` | `Partial<User>` | `{}` | Filter criteria to apply to the user list |
+
+#### Filtering Users
+
+The `NUsersList` component supports real-time filtering of users based on any user field. The filter prop accepts a `Partial<User>` object where you can specify criteria for any user property.
+
+**Filter Behavior:**
+- **String fields** (name, email, role): Case-insensitive partial matching
+- **Other fields** (id, active, etc.): Exact matching
+- **Empty values**: Ignored (no filtering applied for that field)
+- **Multiple criteria**: All conditions must be met (AND logic)
+
+**Basic Filter Examples:**
+
+```vue
+<script setup>
+import { ref } from 'vue'
+
+// Filter by role
+const roleFilter = ref({ role: 'admin' })
+
+// Filter by name (partial match)
+const nameFilter = ref({ name: 'john' })
+
+// Filter by active status
+const activeFilter = ref({ active: true })
+
+// Multiple filters
+const multiFilter = ref({ 
+  role: 'admin', 
+  active: true 
+})
+</script>
+
+<template>
+  <!-- Filter by role only -->
+  <NUsersList :filter="roleFilter" />
+  
+  <!-- Filter by name (case-insensitive partial match) -->
+  <NUsersList :filter="nameFilter" />
+  
+  <!-- Filter by active status -->
+  <NUsersList :filter="activeFilter" />
+  
+  <!-- Multiple filters (users must be admin AND active) -->
+  <NUsersList :filter="multiFilter" />
+</template>
+```
+
+**Dynamic Filtering with User Input:**
+
+```vue
+<script setup>
+import { ref, computed } from 'vue'
+
+const searchTerm = ref('')
+const selectedRole = ref('')
+const showActiveOnly = ref(false)
+
+// Computed filter that updates reactively
+const filter = computed(() => {
+  const filterObj = {}
+  
+  if (searchTerm.value.trim()) {
+    filterObj.name = searchTerm.value
+  }
+  
+  if (selectedRole.value) {
+    filterObj.role = selectedRole.value
+  }
+  
+  if (showActiveOnly.value) {
+    filterObj.active = true
+  }
+  
+  return filterObj
+})
+
+const clearFilters = () => {
+  searchTerm.value = ''
+  selectedRole.value = ''
+  showActiveOnly.value = false
+}
+</script>
+
+<template>
+  <div>
+    <!-- Filter Controls -->
+    <div class="filter-controls">
+      <input
+        v-model="searchTerm"
+        type="text"
+        placeholder="Search by name..."
+        class="search-input"
+      >
+      
+      <select v-model="selectedRole" class="role-select">
+        <option value="">All Roles</option>
+        <option value="admin">Admin</option>
+        <option value="user">User</option>
+        <option value="moderator">Moderator</option>
+      </select>
+      
+      <label class="checkbox-label">
+        <input
+          v-model="showActiveOnly"
+          type="checkbox"
+        >
+        Active users only
+      </label>
+      
+      <button @click="clearFilters" class="clear-btn">
+        Clear Filters
+      </button>
+    </div>
+    
+    <!-- User List with Dynamic Filter -->
+    <NUsersList 
+      :filter="filter"
+      @edit-click="handleEdit"
+      @delete="handleDelete"
+    />
+  </div>
+</template>
+
+<style scoped>
+.filter-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+  align-items: center;
+}
+
+.search-input, .role-select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.clear-btn {
+  padding: 0.5rem 1rem;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  background: #b91c1c;
+}
+</style>
+```
+
+**Advanced Filtering Examples:**
+
+```vue
+<script setup>
+import { ref } from 'vue'
+
+// Filter by email domain
+const emailDomainFilter = ref({ email: '@company.com' })
+
+// Filter by creation date (exact match)
+const recentUsersFilter = ref({ 
+  created_at: '2024-01-01' 
+})
+
+// Filter by multiple name patterns
+const namePatterns = ref(['john', 'jane', 'admin'])
+
+const complexFilter = computed(() => {
+  // This would require custom logic for OR conditions
+  // The built-in filter only supports AND logic
+  return { role: 'admin' }
+})
+</script>
+
+<template>
+  <!-- Filter by email domain -->
+  <NUsersList :filter="emailDomainFilter" />
+  
+  <!-- Filter by specific creation date -->
+  <NUsersList :filter="recentUsersFilter" />
+</template>
+```
+
+**Filter with Form Integration:**
+
+```vue
+<script setup>
+import { ref } from 'vue'
+
+const filterForm = ref({
+  name: '',
+  email: '',
+  role: '',
+  active: null
+})
+
+const updateFilter = (field, value) => {
+  if (value === '' || value === null) {
+    // Remove empty filters
+    const { [field]: _, ...rest } = filterForm.value
+    filterForm.value = rest
+  } else {
+    filterForm.value = { ...filterForm.value, [field]: value }
+  }
+}
+
+const resetFilters = () => {
+  filterForm.value = {
+    name: '',
+    email: '',
+    role: '',
+    active: null
+  }
+}
+</script>
+
+<template>
+  <div>
+    <!-- Filter Form -->
+    <form class="filter-form" @submit.prevent>
+      <div class="form-group">
+        <label>Name:</label>
+        <input
+          :value="filterForm.name || ''"
+          @input="updateFilter('name', $event.target.value)"
+          type="text"
+          placeholder="Filter by name..."
+        >
+      </div>
+      
+      <div class="form-group">
+        <label>Email:</label>
+        <input
+          :value="filterForm.email || ''"
+          @input="updateFilter('email', $event.target.value)"
+          type="text"
+          placeholder="Filter by email..."
+        >
+      </div>
+      
+      <div class="form-group">
+        <label>Role:</label>
+        <select 
+          :value="filterForm.role || ''"
+          @change="updateFilter('role', $event.target.value)"
+        >
+          <option value="">All Roles</option>
+          <option value="admin">Admin</option>
+          <option value="user">User</option>
+          <option value="moderator">Moderator</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Status:</label>
+        <select 
+          :value="filterForm.active === null ? '' : filterForm.active"
+          @change="updateFilter('active', $event.target.value === '' ? null : $event.target.value === 'true')"
+        >
+          <option value="">All Users</option>
+          <option value="true">Active Only</option>
+          <option value="false">Inactive Only</option>
+        </select>
+      </div>
+      
+      <button type="button" @click="resetFilters" class="reset-btn">
+        Reset Filters
+      </button>
+    </form>
+    
+    <!-- Display current filter state -->
+    <div class="filter-status">
+      <strong>Current Filter:</strong> {{ JSON.stringify(filterForm) }}
+    </div>
+    
+    <!-- User List -->
+    <NUsersList 
+      :filter="filterForm"
+      @edit-click="handleEdit"
+      @delete="handleDelete"
+    />
+  </div>
+</template>
+```
+
+**Filter Performance Notes:**
+
+- Filtering is performed client-side on the loaded user data
+- For large datasets, consider implementing server-side filtering
+- The filter is reactive and updates immediately when the filter prop changes
+- Empty filter objects `{}` show all users (no filtering applied)
 
 **Events**
 

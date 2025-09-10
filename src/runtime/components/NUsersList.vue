@@ -8,11 +8,13 @@ import { defaultDisplayFields, defaultFieldLabels, type User } from 'nuxt-users/
 interface Props {
   displayFields?: string[]
   fieldLabels?: Record<string, string>
+  filter?: Partial<User>
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   displayFields: () => defaultDisplayFields,
-  fieldLabels: () => defaultFieldLabels
+  fieldLabels: () => defaultFieldLabels,
+  filter: () => ({})
 })
 
 const emit = defineEmits<{
@@ -23,17 +25,42 @@ const emit = defineEmits<{
 const usersComposable = ref<ReturnType<typeof useUsers> | null>(null)
 
 // Create computed properties that safely access the composable
-const users = computed(() => usersComposable.value?.users ?? [])
+const allUsers = computed(() => usersComposable.value?.users ?? [])
 const pagination = computed(() => usersComposable.value?.pagination ?? null)
 const loading = computed(() => usersComposable.value?.loading ?? false)
 const error = computed(() => usersComposable.value?.error ?? null)
+
+// Filter users based on the filter prop
+const users = computed(() => {
+  if (!props.filter || Object.keys(props.filter).length === 0) {
+    return allUsers.value
+  }
+
+  return allUsers.value.filter((user) => {
+    return Object.entries(props.filter).every(([key, value]) => {
+      if (value === undefined || value === null || value === '') {
+        return true
+      }
+
+      const userValue = user[key as keyof User]
+
+      // Handle string matching (case-insensitive for string fields)
+      if (typeof value === 'string' && typeof userValue === 'string') {
+        return userValue.toLowerCase().includes(value.toLowerCase())
+      }
+
+      // Handle exact matching for other types
+      return userValue === value
+    })
+  })
+})
 
 onMounted(async () => {
   // Initialize the composable only after the component is mounted
   usersComposable.value = useUsers()
 
   // Fetch users only if the list is empty to avoid unnecessary fetches
-  if (users.value.length === 0) {
+  if (allUsers.value.length === 0) {
     usersComposable.value?.fetchUsers()
   }
 })

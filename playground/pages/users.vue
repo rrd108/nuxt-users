@@ -6,6 +6,8 @@ import type { User } from '../../src/types'
 const { updateUser } = useUsers()
 
 const selectedUser = ref<User | null>(null)
+const filter = ref<Partial<User>>({})
+
 const handleEditClick = (user: User) => {
   selectedUser.value = user
 }
@@ -18,6 +20,16 @@ const handleUserUpdated = (userData: Partial<User>) => {
     updateUser(userData as User)
   }
 }
+
+const updateFilter = (field: keyof User, value: string) => {
+  if (value.trim() === '') {
+    const { [field]: _, ...rest } = filter.value
+    filter.value = rest
+  }
+  else {
+    filter.value = { ...filter.value, [field]: value }
+  }
+}
 </script>
 
 <template>
@@ -26,61 +38,44 @@ const handleUserUpdated = (userData: Partial<User>) => {
       :user="selectedUser"
       @submit="handleUserUpdated"
     />
+
+    <!-- Filter Controls -->
+    <div style="margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 8px;">
+      <h3>Filter Users</h3>
+      <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <input
+          type="text"
+          placeholder="Filter by name..."
+          :value="filter.name || ''"
+          style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+          @input="updateFilter('name', ($event.target as HTMLInputElement).value)"
+        >
+        <input
+          type="text"
+          placeholder="Filter by role..."
+          :value="filter.role || ''"
+          style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+          @input="updateFilter('role', ($event.target as HTMLInputElement).value)"
+        >
+        <input
+          type="text"
+          placeholder="Filter by email..."
+          :value="filter.email || ''"
+          style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+          @input="updateFilter('email', ($event.target as HTMLInputElement).value)"
+        >
+      </div>
+      <div style="font-size: 14px; color: #666;">
+        Current filter: {{ JSON.stringify(filter) }}
+      </div>
+    </div>
+
     <!-- Default usage - uses NUsersUserCard with built-in Edit/Delete buttons -->
     <NUsersList
+      :filter="filter"
       @edit-click="handleEditClick"
       @delete="() => {}"
     />
-
-    <!-- Example: Custom user slot with access to default Edit/Delete buttons -->
-    <!--
-    <NUsersList
-      @edit-click="handleEditClick"
-      @delete="() => {}"
-    >
-      <template #user="{ user, index, editUser, deleteUser }">
-        <div class="custom-user-card">
-          <h3>{{ user.name }}</h3>
-          <p>{{ user.email }}</p>
-
-          <!-- You can use the default Edit/Delete buttons -->
-    <div class="actions">
-      <button @click="editUser">
-        Edit User
-      </button>
-      <button @click="deleteUser">
-        Delete User
-      </button>
-    </div>
-  </div>
-</template>
-    </NUsersList>
-    -->
-
-    <!-- Example: Custom user slot with custom Edit/Delete buttons -->
-    <!--
-    <NUsersList
-      @edit-click="handleEditClick"
-      @delete="() => {}"
-    >
-      <template #user="{ user, index, editUser, deleteUser }">
-        <div class="custom-user-card">
-          <h3>{{ user.name }}</h3>
-          <p>{{ user.email }}</p>
-
-          <!-- Custom buttons that call the same functions -->
-          <div class="actions">
-            <button class="custom-edit-btn" @click="editUser">
-              ✏️ Edit
-            </button>
-            <button class="custom-delete-btn" @click="deleteUser">
-              🗑️ Delete
-            </button>
-          </div>
-        </div>
-      </template>
-    </NUsersList>
-    -->
   </div>
 </template>
 

@@ -587,6 +587,528 @@ const handleUserAdded = (userData) => {
 </style>
 ```
 
+## User List with Filtering
+
+This example shows how to implement advanced filtering functionality with the `NUsersList` component:
+
+```vue
+<!-- components/FilterableUserList.vue -->
+<template>
+  <div class="filterable-user-list">
+    <!-- Filter Controls -->
+    <div class="filter-section">
+      <h2>Filter Users</h2>
+      
+      <div class="filter-controls">
+        <!-- Search by name -->
+        <div class="filter-group">
+          <label>Search by Name:</label>
+          <input
+            v-model="filters.name"
+            type="text"
+            placeholder="Enter name..."
+            class="filter-input"
+            @input="updateFilter('name', $event.target.value)"
+          >
+        </div>
+        
+        <!-- Filter by role -->
+        <div class="filter-group">
+          <label>Role:</label>
+          <select
+            :value="filters.role || ''"
+            @change="updateFilter('role', $event.target.value)"
+            class="filter-select"
+          >
+            <option value="">All Roles</option>
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+            <option value="moderator">Moderator</option>
+          </select>
+        </div>
+        
+        <!-- Filter by email domain -->
+        <div class="filter-group">
+          <label>Email Domain:</label>
+          <input
+            v-model="filters.email"
+            type="text"
+            placeholder="e.g., @company.com"
+            class="filter-input"
+            @input="updateFilter('email', $event.target.value)"
+          >
+        </div>
+        
+        <!-- Filter by active status -->
+        <div class="filter-group">
+          <label>Status:</label>
+          <select
+            :value="filters.active === null ? '' : filters.active"
+            @change="updateFilter('active', $event.target.value === '' ? null : $event.target.value === 'true')"
+            class="filter-select"
+          >
+            <option value="">All Users</option>
+            <option value="true">Active Only</option>
+            <option value="false">Inactive Only</option>
+          </select>
+        </div>
+        
+        <!-- Clear filters button -->
+        <button @click="clearAllFilters" class="clear-filters-btn">
+          Clear All Filters
+        </button>
+      </div>
+      
+      <!-- Filter status display -->
+      <div class="filter-status">
+        <strong>Active Filters:</strong>
+        <span v-if="Object.keys(activeFilters).length === 0" class="no-filters">
+          No filters applied
+        </span>
+        <div v-else class="active-filters">
+          <span
+            v-for="(value, key) in activeFilters"
+            :key="key"
+            class="filter-tag"
+          >
+            {{ key }}: {{ value }}
+            <button @click="removeFilter(key)" class="remove-filter">×</button>
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- User List with Filter -->
+    <NUsersList
+      :filter="activeFilters"
+      @edit-click="handleEdit"
+      @delete="handleDelete"
+    >
+      <template #title>
+        <div class="list-header">
+          <h1>Team Members</h1>
+          <div class="list-stats">
+            <span v-if="filteredCount !== null" class="filtered-count">
+              Showing {{ filteredCount }} users
+            </span>
+          </div>
+        </div>
+      </template>
+      
+      <!-- Custom user card with enhanced styling -->
+      <template #user="{ user, index, editUser, deleteUser }">
+        <div class="enhanced-user-card">
+          <div class="user-avatar-section">
+            <img 
+              :src="user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=059669&color=fff&size=64`" 
+              :alt="user.name"
+              class="user-avatar"
+            />
+            <div class="user-status-indicator" :class="user.active ? 'active' : 'inactive'"></div>
+          </div>
+          
+          <div class="user-info-section">
+            <h3 class="user-name">{{ user.name }}</h3>
+            <p class="user-email">{{ user.email }}</p>
+            <div class="user-meta">
+              <span class="user-role" :class="`role-${user.role}`">
+                {{ user.role }}
+              </span>
+              <span class="user-joined">
+                Joined {{ formatDate(user.created_at) }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="user-actions-section">
+            <button @click="editUser" class="action-btn edit-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+              </svg>
+              Edit
+            </button>
+            
+            <button @click="deleteUser" class="action-btn delete-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
+      </template>
+    </NUsersList>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+
+const filters = ref({
+  name: '',
+  email: '',
+  role: '',
+  active: null
+})
+
+// Computed property for active filters (excluding empty values)
+const activeFilters = computed(() => {
+  const active = {}
+  Object.entries(filters.value).forEach(([key, value]) => {
+    if (value !== '' && value !== null) {
+      active[key] = value
+    }
+  })
+  return active
+})
+
+// Track filtered count (you might want to implement this based on your needs)
+const filteredCount = ref(null)
+
+const updateFilter = (field, value) => {
+  if (value === '' || value === null) {
+    // Remove empty filters
+    const { [field]: _, ...rest } = filters.value
+    filters.value = rest
+  } else {
+    filters.value = { ...filters.value, [field]: value }
+  }
+}
+
+const removeFilter = (field) => {
+  const { [field]: _, ...rest } = filters.value
+  filters.value = rest
+}
+
+const clearAllFilters = () => {
+  filters.value = {
+    name: '',
+    email: '',
+    role: '',
+    active: null
+  }
+}
+
+const handleEdit = (user) => {
+  console.log('Edit user:', user)
+  // Implement edit logic
+}
+
+const handleDelete = (user) => {
+  console.log('User deleted:', user)
+  // Handle post-deletion logic
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return 'Unknown'
+  return new Date(dateString).toLocaleDateString()
+}
+</script>
+
+<style scoped>
+.filterable-user-list {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.filter-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.filter-section h2 {
+  color: #1e293b;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.filter-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.filter-input, .filter-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.filter-input:focus, .filter-select:focus {
+  outline: none;
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
+.clear-filters-btn {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 0.5rem 1rem;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.clear-filters-btn:hover {
+  background: #b91c1c;
+}
+
+.filter-status {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.no-filters {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.remove-filter {
+  background: none;
+  border: none;
+  color: #1e40af;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-filter:hover {
+  color: #dc2626;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.list-header h1 {
+  color: #111827;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.filtered-count {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.enhanced-user-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+}
+
+.enhanced-user-card:hover {
+  border-color: #059669;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar-section {
+  position: relative;
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-status-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.user-status-indicator.active {
+  background: #10b981;
+}
+
+.user-status-indicator.inactive {
+  background: #ef4444;
+}
+
+.user-info-section {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.user-email {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.user-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.user-role {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.role-admin {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.role-user {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.role-moderator {
+  background: #e0e7ff;
+  color: #5b21b6;
+}
+
+.user-joined {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.user-actions-section {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.edit-btn:hover {
+  border-color: #059669;
+  color: #059669;
+  background: #f0fdf4;
+}
+
+.delete-btn:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .filter-controls {
+    grid-template-columns: 1fr;
+  }
+  
+  .enhanced-user-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .user-meta {
+    justify-content: center;
+  }
+  
+  .user-actions-section {
+    justify-content: center;
+  }
+}
+</style>
+```
+
+**Key Features of this Filter Implementation:**
+
+1. **Multiple Filter Types** - Name search, role selection, email domain filtering, and active status
+2. **Real-time Updates** - Filters apply immediately as you type or select
+3. **Visual Feedback** - Shows active filters as removable tags
+4. **Clear All** - One-click button to reset all filters
+5. **Responsive Design** - Works well on mobile and desktop
+6. **Enhanced User Cards** - Better visual design with status indicators
+
 ## Custom User List with Default Actions
 
 This example shows how to create a completely custom user card layout while still using the default Edit and Delete functionality:

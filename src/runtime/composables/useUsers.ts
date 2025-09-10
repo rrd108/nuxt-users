@@ -23,6 +23,7 @@ export const useUsers = () => {
   const loading = useState<boolean>('users-loading', () => false)
   const error = useState<string | null>('users-error', () => null)
 
+  // TODO: later we may want to add a filter parameter,when we do not want to fetch all users, just a subset of them
   const fetchUsers = async (page = 1, limit = 100) => {
     if (loading.value) return
     loading.value = true
