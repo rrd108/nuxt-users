@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v1.32.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.31.2...v1.32.0)
+
+### 🚀 Enhancements
+
+- Extends NUsersList component with function filters ([be9a730](https://github.com/rrd108/nuxt-users/commit/be9a730))
+
+### 🩹 Fixes
+
+- Usercard shows action buttons by default ([d824b1e](https://github.com/rrd108/nuxt-users/commit/d824b1e))
+
+### 💅 Refactors
+
+- Remove unused code ([cbff5a0](https://github.com/rrd108/nuxt-users/commit/cbff5a0))
+
+### 🏡 Chore
+
+- **release:** V1.31.2 ([8136322](https://github.com/rrd108/nuxt-users/commit/8136322))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.31.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.31.1...v1.31.2)
