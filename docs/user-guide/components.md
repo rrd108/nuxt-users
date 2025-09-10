@@ -543,8 +543,8 @@ const handleDelete = (user) => {
       <h1>Team Members</h1>
     </template>
     
-    <!-- Custom user display -->
-    <template #user="{ user, index }">
+    <!-- Custom user display with access to default Edit/Delete functions -->
+    <template #user="{ user, index, editUser, deleteUser }">
       <div class="custom-user-item">
         <div class="user-info">
           <h3>{{ user.name }}</h3>
@@ -552,7 +552,9 @@ const handleDelete = (user) => {
           <span class="role-badge">{{ user.role }}</span>
         </div>
         <div class="user-actions">
-          <button @click="handleEdit(user)">Edit</button>
+          <!-- Use the provided editUser and deleteUser functions -->
+          <button @click="editUser">Edit</button>
+          <button @click="deleteUser">Delete</button>
         </div>
       </div>
     </template>
@@ -603,7 +605,9 @@ const handleDelete = (user) => {
 | `loading` | `{ loading: boolean }` | Custom loading indicator |
 | `error` | `{ error: string }` | Custom error display |
 | `noUsers` | - | Content when no users found |
-| `user` | `{ user: User, index: number }` | Custom user item display |
+| `user` | `{ user: User, index: number, editUser: Function, deleteUser: Function }` | Custom user item display with access to default Edit/Delete functions |
+| `editButton` | `{ canEdit: boolean, editUser: Function, user: User }` | Custom edit button with permission checks |
+| `deleteButton` | `{ canDelete: boolean, deleteUser: Function, user: User }` | Custom delete button with permission checks |
 | `pagination` | `{ pagination, fetchUsers, loading }` | Custom pagination controls |
 
 **Events**
@@ -617,6 +621,79 @@ const handleDelete = (user) => {
 
 Displays individual user information with edit and delete actions. Used internally by `NUsersList` but can be used standalone.
 The `edit` and `delete` events are emitted when the edit or delete button is clicked. The `delete` event is calling the API to delete the user, while the `edit` event is just emitting the user object and let the parent component handle the edit action.
+
+#### Custom User Slot with Default Actions
+
+When using the `user` slot in `NUsersList`, you can access the default Edit and Delete functionality without reimplementing the permission logic or API calls:
+
+```vue
+<template>
+  <NUsersList @edit-click="handleEdit" @delete="handleDelete">
+    <!-- Custom user display with access to default Edit/Delete functions -->
+    <template #user="{ user, index, editUser, deleteUser }">
+      <div class="custom-user-card">
+        <div class="user-avatar">
+          <img :src="user.avatar" :alt="user.name" />
+        </div>
+        <div class="user-details">
+          <h3>{{ user.name }}</h3>
+          <p>{{ user.email }}</p>
+          <span class="role-badge">{{ user.role }}</span>
+        </div>
+        <div class="user-actions">
+          <!-- These functions include permission checks and API calls -->
+          <button @click="editUser" class="edit-btn">
+            ✏️ Edit
+          </button>
+          <button @click="deleteUser" class="delete-btn">
+            🗑️ Delete
+          </button>
+        </div>
+      </div>
+    </template>
+  </NUsersList>
+</template>
+```
+
+**Benefits of using the provided functions:**
+- **Permission checks included** - The `editUser` and `deleteUser` functions automatically check if the current user has the required permissions
+- **API calls handled** - Delete operations include the API call and confirmation dialog
+- **Event emission** - Both functions emit the appropriate events (`editClick`, `delete`) to the parent component
+- **Consistent behavior** - Same functionality as the default buttons, ensuring consistent user experience
+
+#### Custom Edit/Delete Buttons
+
+You can also customize just the Edit and Delete buttons while keeping the default user card layout:
+
+```vue
+<template>
+  <NUsersList @edit-click="handleEdit" @delete="handleDelete">
+    <!-- Custom edit button -->
+    <template #editButton="{ canEdit, editUser, user }">
+      <button 
+        v-if="canEdit"
+        @click="editUser" 
+        class="custom-edit-btn"
+      >
+        <svg>...</svg>
+        Edit User
+      </button>
+    </template>
+    
+    <!-- Custom delete button -->
+    <template #deleteButton="{ canDelete, deleteUser, user }">
+      <button 
+        v-if="canDelete"
+        @click="deleteUser" 
+        class="custom-delete-btn"
+      >
+        <svg>...</svg>
+        Remove User
+      </button>
+    </template>
+  </NUsersList>
+</template>
+```
 
 ### Automatic UI Updates
 

@@ -110,24 +110,34 @@ const deleteUser = async (user: User) => {
     <div
       class="n-users-user-card-actions"
     >
-      <button
-        v-if="canEdit"
-        class="n-users-edit-btn"
-        @click="editUser(user)"
+      <slot
+        name="editButton"
+        :can-edit="canEdit"
+        :edit-user="() => editUser(user)"
+        :user="user"
       >
-        <slot name="editButton">
+        <button
+          v-if="canEdit"
+          class="n-users-edit-btn"
+          @click="editUser(user)"
+        >
           Edit
-        </slot>
-      </button>
-      <button
-        v-if="canDelete"
-        class="n-users-delete-btn"
-        @click="deleteUser(user)"
+        </button>
+      </slot>
+      <slot
+        name="deleteButton"
+        :can-delete="canDelete"
+        :delete-user="() => deleteUser(user)"
+        :user="user"
       >
-        <slot name="deleteButton">
+        <button
+          v-if="canDelete"
+          class="n-users-delete-btn"
+          @click="deleteUser(user)"
+        >
           Delete
-        </slot>
-      </button>
+        </button>
+      </slot>
     </div>
   </slot>
 </template>

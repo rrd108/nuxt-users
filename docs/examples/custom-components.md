@@ -290,8 +290,8 @@ const handleError = (error) => {
         </div>
       </template>
       
-      <!-- Custom user display -->
-      <template #user="{ user, index }">
+      <!-- Custom user display with access to default Edit/Delete functions -->
+      <template #user="{ user, index, editUser, deleteUser }">
         <div class="user-card">
           <div class="user-avatar">
             <img 
@@ -309,14 +309,16 @@ const handleError = (error) => {
           </div>
           
           <div class="user-actions">
-            <button @click="handleEdit(user)" class="edit-btn">
+            <!-- Use the provided editUser and deleteUser functions -->
+            <!-- These include permission checks and API calls automatically -->
+            <button @click="editUser" class="edit-btn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
               </svg>
               Edit
             </button>
             
-            <button @click="confirmDelete(user)" class="delete-btn">
+            <button @click="deleteUser" class="delete-btn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
               </svg>
@@ -370,19 +372,13 @@ const showAddUser = ref(false)
 
 const handleEdit = (user) => {
   console.log('Edit user:', user)
-  // Implement edit logic
+  // Implement edit logic (e.g., show edit form)
 }
 
 const handleDelete = (user) => {
   console.log('User deleted:', user)
-  // Refresh list or show success message
-}
-
-const confirmDelete = (user) => {
-  if (confirm(`Are you sure you want to delete ${user.name}?`)) {
-    // Call delete API
-    handleDelete(user)
-  }
+  // Handle post-deletion logic (e.g., refresh list, show success message)
+  // Note: The actual API call and confirmation dialog are handled by the deleteUser function
 }
 
 const handleUserAdded = (userData) => {
@@ -590,6 +586,310 @@ const handleUserAdded = (userData) => {
 }
 </style>
 ```
+
+## Custom User List with Default Actions
+
+This example shows how to create a completely custom user card layout while still using the default Edit and Delete functionality:
+
+```vue
+<!-- components/CustomUserList.vue -->
+<template>
+  <div class="custom-user-list">
+    <NUsersList @edit-click="handleEdit" @delete="handleDelete">
+      <!-- Custom title -->
+      <template #title>
+        <div class="list-header">
+          <h1>Team Members</h1>
+          <p>Manage your team members with custom styling</p>
+        </div>
+      </template>
+      
+      <!-- Completely custom user card with default actions -->
+      <template #user="{ user, index, editUser, deleteUser }">
+        <div class="custom-user-card">
+          <div class="user-header">
+            <div class="user-avatar">
+              <img 
+                :src="user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=7c3aed&color=fff&size=64`" 
+                :alt="user.name"
+              />
+            </div>
+            <div class="user-basic-info">
+              <h3>{{ user.name }}</h3>
+              <p class="user-email">{{ user.email }}</p>
+            </div>
+            <div class="user-status">
+              <span class="status-indicator" :class="user.active ? 'active' : 'inactive'"></span>
+              <span class="status-text">{{ user.active ? 'Active' : 'Inactive' }}</span>
+            </div>
+          </div>
+          
+          <div class="user-details">
+            <div class="detail-item">
+              <span class="label">Role:</span>
+              <span class="value role-badge" :class="`role-${user.role}`">
+                {{ user.role }}
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Joined:</span>
+              <span class="value">{{ formatDate(user.created_at) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Last Login:</span>
+              <span class="value">{{ formatDate(user.last_login) }}</span>
+            </div>
+          </div>
+          
+          <div class="user-actions">
+            <!-- These functions include permission checks and API calls -->
+            <button @click="editUser" class="action-btn edit-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+              </svg>
+              Edit Profile
+            </button>
+            
+            <button @click="deleteUser" class="action-btn delete-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+              </svg>
+              Remove User
+            </button>
+          </div>
+        </div>
+      </template>
+    </NUsersList>
+  </div>
+</template>
+
+<script setup>
+const handleEdit = (user) => {
+  console.log('Edit user:', user)
+  // Show edit form or navigate to edit page
+}
+
+const handleDelete = (user) => {
+  console.log('User deleted:', user)
+  // Handle post-deletion logic (refresh list, show notification, etc.)
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return 'Never'
+  return new Date(dateString).toLocaleDateString()
+}
+</script>
+
+<style scoped>
+.custom-user-list {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.list-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.list-header h1 {
+  color: #111827;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.list-header p {
+  color: #6b7280;
+  font-size: 1.125rem;
+}
+
+.custom-user-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.custom-user-card:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.1);
+  transform: translateY(-2px);
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.user-avatar img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f3f4f6;
+}
+
+.user-basic-info {
+  flex: 1;
+}
+
+.user-basic-info h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.user-email {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.user-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-indicator.active {
+  background: #10b981;
+}
+
+.status-indicator.inactive {
+  background: #ef4444;
+}
+
+.status-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.user-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.value {
+  font-size: 0.875rem;
+  color: #111827;
+  font-weight: 500;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.role-admin {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.role-user {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.role-manager {
+  background: #e0e7ff;
+  color: #5b21b6;
+}
+
+.user-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.edit-btn:hover {
+  border-color: #7c3aed;
+  color: #7c3aed;
+  background: #faf5ff;
+}
+
+.delete-btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .user-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .user-details {
+    grid-template-columns: 1fr;
+  }
+  
+  .user-actions {
+    justify-content: center;
+  }
+}
+</style>
+```
+
+**Key Benefits of this approach:**
+
+1. **Complete UI Control** - You can design the user card exactly how you want
+2. **Default Functionality** - Edit and Delete buttons work exactly like the default ones
+3. **Permission Handling** - The `editUser` and `deleteUser` functions automatically check permissions
+4. **API Integration** - Delete operations include confirmation dialogs and API calls
+5. **Event Consistency** - All events are properly emitted to parent components
 
 ## Custom Logout Component
 

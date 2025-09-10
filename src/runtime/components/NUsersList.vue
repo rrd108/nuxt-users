@@ -99,6 +99,8 @@ const handleFetchUsers = (page?: number, limit?: number) => {
               name="user"
               :user="user"
               :index="index"
+              :edit-user="() => $emit('editClick', user)"
+              :delete-user="() => handleDelete(user)"
             >
               <NUsersUserCard
                 :user="user"
@@ -107,7 +109,40 @@ const handleFetchUsers = (page?: number, limit?: number) => {
                 :field-labels="fieldLabels"
                 @edit-click="$emit('editClick', user)"
                 @delete="handleDelete(user)"
-              />
+              >
+                <template #editButton="{ canEdit, editUser: editUserFn, user: userData }">
+                  <slot
+                    name="editButton"
+                    :can-edit="canEdit"
+                    :edit-user="editUserFn"
+                    :user="userData"
+                  >
+                    <button
+                      v-if="canEdit"
+                      class="n-users-edit-btn"
+                      @click="editUserFn"
+                    >
+                      Edit
+                    </button>
+                  </slot>
+                </template>
+                <template #deleteButton="{ canDelete, deleteUser: deleteUserFn, user: userData }">
+                  <slot
+                    name="deleteButton"
+                    :can-delete="canDelete"
+                    :delete-user="deleteUserFn"
+                    :user="userData"
+                  >
+                    <button
+                      v-if="canDelete"
+                      class="n-users-delete-btn"
+                      @click="deleteUserFn"
+                    >
+                      Delete
+                    </button>
+                  </slot>
+                </template>
+              </NUsersUserCard>
             </slot>
           </li>
         </TransitionGroup>
