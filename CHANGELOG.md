@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v1.31.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.30.0...v1.31.0)
+
+### 🚀 Enhancements
+
+- Extends NUsersList with customizable user actions ([1ea4f61](https://github.com/rrd108/nuxt-users/commit/1ea4f61))
+- Adds filtering functionality to user list ([c3d25a9](https://github.com/rrd108/nuxt-users/commit/c3d25a9))
+
+### 🩹 Fixes
+
+- Missing connector.options closes #96 ([#96](https://github.com/rrd108/nuxt-users/issues/96))
+- Using user provided properties ([07dd6a2](https://github.com/rrd108/nuxt-users/commit/07dd6a2))
+- Typo in file name ([d833e52](https://github.com/rrd108/nuxt-users/commit/d833e52))
+- Includes scripts directory in the published package ([ceaa188](https://github.com/rrd108/nuxt-users/commit/ceaa188))
+
+### 🏡 Chore
+
+- **release:** V1.30.0 ([08d081c](https://github.com/rrd108/nuxt-users/commit/08d081c))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.30.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.29.1...v1.30.0)
