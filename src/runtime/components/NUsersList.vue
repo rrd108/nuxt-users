@@ -8,7 +8,7 @@ import { defaultDisplayFields, defaultFieldLabels, type User } from 'nuxt-users/
 interface Props {
   displayFields?: string[]
   fieldLabels?: Record<string, string>
-  filter?: Partial<User>
+  filter?: Partial<User> | ((object: unknown) => boolean)
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -32,12 +32,22 @@ const error = computed(() => usersComposable.value?.error ?? null)
 
 // Filter users based on the filter prop
 const users = computed(() => {
-  if (!props.filter || Object.keys(props.filter).length === 0) {
+  if (!props.filter) {
+    return allUsers.value
+  }
+
+  // Handle function-based filtering
+  if (typeof props.filter === 'function') {
+    return allUsers.value.filter(props.filter)
+  }
+
+  // Handle object-based filtering (existing logic)
+  if (Object.keys(props.filter).length === 0) {
     return allUsers.value
   }
 
   return allUsers.value.filter((user) => {
-    return Object.entries(props.filter).every(([key, value]) => {
+    return Object.entries(props.filter as Partial<User>).every(([key, value]) => {
       if (value === undefined || value === null || value === '') {
         return true
       }

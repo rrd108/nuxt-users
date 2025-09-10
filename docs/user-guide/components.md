@@ -585,19 +585,23 @@ const handleDelete = (user) => {
 |------|------|---------|-------------|
 | `displayFields` | `string[]` | `['id', 'name', 'email', 'role', 'created_at']` | Fields to display for each user |
 | `fieldLabels` | `Record<string, string>` | Default labels | Custom labels for fields |
-| `filter` | `Partial<User>` | `{}` | Filter criteria to apply to the user list |
+| `filter` | `Partial<User> \| ((object: unknown) => boolean)` | `{}` | Filter criteria or function to apply to the user list |
 
 #### Filtering Users
 
-The `NUsersList` component supports real-time filtering of users based on any user field. The filter prop accepts a `Partial<User>` object where you can specify criteria for any user property.
+The `NUsersList` component supports two types of filtering:
+
+1. **Object-based filtering** - Filter by user properties using a `Partial<User>` object
+2. **Function-based filtering** - Use custom filter functions for complex logic and connected data
 
 **Filter Behavior:**
 - **String fields** (name, email, role): Case-insensitive partial matching
 - **Other fields** (id, active, etc.): Exact matching
 - **Empty values**: Ignored (no filtering applied for that field)
 - **Multiple criteria**: All conditions must be met (AND logic)
+- **Function filters**: Return `true` to show the user, `false` to hide it
 
-**Basic Filter Examples:**
+**Object-based Filter Examples:**
 
 ```vue
 <script setup>
@@ -631,6 +635,125 @@ const multiFilter = ref({
   
   <!-- Multiple filters (users must be admin AND active) -->
   <NUsersList :filter="multiFilter" />
+</template>
+```
+
+**Function-based Filter Examples:**
+
+Function-based filtering is perfect for complex logic and when working with connected data from joined tables:
+
+```vue
+<script setup>
+import { ref } from 'vue'
+
+// Simple filter: users with credits > 100
+const creditsFilter = (obj) => {
+  return obj.credits > 100
+}
+
+// Complex filter: users with high credits and admin role
+const premiumAdminFilter = (obj) => {
+  return obj.credits > 100 && obj.role === 'admin'
+}
+
+// Filter by connected data (e.g., from joined tables)
+const departmentFilter = (obj) => {
+  return obj.department?.name === 'Engineering'
+}
+
+// Filter by nested properties
+const activePremiumFilter = (obj) => {
+  return obj.profile?.isActive && obj.credits > 50
+}
+
+// Dynamic filter with reactive state
+const showHighCredits = ref(false)
+const dynamicFilter = (obj) => {
+  if (!showHighCredits.value) return true
+  return obj.credits > 100
+}
+</script>
+
+<template>
+  <!-- Simple credits filter -->
+  <NUsersList :filter="creditsFilter" />
+  
+  <!-- Complex filter with multiple conditions -->
+  <NUsersList :filter="premiumAdminFilter" />
+  
+  <!-- Filter by connected data -->
+  <NUsersList :filter="departmentFilter" />
+  
+  <!-- Dynamic filter with toggle -->
+  <div>
+    <button @click="showHighCredits = !showHighCredits">
+      {{ showHighCredits ? 'Show All Users' : 'Show High Credits Only' }}
+    </button>
+    <NUsersList :filter="dynamicFilter" />
+  </div>
+</template>
+```
+
+**Real-world Example with Connected Data:**
+
+```vue
+<script setup>
+import { ref } from 'vue'
+
+// Example: Users with data from joined tables
+// User object might contain: { id, name, email, credits, department: { name, budget }, permissions: [...] }
+
+const showOnlyEngineers = ref(false)
+const showOnlyHighCredits = ref(false)
+
+const engineerFilter = (obj) => {
+  return obj.department?.name === 'Engineering'
+}
+
+const highCreditsFilter = (obj) => {
+  return obj.credits > 100
+}
+
+const combinedFilter = (obj) => {
+  let shouldShow = true
+  
+  if (showOnlyEngineers.value) {
+    shouldShow = shouldShow && obj.department?.name === 'Engineering'
+  }
+  
+  if (showOnlyHighCredits.value) {
+    shouldShow = shouldShow && obj.credits > 100
+  }
+  
+  return shouldShow
+}
+</script>
+
+<template>
+  <div>
+    <div class="filter-controls">
+      <label>
+        <input v-model="showOnlyEngineers" type="checkbox">
+        Show only Engineers
+      </label>
+      <label>
+        <input v-model="showOnlyHighCredits" type="checkbox">
+        Show only High Credits (>100)
+      </label>
+    </div>
+    
+    <NUsersList :filter="combinedFilter">
+      <template #user="{ user }">
+        <div class="user-card">
+          <h3>{{ user.name }}</h3>
+          <p>{{ user.email }}</p>
+          <p>Credits: {{ user.credits }}</p>
+          <p v-if="user.department">Department: {{ user.department.name }}</p>
+          <p v-if="user.permissions">Permissions: {{ user.permissions.join(', ') }}</p>
+        </div>
+      </template>
+    </NUsersList>
+  </div>
 </template>
 ```
 
