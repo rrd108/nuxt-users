@@ -46,10 +46,10 @@ const canEdit = computed(() => {
     return userPermissions.some((permission: string) =>
       permission === '*'
       || permission === `${apiBasePath}/*`
-      || permission === `${apiBasePath}/[id].delete`
+      || permission === `${apiBasePath}/[id].put`
+      || permission === `${apiBasePath}/[id].patch`
     )
   }
-
   return false
 })
 const canDelete = computed(() => {
@@ -66,7 +66,6 @@ const canDelete = computed(() => {
       || permission === `${apiBasePath}/[id].delete`
     )
   }
-
   return false
 })
 

@@ -543,19 +543,15 @@ const handleDelete = (user) => {
       <h1>Team Members</h1>
     </template>
     
-    <!-- Custom user display with access to default Edit/Delete functions -->
-    <template #user="{ user, index, editUser, deleteUser }">
+    <!-- Custom user display - buttons are automatically added below -->
+    <template #user="{ user, index }">
       <div class="custom-user-item">
         <div class="user-info">
           <h3>{{ user.name }}</h3>
           <p>{{ user.email }}</p>
           <span class="role-badge">{{ user.role }}</span>
         </div>
-        <div class="user-actions">
-          <!-- Use the provided editUser and deleteUser functions -->
-          <button @click="editUser">Edit</button>
-          <button @click="deleteUser">Delete</button>
-        </div>
+        <!-- Edit and Delete buttons are automatically added here -->
       </div>
     </template>
     
@@ -909,7 +905,7 @@ const resetFilters = () => {
 | `loading` | `{ loading: boolean }` | Custom loading indicator |
 | `error` | `{ error: string }` | Custom error display |
 | `noUsers` | - | Content when no users found |
-| `user` | `{ user: User, index: number, editUser: Function, deleteUser: Function }` | Custom user item display with access to default Edit/Delete functions |
+| `user` | `{ user: User, index: number, editUser: Function, deleteUser: Function }` | Custom user item display. Edit/Delete buttons are automatically added below your content, or use the provided functions for manual placement |
 | `editButton` | `{ canEdit: boolean, editUser: Function, user: User }` | Custom edit button with permission checks |
 | `deleteButton` | `{ canDelete: boolean, deleteUser: Function, user: User }` | Custom delete button with permission checks |
 | `pagination` | `{ pagination, fetchUsers, loading }` | Custom pagination controls |
@@ -926,14 +922,41 @@ const resetFilters = () => {
 Displays individual user information with edit and delete actions. Used internally by `NUsersList` but can be used standalone.
 The `edit` and `delete` events are emitted when the edit or delete button is clicked. The `delete` event is calling the API to delete the user, while the `edit` event is just emitting the user object and let the parent component handle the edit action.
 
-#### Custom User Slot with Default Actions
+#### Custom User Slot with Automatic Actions
 
-When using the `user` slot in `NUsersList`, you can access the default Edit and Delete functionality without reimplementing the permission logic or API calls:
+When using the `user` slot in `NUsersList`, the Edit and Delete buttons are automatically included below your custom content. You have two options:
+
+**Option 1: Simple Custom Display (Recommended)**
+The buttons are automatically added below your custom content:
 
 ```vue
 <template>
   <NUsersList @edit-click="handleEdit" @delete="handleDelete">
-    <!-- Custom user display with access to default Edit/Delete functions -->
+    <!-- Custom user display - buttons are automatically added below -->
+    <template #user="{ user, index }">
+      <div class="custom-user-card">
+        <div class="user-avatar">
+          <img :src="user.avatar" :alt="user.name" />
+        </div>
+        <div class="user-details">
+          <h3>{{ user.name }}</h3>
+          <p>{{ user.email }}</p>
+          <span class="role-badge">{{ user.role }}</span>
+        </div>
+        <!-- Edit and Delete buttons are automatically added here -->
+      </div>
+    </template>
+  </NUsersList>
+</template>
+```
+
+**Option 2: Manual Button Placement**
+If you want to control where the buttons appear, you can access the provided functions:
+
+```vue
+<template>
+  <NUsersList @edit-click="handleEdit" @delete="handleDelete">
+    <!-- Custom user display with manual button placement -->
     <template #user="{ user, index, editUser, deleteUser }">
       <div class="custom-user-card">
         <div class="user-avatar">
@@ -959,8 +982,9 @@ When using the `user` slot in `NUsersList`, you can access the default Edit and 
 </template>
 ```
 
-**Benefits of using the provided functions:**
-- **Permission checks included** - The `editUser` and `deleteUser` functions automatically check if the current user has the required permissions
+**Benefits of the automatic behavior:**
+- **Zero configuration** - Buttons appear automatically when using custom slots
+- **Permission checks included** - The buttons automatically check if the current user has the required permissions
 - **API calls handled** - Delete operations include the API call and confirmation dialog
 - **Event emission** - Both functions emit the appropriate events (`editClick`, `delete`) to the parent component
 - **Consistent behavior** - Same functionality as the default buttons, ensuring consistent user experience

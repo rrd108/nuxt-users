@@ -122,55 +122,108 @@ const handleFetchUsers = (page?: number, limit?: number) => {
             v-for="(user, index) in users"
             :key="user.id"
           >
-            <slot
-              name="user"
-              :user="user"
-              :index="index"
-              :edit-user="() => $emit('editClick', user)"
-              :delete-user="() => handleDelete(user)"
-            >
-              <NUsersUserCard
+            <div class="n-users-user-wrapper">
+              <slot
+                name="user"
                 :user="user"
                 :index="index"
-                :display-fields="displayFields"
-                :field-labels="fieldLabels"
-                @edit-click="$emit('editClick', user)"
-                @delete="handleDelete(user)"
+                :edit-user="() => $emit('editClick', user)"
+                :delete-user="() => handleDelete(user)"
               >
-                <template #editButton="{ canEdit, editUser: editUserFn, user: userData }">
-                  <slot
-                    name="editButton"
-                    :can-edit="canEdit"
-                    :edit-user="editUserFn"
-                    :user="userData"
-                  >
-                    <button
-                      v-if="canEdit"
-                      class="n-users-edit-btn"
-                      @click="editUserFn"
+                <NUsersUserCard
+                  :user="user"
+                  :index="index"
+                  :display-fields="displayFields"
+                  :field-labels="fieldLabels"
+                  @edit-click="$emit('editClick', user)"
+                  @delete="handleDelete(user)"
+                >
+                  <template #editButton="{ canEdit, editUser: editUserFn, user: userData }">
+                    <slot
+                      name="editButton"
+                      :can-edit="canEdit"
+                      :edit-user="editUserFn"
+                      :user="userData"
                     >
-                      Edit
-                    </button>
-                  </slot>
-                </template>
-                <template #deleteButton="{ canDelete, deleteUser: deleteUserFn, user: userData }">
-                  <slot
-                    name="deleteButton"
-                    :can-delete="canDelete"
-                    :delete-user="deleteUserFn"
-                    :user="userData"
-                  >
-                    <button
-                      v-if="canDelete"
-                      class="n-users-delete-btn"
-                      @click="deleteUserFn"
+                      <button
+                        v-if="canEdit"
+                        class="n-users-edit-btn"
+                        @click="editUserFn"
+                      >
+                        Edit
+                      </button>
+                    </slot>
+                  </template>
+                  <template #deleteButton="{ canDelete, deleteUser: deleteUserFn, user: userData }">
+                    <slot
+                      name="deleteButton"
+                      :can-delete="canDelete"
+                      :delete-user="deleteUserFn"
+                      :user="userData"
                     >
-                      Delete
-                    </button>
-                  </slot>
-                </template>
-              </NUsersUserCard>
-            </slot>
+                      <button
+                        v-if="canDelete"
+                        class="n-users-delete-btn"
+                        @click="deleteUserFn"
+                      >
+                        Delete
+                      </button>
+                    </slot>
+                  </template>
+                </NUsersUserCard>
+              </slot>
+
+              <!-- Always show action buttons when using custom user slot -->
+              <div
+                v-if="$slots.user"
+                class="n-users-user-card-actions"
+              >
+                <NUsersUserCard
+                  :user="user"
+                  :index="index"
+                  :display-fields="[]"
+                  :field-labels="{}"
+                  @edit-click="$emit('editClick', user)"
+                  @delete="handleDelete(user)"
+                >
+                  <template #userCard>
+                    <!-- Empty slot to hide the default card content -->
+                  </template>
+                  <template #editButton="{ canEdit, editUser: editUserFn, user: userData }">
+                    <slot
+                      name="editButton"
+                      :can-edit="canEdit"
+                      :edit-user="editUserFn"
+                      :user="userData"
+                    >
+                      <button
+                        v-if="canEdit"
+                        class="n-users-edit-btn"
+                        @click="editUserFn"
+                      >
+                        Edit
+                      </button>
+                    </slot>
+                  </template>
+                  <template #deleteButton="{ canDelete, deleteUser: deleteUserFn, user: userData }">
+                    <slot
+                      name="deleteButton"
+                      :can-delete="canDelete"
+                      :delete-user="deleteUserFn"
+                      :user="userData"
+                    >
+                      <button
+                        v-if="canDelete"
+                        class="n-users-delete-btn"
+                        @click="deleteUserFn"
+                      >
+                        Delete
+                      </button>
+                    </slot>
+                  </template>
+                </NUsersUserCard>
+              </div>
+            </div>
           </li>
         </TransitionGroup>
       </slot>

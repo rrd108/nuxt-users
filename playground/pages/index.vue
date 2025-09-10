@@ -32,6 +32,13 @@ initializeUser()
           >
             Users List
           </NuxtLink>
+          <NuxtLink
+            to="/users-custom"
+            class="btn btn-primary"
+          >
+            Custom Users List
+          </NuxtLink>
+
           <NUsersLogoutLink class="btn btn-secondary" />
         </div>
       </div>

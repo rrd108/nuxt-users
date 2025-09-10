@@ -1109,9 +1109,15 @@ const formatDate = (dateString) => {
 5. **Responsive Design** - Works well on mobile and desktop
 6. **Enhanced User Cards** - Better visual design with status indicators
 
-## Custom User List with Default Actions
+## Custom User List with Automatic Actions
 
-This example shows how to create a completely custom user card layout while still using the default Edit and Delete functionality:
+This example shows how to create a completely custom user card layout. **The Edit and Delete buttons are automatically added below your custom content** - no need to manually add them or handle permission logic!
+
+**Key Benefits:**
+- ✅ **Zero configuration** - Buttons appear automatically when using custom slots
+- ✅ **Permission checks included** - Buttons only show for users with proper permissions
+- ✅ **API calls handled** - Delete operations include confirmation dialogs and API calls
+- ✅ **Event emission** - Events are properly emitted to parent components
 
 ```vue
 <!-- components/CustomUserList.vue -->
@@ -1126,8 +1132,8 @@ This example shows how to create a completely custom user card layout while stil
         </div>
       </template>
       
-      <!-- Completely custom user card with default actions -->
-      <template #user="{ user, index, editUser, deleteUser }">
+      <!-- Completely custom user card - buttons are automatically added below -->
+      <template #user="{ user, index }">
         <div class="custom-user-card">
           <div class="user-header">
             <div class="user-avatar">
@@ -1163,22 +1169,7 @@ This example shows how to create a completely custom user card layout while stil
             </div>
           </div>
           
-          <div class="user-actions">
-            <!-- These functions include permission checks and API calls -->
-            <button @click="editUser" class="action-btn edit-btn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-              </svg>
-              Edit Profile
-            </button>
-            
-            <button @click="deleteUser" class="action-btn delete-btn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-              </svg>
-              Remove User
-            </button>
-          </div>
+          <!-- Edit and Delete buttons are automatically added here -->
         </div>
       </template>
     </NUsersList>
