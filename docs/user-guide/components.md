@@ -408,12 +408,6 @@ A user-friendly email confirmation page that displays success or error states ba
 
 ```vue
 <!-- pages/email-confirmation.vue -->
-<template>
-  <div>
-    <NUsersEmailConfirmation />
-  </div>
-</template>
-
 <script setup>
 // Set page title and meta tags
 useHead({
@@ -423,6 +417,12 @@ useHead({
   ]
 })
 </script>
+
+<template>
+  <div>
+    <NUsersEmailConfirmation />
+  </div>
+</template>
 ```
 
 #### Configuration
@@ -559,6 +559,10 @@ A form component for users to set a new password using a reset token from their 
 #### Basic Usage
 
 ```vue
+<script setup>
+// This component works out of the box without additional setup
+</script>
+
 <template>
   <NUsersResetPasswordForm />
 </template>
@@ -580,6 +584,10 @@ A comprehensive component for displaying and managing users with pagination, sea
 #### Basic Usage
 
 ```vue
+<script setup>
+// This component works out of the box without additional setup
+</script>
+
 <template>
   <div>
     <NUsersList />
