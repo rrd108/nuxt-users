@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.34.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.0...v1.34.1)
+
+### 💅 Refactors
+
+- Component imports ([5b18736](https://github.com/rrd108/nuxt-users/commit/5b18736))
+
+### 🏡 Chore
+
+- **release:** V1.34.0 ([52faf38](https://github.com/rrd108/nuxt-users/commit/52faf38))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.34.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.33.0...v1.34.0)
