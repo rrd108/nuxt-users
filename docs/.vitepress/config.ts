@@ -60,7 +60,17 @@ export default defineConfig({
                   { text: 'NUsersUserForm', link: '/user-guide/components#nusersuserform' }
                 ]
               },
-              { text: 'Composables', link: '/user-guide/composables' },
+              {
+                text: 'Composables',
+                link: '/user-guide/composables',
+                items: [
+                  { text: 'useUsers()', link: '/user-guide/composables#useusers' },
+                  { text: 'useAuthentication()', link: '/user-guide/composables#useauthentication' },
+                  { text: 'getCurrentUser()', link: '/user-guide/composables#getcurrentuser' },
+                  { text: 'usePublicPaths()', link: '/user-guide/composables#usepublicpaths' },
+                  { text: 'usePasswordValidation()', link: '/user-guide/composables#usepasswordvalidation' }
+                ]
+              },
               { text: 'Troubleshooting', link: '/user-guide/troubleshooting' }
             ]
           },

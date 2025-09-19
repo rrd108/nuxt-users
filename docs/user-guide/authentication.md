@@ -448,9 +448,202 @@ apiShield: {
 }
 ```
 
+## Server-Side Authentication
+
+### Using getCurrentUser() in API Routes
+
+For server-side authentication in your API routes, use the `getCurrentUser()` function from the server-side `useServerAuth()` composable. This is essential for protecting API endpoints and accessing user data in server contexts.
+
+```typescript
+// server/api/profile.get.ts
+import { useServerAuth } from '#nuxt-users/server'
+
+export default defineEventHandler(async (event) => {
+  const { getCurrentUser } = useServerAuth()
+  const user = await getCurrentUser(event)
+  
+  if (!user) {
+    throw createError({ 
+      statusCode: 401, 
+      statusMessage: 'Authentication required' 
+    })
+  }
+  
+  return {
+    profile: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      lastLogin: user.last_login_at
+    }
+  }
+})
+```
+
+### Role-Based API Protection
+
+```typescript
+// server/api/admin/users.get.ts
+import { useServerAuth } from '#nuxt-users/server'
+
+export default defineEventHandler(async (event) => {
+  const { getCurrentUser } = useServerAuth()
+  const user = await getCurrentUser(event)
+  
+  // Check authentication
+  if (!user) {
+    throw createError({ statusCode: 401, statusMessage: 'Authentication required' })
+  }
+  
+  // Check authorization
+  if (user.role !== 'admin') {
+    throw createError({ statusCode: 403, statusMessage: 'Admin access required' })
+  }
+  
+  // Admin-only logic here
+  const allUsers = await fetchAllUsers()
+  return { users: allUsers }
+})
+```
+
+### User-Specific Data Access
+
+```typescript
+// server/api/posts/my-posts.get.ts
+import { useServerAuth } from '#nuxt-users/server'
+
+export default defineEventHandler(async (event) => {
+  const { getCurrentUser } = useServerAuth()
+  const user = await getCurrentUser(event)
+  
+  if (!user) {
+    throw createError({ statusCode: 401, statusMessage: 'Authentication required' })
+  }
+  
+  // Fetch posts belonging to the current user
+  const userPosts = await fetchPostsByUserId(user.id)
+  return { posts: userPosts }
+})
+```
+
+### Optional Authentication
+
+Some endpoints may provide different data based on authentication status:
+
+```typescript
+// server/api/posts/public.get.ts
+import { useServerAuth } from '#nuxt-users/server'
+
+export default defineEventHandler(async (event) => {
+  const { getCurrentUser } = useServerAuth()
+  const user = await getCurrentUser(event) // Returns null if not authenticated
+  
+  const posts = await fetchPublicPosts()
+  
+  // Add extra data for authenticated users
+  if (user) {
+    const postsWithUserData = posts.map(post => ({
+      ...post,
+      isLiked: await checkIfUserLikedPost(user.id, post.id),
+      canEdit: post.author_id === user.id || user.role === 'admin'
+    }))
+    return { posts: postsWithUserData }
+  }
+  
+  // Return basic data for non-authenticated users
+  return { posts }
+})
+```
+
+### Database Operations with User Context
+
+```typescript
+// server/api/comments.post.ts
+import { useServerAuth } from '#nuxt-users/server'
+import { readBody } from 'h3'
+
+export default defineEventHandler(async (event) => {
+  const { getCurrentUser } = useServerAuth()
+  const user = await getCurrentUser(event)
+  
+  if (!user) {
+    throw createError({ statusCode: 401, statusMessage: 'Authentication required' })
+  }
+  
+  const { postId, content } = await readBody(event)
+  
+  // Create comment with authenticated user's ID
+  const newComment = await createComment({
+    post_id: postId,
+    author_id: user.id, // Use authenticated user's ID
+    content,
+    created_at: new Date()
+  })
+  
+  return { comment: newComment }
+})
+```
+
+### Middleware Pattern
+
+Create reusable authentication middleware:
+
+```typescript
+// server/utils/authMiddleware.ts
+import { useServerAuth } from '#nuxt-users/server'
+import type { UserWithoutPassword } from 'nuxt-users/utils'
+
+export const requireAuth = async (event: any): Promise<UserWithoutPassword> => {
+  const { getCurrentUser } = useServerAuth()
+  const user = await getCurrentUser(event)
+  
+  if (!user) {
+    throw createError({ 
+      statusCode: 401, 
+      statusMessage: 'Authentication required' 
+    })
+  }
+  
+  return user
+}
+
+export const requireRole = async (event: any, requiredRole: string): Promise<UserWithoutPassword> => {
+  const user = await requireAuth(event)
+  
+  if (user.role !== requiredRole) {
+    throw createError({ 
+      statusCode: 403, 
+      statusMessage: `${requiredRole} access required` 
+    })
+  }
+  
+  return user
+}
+```
+
+Then use the middleware in your API routes:
+
+```typescript
+// server/api/admin/dashboard.get.ts
+import { requireRole } from '~/server/utils/authMiddleware'
+
+export default defineEventHandler(async (event) => {
+  const adminUser = await requireRole(event, 'admin')
+  
+  // Admin-only logic here
+  return { 
+    message: `Welcome admin ${adminUser.name}!`,
+    stats: await getAdminStats() 
+  }
+})
+```
+
 ## Checking Authentication Status
 
 For checking authentication status using the `useAuthentication` composable, refer to the [Composables documentation](/user-guide/composables.md#useauthentication).
+
+For accessing the current user in client-side components, see the [`getCurrentUser()` documentation](/user-guide/composables.md#getcurrentuser).
 
 ## Error Handling
 

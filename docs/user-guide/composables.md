@@ -294,6 +294,204 @@ const canCreateUsers = computed(() =>
 
 **Note:** Static assets (files with dots) and Nuxt internal routes (starting with `/_`) are always considered public and accessible.
 
+## `getCurrentUser()`
+
+The `getCurrentUser` function is one of the most commonly used utilities in Nuxt Users. It provides a simple way to access the current authenticated user in your Vue components, composables, and other client-side code.
+
+### Usage
+
+```vue
+<script setup>
+import { getCurrentUser } from 'nuxt-users/composables'
+
+// Get the current user (reactive)
+const user = await getCurrentUser()
+
+// Check if user is authenticated
+if (user) {
+  console.log('Authenticated user:', user.name, user.email)
+} else {
+  console.log('No user authenticated')
+}
+</script>
+
+<template>
+  <div v-if="user">
+    <h1>Welcome, {{ user.name }}!</h1>
+    <p>Email: {{ user.email }}</p>
+    <p>Role: {{ user.role }}</p>
+    <p v-if="user.last_login_at">Last login: {{ formatDate(user.last_login_at) }}</p>
+  </div>
+  <div v-else>
+    <p>Please log in to continue.</p>
+  </div>
+</template>
+```
+
+### Return Type
+
+The function returns `UserWithoutPassword | null`:
+- Returns the user object (without password) if authenticated
+- Returns `null` if no user is authenticated
+
+### User Object Properties
+
+When authenticated, the user object includes:
+
+```typescript
+{
+  id: number
+  email: string
+  name: string
+  role: string
+  active: boolean
+  created_at: string
+  updated_at: string
+  last_login_at?: string
+  // ... any custom fields you've added
+}
+```
+
+### Common Usage Patterns
+
+#### Conditional Navigation
+
+```vue
+<script setup>
+const user = await getCurrentUser()
+
+// Redirect to login if not authenticated
+if (!user) {
+  await navigateTo('/login')
+}
+
+// Role-based redirection
+if (user?.role === 'admin') {
+  await navigateTo('/admin/dashboard')
+} else {
+  await navigateTo('/user/dashboard')
+}
+</script>
+```
+
+#### User Profile Display
+
+```vue
+<script setup>
+const user = await getCurrentUser()
+
+// Format user data for display
+const displayName = computed(() => {
+  if (!user) return 'Guest'
+  return user.name || user.email.split('@')[0]
+})
+
+const isAdmin = computed(() => user?.role === 'admin')
+</script>
+
+<template>
+  <nav>
+    <span>Hello, {{ displayName }}</span>
+    <NuxtLink v-if="user" to="/profile">Profile</NuxtLink>
+    <NuxtLink v-if="isAdmin" to="/admin">Admin Panel</NuxtLink>
+    <NUsersLogoutLink v-if="user" />
+    <NuxtLink v-else to="/login">Login</NuxtLink>
+  </nav>
+</template>
+```
+
+#### API Authorization
+
+```vue
+<script setup>
+const user = await getCurrentUser()
+
+// Only make API calls if user is authenticated
+const { data: posts } = await $fetch('/api/posts', {
+  headers: user ? {} : undefined, // Token is automatically included via cookie
+  // Only fetch if user exists
+  server: !!user,
+  default: () => []
+})
+
+// Role-based data fetching
+const { data: adminData } = await $fetch('/api/admin/stats', {
+  server: user?.role === 'admin',
+  default: () => null
+})
+</script>
+```
+
+#### Form Pre-filling
+
+```vue
+<script setup>
+const user = await getCurrentUser()
+
+// Pre-fill form with user data
+const formData = reactive({
+  name: user?.name || '',
+  email: user?.email || '',
+  bio: user?.bio || ''
+})
+</script>
+
+<template>
+  <form @submit="updateProfile">
+    <input v-model="formData.name" placeholder="Name" />
+    <input v-model="formData.email" type="email" placeholder="Email" />
+    <textarea v-model="formData.bio" placeholder="Bio"></textarea>
+    <button type="submit">Update Profile</button>
+  </form>
+</template>
+```
+
+### Integration with useAuthentication()
+
+While `getCurrentUser()` provides direct access to user data, you can also use it alongside `useAuthentication()` for reactive authentication state:
+
+```vue
+<script setup>
+const { user, isAuthenticated } = useAuthentication()
+const currentUser = await getCurrentUser()
+
+// Both approaches work - use what fits your needs:
+// - user.value (from useAuthentication) is reactive
+// - currentUser (from getCurrentUser) is a snapshot
+
+watch(isAuthenticated, async (authenticated) => {
+  if (authenticated) {
+    // User just logged in - refresh data if needed
+    const refreshedUser = await getCurrentUser()
+    console.log('User authenticated:', refreshedUser)
+  }
+})
+</script>
+```
+
+### Error Handling
+
+```vue
+<script setup>
+try {
+  const user = await getCurrentUser()
+  if (user) {
+    console.log('User loaded:', user)
+  }
+} catch (error) {
+  console.error('Failed to get current user:', error)
+  // Handle error - maybe redirect to login or show error message
+}
+</script>
+```
+
+### Performance Considerations
+
+- `getCurrentUser()` makes a server request, so use it judiciously
+- For reactive user state, consider `useAuthentication()` instead
+- The result is automatically cached by Nuxt during SSR
+- In client-side navigation, the function reuses cached data when possible
+
 ## `usePasswordValidation()`
 
 The `usePasswordValidation` composable provides utilities for validating password strength and managing password-related UI feedback. It integrates with the module's password validation options.
