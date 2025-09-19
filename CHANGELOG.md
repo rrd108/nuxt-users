@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v1.33.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.32.0...v1.33.0)
+
+### 🚀 Enhancements
+
+- Extends NUsersList component with function filters ([be9a730](https://github.com/rrd108/nuxt-users/commit/be9a730))
+
+### 🩹 Fixes
+
+- Register date issue with MySQL ([28a5c00](https://github.com/rrd108/nuxt-users/commit/28a5c00))
+
+### 💅 Refactors
+
+- Remove unused code ([cbff5a0](https://github.com/rrd108/nuxt-users/commit/cbff5a0))
+
+### 🏡 Chore
+
+- **release:** V1.32.0 ([7021fb7](https://github.com/rrd108/nuxt-users/commit/7021fb7))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.32.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.31.2...v1.32.0)
