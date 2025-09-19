@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v1.34.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.33.0...v1.34.0)
+
+### 🚀 Enhancements
+
+- Add email confirmation component ([9df6a76](https://github.com/rrd108/nuxt-users/commit/9df6a76))
+
+### 🩹 Fixes
+
+- Register date issue with MySQL ([28a5c00](https://github.com/rrd108/nuxt-users/commit/28a5c00))
+
+### 🏡 Chore
+
+- **release:** V1.33.0 ([df1b1a5](https://github.com/rrd108/nuxt-users/commit/df1b1a5))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.33.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.32.0...v1.33.0)
