@@ -8,6 +8,7 @@ The Nuxt Users module provides several Vue components to help you quickly implem
 |-----------|---------|
 | `NUsersLoginForm` | Complete login form with validation and forgot password functionality |
 | `NUsersRegisterForm` | User registration form with email confirmation and password validation |
+| `NUsersEmailConfirmation` | User-friendly email confirmation page with success/error states |
 | `NUsersLogoutLink` | Simple logout link with confirmation |
 | `NUsersResetPasswordForm` | Password reset form for users with reset tokens |
 | `NUsersList` | Paginated list of users with management actions |
@@ -398,6 +399,103 @@ const handleSubmit = (formData) => {
 }
 </style>
 ```
+
+### NUsersEmailConfirmation
+
+A user-friendly email confirmation page that displays success or error states based on URL parameters. This component is designed to be used on a dedicated confirmation page that users are redirected to after clicking email confirmation links.
+
+#### Basic Usage
+
+```vue
+<!-- pages/email-confirmation.vue -->
+<template>
+  <div>
+    <NUsersEmailConfirmation />
+  </div>
+</template>
+
+<script setup>
+// Set page title and meta tags
+useHead({
+  title: 'Email Confirmation',
+  meta: [
+    { name: 'description', content: 'Confirm your email address' }
+  ]
+})
+</script>
+```
+
+#### Configuration
+
+To enable email confirmation redirects, configure your `nuxt.config.ts`:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    // URL to redirect to after email confirmation
+    emailConfirmationUrl: '/email-confirmation',
+    auth: {
+      // Whitelist the confirmation page
+      whitelist: ['/register', '/email-confirmation']
+    }
+  }
+})
+```
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `successTitle` | `string` | `'Email Confirmed!'` | Title for successful confirmation |
+| `errorTitle` | `string` | `'Confirmation Failed'` | Title for failed confirmation |
+| `loginButtonText` | `string` | `'Continue to Login'` | Text for the login button |
+| `loginUrl` | `string` | `'/login'` | URL to redirect to for login |
+| `showLoginButton` | `boolean` | `true` | Whether to show the login button |
+
+#### URL Parameters
+
+The component automatically reads these query parameters:
+- `status` - Either `'success'` or `'error'`
+- `message` - The message to display to the user
+
+#### Customization Slots
+
+```vue
+<NUsersEmailConfirmation>
+  <!-- Custom success state -->
+  <template #success-icon>
+    <div class="custom-success-icon">
+      🎉
+    </div>
+  </template>
+  
+  <template #success-content>
+    <h1>Welcome!</h1>
+    <p>Your account is ready to use.</p>
+  </template>
+  
+  <template #success-actions>
+    <NuxtLink to="/dashboard" class="n-users-btn n-users-btn-primary">
+      Go to Dashboard
+    </NuxtLink>
+  </template>
+  
+  <!-- Custom error state -->
+  <template #error-content>
+    <h1>Oops!</h1>
+    <p>Something went wrong with your confirmation.</p>
+  </template>
+</NUsersEmailConfirmation>
+```
+
+#### User Experience Flow
+
+1. **User registers** using `NUsersRegisterForm`
+2. **Confirmation email sent** with link to `/api/nuxt-users/confirm-email?token=...&email=...`
+3. **User clicks link** - API processes the confirmation
+4. **API redirects** to `/email-confirmation?status=success&message=...`
+5. **User sees friendly page** instead of raw JSON
 
 ### NUsersLogoutLink
 
@@ -1484,103 +1582,6 @@ If authentication components are not working:
 2. **Check network requests** - Ensure API calls are reaching your server
 3. **Review server logs** - Look for any server-side errors
 4. **Test with the playground** - Try the components in the module's playground
-
-### NUsersEmailConfirmation
-
-A user-friendly email confirmation page that displays success or error states based on URL parameters. This component is designed to be used on a dedicated confirmation page that users are redirected to after clicking email confirmation links.
-
-#### Basic Usage
-
-```vue
-<!-- pages/email-confirmation.vue -->
-<template>
-  <div>
-    <NUsersEmailConfirmation />
-  </div>
-</template>
-
-<script setup>
-// Set page title and meta tags
-useHead({
-  title: 'Email Confirmation',
-  meta: [
-    { name: 'description', content: 'Confirm your email address' }
-  ]
-})
-</script>
-```
-
-#### Configuration
-
-To enable email confirmation redirects, configure your `nuxt.config.ts`:
-
-```ts
-export default defineNuxtConfig({
-  modules: ['nuxt-users'],
-  nuxtUsers: {
-    // URL to redirect to after email confirmation
-    emailConfirmationUrl: '/email-confirmation',
-    auth: {
-      // Whitelist the confirmation page
-      whitelist: ['/register', '/email-confirmation']
-    }
-  }
-})
-```
-
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `successTitle` | `string` | `'Email Confirmed!'` | Title for successful confirmation |
-| `errorTitle` | `string` | `'Confirmation Failed'` | Title for failed confirmation |
-| `loginButtonText` | `string` | `'Continue to Login'` | Text for the login button |
-| `loginUrl` | `string` | `'/login'` | URL to redirect to for login |
-| `showLoginButton` | `boolean` | `true` | Whether to show the login button |
-
-#### URL Parameters
-
-The component automatically reads these query parameters:
-- `status` - Either `'success'` or `'error'`
-- `message` - The message to display to the user
-
-#### Customization Slots
-
-```vue
-<NUsersEmailConfirmation>
-  <!-- Custom success state -->
-  <template #success-icon>
-    <div class="custom-success-icon">
-      🎉
-    </div>
-  </template>
-  
-  <template #success-content>
-    <h1>Welcome!</h1>
-    <p>Your account is ready to use.</p>
-  </template>
-  
-  <template #success-actions>
-    <NuxtLink to="/dashboard" class="n-users-btn n-users-btn-primary">
-      Go to Dashboard
-    </NuxtLink>
-  </template>
-  
-  <!-- Custom error state -->
-  <template #error-content>
-    <h1>Oops!</h1>
-    <p>Something went wrong with your confirmation.</p>
-  </template>
-</NUsersEmailConfirmation>
-```
-
-#### User Experience Flow
-
-1. **User registers** using `NUsersRegisterForm`
-2. **Confirmation email sent** with link to `/api/nuxt-users/confirm-email?token=...&email=...`
-3. **User clicks link** - API processes the confirmation
-4. **API redirects** to `/email-confirmation?status=success&message=...`
-5. **User sees friendly page** instead of raw JSON
 
 ## Next Steps
 

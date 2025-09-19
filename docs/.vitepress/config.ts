@@ -46,7 +46,20 @@ export default defineConfig({
               { text: 'Authentication', link: '/user-guide/authentication' },
               { text: 'Authorization (RBAC)', link: '/user-guide/authorization' },
               { text: 'Password Reset', link: '/user-guide/password-reset' },
-              { text: 'Components', link: '/user-guide/components' },
+              {
+                text: 'Components',
+                link: '/user-guide/components',
+                items: [
+                  { text: 'NUsersLoginForm', link: '/user-guide/components#nusersloginform' },
+                  { text: 'NUsersRegisterForm', link: '/user-guide/components#nusersregisterform' },
+                  { text: 'NUsersEmailConfirmation', link: '/user-guide/components#nusersemailconfirmation' },
+                  { text: 'NUsersLogoutLink', link: '/user-guide/components#nuserslogoutlink' },
+                  { text: 'NUsersResetPasswordForm', link: '/user-guide/components#nusersresetpasswordform' },
+                  { text: 'NUsersList', link: '/user-guide/components#nuserslist' },
+                  { text: 'NUsersUserCard', link: '/user-guide/components#nusersusercard' },
+                  { text: 'NUsersUserForm', link: '/user-guide/components#nusersuserform' }
+                ]
+              },
               { text: 'Composables', link: '/user-guide/composables' },
               { text: 'Troubleshooting', link: '/user-guide/troubleshooting' }
             ]
