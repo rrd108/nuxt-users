@@ -43,6 +43,12 @@ export interface RuntimeModuleOptions {
    */
   passwordResetUrl?: string
   /**
+   * URL to redirect to after email confirmation (success or failure)
+   * Query parameters will be added: ?status=success|error&message=...
+   * @default '/login'
+   */
+  emailConfirmationUrl?: string
+  /**
    * Skip database checks during module setup to prevent hanging
    * @default false
    */
@@ -128,6 +134,7 @@ export interface ModuleOptions {
   }
   mailer?: MailerOptions
   passwordResetUrl: string
+  emailConfirmationUrl: string
   auth: {
     whitelist: string[]
     tokenExpiration: number

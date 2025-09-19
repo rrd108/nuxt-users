@@ -59,6 +59,7 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
     }
   },
   passwordResetUrl: '/reset-password',
+  emailConfirmationUrl: '/email-confirmation',
   auth: {
     whitelist: [],
     tokenExpiration: 1440,

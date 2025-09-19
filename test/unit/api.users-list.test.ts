@@ -54,6 +54,7 @@ const testOptions: ModuleOptions = {
     passwordResetTokens: 'password_reset_tokens',
   },
   passwordResetUrl: '/reset-password',
+  emailConfirmationUrl: '/email-confirmation',
   auth: {
     whitelist: [],
     tokenExpiration: 1440,

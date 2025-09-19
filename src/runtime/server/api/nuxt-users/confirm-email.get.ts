@@ -1,4 +1,4 @@
-import { createError, defineEventHandler, getQuery } from 'h3'
+import { defineEventHandler, getQuery, sendRedirect } from 'h3'
 import { useRuntimeConfig } from '#imports'
 import { confirmUserEmail } from '../../services/registration'
 import type { ModuleOptions } from 'nuxt-users/utils'
@@ -11,10 +11,10 @@ export default defineEventHandler(async (event) => {
 
     // Validate required parameters
     if (!query.token || !query.email) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Token and email are required'
-      })
+      const redirectUrl = new URL(options.emailConfirmationUrl, 'http://localhost')
+      redirectUrl.searchParams.set('status', 'error')
+      redirectUrl.searchParams.set('message', 'Token and email are required')
+      return sendRedirect(event, redirectUrl.pathname + redirectUrl.search, 302)
     }
 
     const token = String(query.token)
@@ -23,33 +23,37 @@ export default defineEventHandler(async (event) => {
     const success = await confirmUserEmail(token, email, options)
 
     if (success) {
-      // Redirect to a success page or login page
-      // For now, return a success response
-      return {
-        success: true,
-        message: 'Email confirmed successfully! Your account is now active. You can now log in.'
-      }
+      // Redirect to success page with success status
+      const redirectUrl = new URL(options.emailConfirmationUrl, 'http://localhost')
+      redirectUrl.searchParams.set('status', 'success')
+      redirectUrl.searchParams.set('message', 'Email confirmed successfully! Your account is now active. You can now log in.')
+      return sendRedirect(event, redirectUrl.pathname + redirectUrl.search, 302)
     }
     else {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Invalid or expired confirmation token'
-      })
+      // Redirect to error page with error status
+      const redirectUrl = new URL(options.emailConfirmationUrl, 'http://localhost')
+      redirectUrl.searchParams.set('status', 'error')
+      redirectUrl.searchParams.set('message', 'Invalid or expired confirmation token')
+      return sendRedirect(event, redirectUrl.pathname + redirectUrl.search, 302)
     }
   }
   catch (error) {
     console.error('[Nuxt Users] Email confirmation error:', error)
 
+    const { nuxtUsers } = useRuntimeConfig()
+    const options = nuxtUsers as ModuleOptions
+
+    // Redirect to error page with error details
+    const redirectUrl = new URL(options.emailConfirmationUrl, 'http://localhost')
+    redirectUrl.searchParams.set('status', 'error')
+
     if (error instanceof Error) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: error.message
-      })
+      redirectUrl.searchParams.set('message', error.message)
+    }
+    else {
+      redirectUrl.searchParams.set('message', 'Email confirmation failed')
     }
 
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Email confirmation failed'
-    })
+    return sendRedirect(event, redirectUrl.pathname + redirectUrl.search, 302)
   }
 })

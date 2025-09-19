@@ -54,22 +54,37 @@ describe('API: Registration', async () => {
   })
 
   it('should handle email confirmation with invalid token', async () => {
-    // Test that the endpoint properly validates tokens
+    // Test that the endpoint redirects for invalid tokens
     const uniqueEmail = `test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}@example.com`
-    await expect($fetch('/api/nuxt-users/confirm-email', {
+
+    // The API should redirect - in test environment this follows the redirect
+    // and we get the final confirmation page HTML
+    const response = await $fetch('/api/nuxt-users/confirm-email', {
       query: {
         token: 'invalid-token',
         email: uniqueEmail
       }
-    })).rejects.toThrow('Invalid or expired')
+    })
+
+    // Should get HTML page that contains the error message
+    expect(typeof response).toBe('string')
+    expect(response).toContain('html') // It's an HTML response
+    // The error message will be in the URL or page content
+    expect(response).toMatch(/Invalid.*expired.*confirmation.*token/i)
   })
 
   it('should handle email confirmation with missing parameters', async () => {
-    // Test parameter validation
-    await expect($fetch('/api/nuxt-users/confirm-email', {
+    // Test parameter validation - should redirect to error page
+    const response = await $fetch('/api/nuxt-users/confirm-email', {
       query: {
         // Missing both token and email
       }
-    })).rejects.toThrow('Token and email are required')
+    })
+
+    // Should get HTML page that contains the error message
+    expect(typeof response).toBe('string')
+    expect(response).toContain('html') // It's an HTML response
+    // The error message will be in the URL or page content
+    expect(response).toMatch(/Token.*email.*required/i)
   })
 })

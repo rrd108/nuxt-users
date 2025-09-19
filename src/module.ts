@@ -29,6 +29,7 @@ export const defaultOptions: ModuleOptions = {
     },
   },
   passwordResetUrl: '/reset-password',
+  emailConfirmationUrl: '/email-confirmation',
   auth: {
     whitelist: [],
     tokenExpiration: 24 * 60, // 24 hours

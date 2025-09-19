@@ -38,6 +38,7 @@ describe('usePublicPaths', () => {
         passwordResetTokens: 'password_reset_tokens'
       },
       passwordResetUrl: '/reset-password',
+      emailConfirmationUrl: '/email-confirmation',
       auth: {
         whitelist: ['/about', '/contact'],
         tokenExpiration: 1440,
