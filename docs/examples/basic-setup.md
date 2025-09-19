@@ -17,7 +17,7 @@ npm install db0 better-sqlite3 bcrypt nodemailer
 npx nuxt-users migrate
 
 # Create your first user
-npx nuxt-users create-user admin@example.com "Admin User" password123
+npx nuxt-users create-user -e admin@example.com -n "Admin User" -p password123 -r admin
 ```
 
 ```ts
@@ -408,7 +408,7 @@ ls -la ./database/users.db
 
 ```bash
 # Create a test user
-npx nuxt-users create-user test@example.com "Test User" password123
+npx nuxt-users create-user -e test@example.com -n "Test User" -p password123
 
 # Verify user was created (optional)
 sqlite3 ./data/users.sqlite3 "SELECT * FROM users;"
@@ -460,7 +460,7 @@ npm install nuxt-users
 npx nuxt-users migrate
 
 # Create user
-npx nuxt-users create-user email@example.com "Name" password
+npx nuxt-users create-user -e email@example.com -n "Name" -p password
 
 # Start development
 npm run dev

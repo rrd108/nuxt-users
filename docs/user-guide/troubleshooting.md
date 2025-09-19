@@ -158,17 +158,17 @@ sqlite3 data/users.sqlite3 ".schema users"
 npx nuxt-users list-users
 
 # Or create a test user
-npx nuxt-users create-user test@example.com "Test User" password123
+npx nuxt-users create-user -e test@example.com -n "Test User" -p password123
 ```
 
 2. **Verify password hashing:**
 ```bash
 # Passwords are automatically hashed - don't hash them manually
 # ❌ Wrong:
-npx nuxt-users create-user user@example.com "User" $(echo -n "password" | bcrypt)
+npx nuxt-users create-user -e user@example.com -n "User" -p $(echo -n "password" | bcrypt)
 
 # ✅ Correct:
-npx nuxt-users create-user user@example.com "User" password123
+npx nuxt-users create-user -e user@example.com -n "User" -p password123
 ```
 
 3. **Check database connection:**

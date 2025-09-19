@@ -54,7 +54,7 @@ npx nuxt-users migrate
 ### 4. Create Your First User
 
 ```bash
-npx nuxt-users create-user admin@example.com "Admin User" password123 admin
+npx nuxt-users create-user -e admin@example.com -n "Admin User" -p password123 -r admin
 ```
 
 > ⚠️ **IMPORTANT: Permissions Required for Protected Routes**

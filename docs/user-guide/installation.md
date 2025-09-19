@@ -98,7 +98,7 @@ npx nuxt-users create-personal-access-tokens-table
 npx nuxt-users create-password-reset-tokens-table
 
 # Create your first user
-npx nuxt-users create-user user@example.com "John Doe" password123
+npx nuxt-users create-user -e user@example.com -n "John Doe" -p password123
 ```
 
 ## Next Steps

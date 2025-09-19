@@ -189,16 +189,16 @@ You can create users with specific roles using the CLI:
 
 ```bash
 # Create a standard user
-npx nuxt-users create-user user@example.com "John Doe" password123 user
+npx nuxt-users create-user -e user@example.com -n "John Doe" -p password123 -r user
 
 # Create an admin user
-npx nuxt-users create-user admin@example.com "Admin User" adminpass123 admin
+npx nuxt-users create-user -e admin@example.com -n "Admin User" -p adminpass123 -r admin
 
 # Create an editor user
-npx nuxt-users create-user editor@example.com "Editor User" editorpass123 editor
+npx nuxt-users create-user -e editor@example.com -n "Editor User" -p editorpass123 -r editor
 
 # Create a moderator user
-npx nuxt-users create-user moderator@example.com "Moderator User" modpass123 moderator
+npx nuxt-users create-user -e moderator@example.com -n "Moderator User" -p modpass123 -r moderator
 ```
 
 The default role is `user` if not specified.
