@@ -2,9 +2,25 @@
 
 This module includes a simple yet powerful Role-Based Access Control (RBAC) system to control access to your application's pages and API routes.
 
+> 🚨 **Critical: Permissions Required**
+> 
+> **By default, NO users (including admins) can access any protected routes until you configure permissions.** If you're experiencing redirect loops or users being sent back to login after authentication, this is likely the cause.
+> 
+> **Quick fix for admin access:**
+> ```ts
+> // nuxt.config.ts
+> nuxtUsers: {
+>   auth: {
+>     permissions: {
+>       admin: ['*'] // Gives admin access to everything
+>     }
+>   }
+> }
+> ```
+
 ## Overview
 
-The authorization system follows a **whitelist approach** - by default, no routes are accessible unless explicitly configured. This ensures security by default.
+The authorization system follows a **whitelist approach** - by default, no routes are accessible unless explicitly configured. This ensures security by default, but requires explicit permission configuration for any protected access.
 
 ## How Authorization Works
 
@@ -198,6 +214,30 @@ The default role is `user` if not specified.
 ## Troubleshooting
 
 ### Common Issues
+
+**🔄 Authenticated users redirected to login (Redirect Loop):**
+
+This is the **most common issue** - your authenticated users (including admins) are being redirected back to login when trying to access any page.
+
+**Cause:** No permissions are configured. By default, `permissions: {}` means no one can access anything.
+
+**Solution:**
+```ts
+// nuxt.config.ts
+nuxtUsers: {
+  auth: {
+    permissions: {
+      admin: ['*'], // Admin can access everything
+      user: ['/profile', '/api/nuxt-users/me'] // Basic user access
+    }
+  }
+}
+```
+
+**Debug:** Check browser console for messages like:
+```
+[Nuxt Users] client.middleware.auth.global: User with role admin denied access to /profile
+```
 
 **User can't access a route they should have access to:**
 - Check if the route is in the `whitelist` (whitelisted routes bypass permissions)

@@ -41,7 +41,7 @@ The module automatically sets up:
 - Vue components for login/logout
 - Session management
 
-> **Note**: While this is called "zero-config", you still need to install the required peer dependencies (`db0`, `better-sqlite3`, `bcrypt`, `nodemailer`) as shown in step 1. This gives you control over which database and email providers to use.
+> **Note**: The "zero-config" setup handles database and API setup, but **protected routes require permissions configuration**. Without permissions, authenticated users will be redirected to login. You'll add this configuration in step 4 below.
 
 ### 3. Initialize Your Database
 
@@ -54,8 +54,29 @@ npx nuxt-users migrate
 ### 4. Create Your First User
 
 ```bash
-npx nuxt-users create-user user@example.com "John Doe" password123
+npx nuxt-users create-user admin@example.com "Admin User" password123 admin
 ```
+
+> ⚠️ **IMPORTANT: Permissions Required for Protected Routes**
+> 
+> After creating users, they won't be able to access any protected pages (including admins) until you configure permissions. This module uses a **whitelist approach** for security - no one has access by default.
+> 
+> Add this to your `nuxt.config.ts` to allow your admin user to access all routes:
+> ```ts
+> export default defineNuxtConfig({
+>   modules: ['nuxt-users'],
+>   nuxtUsers: {
+>     auth: {
+>       permissions: {
+>         admin: ['*'], // Admin can access everything
+>         user: ['/profile', '/api/nuxt-users/me'] // Basic user access
+>       }
+>     }
+>   }
+> })
+> ```
+> 
+> **Without this configuration, authenticated users will be redirected to login when trying to access any page.** See the [Authorization Guide](/user-guide/authorization) for more details.
 
 ### 5. Add Login to Your App
 
@@ -122,12 +143,30 @@ That's it! You now have a fully functional authentication system. 🎉
    ```
 
 2. Navigate to your login page
-3. Log in with the user you created: `user@example.com` / `password123`
+3. Log in with the user you created: `admin@example.com` / `password123`
 4. You should see the user information displayed
 
-## Basic Configuration
+## Essential Configuration
 
-Once you have the zero-config setup working, you might want to customize some basic options:
+After the initial setup, you'll need to configure permissions for your users to access protected routes. Here are the essential configurations:
+
+### User Permissions (Required)
+
+This is **essential** - without permissions, authenticated users cannot access protected routes:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    auth: {
+      permissions: {
+        admin: ['*'], // Admin can access everything
+        user: ['/profile', '/dashboard']
+      }
+    }
+  }
+})
+```
 
 ### Database Location
 
