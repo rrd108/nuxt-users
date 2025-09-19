@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addServerHandler, addComponent, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addServerHandler, addComponentsDir, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir } from '@nuxt/kit'
 import { defu } from 'defu'
 import type { RuntimeModuleOptions, ModuleOptions } from './types'
 
@@ -270,50 +270,12 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       nitroConfig.scanDirs.push(resolver.resolve('./runtime/server/tasks'))
     })
 
-    // components
-    addComponent({
-      name: 'NUsersLoginForm',
-      filePath: resolver.resolve('./runtime/components/NUsersLoginForm.vue')
-    })
-
-    addComponent({
-      name: 'NUsersLogoutLink',
-      filePath: resolver.resolve('./runtime/components/NUsersLogoutLink.vue')
-    })
-
-    addComponent({
-      name: 'NUsersProfileInfo',
-      filePath: resolver.resolve('./runtime/components/NUsersProfileInfo.vue')
-    })
-
-    addComponent({
-      name: 'NUsersResetPasswordForm',
-      filePath: resolver.resolve('./runtime/components/NUsersResetPasswordForm.vue')
-    })
-
-    addComponent({
-      name: 'NUsersPasswordStrengthIndicator',
-      filePath: resolver.resolve('./runtime/components/NUsersPasswordStrengthIndicator.vue')
-    })
-
-    addComponent({
-      name: 'NUsersList',
-      filePath: resolver.resolve('./runtime/components/NUsersList.vue')
-    })
-
-    addComponent({
-      name: 'NUsersUserCard',
-      filePath: resolver.resolve('./runtime/components/NUsersUserCard.vue')
-    })
-
-    addComponent({
-      name: 'NUsersUserForm',
-      filePath: resolver.resolve('./runtime/components/NUsersUserForm.vue')
-    })
-
-    addComponent({
-      name: 'NUsersRegisterForm',
-      filePath: resolver.resolve('./runtime/components/NUsersRegisterForm.vue')
+    // Auto-register all components from the components directory
+    addComponentsDir({
+      path: resolver.resolve('./runtime/components'),
+      pathPrefix: false,
+      prefix: '',
+      global: true
     })
 
     nuxt.options.css = nuxt.options.css || []
