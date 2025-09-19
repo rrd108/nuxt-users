@@ -53,9 +53,8 @@ describe('API: Registration', async () => {
     })).rejects.toThrow()
   })
 
-  it('should handle email confirmation', async () => {
-    // This test would require mocking the token generation
-    // For now, just test that the endpoint exists
+  it('should handle email confirmation with invalid token', async () => {
+    // Test that the endpoint properly validates tokens
     const uniqueEmail = `test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}@example.com`
     await expect($fetch('/api/nuxt-users/confirm-email', {
       query: {
@@ -63,5 +62,14 @@ describe('API: Registration', async () => {
         email: uniqueEmail
       }
     })).rejects.toThrow('Invalid or expired')
+  })
+
+  it('should handle email confirmation with missing parameters', async () => {
+    // Test parameter validation
+    await expect($fetch('/api/nuxt-users/confirm-email', {
+      query: {
+        // Missing both token and email
+      }
+    })).rejects.toThrow('Token and email are required')
   })
 })

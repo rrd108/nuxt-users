@@ -193,7 +193,7 @@ export const confirmUserEmail = async (
     SELECT * FROM {${passwordResetTokensTable}}
     WHERE email = ${email}
     ORDER BY created_at DESC
-  ` as { rows: { id: number, email: string, token: string, created_at: string }[] }
+  ` as { rows: { id: number, email: string, token: string, created_at: Date | string }[] }
 
   if (tokenRecords.rows.length === 0) {
     console.log(`[Nuxt Users] No confirmation tokens found for email: ${email}`)
@@ -220,7 +220,12 @@ export const confirmUserEmail = async (
   const currentTimeString = now.toISOString().slice(0, 19).replace('T', ' ')
 
   // Parse the original timestamp and add expiration hours
-  const [datePart, timePart] = validTokenRecord.created_at.split(/[ T]/)
+  // Handle both Date objects and string timestamps from different databases
+  const createdAtString = validTokenRecord.created_at instanceof Date
+    ? validTokenRecord.created_at.toISOString().slice(0, 19).replace('T', ' ')
+    : String(validTokenRecord.created_at)
+
+  const [datePart, timePart] = createdAtString.split(/[ T]/)
   const [year, month, day] = datePart.split('-').map(Number)
   const [hour, minute, second] = timePart.split(':').map(Number)
 
