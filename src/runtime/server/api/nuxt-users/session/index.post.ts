@@ -59,7 +59,8 @@ export default defineEventHandler(async (event) => {
     // For "remember me" sessions, use a longer expiration (30 days default)
     const longTermDays = options.auth.rememberMeExpiration || 30 // days
     expiresAt.setDate(expiresAt.getDate() + longTermDays)
-  } else {
+  }
+  else {
     // For regular sessions, use the configured token expiration
     expiresAt.setMinutes(expiresAt.getMinutes() + options.auth.tokenExpiration)
   }
@@ -78,16 +79,17 @@ export default defineEventHandler(async (event) => {
     sameSite: 'lax' as const, // Adjust as needed
     path: '/',
   }
-  
+
   if (rememberMe) {
     // For "remember me", set a long-term cookie
     const longTermDays = options.auth.rememberMeExpiration || 30
     cookieOptions.maxAge = 60 * 60 * 24 * longTermDays // Convert days to seconds
-  } else {
+  }
+  else {
     // For regular login, don't set maxAge to create a session cookie
     // Session cookies expire when the browser is closed
   }
-  
+
   setCookie(event, 'auth_token', token, cookieOptions)
 
   // Return user without password for security
