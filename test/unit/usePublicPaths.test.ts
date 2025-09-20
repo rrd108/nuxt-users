@@ -42,6 +42,7 @@ describe('usePublicPaths', () => {
       auth: {
         whitelist: ['/about', '/contact'],
         tokenExpiration: 1440,
+        rememberMeExpiration: 30,
         permissions: {
           admin: ['*'],
           user: ['/profile', '/dashboard'],

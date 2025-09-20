@@ -56,7 +56,7 @@ const handleSubmit = async () => {
       }
     })
 
-    emit('success', response.user, formData.value.rememberMe)
+    emit('success', response.user, formData.value.rememberMe ?? false)
 
     // Redirect if specified
     if (props.redirectTo) {

@@ -58,6 +58,7 @@ const testOptions: ModuleOptions = {
   auth: {
     whitelist: [],
     tokenExpiration: 1440,
+    rememberMeExpiration: 30,
     permissions: {}
   },
   passwordValidation: {

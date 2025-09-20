@@ -389,6 +389,7 @@ The module automatically handles:
 - Token expiration validation
 - Automatic token cleanup
 - Token refresh on activity
+- **Hard reload persistence**: Users remain logged in after hard refresh (Ctrl+F5)
 
 ## Security Features
 

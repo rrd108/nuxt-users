@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useAuthentication } from '#imports'
 
-const { user, initializeUser } = useAuthentication()
+const { user } = useAuthentication()
 
-// Initialize user from localStorage on page load
-initializeUser()
+// User is automatically initialized by the client plugin
+// No need to manually call initializeUser() anymore
 </script>
 
 <template>

@@ -2,6 +2,9 @@ import { useState, useRuntimeConfig } from '#app'
 import { computed, readonly } from 'vue'
 import type { User, UserWithoutPassword } from 'nuxt-users/utils'
 
+// Global flag to track if initialization has been attempted
+let initializationPromise: Promise<void> | null = null
+
 export const useAuthentication = () => {
   const user = useState<UserWithoutPassword | null>('user', () => null)
   const { public: { nuxtUsers } } = useRuntimeConfig()
@@ -13,17 +16,18 @@ export const useAuthentication = () => {
     // Remove password from user data before storing
     const { password: _, ...userWithoutPassword } = userData
     user.value = userWithoutPassword
-    
+
     // Store user data based on rememberMe preference
     if (import.meta.client) {
       // Clear any existing user data from both storages
       localStorage.removeItem('user')
       sessionStorage.removeItem('user')
-      
+
       if (rememberMe) {
         // Store in localStorage for persistent login across browser sessions
         localStorage.setItem('user', JSON.stringify(userWithoutPassword))
-      } else {
+      }
+      else {
         // Store in sessionStorage for session-only login
         sessionStorage.setItem('user', JSON.stringify(userWithoutPassword))
       }
@@ -55,18 +59,20 @@ export const useAuthentication = () => {
     try {
       const response = await $fetch<{ user: UserWithoutPassword }>(`${apiBasePath}/me`, { method: 'GET' })
       user.value = response.user
-      
+
       // Update the appropriate storage with fresh user data
       if (import.meta.client) {
         // Determine which storage was being used and update it
         const wasInLocalStorage = localStorage.getItem('user') !== null
         const wasInSessionStorage = sessionStorage.getItem('user') !== null
-        
+
         if (wasInLocalStorage) {
           localStorage.setItem('user', JSON.stringify(response.user))
-        } else if (wasInSessionStorage) {
+        }
+        else if (wasInSessionStorage) {
           sessionStorage.setItem('user', JSON.stringify(response.user))
-        } else {
+        }
+        else {
           // Default to sessionStorage for new sessions without rememberMe
           sessionStorage.setItem('user', JSON.stringify(response.user))
         }
@@ -95,7 +101,7 @@ export const useAuthentication = () => {
     const storedUserLocal = localStorage.getItem('user')
     const storedUserSession = sessionStorage.getItem('user')
     const storedUser = storedUserLocal || storedUserSession
-    
+
     if (storedUser) {
       try {
         // First set the user from storage for immediate UI response
@@ -111,6 +117,14 @@ export const useAuthentication = () => {
         user.value = null
       }
     }
+  }
+
+  // Auto-initialize user on first access (client-side only)
+  if (import.meta.client && !initializationPromise) {
+    initializationPromise = initializeUser().catch(() => {
+      // Silently handle initialization errors
+      // Don't prevent the composable from working
+    })
   }
 
   return {
