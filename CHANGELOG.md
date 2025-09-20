@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v1.34.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.1...v1.34.2)
+
+### 🩹 Fixes
+
+- Remember me closes #3 ([#3](https://github.com/rrd108/nuxt-users/issues/3))
+
+### 💅 Refactors
+
+- Component imports ([5b18736](https://github.com/rrd108/nuxt-users/commit/5b18736))
+
+### 📖 Documentation
+
+- Add getCurrentUser ([bc30658](https://github.com/rrd108/nuxt-users/commit/bc30658))
+
+### 🏡 Chore
+
+- **release:** V1.34.1 ([a335bfc](https://github.com/rrd108/nuxt-users/commit/a335bfc))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.34.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.0...v1.34.1)
