@@ -13,17 +13,18 @@ export const useAuthentication = () => {
     // Remove password from user data before storing
     const { password: _, ...userWithoutPassword } = userData
     user.value = userWithoutPassword
-    
+
     // Store user data based on rememberMe preference
     if (import.meta.client) {
       // Clear any existing user data from both storages
       localStorage.removeItem('user')
       sessionStorage.removeItem('user')
-      
+
       if (rememberMe) {
         // Store in localStorage for persistent login across browser sessions
         localStorage.setItem('user', JSON.stringify(userWithoutPassword))
-      } else {
+      }
+      else {
         // Store in sessionStorage for session-only login
         sessionStorage.setItem('user', JSON.stringify(userWithoutPassword))
       }
@@ -55,18 +56,20 @@ export const useAuthentication = () => {
     try {
       const response = await $fetch<{ user: UserWithoutPassword }>(`${apiBasePath}/me`, { method: 'GET' })
       user.value = response.user
-      
+
       // Update the appropriate storage with fresh user data
       if (import.meta.client) {
         // Determine which storage was being used and update it
         const wasInLocalStorage = localStorage.getItem('user') !== null
         const wasInSessionStorage = sessionStorage.getItem('user') !== null
-        
+
         if (wasInLocalStorage) {
           localStorage.setItem('user', JSON.stringify(response.user))
-        } else if (wasInSessionStorage) {
+        }
+        else if (wasInSessionStorage) {
           sessionStorage.setItem('user', JSON.stringify(response.user))
-        } else {
+        }
+        else {
           // Default to sessionStorage for new sessions without rememberMe
           sessionStorage.setItem('user', JSON.stringify(response.user))
         }
@@ -95,7 +98,7 @@ export const useAuthentication = () => {
     const storedUserLocal = localStorage.getItem('user')
     const storedUserSession = sessionStorage.getItem('user')
     const storedUser = storedUserLocal || storedUserSession
-    
+
     if (storedUser) {
       try {
         // First set the user from storage for immediate UI response
