@@ -96,8 +96,9 @@ The module provides a ready-to-use `NUsersLoginForm` component:
 </template>
 
 <script setup>
-const handleSuccess = (user) => {
-  console.log('Login successful:', user)
+const handleSuccess = (user, rememberMe) => {
+  console.log('Login successful:', user, 'Remember me:', rememberMe)
+  // The login composable will automatically handle the rememberMe setting
   // Redirect or update UI
   await navigateTo('/dashboard')
 }
@@ -363,11 +364,26 @@ export default defineNuxtConfig({
   modules: ['nuxt-users'],
   nuxtUsers: {
     auth: {
-      tokenExpiration: 1440, // 24 hours in minutes
+      tokenExpiration: 1440, // 24 hours in minutes (for regular sessions)
+      rememberMeExpiration: 30, // 30 days (for "remember me" sessions)
     }
   }
 })
 ```
+
+### Remember Me Functionality
+
+The module provides secure "remember me" functionality that:
+
+- **Regular login** (remember me unchecked):
+  - Sets session-only HTTP cookies that expire when browser closes
+  - Stores user data in `sessionStorage` (cleared when tab closes)
+  - Uses `tokenExpiration` setting (default: 24 hours)
+
+- **Remember me login** (remember me checked):
+  - Sets persistent HTTP cookies with longer expiration
+  - Stores user data in `localStorage` for persistence across browser sessions  
+  - Uses `rememberMeExpiration` setting (default: 30 days)
 
 The module automatically handles:
 - Token expiration validation

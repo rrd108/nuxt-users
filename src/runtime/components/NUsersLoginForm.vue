@@ -16,7 +16,7 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'success', user: UserWithoutPassword): void
+  (e: 'success', user: UserWithoutPassword, rememberMe: boolean): void
   (e: 'error' | 'forgot-password-error', error: string): void
   (e: 'submit', data: LoginFormData): void
   (e: 'forgot-password-success'): void
@@ -51,11 +51,12 @@ const handleSubmit = async () => {
       method: 'POST',
       body: {
         email: formData.value.email,
-        password: formData.value.password
+        password: formData.value.password,
+        rememberMe: formData.value.rememberMe
       }
     })
 
-    emit('success', response.user)
+    emit('success', response.user, formData.value.rememberMe)
 
     // Redirect if specified
     if (props.redirectTo) {

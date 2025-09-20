@@ -7,7 +7,7 @@ import { useDb } from '../../../utils/db'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { email, password } = body
+  const { email, password, rememberMe } = body
 
   if (!email || !password) {
     throw createError({
@@ -53,9 +53,16 @@ export default defineEventHandler(async (event) => {
   const token = crypto.randomBytes(64).toString('hex')
   const tokenName = 'auth_token' // Or any other meaningful name
 
-  // Calculate expiration time based on module options
+  // Calculate expiration time based on module options and rememberMe setting
   const expiresAt = new Date()
-  expiresAt.setMinutes(expiresAt.getMinutes() + options.auth.tokenExpiration)
+  if (rememberMe) {
+    // For "remember me" sessions, use a longer expiration (30 days default)
+    const longTermDays = options.auth.rememberMeExpiration || 30 // days
+    expiresAt.setDate(expiresAt.getDate() + longTermDays)
+  } else {
+    // For regular sessions, use the configured token expiration
+    expiresAt.setMinutes(expiresAt.getMinutes() + options.auth.tokenExpiration)
+  }
 
   // Store the token in the personal_access_tokens table
   // Assuming user.id is the primary key of the users table
@@ -64,14 +71,24 @@ export default defineEventHandler(async (event) => {
     VALUES ('user', ${user.id}, ${tokenName}, ${token}, ${expiresAt.toISOString().slice(0, 19).replace('T', ' ')}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
   `
 
-  // Set the cookie
-  setCookie(event, 'auth_token', token, {
+  // Set the cookie with appropriate expiration based on rememberMe
+  const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-    sameSite: 'lax', // Adjust as needed
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    sameSite: 'lax' as const, // Adjust as needed
     path: '/',
-  })
+  }
+  
+  if (rememberMe) {
+    // For "remember me", set a long-term cookie
+    const longTermDays = options.auth.rememberMeExpiration || 30
+    cookieOptions.maxAge = 60 * 60 * 24 * longTermDays // Convert days to seconds
+  } else {
+    // For regular login, don't set maxAge to create a session cookie
+    // Session cookies expire when the browser is closed
+  }
+  
+  setCookie(event, 'auth_token', token, cookieOptions)
 
   // Return user without password for security
   const { password: _, ...userWithoutPassword } = user

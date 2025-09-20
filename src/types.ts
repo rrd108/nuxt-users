@@ -65,6 +65,11 @@ export interface RuntimeModuleOptions {
      */
     tokenExpiration?: number
     /**
+     * Remember me token expiration time in days
+     * @default 30
+     */
+    rememberMeExpiration?: number
+    /**
      * Role-based permissions configuration
      * @default {}
      * @example {
@@ -138,6 +143,7 @@ export interface ModuleOptions {
   auth: {
     whitelist: string[]
     tokenExpiration: number
+    rememberMeExpiration: number
     permissions: Record<string, (string | Permission)[]>
   }
   passwordValidation: {

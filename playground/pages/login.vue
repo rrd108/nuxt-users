@@ -3,9 +3,10 @@ import { useAuthentication } from '#imports'
 
 const { login } = useAuthentication()
 
-const handleSuccess = (user) => {
-  console.log('[Nuxt Users] Login successful:', user)
-  login(user)
+const handleSuccess = (user, rememberMe) => {
+  console.log('[Nuxt Users] Login successful:', user, 'Remember me:', rememberMe)
+  // Pass the rememberMe flag to the login composable
+  login(user, rememberMe)
   navigateTo('/')
 }
 
@@ -15,6 +16,8 @@ const handleError = (error) => {
 
 const handleSubmit = (data) => {
   console.log('[Nuxt Users] Form submitted:', data)
+  // The login composable will now handle the rememberMe flag automatically
+  // when the server responds with user data after successful authentication
 }
 </script>
 

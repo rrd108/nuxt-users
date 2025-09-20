@@ -32,7 +32,8 @@ export const defaultOptions: ModuleOptions = {
   emailConfirmationUrl: '/email-confirmation',
   auth: {
     whitelist: [],
-    tokenExpiration: 24 * 60, // 24 hours
+    tokenExpiration: 24 * 60, // 24 hours in minutes
+    rememberMeExpiration: 30, // 30 days
     permissions: {}, // Empty by default - whitelist approach
   },
   passwordValidation: {
