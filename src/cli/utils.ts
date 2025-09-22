@@ -49,14 +49,46 @@ export const loadOptions = async (): Promise<ModuleOptions> => {
   try {
     // Try to load Nuxt configuration first
     console.log('[Nuxt Users] Loading Nuxt project...')
-    const nuxt = await loadNuxt({ cwd: process.cwd() })
-    const nuxtUsersConfig = nuxt.options.nuxtUsers as ModuleOptions
+    const nuxt = await loadNuxt({ cwd: process.cwd(), ready: false })
+    
+    // Get both configurations BEFORE module processing
+    // 1. Top-level nuxtUsers (for module-style config)
+    // 2. runtimeConfig.nuxtUsers (for runtime-style config - read from the original config)
+    const topLevelConfig = nuxt.options.nuxtUsers as ModuleOptions
+    
+    // Read the original runtime config before it gets processed by the module
+    const originalRuntimeConfig = await (async () => {
+      try {
+        // Load the nuxt.config.ts file directly to get the original runtime config
+        const configPath = await import('path').then(p => p.resolve(process.cwd(), 'nuxt.config.ts'))
+        const config = await import(configPath).then(m => m.default)
+        return config?.runtimeConfig?.nuxtUsers
+      } catch {
+        // Fallback to processed config if direct loading fails
+        return nuxt.options.runtimeConfig?.nuxtUsers
+      }
+    })()
+    
+    
     await nuxt.close()
 
-    if (nuxtUsersConfig) {
-      console.log('[Nuxt Users] Using configuration from Nuxt project')
-      // Deep merge with defaultOptions to ensure all required fields are present
-      return defu(nuxtUsersConfig, defaultOptions)
+    // Check if we have any configuration
+    if (topLevelConfig || originalRuntimeConfig) {
+      console.log('[Nuxt Users] Using configuration from nuxt.config')
+      // Merge configurations with priority: topLevel > runtime > defaults
+      // Special handling for connector to avoid mixing sqlite and mysql settings
+      let mergedConfig = defu(topLevelConfig, originalRuntimeConfig, defaultOptions)
+      
+      // If a specific connector is configured, ensure we don't mix default connector settings
+      const configuredConnector = topLevelConfig?.connector || originalRuntimeConfig?.connector
+      if (configuredConnector) {
+        mergedConfig = {
+          ...mergedConfig,
+          connector: configuredConnector
+        }
+      }
+      
+      return mergedConfig
     }
     else {
       console.log('[Nuxt Users] No nuxt-users configuration found, using environment variables')
