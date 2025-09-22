@@ -234,11 +234,11 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       nitroConfig.experimental = nitroConfig.experimental || {}
       nitroConfig.experimental.database = true
       nitroConfig.experimental.tasks = true
-      
+
       // Add tasks directory to scan
       nitroConfig.scanDirs = nitroConfig.scanDirs || []
       nitroConfig.scanDirs.push(resolver.resolve('./runtime/server/tasks'))
-      
+
       // NOTE: We no longer configure the database connection here at build time
       // because it prevents runtime environment variables from being used.
       // The database connection is now established at runtime through useDb()
