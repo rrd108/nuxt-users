@@ -110,23 +110,23 @@ export default defineNuxtConfig({
       connector: {
         name: 'mysql',
         options: {
-          host: process.env.NUXT_MYSQL_HOST,
+          host: process.env.NUXT_NUXT_USERS_CONNECTOR_OPTIONS_HOST,
           port: 3306,
-          user: process.env.NUXT_MYSQL_USER,
-          password: process.env.NUXT_MYSQL_PASSWORD,
-          database: process.env.NUXT_MYSQL_DATABASE
+          user: process.env.NUXT_NUXT_USERS_CONNECTOR_OPTIONS_USER,
+          password: process.env.NUXT_NUXT_USERS_CONNECTOR_OPTIONS_PASSWORD,
+          database: process.env.NUXT_NUXT_USERS_CONNECTOR_OPTIONS_DATABASE
         }
       },
       mailer: {
-        host: process.env.NUXT_MAILER_HOST,
-        port: Number(process.env.NUXT_MAILER_PORT),
+        host: process.env.NUXT_NUXT_USERS_MAILER_HOST,
+        port: Number(process.env.NUXT_NUXT_USERS_MAILER_PORT),
         secure: false,
         auth: {
-          user: process.env.NUXT_MAILER_USER,
-          pass: process.env.NUXT_MAILER_PASS
+          user: process.env.NUXT_NUXT_USERS_MAILER_AUTH_USER,
+          pass: process.env.NUXT_NUXT_USERS_MAILER_AUTH_PASS
         },
         defaults: {
-          from: process.env.NUXT_MAILER_FROM
+          from: process.env.NUXT_NUXT_USERS_MAILER_DEFAULTS_FROM
         }
       }
     }
@@ -136,19 +136,27 @@ export default defineNuxtConfig({
 
 ### Environment Variables (.env)
 
-```bash
-# Database
-NUXT_MYSQL_HOST=localhost
-NUXT_MYSQL_USER=myapp_user
-NUXT_MYSQL_PASSWORD=secure_password
-NUXT_MYSQL_DATABASE=myapp_production
+**Environment Variable Naming Convention:**  
+For `runtimeConfig.nuxtUsers.*` configuration, environment variables follow the pattern:
+`NUXT_NUXT_USERS_[PATH]_[TO]_[PROPERTY]` (uppercase, underscore-separated)
 
-# Email
-NUXT_MAILER_HOST=smtp.gmail.com
-NUXT_MAILER_PORT=587
-NUXT_MAILER_USER=noreply@myapp.com
-NUXT_MAILER_PASS=app_specific_password
-NUXT_MAILER_FROM="My App <noreply@myapp.com>"
+Examples:
+- `runtimeConfig.nuxtUsers.connector.options.host` → `NUXT_NUXT_USERS_CONNECTOR_OPTIONS_HOST`
+- `runtimeConfig.nuxtUsers.mailer.auth.user` → `NUXT_NUXT_USERS_MAILER_AUTH_USER`
+
+```bash
+# Database (follows runtimeConfig.nuxtUsers.connector.options.* pattern)
+NUXT_NUXT_USERS_CONNECTOR_OPTIONS_HOST=localhost
+NUXT_NUXT_USERS_CONNECTOR_OPTIONS_USER=myapp_user
+NUXT_NUXT_USERS_CONNECTOR_OPTIONS_PASSWORD=secure_password
+NUXT_NUXT_USERS_CONNECTOR_OPTIONS_DATABASE=myapp_production
+
+# Email (follows runtimeConfig.nuxtUsers.mailer.* pattern)
+NUXT_NUXT_USERS_MAILER_HOST=smtp.gmail.com
+NUXT_NUXT_USERS_MAILER_PORT=587
+NUXT_NUXT_USERS_MAILER_AUTH_USER=noreply@myapp.com
+NUXT_NUXT_USERS_MAILER_AUTH_PASS=app_specific_password
+NUXT_NUXT_USERS_MAILER_DEFAULTS_FROM="My App <noreply@myapp.com>"
 ```
 
 ### Configuration Precedence
@@ -177,7 +185,7 @@ export default defineNuxtConfig({
       connector: {
         name: 'mysql',
         options: {
-          host: process.env.NUXT_MYSQL_HOST,
+          host: process.env.NUXT_NUXT_USERS_CONNECTOR_OPTIONS_HOST,
           // ... other options
         }
       },
@@ -204,6 +212,37 @@ The CLI will:
 2. Use top-level `nuxtUsers` if present
 3. Otherwise use `runtimeConfig.nuxtUsers` if present
 4. Fall back to environment variables if no Nuxt config is found
+
+### Runtime Environment Variable Support ✨
+
+**Important Change (v1.34.3+)**: The module now properly supports runtime environment variables for database connections. Previously, database configuration was set at build time, which prevented runtime environment variables from working in production deployments.
+
+**What changed:**
+- Database connections are now established at runtime using `useRuntimeConfig()`
+- Environment variables are read when the application starts, not when it's built
+- The same build can work across multiple environments with different database configs
+
+**Benefits:**
+- **Docker compatibility**: Environment variables work properly in containers
+- **Security**: Database credentials can be injected at runtime, not baked into builds
+- **Flexibility**: Same codebase can connect to different databases per environment
+- **CI/CD friendly**: Supports modern deployment practices
+
+**Example deployment scenario:**
+```bash
+# Same build, different environments
+# Development
+NUXT_NUXT_USERS_CONNECTOR_OPTIONS_HOST=localhost
+NUXT_NUXT_USERS_CONNECTOR_OPTIONS_DATABASE=myapp_dev
+
+# Production
+NUXT_NUXT_USERS_CONNECTOR_OPTIONS_HOST=production-db.example.com
+NUXT_NUXT_USERS_CONNECTOR_OPTIONS_DATABASE=myapp_production
+
+# The same application build works in both environments!
+```
+
+**Important**: This only works with the `runtimeConfig` pattern, not with top-level `nuxtUsers` configuration that uses `process.env` directly.
 
 ## Database Configuration
 
