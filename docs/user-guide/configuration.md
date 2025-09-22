@@ -87,6 +87,124 @@ export default defineNuxtConfig({
 })
 ```
 
+## Runtime Configuration Pattern
+
+As an alternative to top-level `nuxtUsers` configuration, you can use Nuxt's `runtimeConfig` pattern. This approach works for both your Nuxt app runtime and CLI commands (like `npx nuxt-users migrate`).
+
+### Why Use Runtime Config?
+
+- **Environment Variables**: Easier integration with environment variables
+- **Security**: Server-side configuration is not exposed to the client
+- **Deployment**: Better suited for production deployments
+- **CLI Compatibility**: Works seamlessly with CLI commands
+
+### Basic Runtime Config Setup
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  
+  runtimeConfig: {
+    nuxtUsers: {
+      connector: {
+        name: 'mysql',
+        options: {
+          host: process.env.NUXT_MYSQL_HOST,
+          port: 3306,
+          user: process.env.NUXT_MYSQL_USER,
+          password: process.env.NUXT_MYSQL_PASSWORD,
+          database: process.env.NUXT_MYSQL_DATABASE
+        }
+      },
+      mailer: {
+        host: process.env.NUXT_MAILER_HOST,
+        port: Number(process.env.NUXT_MAILER_PORT),
+        secure: false,
+        auth: {
+          user: process.env.NUXT_MAILER_USER,
+          pass: process.env.NUXT_MAILER_PASS
+        },
+        defaults: {
+          from: process.env.NUXT_MAILER_FROM
+        }
+      }
+    }
+  }
+})
+```
+
+### Environment Variables (.env)
+
+```bash
+# Database
+NUXT_MYSQL_HOST=localhost
+NUXT_MYSQL_USER=myapp_user
+NUXT_MYSQL_PASSWORD=secure_password
+NUXT_MYSQL_DATABASE=myapp_production
+
+# Email
+NUXT_MAILER_HOST=smtp.gmail.com
+NUXT_MAILER_PORT=587
+NUXT_MAILER_USER=noreply@myapp.com
+NUXT_MAILER_PASS=app_specific_password
+NUXT_MAILER_FROM="My App <noreply@myapp.com>"
+```
+
+### Configuration Precedence
+
+When both configurations are present, the precedence is:
+
+1. **Top-level `nuxtUsers`** (highest priority)
+2. **Runtime config `runtimeConfig.nuxtUsers`**
+3. **Default values** (lowest priority)
+
+```ts
+// Both configurations can coexist
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  
+  // This takes precedence
+  nuxtUsers: {
+    auth: {
+      tokenExpiration: 60 // This overrides runtime config
+    }
+  },
+  
+  // This is merged with defaults and overridden by top-level
+  runtimeConfig: {
+    nuxtUsers: {
+      connector: {
+        name: 'mysql',
+        options: {
+          host: process.env.NUXT_MYSQL_HOST,
+          // ... other options
+        }
+      },
+      auth: {
+        tokenExpiration: 120 // This gets overridden
+      }
+    }
+  }
+})
+```
+
+### CLI Command Support
+
+**Important**: Both configuration patterns work seamlessly with CLI commands:
+
+```bash
+# These commands read your configuration (both patterns)
+npx nuxt-users migrate
+npx nuxt-users create-user -e admin@example.com -n "Admin" -p secure123
+```
+
+The CLI will:
+1. First try to load your `nuxt.config.ts` configuration
+2. Use top-level `nuxtUsers` if present
+3. Otherwise use `runtimeConfig.nuxtUsers` if present
+4. Fall back to environment variables if no Nuxt config is found
+
 ## Database Configuration
 
 ### SQLite (Default)
@@ -452,7 +570,15 @@ nuxtUsers: {
 
 ## Environment Variables
 
-For production deployments, use environment variables:
+> **Note**: For a more modern approach, consider using the [Runtime Configuration Pattern](#runtime-configuration-pattern) which provides better integration with Nuxt's built-in environment variable handling.
+
+This section covers two scenarios:
+1. **Direct environment variable usage** in your `nuxt.config.ts`
+2. **CLI fallback behavior** when no Nuxt configuration is found
+
+### Direct Environment Variable Usage
+
+For production deployments, you can use environment variables directly in your configuration:
 
 ```ts
 // nuxt.config.ts
@@ -528,6 +654,48 @@ PASSWORD_RESET_URL=/auth/reset-password
 # Auth
 TOKEN_EXPIRATION=1440
 ```
+
+### CLI Fallback Environment Variables
+
+When CLI commands (like `npx nuxt-users migrate`) can't find a `nuxt.config.ts` file or when the configuration is invalid, they fall back to reading these specific environment variables:
+
+```bash
+# Database Configuration
+DB_CONNECTOR=mysql           # 'sqlite' | 'mysql' | 'postgresql'
+
+# SQLite options
+DB_PATH=./data/users.sqlite3  # Path to SQLite database file
+
+# MySQL/PostgreSQL options
+DB_HOST=localhost             # Database host
+DB_PORT=3306                  # Database port (3306 for MySQL, 5432 for PostgreSQL)
+DB_USER=myuser                # Database username
+DB_PASSWORD=mypassword        # Database password
+DB_NAME=mydatabase            # Database name
+```
+
+**Example usage:**
+
+```bash
+# Run migration with environment variables (useful in Docker/CI)
+DB_CONNECTOR=mysql \
+DB_HOST=localhost \
+DB_USER=myapp \
+DB_PASSWORD=secret123 \
+DB_NAME=production \
+npx nuxt-users migrate
+
+# Or with SQLite
+DB_CONNECTOR=sqlite \
+DB_PATH=./production.sqlite3 \
+npx nuxt-users migrate
+```
+
+**When CLI fallback is used:**
+- No `nuxt.config.ts` file exists
+- `nuxt.config.ts` file is malformed/invalid
+- Neither `nuxtUsers` nor `runtimeConfig.nuxtUsers` configuration is found
+- CLI is run outside a Nuxt project
 
 ## Configuration Validation
 
