@@ -233,42 +233,16 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     nuxt.hook('nitro:config', async (nitroConfig) => {
       nitroConfig.experimental = nitroConfig.experimental || {}
       nitroConfig.experimental.database = true
-
-      // Configure Nitro database if not already configured by consumer
-      nitroConfig.database = nitroConfig.database || {}
-
-      // Only set default database if not already configured by consumer
-      if (!nitroConfig.database.default) {
-        // Use nuxt-users database configuration for Nitro's default database
-        const finalConnectorConfig = nuxt.options.runtimeConfig.nuxtUsers as ModuleOptions
-        const connectorOptions = { ...finalConnectorConfig.connector.options }
-
-        // Map nuxt-users connector format to Nitro database format
-        let nitroConnector: 'better-sqlite3' | 'mysql2' | 'postgresql'
-        switch (finalConnectorConfig.connector.name) {
-          case 'sqlite':
-            nitroConnector = 'better-sqlite3'
-            break
-          case 'mysql':
-            nitroConnector = 'mysql2'
-            break
-          case 'postgresql':
-            nitroConnector = 'postgresql'
-            break
-          default:
-            nitroConnector = 'better-sqlite3'
-        }
-
-        nitroConfig.database.default = {
-          connector: nitroConnector,
-          options: connectorOptions
-        }
-      }
-
       nitroConfig.experimental.tasks = true
+      
       // Add tasks directory to scan
       nitroConfig.scanDirs = nitroConfig.scanDirs || []
       nitroConfig.scanDirs.push(resolver.resolve('./runtime/server/tasks'))
+      
+      // NOTE: We no longer configure the database connection here at build time
+      // because it prevents runtime environment variables from being used.
+      // The database connection is now established at runtime through useDb()
+      // which properly reads from useRuntimeConfig()
     })
 
     // Auto-register all components from the components directory
