@@ -1,6 +1,29 @@
 # Changelog
 
 
+## v1.34.3
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.2...v1.34.3)
+
+### 🩹 Fixes
+
+- Remember me closes #3 ([#3](https://github.com/rrd108/nuxt-users/issues/3))
+- Hard reload ([187c828](https://github.com/rrd108/nuxt-users/commit/187c828))
+- Conflicting runtimeconfig ([563dcca](https://github.com/rrd108/nuxt-users/commit/563dcca))
+- Lint errors ([b590e6d](https://github.com/rrd108/nuxt-users/commit/b590e6d))
+
+### 🏡 Chore
+
+- **release:** V1.34.2 ([60d87dc](https://github.com/rrd108/nuxt-users/commit/60d87dc))
+
+### ✅ Tests
+
+- Add for config conflict ([59271e3](https://github.com/rrd108/nuxt-users/commit/59271e3))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.34.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.1...v1.34.2)
