@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v1.34.5
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.4...v1.34.5)
+
+### 🩹 Fixes
+
+- **deps:** Update nuxtjs monorepo to v3.19.2 ([9963034](https://github.com/rrd108/nuxt-users/commit/9963034))
+- Use runtimeconfig for nitro ([346ad0d](https://github.com/rrd108/nuxt-users/commit/346ad0d))
+- Options hierarchy ([d0e4472](https://github.com/rrd108/nuxt-users/commit/d0e4472))
+
+### 🏡 Chore
+
+- Fix whitespace ([2e24416](https://github.com/rrd108/nuxt-users/commit/2e24416))
+- **release:** V1.34.4 ([3539b93](https://github.com/rrd108/nuxt-users/commit/3539b93))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.34.4
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.3...v1.34.4)
