@@ -244,6 +244,69 @@ NUXT_NUXT_USERS_CONNECTOR_OPTIONS_DATABASE=myapp_production
 
 **Important**: This only works with the `runtimeConfig` pattern, not with top-level `nuxtUsers` configuration that uses `process.env` directly.
 
+## Database Sharing with Consumer Apps
+
+- Creating custom tables in the same database
+- Performing joins with user tables
+- Maintaining data consistency
+- Avoiding multiple database connections
+
+### Using `useNuxtUsersDatabase()`
+
+The `useNuxtUsersDatabase()` composable provides server-side access to the module's database connection:
+
+```typescript
+// server/api/my-custom-endpoint.get.ts
+import { useNuxtUsersDatabase } from '#nuxt-users/server'
+
+export default defineEventHandler(async (event) => {
+  const { database, options } = await useNuxtUsersDatabase()
+  
+  // Use the same database connection as nuxt-users
+  const result = await database.sql`
+    SELECT u.name, u.email, p.title
+    FROM ${options.tables.users} u
+    JOIN my_posts p ON u.id = p.user_id
+    WHERE u.active = true
+  `
+  
+  return result.rows
+})
+```
+
+### Creating Custom Tables
+
+```typescript
+// server/api/setup-custom-tables.post.ts
+import { useNuxtUsersDatabase } from '#nuxt-users/server'
+
+export default defineEventHandler(async (event) => {
+  const { database } = await useNuxtUsersDatabase()
+  
+  // Create your custom table in the same database
+  await database.sql`
+    CREATE TABLE IF NOT EXISTS posts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      title TEXT NOT NULL,
+      content TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users (id)
+    )
+  `
+  
+  return { success: true }
+})
+```
+
+### Benefits
+
+- **Single database connection**: No need to configure a separate database
+- **Consistent configuration**: Uses the same runtime config as nuxt-users
+- **Automatic schema adaptation**: Works with SQLite, MySQL, and PostgreSQL
+- **Type safety**: Full TypeScript support
+- **Production ready**: Supports all deployment scenarios
+
 ## Database Configuration
 
 ### SQLite (Default)
