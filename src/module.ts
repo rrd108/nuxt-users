@@ -59,7 +59,8 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     const resolver = createResolver(import.meta.url)
 
     // Add runtime config (server-side)
-    const runtimeConfigOptions = defu(options, nuxt.options.runtimeConfig.nuxtUsers || {}, defaultOptions)
+    // Priority: runtimeConfig (strongest) > top-level app config > default options (weakest)
+    const runtimeConfigOptions = defu(nuxt.options.runtimeConfig.nuxtUsers || {}, options, defaultOptions)
 
     nuxt.options.runtimeConfig.nuxtUsers = {
       ...runtimeConfigOptions,
