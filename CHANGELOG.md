@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v1.34.4
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.3...v1.34.4)
+
+### 🩹 Fixes
+
+- Conflicting runtimeconfig ([563dcca](https://github.com/rrd108/nuxt-users/commit/563dcca))
+- Lint errors ([b590e6d](https://github.com/rrd108/nuxt-users/commit/b590e6d))
+- **deps:** Update nuxtjs monorepo to v3.19.2 ([9963034](https://github.com/rrd108/nuxt-users/commit/9963034))
+- Use runtimeconfig for nitro ([346ad0d](https://github.com/rrd108/nuxt-users/commit/346ad0d))
+
+### 🏡 Chore
+
+- **release:** V1.34.3 ([23b3a30](https://github.com/rrd108/nuxt-users/commit/23b3a30))
+- Fix whitespace ([2e24416](https://github.com/rrd108/nuxt-users/commit/2e24416))
+
+### ✅ Tests
+
+- Add for config conflict ([59271e3](https://github.com/rrd108/nuxt-users/commit/59271e3))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.34.3
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.2...v1.34.3)
