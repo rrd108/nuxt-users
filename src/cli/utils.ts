@@ -50,26 +50,26 @@ export const loadOptions = async (): Promise<ModuleOptions> => {
     // Try to load Nuxt configuration first
     console.log('[Nuxt Users] Loading Nuxt project...')
     const nuxt = await loadNuxt({ cwd: process.cwd(), ready: false })
-    
+
     // Get both configurations BEFORE module processing
     // 1. Top-level nuxtUsers (for module-style config)
     // 2. runtimeConfig.nuxtUsers (for runtime-style config - read from the original config)
     const topLevelConfig = nuxt.options.nuxtUsers as ModuleOptions
-    
+
     // Read the original runtime config before it gets processed by the module
     const originalRuntimeConfig = await (async () => {
       try {
         // Load the nuxt.config.ts file directly to get the original runtime config
-        const configPath = await import('path').then(p => p.resolve(process.cwd(), 'nuxt.config.ts'))
+        const configPath = await import('node:path').then(p => p.resolve(process.cwd(), 'nuxt.config.ts'))
         const config = await import(configPath).then(m => m.default)
         return config?.runtimeConfig?.nuxtUsers
-      } catch {
+      }
+      catch {
         // Fallback to processed config if direct loading fails
         return nuxt.options.runtimeConfig?.nuxtUsers
       }
     })()
-    
-    
+
     await nuxt.close()
 
     // Check if we have any configuration
@@ -78,7 +78,7 @@ export const loadOptions = async (): Promise<ModuleOptions> => {
       // Merge configurations with priority: topLevel > runtime > defaults
       // Special handling for connector to avoid mixing sqlite and mysql settings
       let mergedConfig = defu(topLevelConfig, originalRuntimeConfig, defaultOptions)
-      
+
       // If a specific connector is configured, ensure we don't mix default connector settings
       const configuredConnector = topLevelConfig?.connector || originalRuntimeConfig?.connector
       if (configuredConnector) {
@@ -87,7 +87,7 @@ export const loadOptions = async (): Promise<ModuleOptions> => {
           connector: configuredConnector
         }
       }
-      
+
       return mergedConfig
     }
     else {

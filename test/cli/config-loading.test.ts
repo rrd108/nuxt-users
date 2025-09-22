@@ -1,25 +1,26 @@
 /**
  * CLI Configuration Loading Tests
- * 
+ *
  * This test suite validates the configuration loading functionality for CLI commands
  * like 'npx nuxt-users migrate'. It ensures that:
- * 
+ *
  * 1. Environment variables are properly parsed for database configuration
  * 2. Top-level nuxtUsers configuration is loaded correctly
  * 3. Runtime config (runtimeConfig.nuxtUsers) is loaded correctly
  * 4. Configuration merging works properly with correct precedence
  * 5. Connector configurations don't get mixed (regression test for the bug where
  *    MySQL config was being mixed with SQLite defaults)
- * 
+ *
  * The tests cover various scenarios including zero-config, partial config,
  * malformed config, and mixed configurations.
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { loadOptions, getOptionsFromEnv } from '../../src/cli/utils'
 import { defaultOptions } from '../../src/module'
-import { writeFileSync, unlinkSync, existsSync, mkdirSync } from 'fs'
-import { join } from 'path'
+import { writeFileSync, unlinkSync, existsSync, mkdirSync } from 'node:fs'
+import { join } from 'node:path'
+import { execSync } from 'node:child_process'
 
 describe('CLI: Configuration Loading', () => {
   const testDir = join(process.cwd(), 'test-config-loading')
@@ -28,7 +29,7 @@ describe('CLI: Configuration Loading', () => {
   beforeEach(() => {
     // Create test directory
     mkdirSync(testDir, { recursive: true })
-    
+
     // Change to test directory for CLI tests
     process.chdir(testDir)
   })
@@ -36,7 +37,7 @@ describe('CLI: Configuration Loading', () => {
   afterEach(() => {
     // Change back to original directory
     process.chdir(join(testDir, '..'))
-    
+
     // Clean up test files
     if (existsSync(configPath)) {
       unlinkSync(configPath)
@@ -44,9 +45,9 @@ describe('CLI: Configuration Loading', () => {
     if (existsSync(testDir)) {
       try {
         // Remove directory and contents
-        const { execSync } = require('child_process')
         execSync(`rm -rf "${testDir}"`)
-      } catch {
+      }
+      catch {
         // Ignore cleanup errors
       }
     }
@@ -66,7 +67,7 @@ describe('CLI: Configuration Loading', () => {
 
     it('should return default SQLite configuration when no env vars are set', () => {
       const options = getOptionsFromEnv()
-      
+
       expect(options.connector.name).toBe('sqlite')
       expect(options.connector.options.path).toBe('./data/users.sqlite3')
       expect(options.tables).toEqual(defaultOptions.tables)
@@ -75,9 +76,9 @@ describe('CLI: Configuration Loading', () => {
     it('should use custom SQLite path from environment', () => {
       process.env.DB_CONNECTOR = 'sqlite'
       process.env.DB_PATH = './custom.sqlite3'
-      
+
       const options = getOptionsFromEnv()
-      
+
       expect(options.connector.name).toBe('sqlite')
       expect(options.connector.options.path).toBe('./custom.sqlite3')
     })
@@ -89,9 +90,9 @@ describe('CLI: Configuration Loading', () => {
       process.env.DB_USER = 'testuser'
       process.env.DB_PASSWORD = 'testpass'
       process.env.DB_NAME = 'testdb'
-      
+
       const options = getOptionsFromEnv()
-      
+
       expect(options.connector.name).toBe('mysql')
       expect(options.connector.options).toEqual({
         host: 'localhost',
@@ -109,9 +110,9 @@ describe('CLI: Configuration Loading', () => {
       process.env.DB_USER = 'postgres'
       process.env.DB_PASSWORD = 'pgpass'
       process.env.DB_NAME = 'pgdb'
-      
+
       const options = getOptionsFromEnv()
-      
+
       expect(options.connector.name).toBe('postgresql')
       expect(options.connector.options).toEqual({
         host: 'localhost',
@@ -124,7 +125,7 @@ describe('CLI: Configuration Loading', () => {
 
     it('should throw error for unsupported database connector', () => {
       process.env.DB_CONNECTOR = 'unsupported'
-      
+
       expect(() => getOptionsFromEnv()).toThrow('Unsupported database connector: unsupported')
     })
   })
@@ -134,9 +135,9 @@ describe('CLI: Configuration Loading', () => {
       // No nuxt.config.ts file exists
       process.env.DB_CONNECTOR = 'sqlite'
       process.env.DB_PATH = './env-fallback.sqlite3'
-      
+
       const options = await loadOptions()
-      
+
       expect(options.connector.name).toBe('sqlite')
       expect(options.connector.options.path).toBe('./env-fallback.sqlite3')
     })
@@ -164,9 +165,9 @@ export default defineNuxtConfig({
 })
 `
       writeFileSync(configPath, configContent)
-      
+
       const options = await loadOptions()
-      
+
       expect(options.connector.name).toBe('mysql')
       expect(options.connector.options).toEqual({
         host: 'mysql-host',
@@ -203,9 +204,9 @@ export default defineNuxtConfig({
 })
 `
       writeFileSync(configPath, configContent)
-      
+
       const options = await loadOptions()
-      
+
       expect(options.connector.name).toBe('mysql')
       expect(options.connector.options).toEqual({
         host: 'runtime-mysql-host',
@@ -257,9 +258,9 @@ export default defineNuxtConfig({
 })
 `
       writeFileSync(configPath, configContent)
-      
+
       const options = await loadOptions()
-      
+
       // Top-level config should take priority
       expect(options.connector.name).toBe('postgresql')
       expect(options.connector.options).toEqual({
@@ -295,9 +296,9 @@ export default defineNuxtConfig({
 })
 `
       writeFileSync(configPath, configContent)
-      
+
       const options = await loadOptions()
-      
+
       // Should have our custom connector
       expect(options.connector.name).toBe('mysql')
       expect(options.connector.options).toEqual({
@@ -307,7 +308,7 @@ export default defineNuxtConfig({
         password: 'test-pass',
         database: 'test-db'
       })
-      
+
       // Should have defaults for missing config
       expect(options.tables).toEqual(defaultOptions.tables)
       expect(options.auth.tokenExpiration).toBe(defaultOptions.auth.tokenExpiration)
@@ -337,26 +338,26 @@ export default defineNuxtConfig({
 })
 `
       writeFileSync(configPath, configContent)
-      
+
       // Set environment variables like in the user's scenario
       process.env.NUXT_MYSQL_HOST = 'localhost'
       process.env.NUXT_MYSQL_USER = 'myuser'
       process.env.NUXT_MYSQL_PASSWORD = 'mypass'
       process.env.NUXT_MYSQL_DATABASE = 'mydb'
-      
+
       const options = await loadOptions()
-      
+
       // CRITICAL: Should NOT have sqlite defaults mixed in
       expect(options.connector.name).toBe('mysql')
       expect(options.connector.options.path).toBeUndefined() // SQLite path should not exist
-      
+
       // Should have proper MySQL config
       expect(options.connector.options.host).toBe('localhost')
       expect(options.connector.options.port).toBe(3306)
       expect(options.connector.options.user).toBe('myuser')
       expect(options.connector.options.password).toBe('mypass')
       expect(options.connector.options.database).toBe('mydb')
-      
+
       // Clean up env vars
       delete process.env.NUXT_MYSQL_HOST
       delete process.env.NUXT_MYSQL_USER
@@ -376,13 +377,13 @@ export default defineNuxtConfig({
 })
 `
       writeFileSync(configPath, configContent)
-      
+
       // Set environment fallback
       process.env.DB_CONNECTOR = 'sqlite'
       process.env.DB_PATH = './fallback.sqlite3'
-      
+
       const options = await loadOptions()
-      
+
       // Should fall back to environment variables
       expect(options.connector.name).toBe('sqlite')
       expect(options.connector.options.path).toBe('./fallback.sqlite3')
@@ -399,10 +400,10 @@ export default defineNuxtConfig({
       delete process.env.DB_USER
       delete process.env.DB_PASSWORD
       delete process.env.DB_NAME
-      
+
       // No config file, no env vars - should use complete defaults
       const options = await loadOptions()
-      
+
       expect(options).toEqual(defaultOptions)
     })
 
@@ -438,21 +439,21 @@ export default defineNuxtConfig({
 })
 `
       writeFileSync(configPath, configContent)
-      
+
       const options = await loadOptions()
-      
+
       // Should get connector from top-level
       expect(options.connector.name).toBe('postgresql')
       expect(options.connector.options.host).toBe('pg-host')
-      
+
       // Should get auth from runtime config
       expect(options.auth.tokenExpiration).toBe(240)
       expect(options.auth.whitelist).toEqual(['/public', '/api/health'])
-      
+
       // Should get tables from runtime config
       expect(options.tables.users).toBe('custom_users')
       expect(options.tables.migrations).toBe('custom_migrations')
-      
+
       // Should get defaults for unspecified values
       expect(options.tables.personalAccessTokens).toBe(defaultOptions.tables.personalAccessTokens)
       expect(options.apiBasePath).toBe(defaultOptions.apiBasePath)
