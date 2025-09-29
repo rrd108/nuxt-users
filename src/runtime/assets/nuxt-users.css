@@ -243,8 +243,12 @@
     background-color: var(--nu-color-error-alt, #dc2626);
 }
 
-/* Enhanced Submit Button */
-button[type='submit'] {
+/* Enhanced Submit Button - Scoped to nuxt-users components only */
+.n-users-login-section button[type='submit'],
+.n-users-register-section button[type='submit'],
+.n-users-reset-password-container button[type='submit'],
+.n-users-user-form button[type='submit'],
+form.n-users-form button[type='submit'] {
     width: 100%;
     padding: 0.75em 1em;
     font-size: 0.875rem;
@@ -262,12 +266,20 @@ button[type='submit'] {
     min-height: 44px;
 }
 
-button[type='submit']:hover:not(:disabled) {
+.n-users-login-section button[type='submit']:hover:not(:disabled),
+.n-users-register-section button[type='submit']:hover:not(:disabled),
+.n-users-reset-password-container button[type='submit']:hover:not(:disabled),
+.n-users-user-form button[type='submit']:hover:not(:disabled),
+form.n-users-form button[type='submit']:hover:not(:disabled) {
     background-color: var(--nu-color-primary-dark);
     border-color: var(--nu-color-primary-dark);
 }
 
-button[type='submit']:disabled {
+.n-users-login-section button[type='submit']:disabled,
+.n-users-register-section button[type='submit']:disabled,
+.n-users-reset-password-container button[type='submit']:disabled,
+.n-users-user-form button[type='submit']:disabled,
+form.n-users-form button[type='submit']:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
@@ -435,8 +447,12 @@ button[type='submit']:disabled {
     list-style: none;
 }
 
-/* Form Layout */
-form {
+/* Form Layout - Scoped to nuxt-users components only */
+.n-users-login-section form,
+.n-users-register-section form,
+.n-users-reset-password-container form,
+.n-users-user-form form,
+form.n-users-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;

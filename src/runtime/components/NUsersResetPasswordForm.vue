@@ -176,7 +176,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="n-users-section">
+  <div class="n-users-reset-password-container n-users-section">
     <h2 class="n-users-section-header">
       {{ isPasswordReset ? 'Reset Password' : 'Change Password' }}
     </h2>
