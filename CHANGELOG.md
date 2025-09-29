@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v1.34.6
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.5...v1.34.6)
+
+### 🩹 Fixes
+
+- Options hierarchy ([d0e4472](https://github.com/rrd108/nuxt-users/commit/d0e4472))
+- Scopes CSS rules to nuxt-users components ([fa98529](https://github.com/rrd108/nuxt-users/commit/fa98529))
+
+### 📖 Documentation
+
+- Add shared database info ([0e02dc2](https://github.com/rrd108/nuxt-users/commit/0e02dc2))
+
+### 🏡 Chore
+
+- **release:** V1.34.5 ([63b4654](https://github.com/rrd108/nuxt-users/commit/63b4654))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.34.5
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.4...v1.34.5)
