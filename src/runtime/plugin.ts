@@ -17,7 +17,8 @@ export default defineNuxtPlugin(async (_nuxtApp) => {
     if (!hasMigrationsTable) {
       console.warn('[Nuxt Users] ⚠️  Migrations table does not exist, you should run the migration script to create it by running: npx nuxt-users migrate')
     }
-  } catch (error) {
+  }
+  catch (error) {
     // If database connection fails during runtime, warn but don't crash
     console.warn('[Nuxt Users] ⚠️  Database connection failed during initialization:', error instanceof Error ? error.message : 'Unknown error')
   }

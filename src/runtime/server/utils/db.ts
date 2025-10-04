@@ -2,6 +2,8 @@ import { createDatabase } from 'db0'
 import type { Database } from 'db0'
 import type { ModuleOptions } from 'nuxt-users/utils'
 
+import { isBuildTime } from './build-time'
+
 const dbCache = new Map<string, Database>()
 
 // Type for databases that have a disconnect method
@@ -41,8 +43,6 @@ export const getConnector = async (name: string) => {
     throw error
   }
 }
-
-import { isBuildTime } from './build-time'
 
 export const useDb = async (options: ModuleOptions): Promise<Database> => {
   // During build/prerendering, throw an error to prevent hanging

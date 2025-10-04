@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { isBuildTime } from '../../src/runtime/server/utils/build-time'
 
 describe('Build-time Detection', () => {
@@ -44,7 +44,7 @@ describe('Build-time Detection', () => {
       delete process.env.NUXT_ENV
       delete process.env.npm_lifecycle_event
       process.argv = ['node', 'server.js']
-      
+
       expect(isBuildTime()).toBe(false)
     })
   })
@@ -53,10 +53,10 @@ describe('Build-time Detection', () => {
     it('should prevent database connections during build time', async () => {
       // Set build-time environment
       process.env.NITRO_PRESET = 'nitro-prerender'
-      
+
       // Import the db module
       const { useDb } = await import('../../src/runtime/server/utils/db')
-      
+
       const mockOptions = {
         connector: { name: 'sqlite' as const, options: { path: './test.db' } },
         tables: { migrations: 'migrations', users: 'users', personalAccessTokens: 'tokens', passwordResetTokens: 'reset_tokens' },
@@ -74,7 +74,7 @@ describe('Build-time Detection', () => {
         },
         hardDelete: false
       }
-      
+
       // Should throw an error indicating build-time detection
       await expect(useDb(mockOptions))
         .rejects
@@ -86,13 +86,13 @@ describe('Build-time Detection', () => {
     it('should detect production builds with prerender flag', () => {
       process.env.NODE_ENV = 'production'
       process.argv = ['node', 'nuxt', 'build', '--prerender']
-      
+
       expect(isBuildTime()).toBe(true)
     })
 
     it('should detect generate command', () => {
       process.argv = ['node', 'nuxt', 'generate']
-      
+
       expect(isBuildTime()).toBe(true)
     })
 
@@ -100,7 +100,7 @@ describe('Build-time Detection', () => {
       process.env.NODE_ENV = 'production'
       process.argv = ['node', 'server.js']
       delete process.env.npm_lifecycle_event
-      
+
       expect(isBuildTime()).toBe(false)
     })
   })
