@@ -12,7 +12,7 @@ hero:
       link: /user-guide/getting-started
     - theme: alt
       text: Open on GitHub →
-      link: https://github.com/rrd108/vue-mess-detector
+      link: https://github.com/rrd108/nuxt-users
 
 features:
   - title: 🔐 Authentication & Security
