@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v1.34.7
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.6...v1.34.7)
+
+### 🩹 Fixes
+
+- Scopes CSS rules to nuxt-users components ([fa98529](https://github.com/rrd108/nuxt-users/commit/fa98529))
+- Prevents database connection issues during build ([b80e6c7](https://github.com/rrd108/nuxt-users/commit/b80e6c7))
+
+### 📖 Documentation
+
+- Fix github link ([3bc8e96](https://github.com/rrd108/nuxt-users/commit/3bc8e96))
+
+### 🏡 Chore
+
+- **release:** V1.34.6 ([b84a188](https://github.com/rrd108/nuxt-users/commit/b84a188))
+- Lint fix ([5cfb830](https://github.com/rrd108/nuxt-users/commit/5cfb830))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.34.6
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.5...v1.34.6)
