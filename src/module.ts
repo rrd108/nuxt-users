@@ -240,6 +240,18 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       nitroConfig.scanDirs = nitroConfig.scanDirs || []
       nitroConfig.scanDirs.push(resolver.resolve('./runtime/server/tasks'))
 
+      // Automatically exclude nuxt-users API routes from prerendering to prevent build hangs
+      nitroConfig.prerender = nitroConfig.prerender || {}
+      nitroConfig.prerender.ignore = nitroConfig.prerender.ignore || []
+      
+      const apiBasePath = (nuxt.options.runtimeConfig.nuxtUsers as ModuleOptions).apiBasePath || defaultOptions.apiBasePath
+      const ignorePattern = `${apiBasePath}/**`
+      
+      if (!nitroConfig.prerender.ignore.includes(ignorePattern)) {
+        nitroConfig.prerender.ignore.push(ignorePattern)
+        console.log(`[Nuxt Users] 🔧 Automatically excluding "${ignorePattern}" from prerendering to prevent build hangs`)
+      }
+
       // NOTE: We no longer configure the database connection here at build time
       // because it prevents runtime environment variables from being used.
       // The database connection is now established at runtime through useDb()

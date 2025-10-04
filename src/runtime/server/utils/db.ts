@@ -42,7 +42,14 @@ export const getConnector = async (name: string) => {
   }
 }
 
+import { isBuildTime } from './build-time'
+
 export const useDb = async (options: ModuleOptions): Promise<Database> => {
+  // During build/prerendering, throw an error to prevent hanging
+  if (isBuildTime()) {
+    throw new Error('[Nuxt Users] Database connections are not available during build/prerendering phase. This should not happen - please check your prerender configuration.')
+  }
+
   const cacheKey = JSON.stringify(options.connector)
 
   if (dbCache.has(cacheKey)) {
