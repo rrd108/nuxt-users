@@ -68,9 +68,10 @@ export default defineNuxtModule<RuntimeModuleOptions>({
         ...runtimeConfigOptions.auth,
         whitelist: (() => {
           const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]
+          const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
+          
           // Auto-whitelist related endpoints if /register is whitelisted
           if (combinedWhitelist.includes('/register')) {
-            const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
             const registrationEndpoints = [
               '/confirm-email', // Page route for email confirmation
               `${apiBasePath}/register`, // API endpoint for registration
@@ -83,8 +84,23 @@ export default defineNuxtModule<RuntimeModuleOptions>({
               }
             })
           }
+          
+          // Auto-whitelist Google OAuth endpoints if Google OAuth is configured
+          if (runtimeConfigOptions.auth?.google) {
+            const googleOAuthEndpoints = [
+              `${apiBasePath}/auth/google/redirect`,
+              `${apiBasePath}/auth/google/callback`
+            ]
+
+            googleOAuthEndpoints.forEach((endpoint) => {
+              if (!combinedWhitelist.includes(endpoint)) {
+                combinedWhitelist.push(endpoint)
+              }
+            })
+          }
+          
           return combinedWhitelist
-        })(),
+        })()
       },
     }
 
@@ -95,9 +111,10 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       auth: {
         whitelist: (() => {
           const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]
+          const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
+          
           // Auto-whitelist related endpoints if /register is whitelisted
           if (combinedWhitelist.includes('/register')) {
-            const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
             const registrationEndpoints = [
               '/confirm-email', // Page route for email confirmation
               `${apiBasePath}/register`, // API endpoint for registration
@@ -110,8 +127,23 @@ export default defineNuxtModule<RuntimeModuleOptions>({
               }
             })
           }
+          
+          // Auto-whitelist Google OAuth endpoints if Google OAuth is configured
+          if (runtimeConfigOptions.auth?.google) {
+            const googleOAuthEndpoints = [
+              `${apiBasePath}/auth/google/redirect`,
+              `${apiBasePath}/auth/google/callback`
+            ]
+
+            googleOAuthEndpoints.forEach((endpoint) => {
+              if (!combinedWhitelist.includes(endpoint)) {
+                combinedWhitelist.push(endpoint)
+              }
+            })
+          }
+          
           return combinedWhitelist
-        })(),
+        })()
         permissions: runtimeConfigOptions.auth?.permissions || defaultOptions.auth.permissions
       },
       apiBasePath: runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath

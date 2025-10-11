@@ -6,7 +6,7 @@ import {
   getGoogleUserFromCode, 
   findOrCreateGoogleUser,
   createAuthTokenForUser 
-} from '../../../utils/google-oauth'
+} from '../../../../utils/google-oauth'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
@@ -69,7 +69,7 @@ export default defineEventHandler(async (event) => {
     setCookie(event, 'auth_token', token, cookieOptions)
 
     // Update last login time
-    const { useDb } = await import('../../../utils/db')
+    const { useDb } = await import('../../../../utils/db')
     const db = await useDb(options)
     await db.sql`
       UPDATE {${options.tables.users}} 

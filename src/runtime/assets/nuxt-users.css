@@ -182,12 +182,25 @@
     margin: 0;
 }
 
+/* Google OAuth Button */
+.n-users-google-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.n-users-google-logo {
+    flex-shrink: 0;
+}
+
 /* Buttons */
 .n-users-btn,
 .n-users-submit-btn,
 .n-users-cancel-btn,
 .n-users-edit-btn,
-.n-users-delete-btn {
+.n-users-delete-btn,
+.n-users-google-btn {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 0.25rem;
