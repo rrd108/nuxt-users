@@ -19,6 +19,10 @@ const handleSubmit = (data) => {
   // The login composable will now handle the rememberMe flag automatically
   // when the server responds with user data after successful authentication
 }
+
+const handleGoogleLogin = () => {
+  console.log('[Nuxt Users] Starting Google OAuth flow')
+}
 </script>
 
 <template>
@@ -40,6 +44,20 @@ const handleSubmit = (data) => {
       @error="handleError"
       @submit="handleSubmit"
     />
+    
+    <div class="oauth-divider">
+      <span>or</span>
+    </div>
+    
+    <div class="oauth-section">
+      <h3>OAuth Login</h3>
+      <p>Click below to test Google OAuth (requires valid credentials in .env)</p>
+      <NUsersGoogleLoginButton 
+        @click="handleGoogleLogin"
+        button-text="Continue with Google"
+        class="google-btn"
+      />
+    </div>
   </div>
 </template>
 
@@ -88,6 +106,50 @@ nav a {
   margin-bottom: 2em;
   font-size: 0.875rem;
   text-align: center;
+}
+
+.oauth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.oauth-divider::before,
+.oauth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--nu-color-border);
+}
+
+.oauth-divider span {
+  padding: 0 1rem;
+  color: var(--nu-color-gray-500);
+  font-size: 0.875rem;
+  background: var(--nu-color-bg);
+}
+
+.oauth-section {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.oauth-section h3 {
+  color: var(--nu-color-gray-700);
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.oauth-section p {
+  color: var(--nu-color-gray-500);
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.google-btn {
+  margin: 0 auto;
 }
 
 /* Responsive design */
