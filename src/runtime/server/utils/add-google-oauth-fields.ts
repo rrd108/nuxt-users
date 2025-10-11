@@ -1,0 +1,33 @@
+import { useDb } from './db'
+import type { ModuleOptions } from 'nuxt-users/utils'
+
+export const addGoogleOauthFields = async (options: ModuleOptions) => {
+  const connectorName = options.connector!.name
+  const db = await useDb(options)
+  const tableName = options.tables.users
+
+  console.log(`[Nuxt Users] DB:Add Google OAuth fields to ${connectorName} Users Table in ${tableName}...`)
+
+  if (connectorName === 'sqlite' || connectorName === 'mysql' || connectorName === 'postgresql') {
+    // Try to add the columns, ignore errors if they already exist
+    try {
+      await db.sql`ALTER TABLE {${tableName}} ADD COLUMN google_id TEXT UNIQUE`
+      console.log('[Nuxt Users] Added google_id column ✅')
+    }
+    catch (error) {
+      // Column might already exist, ignore the error
+      console.log('[Nuxt Users] google_id column might already exist')
+    }
+    
+    try {
+      await db.sql`ALTER TABLE {${tableName}} ADD COLUMN profile_picture TEXT`
+      console.log('[Nuxt Users] Added profile_picture column ✅')
+    }
+    catch (error) {
+      // Column might already exist, ignore the error
+      console.log('[Nuxt Users] profile_picture column might already exist')
+    }
+  }
+
+  console.log(`[Nuxt Users] DB:Add Google OAuth fields to ${connectorName} Users Table ✅`)
+}

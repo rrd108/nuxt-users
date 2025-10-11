@@ -143,7 +143,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
           }
           
           return combinedWhitelist
-        })()
+        })(),
         permissions: runtimeConfigOptions.auth?.permissions || defaultOptions.auth.permissions
       },
       apiBasePath: runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
