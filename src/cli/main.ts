@@ -8,6 +8,7 @@ import createPersonalAccessTokensTable from './create-personal-access-tokens-tab
 import createPasswordResetTokensTable from './create-password-reset-tokens-table'
 import createMigrationsTable from './create-migrations-table'
 import addActiveToUsers from './add-active-to-users'
+import addGoogleOauthFields from './add-google-oauth-fields'
 import projectInfo from './project-info'
 
 // Dynamically load version from package.json at runtime
@@ -37,6 +38,7 @@ const main = defineCommand({
     'create-password-reset-tokens-table': createPasswordResetTokensTable,
     'create-migrations-table': createMigrationsTable,
     'add-active-to-users': addActiveToUsers,
+    'add-google-oauth-fields': addGoogleOauthFields,
     'project-info': projectInfo
   }
 })

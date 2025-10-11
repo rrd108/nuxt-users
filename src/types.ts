@@ -15,6 +15,37 @@ export type DatabaseConfig = {
   password?: string
   database?: string
 }
+export interface GoogleOAuthOptions {
+  /**
+   * Google OAuth client ID from Google Cloud Console
+   */
+  clientId: string
+  /**
+   * Google OAuth client secret from Google Cloud Console  
+   */
+  clientSecret: string
+  /**
+   * Callback URL for Google OAuth (must match what's configured in Google Cloud Console)
+   * @default '/api/nuxt-users/auth/google/callback'
+   */
+  callbackUrl?: string
+  /**
+   * Redirect URL after successful authentication
+   * @default '/'
+   */
+  successRedirect?: string
+  /**
+   * Redirect URL after failed authentication
+   * @default '/login?error=oauth_failed'
+   */
+  errorRedirect?: string
+  /**
+   * Google OAuth scopes to request
+   * @default ['openid', 'profile', 'email']
+   */
+  scopes?: string[]
+}
+
 export interface RuntimeModuleOptions {
   connector?: {
     name: DatabaseType
@@ -79,6 +110,11 @@ export interface RuntimeModuleOptions {
      * }
      */
     permissions?: Record<string, (string | Permission)[]>
+    /**
+     * Google OAuth configuration
+     * Enable Google OAuth login/registration
+     */
+    google?: GoogleOAuthOptions
   }
   /**
    * Password validation configuration
@@ -145,6 +181,7 @@ export interface ModuleOptions {
     tokenExpiration: number
     rememberMeExpiration: number
     permissions: Record<string, (string | Permission)[]>
+    google?: GoogleOAuthOptions
   }
   passwordValidation: {
     minLength: number
@@ -177,6 +214,8 @@ export interface User {
   password: string
   role: string
   active: boolean
+  google_id?: string
+  profile_picture?: string
   created_at: string
   updated_at: string
   last_login_at?: string

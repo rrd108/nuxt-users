@@ -199,6 +199,19 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       handler: resolver.resolve('./runtime/server/api/nuxt-users/confirm-email.get')
     })
 
+    // Google OAuth
+    addServerHandler({
+      route: `${base}/auth/google/redirect`,
+      method: 'get',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/auth/google/redirect.get')
+    })
+
+    addServerHandler({
+      route: `${base}/auth/google/callback`,
+      method: 'get',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/auth/google/callback.get')
+    })
+
     // User management
     addServerHandler({
       route: `${base}`,

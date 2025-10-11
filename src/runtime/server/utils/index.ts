@@ -7,3 +7,4 @@ export { createPersonalAccessTokensTable } from './create-personal-access-tokens
 export { createPasswordResetTokensTable } from './create-password-reset-tokens-table'
 export { createMigrationsTable } from './create-migrations-table'
 export { runMigrations } from './migrate'
+export { createGoogleOAuth2Client, getGoogleAuthUrl, getGoogleUserFromCode, findOrCreateGoogleUser, createAuthTokenForUser, generateSecurePassword } from './google-oauth'
