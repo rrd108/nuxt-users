@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import type { ModuleOptions, User } from '../../src/types'
-import { defaultOptions } from '../../src/module'
-import { useDb } from '../../src/runtime/server/utils/db'
+import type { Database } from 'db0'
+import type { ModuleOptions, User, DatabaseType, DatabaseConfig } from '../../src/types'
+import { cleanupTestSetup, createTestSetup } from '../test-setup'
+import { createUsersTable } from '../../src/runtime/server/utils/create-users-table'
+import { addActiveToUsers } from '../../src/runtime/server/utils/add-active-to-users'
+import { addGoogleOauthFields } from '../../src/runtime/server/utils/add-google-oauth-fields'
 import bcrypt from 'bcrypt'
 
 // Mock Google APIs
@@ -34,45 +37,54 @@ const {
 } = await import('../../src/runtime/server/utils/google-oauth')
 
 describe('Google OAuth Utilities', () => {
+  let db: Database
   let testOptions: ModuleOptions
-  let db: Awaited<ReturnType<typeof useDb>>
+  let dbType: DatabaseType
+  let dbConfig: DatabaseConfig
 
   beforeEach(async () => {
     vi.clearAllMocks()
 
-    testOptions = {
-      ...defaultOptions,
-      connector: {
-        name: 'sqlite',
-        options: {
-          path: ':memory:'
-        }
+    dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
+    if (dbType === 'sqlite') {
+      dbConfig = {
+        path: './_google_oauth_utils',
+      }
+    }
+    if (dbType === 'mysql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '3306'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      }
+    }
+    if (dbType === 'postgresql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '5432'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
       }
     }
 
-    // Initialize database
-    db = await useDb(testOptions)
+    const settings = await createTestSetup({
+      dbType,
+      dbConfig,
+    })
 
-    // Create users table
-    await db.sql`
-      CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT NOT NULL UNIQUE,
-        name TEXT NOT NULL,
-        password TEXT NOT NULL,
-        role TEXT NOT NULL DEFAULT 'user',
-        google_id TEXT UNIQUE,
-        profile_picture TEXT,
-        active BOOLEAN DEFAULT TRUE,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `
+    db = settings.db
+    testOptions = settings.testOptions
+
+    await createUsersTable(testOptions)
+    await addActiveToUsers(testOptions)
+    await addGoogleOauthFields(testOptions)
   })
 
   afterEach(async () => {
-    // Clean up database
-    await db.sql`DROP TABLE IF EXISTS users`
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
     vi.clearAllMocks()
   })
 

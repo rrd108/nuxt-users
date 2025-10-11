@@ -1,9 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import type { ModuleOptions, User } from '../src/types'
-import { defaultOptions } from '../src/module'
-import { useDb } from '../src/runtime/server/utils/db'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import type { Database } from 'db0'
+import type { ModuleOptions, User, DatabaseType, DatabaseConfig } from '../src/types'
+import { cleanupTestSetup, createTestSetup } from './test-setup'
+import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
+import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/create-personal-access-tokens-table'
+import { addActiveToUsers } from '../src/runtime/server/utils/add-active-to-users'
+import { addGoogleOauthFields } from '../src/runtime/server/utils/add-google-oauth-fields'
 import bcrypt from 'bcrypt'
-import crypto from 'node:crypto'
 
 /**
  * Layer 2: Integration Tests - Google OAuth Complete Flow
@@ -17,22 +20,47 @@ import crypto from 'node:crypto'
  */
 
 describe('Google OAuth Complete Flow Integration', () => {
+  let db: Database
   let testOptions: ModuleOptions
-  let db: Awaited<ReturnType<typeof useDb>>
+  let dbType: DatabaseType
+  let dbConfig: DatabaseConfig
 
   beforeEach(async () => {
-    vi.clearAllMocks()
+    dbType = process.env.DB_CONNECTOR as DatabaseType || 'sqlite'
+    if (dbType === 'sqlite') {
+      dbConfig = {
+        path: './_google_oauth_flow',
+      }
+    }
+    if (dbType === 'mysql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '3306'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      }
+    }
+    if (dbType === 'postgresql') {
+      dbConfig = {
+        host: process.env.DB_HOST,
+        port: Number.parseInt(process.env.DB_PORT || '5432'),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+      }
+    }
 
+    const settings = await createTestSetup({
+      dbType,
+      dbConfig,
+    })
+
+    db = settings.db
     testOptions = {
-      ...defaultOptions,
-      connector: {
-        name: 'sqlite',
-        options: {
-          path: ':memory:'
-        }
-      },
+      ...settings.testOptions,
       auth: {
-        ...defaultOptions.auth,
+        ...settings.testOptions.auth,
         google: {
           clientId: 'test-client-id',
           clientSecret: 'test-client-secret',
@@ -43,45 +71,15 @@ describe('Google OAuth Complete Flow Integration', () => {
       }
     }
 
-    // Initialize database
-    db = await useDb(testOptions)
-
-    // Create tables
-    await db.sql`
-      CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT NOT NULL UNIQUE,
-        name TEXT NOT NULL,
-        password TEXT NOT NULL,
-        role TEXT NOT NULL DEFAULT 'user',
-        google_id TEXT UNIQUE,
-        profile_picture TEXT,
-        active BOOLEAN DEFAULT TRUE,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `
-
-    await db.sql`
-      CREATE TABLE IF NOT EXISTS personal_access_tokens (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        tokenable_type TEXT NOT NULL,
-        tokenable_id INTEGER NOT NULL,
-        name TEXT NOT NULL,
-        token TEXT NOT NULL UNIQUE,
-        abilities TEXT,
-        last_used_at DATETIME,
-        expires_at DATETIME,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `
+    await createUsersTable(testOptions)
+    await addActiveToUsers(testOptions)
+    await addGoogleOauthFields(testOptions)
+    await createPersonalAccessTokensTable(testOptions)
   })
 
   afterEach(async () => {
-    await db.sql`DROP TABLE IF EXISTS users`
-    await db.sql`DROP TABLE IF EXISTS personal_access_tokens`
-    vi.clearAllMocks()
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.personalAccessTokens)
   })
 
   describe('Scenario 1: New User Registration via OAuth', () => {
