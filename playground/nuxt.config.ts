@@ -12,9 +12,9 @@ export default defineNuxtConfig({
       tokenExpiration: 10,
       // TODO: if it is uncommented it makes `yarn test:types` fails - for some unknown reason
       // INFO: if it is commented out you can not login to the playground
-      permissions: {
+      /* permissions: {
         admin: ['*'],
-      },
+      }, */
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID || 'demo-client-id',
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'demo-client-secret',
