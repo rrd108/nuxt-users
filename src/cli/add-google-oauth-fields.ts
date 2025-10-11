@@ -24,13 +24,18 @@ export default defineCommand({
         const columnNames = tableInfo.rows.map(row => row.name)
         
         if (!columnNames.includes('google_id')) {
-          await db.sql`ALTER TABLE {${tableName}} ADD COLUMN google_id TEXT UNIQUE`
+          await db.sql`ALTER TABLE {${tableName}} ADD COLUMN google_id TEXT`
           console.log('[Nuxt Users] Added google_id column to SQLite users table ✅')
         }
         
         if (!columnNames.includes('profile_picture')) {
           await db.sql`ALTER TABLE {${tableName}} ADD COLUMN profile_picture TEXT`
           console.log('[Nuxt Users] Added profile_picture column to SQLite users table ✅')
+        }
+
+        if (!columnNames.includes('last_login_at')) {
+          await db.sql`ALTER TABLE {${tableName}} ADD COLUMN last_login_at DATETIME`
+          console.log('[Nuxt Users] Added last_login_at column to SQLite users table ✅')
         }
       }
       

@@ -74,9 +74,10 @@ export async function generateSecurePassword(): Promise<string> {
 export async function findOrCreateGoogleUser(
   googleUser: GoogleUserInfo, 
   moduleOptions: ModuleOptions
-): Promise<User> {
+): Promise<User | null> {
   const db = await useDb(moduleOptions)
   const usersTable = moduleOptions.tables.users
+  const allowAutoRegistration = moduleOptions.auth.google?.allowAutoRegistration ?? false
 
   // First, try to find existing user by google_id
   let userResult = await db.sql`
@@ -120,6 +121,11 @@ export async function findOrCreateGoogleUser(
     user.google_id = googleUser.id
     user.profile_picture = googleUser.picture
     return user
+  }
+
+  // Check if auto-registration is allowed
+  if (!allowAutoRegistration) {
+    return null
   }
 
   // Create new user

@@ -44,6 +44,12 @@ export interface GoogleOAuthOptions {
    * @default ['openid', 'profile', 'email']
    */
   scopes?: string[]
+  /**
+   * Allow automatic user registration when logging in with Google for the first time
+   * If false, only existing users with matching email can log in with Google
+   * @default false
+   */
+  allowAutoRegistration?: boolean
 }
 
 export interface RuntimeModuleOptions {

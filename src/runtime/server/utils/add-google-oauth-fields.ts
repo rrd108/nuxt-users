@@ -11,7 +11,7 @@ export const addGoogleOauthFields = async (options: ModuleOptions) => {
   if (connectorName === 'sqlite' || connectorName === 'mysql' || connectorName === 'postgresql') {
     // Try to add the columns, ignore errors if they already exist
     try {
-      await db.sql`ALTER TABLE {${tableName}} ADD COLUMN google_id TEXT UNIQUE`
+      await db.sql`ALTER TABLE {${tableName}} ADD COLUMN google_id TEXT`
       console.log('[Nuxt Users] Added google_id column ✅')
     }
     catch (error) {

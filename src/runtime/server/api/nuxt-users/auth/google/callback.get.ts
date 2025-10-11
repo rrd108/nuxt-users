@@ -1,11 +1,12 @@
-import { defineEventHandler, sendRedirect, createError, getQuery, setCookie } from 'h3'
+import { defineEventHandler, sendRedirect, getQuery, setCookie } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { 
-  createGoogleOAuth2Client, 
-  getGoogleUserFromCode, 
+import type { H3Event } from 'h3'
+import {
+  createGoogleOAuth2Client,
+  getGoogleUserFromCode,
   findOrCreateGoogleUser,
-  createAuthTokenForUser 
+  createAuthTokenForUser
 } from '../../../../utils/google-oauth'
 
 export default defineEventHandler(async (event) => {
@@ -15,7 +16,7 @@ export default defineEventHandler(async (event) => {
 
   // Check if Google OAuth is configured
   if (!options.auth.google) {
-    return sendRedirect(event, options.auth.google?.errorRedirect || '/login?error=oauth_not_configured')
+    return sendRedirect(event, '/login?error=oauth_not_configured')
   }
 
   // Handle OAuth errors
@@ -47,6 +48,13 @@ export default defineEventHandler(async (event) => {
     // Find or create user in database
     const user = await findOrCreateGoogleUser(googleUser, options)
 
+    // Check if user was not found and auto-registration is disabled
+    if (!user) {
+      console.warn(`[Nuxt Users] User not registered attempted Google OAuth login: ${googleUser.email}`)
+      const errorRedirect = options.auth.google.errorRedirect || '/login?error=user_not_registered'
+      return sendRedirect(event, errorRedirect)
+    }
+
     // Check if user account is active
     if (!user.active) {
       console.warn(`[Nuxt Users] Inactive user attempted Google OAuth login: ${user.email}`)
@@ -68,22 +76,13 @@ export default defineEventHandler(async (event) => {
 
     setCookie(event, 'auth_token', token, cookieOptions)
 
-    // Update last login time
-    const { useDb } = await import('../../../../utils/db')
-    const db = await useDb(options)
-    await db.sql`
-      UPDATE {${options.tables.users}} 
-      SET last_login_at = CURRENT_TIMESTAMP 
-      WHERE id = ${user.id}
-    `
-
     console.log(`[Nuxt Users] Google OAuth login successful for user: ${user.email}`)
 
     // Redirect to success page
     const successRedirect = options.auth.google.successRedirect || '/'
     return sendRedirect(event, successRedirect)
-
-  } catch (error) {
+  }
+  catch (error) {
     console.error('[Nuxt Users] Google OAuth callback error:', error)
     const errorRedirect = options.auth.google?.errorRedirect || '/login?error=oauth_failed'
     return sendRedirect(event, errorRedirect)
@@ -91,9 +90,9 @@ export default defineEventHandler(async (event) => {
 })
 
 // Helper function to get request URL
-function getRequestURL(event: any) {
+const getRequestURL = (event: H3Event) => {
   const headers = event.node.req.headers
   const host = headers.host || headers[':authority']
-  const protocol = headers['x-forwarded-proto'] || (event.node.req.socket?.encrypted ? 'https' : 'http')
+  const protocol = headers['x-forwarded-proto'] || 'https'
   return new URL(`${protocol}://${host}`)
 }

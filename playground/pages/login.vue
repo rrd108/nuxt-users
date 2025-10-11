@@ -1,7 +1,25 @@
 <script setup>
 import { useAuthentication } from '#imports'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 const { login } = useAuthentication()
+const route = useRoute()
+const oauthError = ref('')
+
+const errorMessages = {
+  oauth_failed: 'Authentication failed. Please try again.',
+  user_not_registered: 'You are not registered. Please contact an administrator or register first.',
+  account_inactive: 'Your account is inactive. Please contact support.',
+  oauth_not_configured: 'OAuth is not properly configured.'
+}
+
+onMounted(() => {
+  const errorParam = route.query.error
+  if (errorParam && errorMessages[errorParam]) {
+    oauthError.value = errorMessages[errorParam]
+  }
+})
 
 const handleSuccess = (user, rememberMe) => {
   console.log('[Nuxt Users] Login successful:', user, 'Remember me:', rememberMe)
@@ -22,6 +40,11 @@ const handleSubmit = (data) => {
 
 const handleGoogleLogin = () => {
   console.log('[Nuxt Users] Starting Google OAuth flow')
+  oauthError.value = '' // Clear any existing errors
+}
+
+const dismissError = () => {
+  oauthError.value = ''
 }
 </script>
 
@@ -36,7 +59,14 @@ const handleGoogleLogin = () => {
 
     <div class="demo-section">
       <h2>Login Component Demo</h2>
-      <p>Login with: rrd@webmania.cc / 123</p>
+    </div>
+
+    <div v-if="oauthError" class="error-banner">
+      <div class="error-content">
+        <span class="error-icon">⚠️</span>
+        <span class="error-message">{{ oauthError }}</span>
+        <button class="error-dismiss" @click="dismissError">✕</button>
+      </div>
     </div>
 
     <NUsersLoginForm
@@ -150,6 +180,65 @@ nav a {
 
 .google-btn {
   margin: 0 auto;
+}
+
+.error-banner {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.error-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.error-message {
+  flex: 1;
+  color: #991b1b;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.error-dismiss {
+  background: none;
+  border: none;
+  color: #991b1b;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.error-dismiss:hover {
+  background-color: #fee2e2;
 }
 
 /* Responsive design */
