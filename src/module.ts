@@ -69,7 +69,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
         whitelist: (() => {
           const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]
           const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
-          
+
           // Auto-whitelist related endpoints if /register is whitelisted
           if (combinedWhitelist.includes('/register')) {
             const registrationEndpoints = [
@@ -84,7 +84,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
               }
             })
           }
-          
+
           // Auto-whitelist Google OAuth endpoints if Google OAuth is configured
           if (runtimeConfigOptions.auth?.google) {
             const googleOAuthEndpoints = [
@@ -98,7 +98,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
               }
             })
           }
-          
+
           return combinedWhitelist
         })()
       },
@@ -112,7 +112,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
         whitelist: (() => {
           const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]
           const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
-          
+
           // Auto-whitelist related endpoints if /register is whitelisted
           if (combinedWhitelist.includes('/register')) {
             const registrationEndpoints = [
@@ -127,7 +127,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
               }
             })
           }
-          
+
           // Auto-whitelist Google OAuth endpoints if Google OAuth is configured
           if (runtimeConfigOptions.auth?.google) {
             const googleOAuthEndpoints = [
@@ -141,7 +141,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
               }
             })
           }
-          
+
           return combinedWhitelist
         })(),
         permissions: runtimeConfigOptions.auth?.permissions || defaultOptions.auth.permissions
