@@ -78,9 +78,12 @@ export default defineEventHandler(async (event) => {
 
     console.log(`[Nuxt Users] Google OAuth login successful for user: ${user.email}`)
 
-    // Redirect to success page
+    // Redirect to success page with oauth_success flag
     const successRedirect = options.auth.google.successRedirect || '/'
-    return sendRedirect(event, successRedirect)
+    const redirectUrl = successRedirect.includes('?')
+      ? `${successRedirect}&oauth_success=true`
+      : `${successRedirect}?oauth_success=true`
+    return sendRedirect(event, redirectUrl)
   }
   catch (error) {
     console.error('[Nuxt Users] Google OAuth callback error:', error)
