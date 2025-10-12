@@ -1,4 +1,4 @@
-import { defineEventHandler, sendRedirect, createError } from 'h3'
+import { defineEventHandler, sendRedirect, createError, type H3Event } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import { createGoogleOAuth2Client, getGoogleAuthUrl } from '../../../../utils/google-oauth'
@@ -34,8 +34,8 @@ export default defineEventHandler(async (event) => {
 
     // Redirect to Google OAuth
     return sendRedirect(event, authUrl)
-    
-  } catch (error) {
+  }
+  catch (error) {
     console.error('[Nuxt Users] Google OAuth redirect error:', error)
     throw createError({
       statusCode: 500,
@@ -44,10 +44,9 @@ export default defineEventHandler(async (event) => {
   }
 })
 
-// Helper function to get request URL
-function getRequestURL(event: any) {
+const getRequestURL = (event: H3Event) => {
   const headers = event.node.req.headers
   const host = headers.host || headers[':authority']
-  const protocol = headers['x-forwarded-proto'] || (event.node.req.socket?.encrypted ? 'https' : 'http')
+  const protocol = headers['x-forwarded-proto']
   return new URL(`${protocol}://${host}`)
 }

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import type { Database } from 'db0'
 import type { ModuleOptions, DatabaseType, DatabaseConfig } from '../src/types'
+import type { OAuth2Client } from 'google-auth-library'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { addActiveToUsers } from '../src/runtime/server/utils/add-active-to-users'
@@ -8,7 +9,7 @@ import { addGoogleOauthFields } from '../src/runtime/server/utils/add-google-oau
 
 /**
  * High-Priority Google OAuth Security & Edge Case Tests
- * 
+ *
  * Tests critical security scenarios:
  * 1. Email verification validation
  * 2. Missing configuration handling
@@ -80,15 +81,15 @@ describe('Google OAuth Security & Edge Cases', () => {
   describe('1. Email Verification Security', () => {
     it('should verify email verification check exists in code', async () => {
       // Read the google-oauth.ts file to ensure email verification is implemented
-      const fs = await import('fs')
-      const path = await import('path')
+      const fs = await import('node:fs')
+      const path = await import('node:path')
       const filePath = path.join(process.cwd(), 'src/runtime/server/utils/google-oauth.ts')
       const content = fs.readFileSync(filePath, 'utf-8')
-      
+
       // Verify the code checks for verified_email
       expect(content).toContain('verified_email')
       expect(content).toContain('Google account email not verified')
-      
+
       // Verify the check exists in getGoogleUserFromCode function
       const hasEmailCheck = content.includes('!data.email || !data.verified_email')
       expect(hasEmailCheck).toBe(true)
@@ -96,11 +97,11 @@ describe('Google OAuth Security & Edge Cases', () => {
 
     it('should define verified_email in GoogleUserInfo interface', async () => {
       // Verify the interface requires email verification
-      const fs = await import('fs')
-      const path = await import('path')
+      const fs = await import('node:fs')
+      const path = await import('node:path')
       const filePath = path.join(process.cwd(), 'src/runtime/server/utils/google-oauth.ts')
       const content = fs.readFileSync(filePath, 'utf-8')
-      
+
       // Check interface definition
       expect(content).toContain('interface GoogleUserInfo')
       expect(content).toContain('verified_email: boolean')
@@ -108,17 +109,18 @@ describe('Google OAuth Security & Edge Cases', () => {
 
     it('should document email verification requirement', async () => {
       // Verify documentation mentions email verification
-      const fs = await import('fs')
-      const path = await import('path')
+      const fs = await import('node:fs')
+      const path = await import('node:path')
       const docsPath = path.join(process.cwd(), 'docs/user-guide/authentication.md')
-      
+
       if (fs.existsSync(docsPath)) {
         const content = fs.readFileSync(docsPath, 'utf-8')
-        
+
         // Check if email verification is documented as a security feature
         expect(content).toContain('Email verification')
         expect(content).toContain('verified')
-      } else {
+      }
+      else {
         // Docs file doesn't exist yet, just pass the test
         expect(true).toBe(true)
       }
@@ -173,7 +175,7 @@ describe('Google OAuth Security & Edge Cases', () => {
 
     it('should validate both clientId and clientSecret are present', async () => {
       const validOptions = testOptions.auth.google!
-      
+
       expect(validOptions.clientId).toBeTruthy()
       expect(validOptions.clientSecret).toBeTruthy()
       expect(validOptions.clientId.length).toBeGreaterThan(0)
@@ -191,7 +193,7 @@ describe('Google OAuth Security & Edge Cases', () => {
 
       // In real callback, this would redirect to errorRedirect
       expect(errorQuery.error).toBe('access_denied')
-      
+
       const errorRedirect = testOptions.auth.google?.errorRedirect || '/login?error=oauth_failed'
       expect(errorRedirect).toContain('error=')
     })
@@ -204,7 +206,7 @@ describe('Google OAuth Security & Edge Cases', () => {
       }
 
       expect(queryWithoutCode).not.toHaveProperty('code')
-      
+
       // Would redirect to errorRedirect
       const errorRedirect = testOptions.auth.google?.errorRedirect || '/login?error=oauth_failed'
       expect(errorRedirect).toBeDefined()
@@ -212,7 +214,7 @@ describe('Google OAuth Security & Edge Cases', () => {
 
     it('should handle invalid authorization code', async () => {
       const { getGoogleUserFromCode } = await import('../src/runtime/server/utils/google-oauth')
-      
+
       const mockOAuth2Client = {
         getToken: vi.fn().mockRejectedValue(new Error('invalid_grant')),
         setCredentials: vi.fn()
@@ -220,20 +222,20 @@ describe('Google OAuth Security & Edge Cases', () => {
 
       // Should throw error when code is invalid
       await expect(
-        getGoogleUserFromCode(mockOAuth2Client as any, 'invalid-code')
+        getGoogleUserFromCode(mockOAuth2Client as unknown as OAuth2Client, 'invalid-code')
       ).rejects.toThrow()
     })
 
     it('should handle token exchange failures', async () => {
       const { getGoogleUserFromCode } = await import('../src/runtime/server/utils/google-oauth')
-      
+
       const mockOAuth2Client = {
         getToken: vi.fn().mockRejectedValue(new Error('Network error')),
         setCredentials: vi.fn()
       }
 
       await expect(
-        getGoogleUserFromCode(mockOAuth2Client as any, 'test-code')
+        getGoogleUserFromCode(mockOAuth2Client as unknown as OAuth2Client, 'test-code')
       ).rejects.toThrow('Network error')
     })
 
@@ -245,14 +247,14 @@ describe('Google OAuth Security & Edge Cases', () => {
 
     it('should handle expired authorization codes', async () => {
       const { getGoogleUserFromCode } = await import('../src/runtime/server/utils/google-oauth')
-      
+
       const mockOAuth2Client = {
         getToken: vi.fn().mockRejectedValue(new Error('invalid_grant: Token has been expired or revoked')),
         setCredentials: vi.fn()
       }
 
       await expect(
-        getGoogleUserFromCode(mockOAuth2Client as any, 'expired-code')
+        getGoogleUserFromCode(mockOAuth2Client as unknown as OAuth2Client, 'expired-code')
       ).rejects.toThrow('expired or revoked')
     })
   })
@@ -272,7 +274,7 @@ describe('Google OAuth Security & Edge Cases', () => {
 
     it('should set secure flag in production environment', () => {
       const originalEnv = process.env.NODE_ENV
-      
+
       // Test production
       process.env.NODE_ENV = 'production'
       const prodCookieOptions = {
@@ -382,7 +384,7 @@ describe('Google OAuth Security & Edge Cases', () => {
   describe('5. Redirect Behavior', () => {
     it('should construct correct successRedirect URL with oauth_success flag', () => {
       const successRedirect = testOptions.auth.google?.successRedirect || '/'
-      
+
       const redirectUrl = successRedirect.includes('?')
         ? `${successRedirect}&oauth_success=true`
         : `${successRedirect}?oauth_success=true`
@@ -392,7 +394,7 @@ describe('Google OAuth Security & Edge Cases', () => {
 
     it('should preserve existing query params when adding oauth_success', () => {
       const successRedirectWithParams = '/dashboard?tab=profile'
-      
+
       const redirectUrl = successRedirectWithParams.includes('?')
         ? `${successRedirectWithParams}&oauth_success=true`
         : `${successRedirectWithParams}?oauth_success=true`
@@ -404,27 +406,26 @@ describe('Google OAuth Security & Edge Cases', () => {
 
     it('should use correct errorRedirect for user_not_registered', () => {
       const errorRedirect = testOptions.auth.google?.errorRedirect || '/login?error=user_not_registered'
-      
+
       expect(errorRedirect).toContain('error=')
     })
 
     it('should use correct errorRedirect for account_inactive', () => {
       const errorRedirect = testOptions.auth.google?.errorRedirect || '/login?error=account_inactive'
-      
+
       expect(errorRedirect).toContain('error=')
     })
 
     it('should use correct errorRedirect for oauth_failed', () => {
       const errorRedirect = testOptions.auth.google?.errorRedirect || '/login?error=oauth_failed'
-      
+
       expect(errorRedirect).toBe('/login?error=oauth_failed')
     })
 
     it('should use correct errorRedirect for oauth_not_configured', () => {
       const errorRedirect = '/login?error=oauth_not_configured'
-      
+
       expect(errorRedirect).toContain('oauth_not_configured')
     })
   })
 })
-

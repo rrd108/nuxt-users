@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
-import type { ModuleOptions, User, DatabaseType, DatabaseConfig } from '../src/types'
+import type { ModuleOptions, User, DatabaseType, DatabaseConfig, PersonalAccessToken } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
 import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
 import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/create-personal-access-tokens-table'
@@ -10,7 +10,7 @@ import bcrypt from 'bcrypt'
 
 /**
  * Layer 2: Integration Tests - Google OAuth Complete Flow
- * 
+ *
  * Tests the complete OAuth workflow by simulating:
  * 1. User authentication with Google (mocked)
  * 2. Database operations (real)
@@ -85,7 +85,7 @@ describe('Google OAuth Complete Flow Integration', () => {
   describe('Scenario 1: New User Registration via OAuth', () => {
     it('should create new user, generate token, and prepare for authentication', async () => {
       // Step 1: Simulate OAuth utilities (using real implementations)
-      const {  findOrCreateGoogleUser, createAuthTokenForUser } = await import('../src/runtime/server/utils/google-oauth')
+      const { findOrCreateGoogleUser, createAuthTokenForUser } = await import('../src/runtime/server/utils/google-oauth')
 
       const mockGoogleUser = {
         id: 'google-flow-123',
@@ -115,7 +115,7 @@ describe('Google OAuth Complete Flow Integration', () => {
       const tokens = await db.sql`
         SELECT * FROM personal_access_tokens 
         WHERE token = ${token}
-      ` as { rows: any[] }
+      ` as { rows: PersonalAccessToken[] }
 
       expect(tokens.rows).toHaveLength(1)
       expect(tokens.rows[0].tokenable_id).toBe(user!.id)
@@ -200,7 +200,7 @@ describe('Google OAuth Complete Flow Integration', () => {
       expect(users.rows).toHaveLength(0)
 
       // Verify no token was created
-      const tokens = await db.sql`SELECT * FROM personal_access_tokens` as { rows: any[] }
+      const tokens = await db.sql`SELECT * FROM personal_access_tokens` as { rows: PersonalAccessToken[] }
       expect(tokens.rows).toHaveLength(0)
     })
   })
@@ -237,7 +237,7 @@ describe('Google OAuth Complete Flow Integration', () => {
         // Should redirect to error page instead of creating token
         expect(user.active).toBeFalsy()
         // No token should be created - verify
-        const tokens = await db.sql`SELECT * FROM personal_access_tokens` as { rows: any[] }
+        const tokens = await db.sql`SELECT * FROM personal_access_tokens` as { rows: PersonalAccessToken[] }
         expect(tokens.rows).toHaveLength(0)
       }
     })
@@ -259,8 +259,8 @@ describe('Google OAuth Complete Flow Integration', () => {
       const token = await createAuthTokenForUser(user!, testOptions, true) // rememberMe = true
 
       // Verify token expiration
-      const tokens = await db.sql`SELECT expires_at FROM personal_access_tokens WHERE token = ${token}` as { rows: any[] }
-      const expiresAt = new Date(tokens.rows[0].expires_at)
+      const tokens = await db.sql`SELECT expires_at FROM personal_access_tokens WHERE token = ${token}` as { rows: PersonalAccessToken[] }
+      const expiresAt = new Date(tokens.rows[0].expires_at!)
       const now = new Date()
       const daysDifference = Math.floor((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 
@@ -311,7 +311,7 @@ describe('Google OAuth Complete Flow Integration', () => {
       const token = await createAuthTokenForUser(user!, testOptions, true)
 
       // Verify last_used_at is null initially
-      let tokens = await db.sql`SELECT last_used_at FROM personal_access_tokens WHERE token = ${token}` as { rows: any[] }
+      let tokens = await db.sql`SELECT last_used_at FROM personal_access_tokens WHERE token = ${token}` as { rows: PersonalAccessToken[] }
       expect(tokens.rows[0].last_used_at).toBeNull()
 
       // Use the token (simulating API call)
@@ -319,7 +319,7 @@ describe('Google OAuth Complete Flow Integration', () => {
       await getCurrentUserFromToken(token, testOptions)
 
       // Verify last_used_at was updated
-      tokens = await db.sql`SELECT last_used_at FROM personal_access_tokens WHERE token = ${token}` as { rows: any[] }
+      tokens = await db.sql`SELECT last_used_at FROM personal_access_tokens WHERE token = ${token}` as { rows: PersonalAccessToken[] }
       expect(tokens.rows[0].last_used_at).not.toBeNull()
     })
   })
@@ -348,7 +348,7 @@ describe('Google OAuth Complete Flow Integration', () => {
       expect(token1).not.toBe(token2)
 
       // Both tokens should exist in database
-      const tokens = await db.sql`SELECT * FROM personal_access_tokens WHERE tokenable_id = ${user!.id}` as { rows: any[] }
+      const tokens = await db.sql`SELECT * FROM personal_access_tokens WHERE tokenable_id = ${user!.id}` as { rows: PersonalAccessToken[] }
       expect(tokens.rows).toHaveLength(2)
 
       // Both tokens should be valid
@@ -361,4 +361,3 @@ describe('Google OAuth Complete Flow Integration', () => {
     })
   })
 })
-

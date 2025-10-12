@@ -22,12 +22,12 @@ export default defineCommand({
         // Check if columns already exist
         const tableInfo = await db.sql`PRAGMA table_info(${tableName})` as { rows: Array<{ name: string }> }
         const columnNames = tableInfo.rows.map(row => row.name)
-        
+
         if (!columnNames.includes('google_id')) {
           await db.sql`ALTER TABLE {${tableName}} ADD COLUMN google_id TEXT`
           console.log('[Nuxt Users] Added google_id column to SQLite users table ✅')
         }
-        
+
         if (!columnNames.includes('profile_picture')) {
           await db.sql`ALTER TABLE {${tableName}} ADD COLUMN profile_picture TEXT`
           console.log('[Nuxt Users] Added profile_picture column to SQLite users table ✅')
@@ -38,7 +38,7 @@ export default defineCommand({
           console.log('[Nuxt Users] Added last_login_at column to SQLite users table ✅')
         }
       }
-      
+
       if (connectorName === 'mysql') {
         // Check if columns exist
         const checkColumns = await db.sql`
@@ -48,20 +48,20 @@ export default defineCommand({
           AND TABLE_NAME = ${tableName}
           AND COLUMN_NAME IN ('google_id', 'profile_picture')
         ` as { rows: Array<{ COLUMN_NAME: string }> }
-        
+
         const existingColumns = checkColumns.rows.map(row => row.COLUMN_NAME)
-        
+
         if (!existingColumns.includes('google_id')) {
           await db.sql`ALTER TABLE {${tableName}} ADD COLUMN google_id VARCHAR(255) UNIQUE`
           console.log('[Nuxt Users] Added google_id column to MySQL users table ✅')
         }
-        
+
         if (!existingColumns.includes('profile_picture')) {
           await db.sql`ALTER TABLE {${tableName}} ADD COLUMN profile_picture TEXT`
           console.log('[Nuxt Users] Added profile_picture column to MySQL users table ✅')
         }
       }
-      
+
       if (connectorName === 'postgresql') {
         // Check if columns exist
         const checkColumns = await db.sql`
@@ -70,23 +70,23 @@ export default defineCommand({
           WHERE table_name = ${tableName}
           AND column_name IN ('google_id', 'profile_picture')
         ` as { rows: Array<{ column_name: string }> }
-        
+
         const existingColumns = checkColumns.rows.map(row => row.column_name)
-        
+
         if (!existingColumns.includes('google_id')) {
           await db.sql`ALTER TABLE {${tableName}} ADD COLUMN google_id VARCHAR(255) UNIQUE`
           console.log('[Nuxt Users] Added google_id column to PostgreSQL users table ✅')
         }
-        
+
         if (!existingColumns.includes('profile_picture')) {
           await db.sql`ALTER TABLE {${tableName}} ADD COLUMN profile_picture TEXT`
           console.log('[Nuxt Users] Added profile_picture column to PostgreSQL users table ✅')
         }
       }
-      
+
       console.log('[Nuxt Users] Google OAuth fields migration completed successfully! ✅')
-      
-    } catch (error) {
+    }
+    catch (error) {
       console.error('[Nuxt Users] DB:Migration Error:', error)
       process.exit(1)
     }

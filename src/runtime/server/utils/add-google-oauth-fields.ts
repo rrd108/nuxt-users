@@ -16,16 +16,16 @@ export const addGoogleOauthFields = async (options: ModuleOptions) => {
     }
     catch (error) {
       // Column might already exist, ignore the error
-      console.log('[Nuxt Users] google_id column might already exist')
+      console.error('[Nuxt Users] google_id column might already exist', error)
     }
-    
+
     try {
       await db.sql`ALTER TABLE {${tableName}} ADD COLUMN profile_picture TEXT`
       console.log('[Nuxt Users] Added profile_picture column ✅')
     }
     catch (error) {
       // Column might already exist, ignore the error
-      console.log('[Nuxt Users] profile_picture column might already exist')
+      console.error('[Nuxt Users] profile_picture column might already exist', error)
     }
   }
 

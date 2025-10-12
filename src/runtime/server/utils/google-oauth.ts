@@ -28,7 +28,7 @@ export function createGoogleOAuth2Client(options: GoogleOAuthOptions, callbackUr
  */
 export function getGoogleAuthUrl(oauth2Client: OAuth2Client, options: GoogleOAuthOptions): string {
   const scopes = options.scopes || ['openid', 'profile', 'email']
-  
+
   return oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: scopes,
@@ -82,7 +82,7 @@ export async function generateSecurePassword(): Promise<string> {
  * Find or create user from Google OAuth data
  */
 export async function findOrCreateGoogleUser(
-  googleUser: GoogleUserInfo, 
+  googleUser: GoogleUserInfo,
   moduleOptions: ModuleOptions
 ): Promise<User | null> {
   const db = await useDb(moduleOptions)
@@ -97,7 +97,7 @@ export async function findOrCreateGoogleUser(
 
   if (userResult.rows.length > 0) {
     const user = userResult.rows[0]
-    
+
     // Update profile picture if it has changed
     if (user.profile_picture !== googleUser.picture) {
       await db.sql`
@@ -107,7 +107,7 @@ export async function findOrCreateGoogleUser(
       `
       user.profile_picture = googleUser.picture
     }
-    
+
     return user
   }
 
@@ -127,7 +127,7 @@ export async function findOrCreateGoogleUser(
           updated_at = CURRENT_TIMESTAMP
       WHERE id = ${user.id}
     `
-    
+
     user.google_id = googleUser.id
     user.profile_picture = googleUser.picture
     return user
@@ -140,8 +140,8 @@ export async function findOrCreateGoogleUser(
 
   // Create new user
   const securePassword = await generateSecurePassword()
-  
-  const insertResult = await db.sql`
+
+  await db.sql`
     INSERT INTO {${usersTable}} (
       email, name, password, role, google_id, profile_picture, 
       active, created_at, updated_at
@@ -171,13 +171,13 @@ export async function findOrCreateGoogleUser(
  * Create authentication token for user (reusing existing logic)
  */
 export async function createAuthTokenForUser(
-  user: User, 
+  user: User,
   moduleOptions: ModuleOptions,
   rememberMe = false
 ): Promise<string> {
   const db = await useDb(moduleOptions)
   const personalAccessTokensTable = moduleOptions.tables.personalAccessTokens
-  
+
   const token = crypto.randomBytes(64).toString('hex')
   const tokenName = 'oauth_auth_token'
 
@@ -186,7 +186,8 @@ export async function createAuthTokenForUser(
   if (rememberMe) {
     const longTermDays = moduleOptions.auth.rememberMeExpiration || 30
     expiresAt.setDate(expiresAt.getDate() + longTermDays)
-  } else {
+  }
+  else {
     expiresAt.setMinutes(expiresAt.getMinutes() + moduleOptions.auth.tokenExpiration)
   }
 

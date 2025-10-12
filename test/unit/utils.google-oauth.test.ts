@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import type { Database } from 'db0'
 import type { ModuleOptions, User, DatabaseType, DatabaseConfig } from '../../src/types'
+import type { OAuth2Client } from 'google-auth-library'
 import { cleanupTestSetup, createTestSetup } from '../test-setup'
 import { createUsersTable } from '../../src/runtime/server/utils/create-users-table'
 import { addActiveToUsers } from '../../src/runtime/server/utils/add-active-to-users'
@@ -24,7 +25,7 @@ vi.mock('bcrypt', () => ({
 }))
 
 // Import after mocks
-const { 
+const {
   createGoogleOAuth2Client,
   getGoogleAuthUrl,
   generateSecurePassword,
@@ -107,7 +108,7 @@ describe('Google OAuth Utilities', () => {
         clientSecret: 'test-client-secret'
       }
 
-      const url = getGoogleAuthUrl(mockClient as any, googleOptions)
+      const url = getGoogleAuthUrl(mockClient as unknown as OAuth2Client, googleOptions)
 
       expect(mockClient.generateAuthUrl).toHaveBeenCalledWith({
         access_type: 'offline',
@@ -127,7 +128,7 @@ describe('Google OAuth Utilities', () => {
         scopes: ['openid', 'email']
       }
 
-      getGoogleAuthUrl(mockClient as any, googleOptions)
+      getGoogleAuthUrl(mockClient as unknown as OAuth2Client, googleOptions)
 
       expect(mockClient.generateAuthUrl).toHaveBeenCalledWith({
         access_type: 'offline',
@@ -303,4 +304,3 @@ describe('Google OAuth Utilities', () => {
     })
   })
 })
-

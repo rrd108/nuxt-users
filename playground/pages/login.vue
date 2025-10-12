@@ -61,11 +61,19 @@ const dismissError = () => {
       <h2>Login Component Demo</h2>
     </div>
 
-    <div v-if="oauthError" class="error-banner">
+    <div
+      v-if="oauthError"
+      class="error-banner"
+    >
       <div class="error-content">
         <span class="error-icon">⚠️</span>
         <span class="error-message">{{ oauthError }}</span>
-        <button class="error-dismiss" @click="dismissError">✕</button>
+        <button
+          class="error-dismiss"
+          @click="dismissError"
+        >
+          ✕
+        </button>
       </div>
     </div>
 
@@ -74,18 +82,18 @@ const dismissError = () => {
       @error="handleError"
       @submit="handleSubmit"
     />
-    
+
     <div class="oauth-divider">
       <span>or</span>
     </div>
-    
+
     <div class="oauth-section">
       <h3>OAuth Login</h3>
       <p>Click below to test Google OAuth (requires valid credentials in .env)</p>
-      <NUsersGoogleLoginButton 
-        @click="handleGoogleLogin"
+      <NUsersGoogleLoginButton
         button-text="Continue with Google"
         class="google-btn"
+        @click="handleGoogleLogin"
       />
     </div>
   </div>

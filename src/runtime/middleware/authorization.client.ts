@@ -28,7 +28,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   const { isAuthenticated, user, fetchUser } = useAuthentication()
-  
+
   // If not authenticated but oauth_success flag is present, fetch user using SSR
   if (!isAuthenticated.value && to.query?.oauth_success === 'true') {
     try {
@@ -38,7 +38,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       console.error('[Nuxt Users] Failed to fetch user after OAuth:', error)
     }
   }
-  
+
   if (!isAuthenticated.value) {
     console.log(`[Nuxt Users] client.middleware.auth.global: Unauthenticated ${to.path}, redirecting to /login`)
     return navigateTo('/login')

@@ -42,20 +42,22 @@ const { apiBasePath } = nuxtUsers as ModuleOptions
 const isLoading = ref(false)
 
 // Compute redirect URL
-const redirectEndpoint = computed(() => 
+const redirectEndpoint = computed(() =>
   props.redirectEndpoint || `${apiBasePath}/auth/google/redirect`
 )
 
 const handleGoogleLogin = async () => {
   isLoading.value = true
   emit('click')
-  
+
   try {
     // Navigate to Google OAuth redirect endpoint
     await navigateTo(redirectEndpoint.value, { external: true })
-  } catch (error) {
+  }
+  catch (error) {
     console.error('[Nuxt Users] Google OAuth redirect failed:', error)
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -65,7 +67,7 @@ const handleGoogleLogin = async () => {
   <button
     type="button"
     class="n-users-google-btn"
-    :class="[{ 'loading': isLoading }, props.class]"
+    :class="[{ loading: isLoading }, props.class]"
     :disabled="isLoading"
     @click="handleGoogleLogin"
   >
@@ -74,7 +76,7 @@ const handleGoogleLogin = async () => {
       v-if="isLoading"
       class="n-users-loading-spinner"
     />
-    
+
     <!-- Google logo SVG -->
     <svg
       v-if="showLogo && !isLoading"

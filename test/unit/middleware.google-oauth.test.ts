@@ -4,7 +4,7 @@ import { defaultOptions } from '../../src/module'
 
 /**
  * Tests for Client-side Middleware OAuth Flow
- * 
+ *
  * Tests the critical client-side authentication flow after OAuth redirect:
  * 1. Detection of oauth_success query parameter
  * 2. User fetching via SSR (useFetch)
@@ -40,7 +40,6 @@ describe('Google OAuth Client Middleware', () => {
   let mockNavigateTo: ReturnType<typeof vi.fn>
   let mockUseRuntimeConfig: ReturnType<typeof vi.fn>
   let mockUseAuthentication: ReturnType<typeof vi.fn>
-  let mockUseFetch: ReturnType<typeof vi.fn>
   let mockIsWhitelisted: ReturnType<typeof vi.fn>
   let mockHasPermission: ReturnType<typeof vi.fn>
   let testOptions: ModuleOptions
@@ -54,7 +53,6 @@ describe('Google OAuth Client Middleware', () => {
 
     mockNavigateTo = app.navigateTo as ReturnType<typeof vi.fn>
     mockUseRuntimeConfig = app.useRuntimeConfig as ReturnType<typeof vi.fn>
-    mockUseFetch = app.useFetch as ReturnType<typeof vi.fn>
     mockUseAuthentication = auth.useAuthentication as ReturnType<typeof vi.fn>
     mockIsWhitelisted = permissions.isWhitelisted as ReturnType<typeof vi.fn>
     mockHasPermission = permissions.hasPermission as ReturnType<typeof vi.fn>
@@ -82,7 +80,7 @@ describe('Google OAuth Client Middleware', () => {
   describe('OAuth Success Flow', () => {
     it('should fetch user via SSR when oauth_success=true and user not authenticated', async () => {
       const mockFetchUser = vi.fn().mockResolvedValue(undefined)
-      
+
       mockUseAuthentication.mockReturnValue({
         isAuthenticated: { value: false },
         user: { value: null },
@@ -94,8 +92,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      const from = { path: '/login' } as any
-      await authorizationMiddleware.default(to as any, from)
+      const from = { path: '/login' }
+      await authorizationMiddleware.default(to as never, from as never)
 
       // Should call fetchUser with SSR enabled
       expect(mockFetchUser).toHaveBeenCalledWith(true)
@@ -111,8 +109,8 @@ describe('Google OAuth Client Middleware', () => {
 
       // Create reactive-like values that change after fetch
       const isAuthenticatedRef = { value: false }
-      const userRef = { value: null as any }
-      
+      const userRef = { value: null as unknown }
+
       const mockFetchUser = vi.fn().mockImplementation(async () => {
         // Simulate successful fetch - update refs
         isAuthenticatedRef.value = true
@@ -130,8 +128,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      const from = { path: '/login' } as any
-      await authorizationMiddleware.default(to as any, from)
+      const from = { path: '/login' }
+      await authorizationMiddleware.default(to as never, from as never)
 
       expect(mockFetchUser).toHaveBeenCalledWith(true)
       // After fetch, should NOT redirect to login
@@ -152,8 +150,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      const from = { path: '/login' } as any
-      await authorizationMiddleware.default(to as any, from)
+      const from = { path: '/login' }
+      await authorizationMiddleware.default(to as never, from as never)
 
       expect(mockFetchUser).toHaveBeenCalledWith(true)
       // After failed fetch, should redirect to login
@@ -180,8 +178,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      const from = { path: '/login' } as any
-      await authorizationMiddleware.default(to as any, from)
+      const from = { path: '/login' }
+      await authorizationMiddleware.default(to as never, from as never)
 
       // Should not fetch user if already authenticated
       expect(mockFetchUser).not.toHaveBeenCalled()
@@ -203,8 +201,8 @@ describe('Google OAuth Client Middleware', () => {
         query: {}
       }
 
-      const from = { path: '/login' } as any
-      await authorizationMiddleware.default(to as any, from)
+      const from = { path: '/login' }
+      await authorizationMiddleware.default(to as never, from as never)
 
       // Should NOT fetch user without oauth_success flag
       expect(mockFetchUser).not.toHaveBeenCalled()
@@ -228,8 +226,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      const from = { path: '/login' } as any
-      await authorizationMiddleware.default(to as any, from)
+      const from = { path: '/login' }
+      await authorizationMiddleware.default(to as never, from as never)
 
       // Should call with true to enable SSR (critical for httpOnly cookies)
       expect(mockFetchUser).toHaveBeenCalledWith(true)
@@ -260,8 +258,8 @@ describe('Google OAuth Client Middleware', () => {
         query: {}
       }
 
-      const from = { path: '/login' } as any
-      const result = await authorizationMiddleware.default(to as any, from)
+      const from = { path: '/login' }
+      const result = await authorizationMiddleware.default(to as never, from as never)
 
       expect(result).toBeUndefined() // Middleware allows passage
       expect(mockNavigateTo).not.toHaveBeenCalled()
@@ -290,8 +288,8 @@ describe('Google OAuth Client Middleware', () => {
         query: {}
       }
 
-      const from = { path: '/login' } as any
-      await authorizationMiddleware.default(to as any, from)
+      const from = { path: '/login' }
+      await authorizationMiddleware.default(to as never, from as never)
 
       expect(mockNavigateTo).toHaveBeenCalledWith('/login')
     })
@@ -313,8 +311,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      const from = { path: '/login' } as any
-      const result = await authorizationMiddleware.default(to as any, from)
+      const from = { path: '/login' }
+      const result = await authorizationMiddleware.default(to as never, from as never)
 
       // Should not fetch user or redirect
       expect(mockFetchUser).not.toHaveBeenCalled()
@@ -323,4 +321,3 @@ describe('Google OAuth Client Middleware', () => {
     })
   })
 })
-

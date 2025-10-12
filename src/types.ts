@@ -21,7 +21,7 @@ export interface GoogleOAuthOptions {
    */
   clientId: string
   /**
-   * Google OAuth client secret from Google Cloud Console  
+   * Google OAuth client secret from Google Cloud Console
    */
   clientSecret: string
   /**

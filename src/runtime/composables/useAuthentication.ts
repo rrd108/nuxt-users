@@ -58,22 +58,23 @@ export const useAuthentication = () => {
   const fetchUser = async (useSSR = false) => {
     try {
       let userData: UserWithoutPassword | null = null
-      
+
       if (useSSR) {
         // Use useFetch for SSR - properly handles cookies
         const { data, error } = await useFetch<{ user: UserWithoutPassword }>(`${apiBasePath}/me`, {
           server: true,
           lazy: false
         })
-        
+
         if (error.value) {
           throw new Error(error.value.message || 'Failed to fetch user')
         }
-        
+
         userData = data.value?.user || null
-      } else {
+      }
+      else {
         // Use $fetch for client-only requests
-        const response = await $fetch<{ user: UserWithoutPassword }>(`${apiBasePath}/me`, { 
+        const response = await $fetch<{ user: UserWithoutPassword }>(`${apiBasePath}/me`, {
           method: 'GET'
         })
         userData = response.user
