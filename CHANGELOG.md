@@ -1,6 +1,51 @@
 # Changelog
 
 
+## v1.35.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.7...v1.35.0)
+
+### 🚀 Enhancements
+
+- Implement google authentication ([e830872](https://github.com/rrd108/nuxt-users/commit/e830872))
+- Add google auth to the playground ([2b43ca0](https://github.com/rrd108/nuxt-users/commit/2b43ca0))
+- Add migration ([0280eca](https://github.com/rrd108/nuxt-users/commit/0280eca))
+- Unregistered user gets error message ([eefbdf5](https://github.com/rrd108/nuxt-users/commit/eefbdf5))
+
+### 🩹 Fixes
+
+- Prevents database connection issues during build ([8a3aa38](https://github.com/rrd108/nuxt-users/commit/8a3aa38))
+- Add api endpoints to public endpoints ([16aefa9](https://github.com/rrd108/nuxt-users/commit/16aefa9))
+- Completes Google OAuth user fetch on client ([6c95b94](https://github.com/rrd108/nuxt-users/commit/6c95b94))
+
+### 📖 Documentation
+
+- Fix github link ([28662ca](https://github.com/rrd108/nuxt-users/commit/28662ca))
+- Adds Google OAuth authentication ([463c19f](https://github.com/rrd108/nuxt-users/commit/463c19f))
+- Adds Google OAuth registration ([2e0eebf](https://github.com/rrd108/nuxt-users/commit/2e0eebf))
+
+### 🏡 Chore
+
+- Lint fix ([8d75930](https://github.com/rrd108/nuxt-users/commit/8d75930))
+- **release:** V1.34.7 ([b9d061c](https://github.com/rrd108/nuxt-users/commit/b9d061c))
+- Remove unused files ([8bd3e58](https://github.com/rrd108/nuxt-users/commit/8bd3e58))
+- Replace googleapis package with google-auth ([0e8e3d4](https://github.com/rrd108/nuxt-users/commit/0e8e3d4))
+- Fix lint errors ([3ed5bcc](https://github.com/rrd108/nuxt-users/commit/3ed5bcc))
+- Update lock ([8cd4a97](https://github.com/rrd108/nuxt-users/commit/8cd4a97))
+
+### ✅ Tests
+
+- Google OAuth authentication ([7d7bd68](https://github.com/rrd108/nuxt-users/commit/7d7bd68))
+- Add oauth flow test ([b805718](https://github.com/rrd108/nuxt-users/commit/b805718))
+- Fix db setup ([a097c4a](https://github.com/rrd108/nuxt-users/commit/a097c4a))
+- Replace smoke test with middleware test ([7ee1893](https://github.com/rrd108/nuxt-users/commit/7ee1893))
+- Add security checks ([a206962](https://github.com/rrd108/nuxt-users/commit/a206962))
+- Fix ts errors ([d7e6c61](https://github.com/rrd108/nuxt-users/commit/d7e6c61))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.34.7
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.6...v1.34.7)
