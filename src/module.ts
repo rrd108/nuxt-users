@@ -60,12 +60,15 @@ export default defineNuxtModule<RuntimeModuleOptions>({
 
     // Add runtime config (server-side)
     // Priority: runtimeConfig (strongest) > top-level app config > default options (weakest)
-    const runtimeConfigOptions = defu(nuxt.options.runtimeConfig.nuxtUsers || {}, options, defaultOptions)
+    const runtimeConfigOptions = defu(nuxt.options.runtimeConfig.nuxtUsers || {}, options, defaultOptions) as ModuleOptions
 
     nuxt.options.runtimeConfig.nuxtUsers = {
       ...runtimeConfigOptions,
       auth: {
-        ...runtimeConfigOptions.auth,
+        tokenExpiration: runtimeConfigOptions.auth.tokenExpiration,
+        rememberMeExpiration: runtimeConfigOptions.auth.rememberMeExpiration,
+        permissions: runtimeConfigOptions.auth.permissions,
+        ...(runtimeConfigOptions.auth.google && { google: runtimeConfigOptions.auth.google }),
         whitelist: (() => {
           const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]
           const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
@@ -102,7 +105,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
           return combinedWhitelist
         })()
       },
-    }
+    } as unknown as typeof nuxt.options.runtimeConfig.nuxtUsers
 
     // Add public runtime config for client-side access
     nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {}

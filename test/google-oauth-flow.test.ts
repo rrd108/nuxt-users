@@ -228,11 +228,12 @@ describe('Google OAuth Complete Flow Integration', () => {
       // User will be found (returns user object)
       const user = await findOrCreateGoogleUser(mockGoogleUser, testOptions)
       expect(user).toBeDefined()
-      expect(user?.active).toBeFalsy()
+      expect(user).not.toBeNull()
+      expect(user!.active).toBeFalsy()
 
       // The callback handler should reject this user
       // Simulating what happens in callback.get.ts
-      if (!user?.active) {
+      if (user && !user.active) {
         // Should redirect to error page instead of creating token
         expect(user.active).toBeFalsy()
         // No token should be created - verify

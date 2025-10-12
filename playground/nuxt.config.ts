@@ -16,8 +16,8 @@ export default defineNuxtConfig({
         admin: ['*'],
       }, */
       google: {
-        clientId: process.env.GOOGLE_CLIENT_ID || 'demo-client-id',
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'demo-client-secret',
+        clientId: process.env.GOOGLE_CLIENT_ID || 'google-client-id',
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'google-client-secret',
         successRedirect: '/',
         errorRedirect: '/login?error=oauth_failed'
       }

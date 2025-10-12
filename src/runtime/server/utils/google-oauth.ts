@@ -54,7 +54,7 @@ export async function getGoogleUserFromCode(oauth2Client: any, code: string): Pr
     id: data.id!,
     email: data.email,
     name: data.name || data.email.split('@')[0],
-    picture: data.picture,
+    picture: data.picture || undefined,
     verified_email: data.verified_email
   }
 }

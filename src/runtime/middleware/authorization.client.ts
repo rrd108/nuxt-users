@@ -30,7 +30,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const { isAuthenticated, user, fetchUser } = useAuthentication()
   
   // If not authenticated but oauth_success flag is present, fetch user using SSR
-  if (!isAuthenticated.value && to.query.oauth_success === 'true') {
+  if (!isAuthenticated.value && to.query?.oauth_success === 'true') {
     try {
       await fetchUser(true) // Use SSR to properly handle httpOnly cookies
     }

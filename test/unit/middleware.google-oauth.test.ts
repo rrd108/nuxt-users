@@ -94,7 +94,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      await authorizationMiddleware.default(to as any)
+      const from = { path: '/login' } as any
+      await authorizationMiddleware.default(to as any, from)
 
       // Should call fetchUser with SSR enabled
       expect(mockFetchUser).toHaveBeenCalledWith(true)
@@ -129,7 +130,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      await authorizationMiddleware.default(to as any)
+      const from = { path: '/login' } as any
+      await authorizationMiddleware.default(to as any, from)
 
       expect(mockFetchUser).toHaveBeenCalledWith(true)
       // After fetch, should NOT redirect to login
@@ -150,7 +152,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      await authorizationMiddleware.default(to as any)
+      const from = { path: '/login' } as any
+      await authorizationMiddleware.default(to as any, from)
 
       expect(mockFetchUser).toHaveBeenCalledWith(true)
       // After failed fetch, should redirect to login
@@ -177,7 +180,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      await authorizationMiddleware.default(to as any)
+      const from = { path: '/login' } as any
+      await authorizationMiddleware.default(to as any, from)
 
       // Should not fetch user if already authenticated
       expect(mockFetchUser).not.toHaveBeenCalled()
@@ -199,7 +203,8 @@ describe('Google OAuth Client Middleware', () => {
         query: {}
       }
 
-      await authorizationMiddleware.default(to as any)
+      const from = { path: '/login' } as any
+      await authorizationMiddleware.default(to as any, from)
 
       // Should NOT fetch user without oauth_success flag
       expect(mockFetchUser).not.toHaveBeenCalled()
@@ -223,7 +228,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      await authorizationMiddleware.default(to as any)
+      const from = { path: '/login' } as any
+      await authorizationMiddleware.default(to as any, from)
 
       // Should call with true to enable SSR (critical for httpOnly cookies)
       expect(mockFetchUser).toHaveBeenCalledWith(true)
@@ -254,7 +260,8 @@ describe('Google OAuth Client Middleware', () => {
         query: {}
       }
 
-      const result = await authorizationMiddleware.default(to as any)
+      const from = { path: '/login' } as any
+      const result = await authorizationMiddleware.default(to as any, from)
 
       expect(result).toBeUndefined() // Middleware allows passage
       expect(mockNavigateTo).not.toHaveBeenCalled()
@@ -283,7 +290,8 @@ describe('Google OAuth Client Middleware', () => {
         query: {}
       }
 
-      await authorizationMiddleware.default(to as any)
+      const from = { path: '/login' } as any
+      await authorizationMiddleware.default(to as any, from)
 
       expect(mockNavigateTo).toHaveBeenCalledWith('/login')
     })
@@ -305,7 +313,8 @@ describe('Google OAuth Client Middleware', () => {
         query: { oauth_success: 'true' }
       }
 
-      const result = await authorizationMiddleware.default(to as any)
+      const from = { path: '/login' } as any
+      const result = await authorizationMiddleware.default(to as any, from)
 
       // Should not fetch user or redirect
       expect(mockFetchUser).not.toHaveBeenCalled()

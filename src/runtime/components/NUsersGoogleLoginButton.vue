@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { ModuleOptions } from 'nuxt-users/utils'
-import { useRuntimeConfig } from '#imports'
+import { useRuntimeConfig, navigateTo } from '#imports'
 
 interface Props {
   /**
