@@ -1,4 +1,4 @@
-import { useState, useRuntimeConfig } from '#app'
+import { useState, useRuntimeConfig, useFetch } from '#app'
 import { computed, readonly } from 'vue'
 import type { User, UserWithoutPassword } from 'nuxt-users/utils'
 
@@ -55,10 +55,36 @@ export const useAuthentication = () => {
     }
   }
 
-  const fetchUser = async () => {
+  const fetchUser = async (useSSR = false) => {
     try {
-      const response = await $fetch<{ user: UserWithoutPassword }>(`${apiBasePath}/me`, { method: 'GET' })
-      user.value = response.user
+      let userData: UserWithoutPassword | null = null
+
+      if (useSSR) {
+        // Use useFetch for SSR - properly handles cookies
+        const { data, error } = await useFetch<{ user: UserWithoutPassword }>(`${apiBasePath}/me`, {
+          server: true,
+          lazy: false
+        })
+
+        if (error.value) {
+          throw new Error(error.value.message || 'Failed to fetch user')
+        }
+
+        userData = data.value?.user || null
+      }
+      else {
+        // Use $fetch for client-only requests
+        const response = await $fetch<{ user: UserWithoutPassword }>(`${apiBasePath}/me`, {
+          method: 'GET'
+        })
+        userData = response.user
+      }
+
+      if (!userData) {
+        throw new Error('No user data received')
+      }
+
+      user.value = userData
 
       // Update the appropriate storage with fresh user data
       if (import.meta.client) {
@@ -67,17 +93,17 @@ export const useAuthentication = () => {
         const wasInSessionStorage = sessionStorage.getItem('user') !== null
 
         if (wasInLocalStorage) {
-          localStorage.setItem('user', JSON.stringify(response.user))
+          localStorage.setItem('user', JSON.stringify(userData))
         }
         else if (wasInSessionStorage) {
-          sessionStorage.setItem('user', JSON.stringify(response.user))
+          sessionStorage.setItem('user', JSON.stringify(userData))
         }
         else {
           // Default to sessionStorage for new sessions without rememberMe
-          sessionStorage.setItem('user', JSON.stringify(response.user))
+          sessionStorage.setItem('user', JSON.stringify(userData))
         }
       }
-      return response.user
+      return userData
     }
     catch (error) {
       console.error('Failed to fetch user:', error)

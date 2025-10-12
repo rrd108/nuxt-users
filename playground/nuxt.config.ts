@@ -15,6 +15,12 @@ export default defineNuxtConfig({
       /* permissions: {
         admin: ['*'],
       }, */
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID || 'google-client-id',
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'google-client-secret',
+        successRedirect: '/',
+        errorRedirect: '/login?error=oauth_failed'
+      }
     },
     passwordValidation: {
       minLength: 3,

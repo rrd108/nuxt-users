@@ -14,7 +14,8 @@ export type {
   ResetPasswordFormProps,
   Permission,
   DatabaseType,
-  DatabaseConfig
+  DatabaseConfig,
+  GoogleOAuthOptions
 } from '../types'
 
 export { defaultDisplayFields, defaultFieldLabels } from '../types'

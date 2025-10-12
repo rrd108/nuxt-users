@@ -5,6 +5,7 @@ import { createPersonalAccessTokensTable } from './create-personal-access-tokens
 import { createPasswordResetTokensTable } from './create-password-reset-tokens-table'
 import { createMigrationsTable } from './create-migrations-table'
 import { addActiveToUsers } from './add-active-to-users'
+import { addGoogleOauthFields } from './add-google-oauth-fields'
 
 interface Migration {
   name: string
@@ -31,6 +32,10 @@ const migrations: Migration[] = [
   {
     name: 'add_active_to_users',
     run: addActiveToUsers
+  },
+  {
+    name: 'add_google_oauth_fields',
+    run: addGoogleOauthFields
   }
 ]
 

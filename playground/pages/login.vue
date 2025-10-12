@@ -1,7 +1,25 @@
 <script setup>
 import { useAuthentication } from '#imports'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 const { login } = useAuthentication()
+const route = useRoute()
+const oauthError = ref('')
+
+const errorMessages = {
+  oauth_failed: 'Authentication failed. Please try again.',
+  user_not_registered: 'You are not registered. Please contact an administrator or register first.',
+  account_inactive: 'Your account is inactive. Please contact support.',
+  oauth_not_configured: 'OAuth is not properly configured.'
+}
+
+onMounted(() => {
+  const errorParam = route.query.error
+  if (errorParam && errorMessages[errorParam]) {
+    oauthError.value = errorMessages[errorParam]
+  }
+})
 
 const handleSuccess = (user, rememberMe) => {
   console.log('[Nuxt Users] Login successful:', user, 'Remember me:', rememberMe)
@@ -19,6 +37,15 @@ const handleSubmit = (data) => {
   // The login composable will now handle the rememberMe flag automatically
   // when the server responds with user data after successful authentication
 }
+
+const handleGoogleLogin = () => {
+  console.log('[Nuxt Users] Starting Google OAuth flow')
+  oauthError.value = '' // Clear any existing errors
+}
+
+const dismissError = () => {
+  oauthError.value = ''
+}
 </script>
 
 <template>
@@ -32,7 +59,22 @@ const handleSubmit = (data) => {
 
     <div class="demo-section">
       <h2>Login Component Demo</h2>
-      <p>Login with: rrd@webmania.cc / 123</p>
+    </div>
+
+    <div
+      v-if="oauthError"
+      class="error-banner"
+    >
+      <div class="error-content">
+        <span class="error-icon">⚠️</span>
+        <span class="error-message">{{ oauthError }}</span>
+        <button
+          class="error-dismiss"
+          @click="dismissError"
+        >
+          ✕
+        </button>
+      </div>
     </div>
 
     <NUsersLoginForm
@@ -40,6 +82,20 @@ const handleSubmit = (data) => {
       @error="handleError"
       @submit="handleSubmit"
     />
+
+    <div class="oauth-divider">
+      <span>or</span>
+    </div>
+
+    <div class="oauth-section">
+      <h3>OAuth Login</h3>
+      <p>Click below to test Google OAuth (requires valid credentials in .env)</p>
+      <NUsersGoogleLoginButton
+        button-text="Continue with Google"
+        class="google-btn"
+        @click="handleGoogleLogin"
+      />
+    </div>
   </div>
 </template>
 
@@ -88,6 +144,109 @@ nav a {
   margin-bottom: 2em;
   font-size: 0.875rem;
   text-align: center;
+}
+
+.oauth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.oauth-divider::before,
+.oauth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--nu-color-border);
+}
+
+.oauth-divider span {
+  padding: 0 1rem;
+  color: var(--nu-color-gray-500);
+  font-size: 0.875rem;
+  background: var(--nu-color-bg);
+}
+
+.oauth-section {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.oauth-section h3 {
+  color: var(--nu-color-gray-700);
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.oauth-section p {
+  color: var(--nu-color-gray-500);
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.google-btn {
+  margin: 0 auto;
+}
+
+.error-banner {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.error-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.error-message {
+  flex: 1;
+  color: #991b1b;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.error-dismiss {
+  background: none;
+  border: none;
+  color: #991b1b;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.error-dismiss:hover {
+  background-color: #fee2e2;
 }
 
 /* Responsive design */

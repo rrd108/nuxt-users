@@ -16,6 +16,8 @@ export const createUsersTable = async (options: ModuleOptions) => {
       name TEXT NOT NULL,
       password TEXT NOT NULL,
       role TEXT NOT NULL DEFAULT 'user',
+      google_id TEXT UNIQUE,
+      profile_picture TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -29,6 +31,8 @@ export const createUsersTable = async (options: ModuleOptions) => {
         name VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL,
         role VARCHAR(32) NOT NULL DEFAULT 'user',
+        google_id VARCHAR(255) UNIQUE,
+        profile_picture TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
@@ -42,11 +46,13 @@ export const createUsersTable = async (options: ModuleOptions) => {
         name VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL,
         role VARCHAR(32) NOT NULL DEFAULT 'user',
+        google_id VARCHAR(255) UNIQUE,
+        profile_picture TEXT,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       )
     `
   }
 
-  console.log(`[Nuxt Users] DB:Create ${connectorName} Users Table Fields: id, email, name, password, role, created_at, updated_at ✅`)
+  console.log(`[Nuxt Users] DB:Create ${connectorName} Users Table Fields: id, email, name, password, role, google_id, profile_picture, created_at, updated_at ✅`)
 }

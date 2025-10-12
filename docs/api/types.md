@@ -33,6 +33,8 @@ interface User {
   password: string  // ⚠️ Contains sensitive data
   role: string
   active: boolean
+  google_id?: string  // Google OAuth ID (optional)
+  profile_picture?: string  // Profile picture URL (optional, from Google)
   created_at: string  // ISO datetime string
   updated_at: string  // ISO datetime string
   last_login_at?: string  // ISO datetime string (optional)
@@ -41,6 +43,10 @@ interface User {
 
 ::: warning
 The `User` type includes the password field. Use `UserWithoutPassword` for client-side operations.
+:::
+
+::: info
+The `google_id` and `profile_picture` fields are populated when users authenticate via Google OAuth.
 :::
 
 ### UserWithoutPassword
@@ -130,7 +136,9 @@ interface RuntimeModuleOptions {
   auth?: {
     whitelist?: string[]
     tokenExpiration?: number
+    rememberMeExpiration?: number
     permissions?: Record<string, (string | Permission)[]>
+    google?: GoogleOAuthOptions
   }
   passwordValidation?: {
     minLength?: number
@@ -142,6 +150,83 @@ interface RuntimeModuleOptions {
   }
 }
 ```
+
+### GoogleOAuthOptions
+
+Configuration options for Google OAuth authentication:
+
+```typescript
+interface GoogleOAuthOptions {
+  /**
+   * Google OAuth client ID from Google Cloud Console
+   */
+  clientId: string
+  
+  /**
+   * Google OAuth client secret from Google Cloud Console
+   */
+  clientSecret: string
+  
+  /**
+   * Callback URL for Google OAuth (must match what's configured in Google Cloud Console)
+   * @default '/api/nuxt-users/auth/google/callback'
+   */
+  callbackUrl?: string
+  
+  /**
+   * Redirect URL after successful authentication
+   * @default '/'
+   */
+  successRedirect?: string
+  
+  /**
+   * Redirect URL after failed authentication
+   * @default '/login?error=oauth_failed'
+   */
+  errorRedirect?: string
+  
+  /**
+   * Google OAuth scopes to request
+   * @default ['openid', 'profile', 'email']
+   */
+  scopes?: string[]
+  
+  /**
+   * Allow automatic user registration when logging in with Google for the first time
+   * If false, only existing users with matching email can log in with Google
+   * @default false
+   */
+  allowAutoRegistration?: boolean
+}
+```
+
+**Example usage:**
+
+```typescript
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    auth: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        allowAutoRegistration: false, // Only existing users can log in
+        successRedirect: '/dashboard',
+        errorRedirect: '/login?error=oauth_failed'
+      }
+    }
+  }
+})
+```
+
+::: tip
+By default, `allowAutoRegistration` is `false` for security. This means only users with existing accounts (by email) can log in with Google. Set it to `true` to allow public registration via Google OAuth.
+:::
+
+::: warning
+When `allowAutoRegistration: false`, new Google users will be redirected to `errorRedirect` with the error code `user_not_registered`.
+:::
 
 ### ModuleOptions
 

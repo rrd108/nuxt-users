@@ -92,6 +92,7 @@
     "bcrypt": "^6.0.0",
     "citty": "^0.1.6",
     "defu": "^6.1.4",
+    "google-auth-library": "^10.4.0",
     "nodemailer": "^7.0.5"
   },
   "optionalDependencies": {
