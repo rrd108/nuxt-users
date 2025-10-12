@@ -1,4 +1,4 @@
-import { google } from 'googleapis'
+import { OAuth2Client } from 'google-auth-library'
 import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
 import type { ModuleOptions, User, GoogleOAuthOptions } from 'nuxt-users/utils'
@@ -16,7 +16,7 @@ export interface GoogleUserInfo {
  * Create Google OAuth2 client
  */
 export function createGoogleOAuth2Client(options: GoogleOAuthOptions, callbackUrl: string) {
-  return new google.auth.OAuth2(
+  return new OAuth2Client(
     options.clientId,
     options.clientSecret,
     callbackUrl
@@ -26,7 +26,7 @@ export function createGoogleOAuth2Client(options: GoogleOAuthOptions, callbackUr
 /**
  * Generate authorization URL for Google OAuth
  */
-export function getGoogleAuthUrl(oauth2Client: any, options: GoogleOAuthOptions): string {
+export function getGoogleAuthUrl(oauth2Client: OAuth2Client, options: GoogleOAuthOptions): string {
   const scopes = options.scopes || ['openid', 'profile', 'email']
   
   return oauth2Client.generateAuthUrl({
@@ -39,19 +39,29 @@ export function getGoogleAuthUrl(oauth2Client: any, options: GoogleOAuthOptions)
 /**
  * Exchange authorization code for tokens and get user info
  */
-export async function getGoogleUserFromCode(oauth2Client: any, code: string): Promise<GoogleUserInfo> {
+export async function getGoogleUserFromCode(oauth2Client: OAuth2Client, code: string): Promise<GoogleUserInfo> {
   const { tokens } = await oauth2Client.getToken(code)
   oauth2Client.setCredentials(tokens)
 
-  const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client })
-  const { data } = await oauth2.userinfo.get()
+  // Fetch user info directly from Google's userinfo endpoint
+  const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+    headers: {
+      Authorization: `Bearer ${tokens.access_token}`
+    }
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user info: ${response.statusText}`)
+  }
+
+  const data = await response.json()
 
   if (!data.email || !data.verified_email) {
     throw new Error('Google account email not verified')
   }
 
   return {
-    id: data.id!,
+    id: data.id,
     email: data.email,
     name: data.name || data.email.split('@')[0],
     picture: data.picture || undefined,

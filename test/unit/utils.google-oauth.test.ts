@@ -7,18 +7,13 @@ import { addActiveToUsers } from '../../src/runtime/server/utils/add-active-to-u
 import { addGoogleOauthFields } from '../../src/runtime/server/utils/add-google-oauth-fields'
 import bcrypt from 'bcrypt'
 
-// Mock Google APIs
-vi.mock('googleapis', () => ({
-  google: {
-    auth: {
-      OAuth2: vi.fn().mockImplementation(() => ({
-        generateAuthUrl: vi.fn(),
-        getToken: vi.fn(),
-        setCredentials: vi.fn()
-      }))
-    },
-    oauth2: vi.fn()
-  }
+// Mock Google Auth Library
+vi.mock('google-auth-library', () => ({
+  OAuth2Client: vi.fn().mockImplementation(() => ({
+    generateAuthUrl: vi.fn(),
+    getToken: vi.fn(),
+    setCredentials: vi.fn()
+  }))
 }))
 
 // Mock bcrypt
