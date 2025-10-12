@@ -702,11 +702,15 @@ export default defineNuxtConfig({
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID!,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        
         // Optional: customize URLs and scopes
         callbackUrl: '/api/nuxt-users/auth/google/callback',
         successRedirect: '/dashboard',
         errorRedirect: '/login?error=oauth_failed',
-        scopes: ['openid', 'profile', 'email']
+        scopes: ['openid', 'profile', 'email'],
+        
+        // Control automatic user registration (default: false)
+        allowAutoRegistration: false
       }
     }
   }
@@ -788,18 +792,85 @@ The Google OAuth authentication flow works as follows:
 1. **User clicks Google login button** → Redirects to `/api/nuxt-users/auth/google/redirect`
 2. **Redirect to Google** → User is sent to Google's OAuth consent screen
 3. **User grants permission** → Google redirects back to `/api/nuxt-users/auth/google/callback`
-4. **Process OAuth response** → Module exchanges code for user info
-5. **Create or link account** → User is created or existing account is linked
-6. **Set authentication cookie** → User is logged in with persistent session
-7. **Redirect to success page** → User is redirected to configured success URL
+4. **Process OAuth response** → Module exchanges code for user info and verifies email
+5. **Find or create user** → Module checks if user exists:
+   - Existing Google user → Update profile picture if changed
+   - Existing user by email → Link Google account automatically
+   - New user + `allowAutoRegistration: true` → Create new account
+   - New user + `allowAutoRegistration: false` → Reject with error
+6. **Set authentication cookie** → User is logged in with persistent session (30 days by default)
+7. **Redirect** → User is redirected to `successRedirect` or `errorRedirect` based on outcome
 
-### User Account Linking
+### User Account Linking & Auto-Registration
 
-The module intelligently handles user account linking:
+The module intelligently handles different user scenarios based on the `allowAutoRegistration` configuration:
 
-- **New Google user**: Creates a new account with secure random password
-- **Existing email**: Links Google account to existing user account  
-- **Returning Google user**: Logs in existing user and updates profile picture
+#### Scenario 1: Existing User with Google Account
+When a user who has previously linked their Google account logs in:
+- ✅ User is authenticated immediately
+- ✅ Profile picture is automatically updated if changed
+- ✅ User is redirected to `successRedirect`
+
+#### Scenario 2: Existing User by Email (Auto-Linking)
+When a user with an existing account (created via traditional registration) logs in with Google for the first time:
+- ✅ Google account is automatically linked to the existing user account
+- ✅ User's `google_id` is saved for future logins
+- ✅ Profile picture is added/updated
+- ✅ User can now log in with either password or Google
+
+#### Scenario 3: New User (Controlled by `allowAutoRegistration`)
+
+**When `allowAutoRegistration: false` (default - recommended for production)**:
+- ❌ New users cannot self-register via Google
+- ❌ User is redirected to `errorRedirect` with `error=user_not_registered`
+- ✅ More secure for invite-only or controlled access systems
+- ✅ Prevents unauthorized account creation
+
+```ts
+// Secure configuration - only existing users can log in with Google
+auth: {
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    allowAutoRegistration: false  // Default
+  }
+}
+```
+
+**When `allowAutoRegistration: true` (for public registration)**:
+- ✅ New users are automatically registered when they log in with Google
+- ✅ Account is created with:
+  - Email and name from Google profile
+  - Cryptographically secure random password (user won't need it)
+  - Profile picture from Google
+  - Default role: `'user'`
+  - Account status: `active`
+- ✅ User is immediately logged in and redirected to `successRedirect`
+
+```ts
+// Open registration - anyone with a Google account can register
+auth: {
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    allowAutoRegistration: true  // Allow public registration
+  }
+}
+```
+
+#### Security Considerations
+
+**Use `allowAutoRegistration: false` when:**
+- You want to control who can access your application
+- You have an invite-only system
+- You want admins to manually approve users
+- You're building an internal/private application
+
+**Use `allowAutoRegistration: true` when:**
+- You want public registration
+- You're building a consumer-facing application
+- You trust Google's email verification
+- You have additional security measures in place (role-based access, etc.)
 
 ### Security Features
 
@@ -811,16 +882,50 @@ The module intelligently handles user account linking:
 
 ### Error Handling
 
-The OAuth flow handles various error scenarios:
+The OAuth flow handles various error scenarios and redirects to `errorRedirect` with specific error codes:
 
-- **OAuth denied**: User cancels Google consent → redirects to error page
-- **Invalid configuration**: Missing client ID/secret → shows configuration error
-- **Account inactive**: Inactive user attempts login → redirects with error message
-- **API errors**: Google API failures → logs error and redirects safely
+- **`oauth_failed`**: User cancels Google consent or OAuth process fails
+- **`oauth_not_configured`**: Missing or invalid Google OAuth configuration (client ID/secret)
+- **`user_not_registered`**: New user attempted login when `allowAutoRegistration: false` (default)
+- **`account_inactive`**: User account exists but is marked as inactive
+- **`oauth_failed`**: Google API failures or token exchange errors
+
+Example error handling in your login page:
+
+```vue
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const errorMessage = ref('')
+
+const errorMessages = {
+  oauth_failed: 'Google authentication failed. Please try again.',
+  user_not_registered: 'You are not registered. Please sign up first or contact an administrator.',
+  account_inactive: 'Your account is inactive. Please contact support.',
+  oauth_not_configured: 'OAuth is not properly configured. Please contact support.'
+}
+
+onMounted(() => {
+  const error = route.query.error
+  if (error && errorMessages[error]) {
+    errorMessage.value = errorMessages[error]
+  }
+})
+</script>
+
+<template>
+  <div v-if="errorMessage" class="error-banner">
+    {{ errorMessage }}
+  </div>
+  <NUsersGoogleLoginButton />
+</template>
+```
 
 ### Customization
 
-You can customize the OAuth behavior:
+You can customize the OAuth behavior with all available options:
 
 ```ts
 // nuxt.config.ts
@@ -828,23 +933,39 @@ export default defineNuxtConfig({
   nuxtUsers: {
     auth: {
       google: {
+        // Required: OAuth credentials from Google Cloud Console
         clientId: process.env.GOOGLE_CLIENT_ID!,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         
+        // Control user registration (default: false)
+        allowAutoRegistration: false,
+        
         // Customize redirect URLs
-        successRedirect: '/welcome', // After successful login
+        successRedirect: '/welcome', // After successful login (default: '/')
         errorRedirect: '/login?error=google_failed', // After failed login
         
-        // Request additional permissions
+        // Request additional permissions (default: ['openid', 'profile', 'email'])
         scopes: ['openid', 'profile', 'email', 'https://www.googleapis.com/auth/user.birthday.read'],
         
-        // Custom callback URL (must match Google Cloud Console)
+        // Custom callback URL - must match Google Cloud Console configuration
         callbackUrl: '/api/nuxt-users/auth/google/callback'
       }
     }
   }
 })
 ```
+
+#### Configuration Options Reference
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `clientId` | `string` | **required** | Google OAuth client ID from Google Cloud Console |
+| `clientSecret` | `string` | **required** | Google OAuth client secret from Google Cloud Console |
+| `allowAutoRegistration` | `boolean` | `false` | Allow new users to auto-register via Google |
+| `successRedirect` | `string` | `'/'` | Redirect URL after successful authentication |
+| `errorRedirect` | `string` | `'/login?error=oauth_failed'` | Redirect URL after failed authentication |
+| `scopes` | `string[]` | `['openid', 'profile', 'email']` | Google OAuth scopes to request |
+| `callbackUrl` | `string` | `'/api/nuxt-users/auth/google/callback'` | OAuth callback URL (must match Google Console) |
 
 ## Security Best Practices
 
