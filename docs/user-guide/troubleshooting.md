@@ -57,6 +57,23 @@ npm run dev
 
 ## Database Issues
 
+### Verify Configuration
+
+**Problem:** Unsure about your current database configuration or module setup.
+
+**Solution:**
+```bash
+# Check your project configuration and database settings
+npx nuxt-users project-info
+
+# This will show:
+# - Database connector type (SQLite, MySQL, PostgreSQL)
+# - Database connection details (host, port, user, database name)
+# - Table names configuration
+# - Migrations table status
+# - Number of applied migrations
+```
+
 ### Database Connection Failed
 
 **Problem:** Getting database connection errors during startup.
@@ -154,10 +171,7 @@ sqlite3 data/users.sqlite3 ".schema users"
 
 1. **Check if user exists:**
 ```bash
-# List all users to verify the user was created
-npx nuxt-users list-users
-
-# Or create a test user
+# Create a test user
 npx nuxt-users create-user -e test@example.com -n "Test User" -p password123
 ```
 
