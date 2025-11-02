@@ -118,6 +118,7 @@
     "@nuxt/module-builder": "^1.0.2",
     "@nuxt/schema": "^4.0.0",
     "@nuxt/test-utils": "^3.19.2",
+    "@nuxt/vite-builder": "^4.2.0",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "latest",
     "@types/nodemailer": "^6.4.17",
