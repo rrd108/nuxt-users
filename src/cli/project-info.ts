@@ -29,11 +29,11 @@ export default defineCommand({
         if (nuxtUsersConfig.connector?.options) {
           const options = nuxtUsersConfig.connector.options
           const connectorName = nuxtUsersConfig.connector.name
-          
+
           if (connectorName === 'sqlite') {
             console.log('[Nuxt Users]    Path:', options.path || 'Not configured')
           }
-          
+
           if (connectorName === 'mysql' || connectorName === 'postgresql') {
             console.log('[Nuxt Users]    Host:', options.host || 'Not configured')
             console.log('[Nuxt Users]    Port:', options.port || 'Not configured')
@@ -59,7 +59,7 @@ export default defineCommand({
             console.log('[Nuxt Users]    Table exists: yes ✅')
             console.log('[Nuxt Users]    Applied migrations:', appliedMigrations.length)
             if (appliedMigrations.length > 0) {
-              appliedMigrations.forEach(migration => {
+              appliedMigrations.forEach((migration) => {
                 console.log('[Nuxt Users]      -', migration)
               })
             }
