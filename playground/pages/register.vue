@@ -20,8 +20,10 @@
 <script setup lang="ts">
 import type { UserWithoutPassword } from 'nuxt-users/utils'
 
+type RegistrationUser = Omit<UserWithoutPassword, 'active'>
+
 // Handle successful registration
-const onRegistrationSuccess = (data: { user: Omit<UserWithoutPassword, 'active'>, message: string }) => {
+const onRegistrationSuccess = (data: { user: RegistrationUser, message: string }) => {
   console.log('Registration successful:', data)
   // Additional success handling if needed
 }

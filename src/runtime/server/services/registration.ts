@@ -238,7 +238,7 @@ export const confirmUserEmail = async (
   const [hour, minute, second] = timePart.split(':').map(Number)
 
   if (!year || !month || !day || hour === undefined || minute === undefined || second === undefined) {
-    console.log(`[Nuxt Users] Invalid timestamp components`)
+    console.log('[Nuxt Users] Invalid timestamp components')
     return false
   }
 

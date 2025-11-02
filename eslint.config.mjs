@@ -26,6 +26,8 @@ export default createConfigForNuxt({
         // Disable trailing commas
         'comma-dangle': 'off',
         '@stylistic/comma-dangle': 'off',
+        // Disable unified-signatures due to bug with Vue files
+        '@typescript-eslint/unified-signatures': 'off',
       },
     },
   )

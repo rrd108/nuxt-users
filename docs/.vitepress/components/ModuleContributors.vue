@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const contributors = ref<{ id: string, avatar_url: string, login: string, html_url: string }[]>([])
+interface Contributor { id: string, avatar_url: string, login: string, html_url: string }
+const contributors = ref<Contributor[]>([])
 
 fetch('https://api.github.com/repos/rrd108/nuxt-users/contributors')
   .then(res => res.json())

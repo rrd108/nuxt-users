@@ -260,7 +260,7 @@ describe('Google OAuth Complete Flow Integration', () => {
 
       // Verify token expiration
       const tokens = await db.sql`SELECT expires_at FROM personal_access_tokens WHERE token = ${token}` as { rows: PersonalAccessToken[] }
-      const expiresAt = new Date(tokens.rows[0]?.expires_at!)
+      const expiresAt = new Date(tokens.rows[0]?.expires_at ?? new Date())
       const now = new Date()
       const daysDifference = Math.floor((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 
