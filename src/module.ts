@@ -60,7 +60,13 @@ export default defineNuxtModule<RuntimeModuleOptions>({
 
     // Add runtime config (server-side)
     // Priority: runtimeConfig (strongest) > top-level app config > default options (weakest)
-    const runtimeConfigOptions = defu(nuxt.options.runtimeConfig.nuxtUsers || {}, options, defaultOptions) as ModuleOptions
+    // Exclude connector from defaults to prevent mixing MySQL/PostgreSQL with SQLite settings
+    const { connector: _defaultConnector, ...defaultsWithoutConnector } = defaultOptions
+    const runtimeConfigOptions = defu(nuxt.options.runtimeConfig.nuxtUsers || {}, options, defaultsWithoutConnector) as ModuleOptions
+    
+    // Use the configured connector or fallback to default (don't merge connector options)
+    const configuredConnector = (nuxt.options.runtimeConfig.nuxtUsers as ModuleOptions)?.connector || options.connector
+    runtimeConfigOptions.connector = configuredConnector || defaultOptions.connector
 
     nuxt.options.runtimeConfig.nuxtUsers = {
       ...runtimeConfigOptions,
