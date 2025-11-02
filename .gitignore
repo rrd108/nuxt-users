@@ -58,3 +58,5 @@ Temporary Items
 bin/act
 data
 docs/.vitepress/cache
+# Snyk Security Extension - AI Rules (auto-generated)
+.cursor/rules/snyk_rules.mdc
