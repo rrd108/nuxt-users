@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v1.37.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.37.0...v1.37.1)
+
+### 🩹 Fixes
+
+- Add text to emojis ([e2e0ad5](https://github.com/rrd108/nuxt-users/commit/e2e0ad5))
+- Options merging bug what caused missing migrations error message with mysql ([f2d75ec](https://github.com/rrd108/nuxt-users/commit/f2d75ec))
+- Script output ([f478099](https://github.com/rrd108/nuxt-users/commit/f478099))
+
+### 💅 Refactors
+
+- Test scripts for efficiency ([8f0a31a](https://github.com/rrd108/nuxt-users/commit/8f0a31a))
+
+### 📖 Documentation
+
+- Describing using env variables ([f20414f](https://github.com/rrd108/nuxt-users/commit/f20414f))
+
+### 🏡 Chore
+
+- **release:** V1.37.0 ([2f9b2a6](https://github.com/rrd108/nuxt-users/commit/2f9b2a6))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.37.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.36.0...v1.37.0)
