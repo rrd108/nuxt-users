@@ -144,6 +144,31 @@ Examples:
 - `runtimeConfig.nuxtUsers.connector.options.host` → `NUXT_NUXT_USERS_CONNECTOR_OPTIONS_HOST`
 - `runtimeConfig.nuxtUsers.mailer.auth.user` → `NUXT_NUXT_USERS_MAILER_AUTH_USER`
 
+**Important:** Environment variables only override `undefined` values in `runtimeConfig`. If you want environment variables to provide values, set those properties to `undefined` in your config:
+
+```ts
+// nuxt.config.ts - Using env vars for sensitive data
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  runtimeConfig: {
+    nuxtUsers: {
+      connector: {
+        name: 'mysql',
+        options: {
+          host: 'localhost',
+          port: 3306,
+          database: undefined,  // Will use NUXT_NUXT_USERS_CONNECTOR_OPTIONS_DATABASE
+          user: undefined,      // Will use NUXT_NUXT_USERS_CONNECTOR_OPTIONS_USER
+          password: undefined   // Will use NUXT_NUXT_USERS_CONNECTOR_OPTIONS_PASSWORD
+        }
+      }
+    }
+  }
+})
+```
+
+**Why `undefined`?** Nuxt's environment variable system only replaces undefined values. Setting empty strings (`''`) or other values will prevent environment variables from being used.
+
 ```bash
 # Database (follows runtimeConfig.nuxtUsers.connector.options.* pattern)
 NUXT_NUXT_USERS_CONNECTOR_OPTIONS_HOST=localhost
