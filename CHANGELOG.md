@@ -1,6 +1,47 @@
 # Changelog
 
 
+## v1.37.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.36.0...v1.37.0)
+
+### 🚀 Enhancements
+
+- Enhances project info command output ([2d91bd9](https://github.com/rrd108/nuxt-users/commit/2d91bd9))
+
+### 🩹 Fixes
+
+- **deps:** Update nuxtjs monorepo to v4 ([0c4b199](https://github.com/rrd108/nuxt-users/commit/0c4b199))
+- Ts errors ([44f5d9e](https://github.com/rrd108/nuxt-users/commit/44f5d9e))
+- Add nuxt builder ([aaa8288](https://github.com/rrd108/nuxt-users/commit/aaa8288))
+- Ts errors ([d488513](https://github.com/rrd108/nuxt-users/commit/d488513))
+- **docs:** Updates last release timestamp ([3d3e0d8](https://github.com/rrd108/nuxt-users/commit/3d3e0d8))
+- Add text to emojis ([e2e0ad5](https://github.com/rrd108/nuxt-users/commit/e2e0ad5))
+- Options merging bug what caused missing migrations error message with mysql ([f2d75ec](https://github.com/rrd108/nuxt-users/commit/f2d75ec))
+
+### 💅 Refactors
+
+- Test scripts for efficiency ([8f0a31a](https://github.com/rrd108/nuxt-users/commit/8f0a31a))
+
+### 📖 Documentation
+
+- Adds project info command to troubleshooting ([8768090](https://github.com/rrd108/nuxt-users/commit/8768090))
+
+### 🏡 Chore
+
+- Add snyk ([9c932c8](https://github.com/rrd108/nuxt-users/commit/9c932c8))
+- Remove unsued import ([04fd61d](https://github.com/rrd108/nuxt-users/commit/04fd61d))
+- Package updates ([3173073](https://github.com/rrd108/nuxt-users/commit/3173073))
+- **release:** V1.36.0 ([92bb026](https://github.com/rrd108/nuxt-users/commit/92bb026))
+
+### ✅ Tests
+
+- Fix gauth ([b925cf2](https://github.com/rrd108/nuxt-users/commit/b925cf2))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.36.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.35.0...v1.36.0)
