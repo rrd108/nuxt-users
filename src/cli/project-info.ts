@@ -1,7 +1,7 @@
 import { defineCommand } from 'citty'
 import { loadNuxt } from '@nuxt/kit'
 import type { ModuleOptions } from 'nuxt-users/utils'
-import { useDb, checkTableExists } from '../runtime/server/utils/db'
+import { checkTableExists } from '../runtime/server/utils/db'
 import { getAppliedMigrations } from '../runtime/server/utils/migrate'
 
 export default defineCommand({
@@ -23,7 +23,7 @@ export default defineCommand({
       if (nuxtUsersConfig) {
         console.log('[Nuxt Users] 🔧 Nuxt Users module configuration:')
         console.log('[Nuxt Users]    Database connector:', nuxtUsersConfig.connector?.name)
-        
+
         // Display database connection details (excluding password)
         if (nuxtUsersConfig.connector?.options) {
           const options = nuxtUsersConfig.connector.options
@@ -43,11 +43,11 @@ export default defineCommand({
             console.log('[Nuxt Users]    Database path:', options.path)
           }
         }
-        
+
         console.log('[Nuxt Users]    Users table:', nuxtUsersConfig.tables?.users)
         console.log('[Nuxt Users]    Personal access tokens table:', nuxtUsersConfig.tables?.personalAccessTokens)
         console.log('[Nuxt Users]    Password reset tokens table:', nuxtUsersConfig.tables?.passwordResetTokens)
-        
+
         // Check migrations table
         try {
           const migrationsTableExists = await checkTableExists(nuxtUsersConfig, 'migrations')
