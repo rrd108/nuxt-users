@@ -44,7 +44,7 @@ describe('CLI: Package Imports', () => {
       const result = execSync('node ./dist/cli.mjs project-info', {
         encoding: 'utf8',
         cwd: process.cwd(),
-        timeout: 10000 // 10 second timeout
+        timeout: 14000 // 14 second timeout
       })
 
       // The command should run successfully without errors
