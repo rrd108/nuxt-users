@@ -17,70 +17,64 @@ export default defineCommand({
       console.log('[Nuxt Users] ✅ Nuxt project loaded successfully!')
       console.log('[Nuxt Users] 📁 Source directory:', nuxt.options.srcDir)
       console.log('[Nuxt Users] 🌐 Base URL:', nuxt.options.app?.baseURL || '/')
+      console.log()
 
       // Check if nuxt-users module is configured
       const nuxtUsersConfig = nuxt.options.runtimeConfig?.nuxtUsers as ModuleOptions
       if (nuxtUsersConfig) {
-        console.log('[Nuxt Users] 🔧 Nuxt Users module configuration:')
-        console.log('[Nuxt Users]    Database connector:', nuxtUsersConfig.connector?.name)
+        console.log('[Nuxt Users] 💾 Database Configuration:')
+        console.log('[Nuxt Users]    Connector:', nuxtUsersConfig.connector?.name)
 
         // Display database connection details (excluding password)
         if (nuxtUsersConfig.connector?.options) {
           const options = nuxtUsersConfig.connector.options
-          if (options.host) {
-            console.log('[Nuxt Users]    Database host:', options.host)
+          const connectorName = nuxtUsersConfig.connector.name
+          
+          if (connectorName === 'sqlite') {
+            console.log('[Nuxt Users]    Path:', options.path || 'Not configured')
           }
-          if (options.port) {
-            console.log('[Nuxt Users]    Database port:', options.port)
-          }
-          if (options.user) {
-            console.log('[Nuxt Users]    Database user:', options.user)
-          }
-          if (options.database) {
-            console.log('[Nuxt Users]    Database name:', options.database)
-          }
-          if (options.path) {
-            console.log('[Nuxt Users]    Database path:', options.path)
+          
+          if (connectorName === 'mysql' || connectorName === 'postgresql') {
+            console.log('[Nuxt Users]    Host:', options.host || 'Not configured')
+            console.log('[Nuxt Users]    Port:', options.port || 'Not configured')
+            console.log('[Nuxt Users]    Database:', options.database || 'Not configured')
+            console.log('[Nuxt Users]    User:', options.user || 'Not configured')
           }
         }
+        console.log()
 
-        console.log('[Nuxt Users]    Users table:', nuxtUsersConfig.tables?.users)
-        console.log('[Nuxt Users]    Personal access tokens table:', nuxtUsersConfig.tables?.personalAccessTokens)
-        console.log('[Nuxt Users]    Password reset tokens table:', nuxtUsersConfig.tables?.passwordResetTokens)
+        console.log('[Nuxt Users] 📋 Table Configuration:')
+        console.log('[Nuxt Users]    Users:', nuxtUsersConfig.tables?.users)
+        console.log('[Nuxt Users]    Tokens:', nuxtUsersConfig.tables?.personalAccessTokens)
+        console.log('[Nuxt Users]    Password resets:', nuxtUsersConfig.tables?.passwordResetTokens)
+        console.log('[Nuxt Users]    Migrations:', nuxtUsersConfig.tables?.migrations)
+        console.log()
 
         // Check migrations table
         try {
           const migrationsTableExists = await checkTableExists(nuxtUsersConfig, 'migrations')
+          console.log('[Nuxt Users] 📊 Migration Status:')
           if (migrationsTableExists) {
             const appliedMigrations = await getAppliedMigrations(nuxtUsersConfig)
-            console.log('[Nuxt Users] 📊 Migrations:')
-            console.log('[Nuxt Users]    Migrations table exists: yes ✅')
-            console.log('[Nuxt Users]    Applied migrations count:', appliedMigrations.length)
+            console.log('[Nuxt Users]    Table exists: yes ✅')
+            console.log('[Nuxt Users]    Applied migrations:', appliedMigrations.length)
             if (appliedMigrations.length > 0) {
-              console.log('[Nuxt Users]    Applied migrations:', appliedMigrations.join(', '))
+              appliedMigrations.forEach(migration => {
+                console.log('[Nuxt Users]      -', migration)
+              })
             }
           }
           else {
-            console.log('[Nuxt Users] 📊 Migrations:')
-            console.log('[Nuxt Users]    Migrations table exists: no ❌')
-            console.log('[Nuxt Users]    Run "npx nuxt-users migrate" to set up the database')
+            console.log('[Nuxt Users]    Table exists: no ❌')
+            console.log('[Nuxt Users]    ➡️  Run "npx nuxt-users migrate" to set up the database')
           }
         }
         catch (error) {
-          console.log('[Nuxt Users] ⚠️  Could not check migrations:', error instanceof Error ? error.message : 'Unknown error')
+          console.log('[Nuxt Users]    Status: ⚠️  Error -', error instanceof Error ? error.message : 'Unknown error')
         }
       }
       else {
         console.log('[Nuxt Users] ⚠️  Nuxt Users module not configured in runtime config')
-      }
-
-      // Check public runtime config
-      const publicConfig = nuxt.options.runtimeConfig?.nuxtUsers as ModuleOptions
-      if (publicConfig) {
-        console.log('[Nuxt Users] 🌍 Public runtime config:')
-        console.log('[Nuxt Users]    Users table exists:', publicConfig.tables?.users)
-        console.log('[Nuxt Users]    Personal access tokens table exists:', publicConfig.tables?.personalAccessTokens)
-        console.log('[Nuxt Users]    Password reset tokens table exists:', publicConfig.tables?.passwordResetTokens)
       }
     }
     catch (error) {
