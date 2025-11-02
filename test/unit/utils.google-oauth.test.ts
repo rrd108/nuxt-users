@@ -10,11 +10,11 @@ import bcrypt from 'bcrypt'
 
 // Mock Google Auth Library
 vi.mock('google-auth-library', () => ({
-  OAuth2Client: vi.fn().mockImplementation(() => ({
-    generateAuthUrl: vi.fn(),
-    getToken: vi.fn(),
-    setCredentials: vi.fn()
-  }))
+  OAuth2Client: vi.fn(function(this: any) {
+    this.generateAuthUrl = vi.fn()
+    this.getToken = vi.fn()
+    this.setCredentials = vi.fn()
+  })
 }))
 
 // Mock bcrypt
