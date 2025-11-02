@@ -130,7 +130,7 @@
     "typescript": "~5.9.0",
     "unbuild": "^3.0.0",
     "vitepress": "^1.6.3",
-    "vitest": "^3.2.4",
+    "vitest": "^4.0.0",
     "vue-tsc": "^3.0.1"
   }
 }
