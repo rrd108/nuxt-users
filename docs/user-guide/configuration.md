@@ -173,7 +173,7 @@ export default defineNuxtConfig({
 # Database (follows runtimeConfig.nuxtUsers.connector.options.* pattern)
 NUXT_NUXT_USERS_CONNECTOR_OPTIONS_HOST=localhost
 NUXT_NUXT_USERS_CONNECTOR_OPTIONS_USER=myapp_user
-NUXT_NUXT_USERS_CONNECTOR_OPTIONS_PASSWORD=secure_password
+NUXT_NUXT_USERS_CONNECTOR_OPTIONS_PASSWORD=secure_password  # ⚠️ Must not be purely numeric!
 NUXT_NUXT_USERS_CONNECTOR_OPTIONS_DATABASE=myapp_production
 
 # Email (follows runtimeConfig.nuxtUsers.mailer.* pattern)
@@ -372,6 +372,8 @@ nuxtUsers: {
 }
 ```
 
+> **⚠️ Important - Numeric Passwords**: If your MySQL password is purely numeric (e.g., `123`, `456`), you **must** use a non-numeric password instead. Nuxt's runtime config automatically converts numeric environment variables to numbers, which causes database connection failures. Either change your database password to include letters (recommended for security), or explicitly cast it to a string in your config: `password: String(process.env.YOUR_PASSWORD_VAR)`. This issue affects MySQL and PostgreSQL connections when using environment variables.
+
 ### PostgreSQL
 
 For production applications with PostgreSQL:
@@ -392,6 +394,8 @@ nuxtUsers: {
   }
 }
 ```
+
+> **⚠️ Important - Numeric Passwords**: If your PostgreSQL password is purely numeric (e.g., `123`, `456`), you **must** use a non-numeric password instead. Nuxt's runtime config automatically converts numeric environment variables to numbers, which causes database connection failures. Either change your database password to include letters (recommended for security), or explicitly cast it to a string in your config: `password: String(process.env.YOUR_PASSWORD_VAR)`. This issue affects MySQL and PostgreSQL connections when using environment variables.
 
 ## Email Configuration
 
