@@ -224,10 +224,16 @@ export default defineNuxtConfig({
 
 ### CLI Command Support
 
-**Important**: Both configuration patterns work seamlessly with CLI commands:
+By default, the CLI reads `.env` files. If you use `.env.local` or another env file, export variables before running, otherwise `project-info` may show missing values.
 
 ```bash
-# These commands read your configuration (both patterns)
+# Using .env.local
+set -a; source .env.local; set +a; npx nuxt-users project-info
+
+# Or pass vars inline
+DB_CONNECTOR=mysql DB_HOST=localhost DB_USER=myapp DB_PASSWORD=secret DB_NAME=prod npx nuxt-users project-info
+
+# Standard commands
 npx nuxt-users migrate
 npx nuxt-users create-user -e admin@example.com -n "Admin" -p secure123
 ```

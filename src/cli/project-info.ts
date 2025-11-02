@@ -12,6 +12,7 @@ export default defineCommand({
   async run() {
     try {
       console.log('[Nuxt Users] Loading Nuxt project...')
+      console.log('[Nuxt Users] ℹ️  Note: This command only reads .env files. If you use .env.local or other env files, export those variables first.')
       const nuxt = await loadNuxt({ cwd: process.cwd() })
 
       console.log('[Nuxt Users] ✅ Nuxt project loaded successfully!')
