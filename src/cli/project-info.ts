@@ -54,7 +54,7 @@ export default defineCommand({
           if (migrationsTableExists) {
             const appliedMigrations = await getAppliedMigrations(nuxtUsersConfig)
             console.log('[Nuxt Users] 📊 Migrations:')
-            console.log('[Nuxt Users]    Migrations table exists: ✅')
+            console.log('[Nuxt Users]    Migrations table exists: yes ✅')
             console.log('[Nuxt Users]    Applied migrations count:', appliedMigrations.length)
             if (appliedMigrations.length > 0) {
               console.log('[Nuxt Users]    Applied migrations:', appliedMigrations.join(', '))
@@ -62,7 +62,7 @@ export default defineCommand({
           }
           else {
             console.log('[Nuxt Users] 📊 Migrations:')
-            console.log('[Nuxt Users]    Migrations table exists: ❌')
+            console.log('[Nuxt Users]    Migrations table exists: no ❌')
             console.log('[Nuxt Users]    Run "npx nuxt-users migrate" to set up the database')
           }
         }
