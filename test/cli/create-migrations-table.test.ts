@@ -128,8 +128,8 @@ describe('CLI: Create Migrations Table', () => {
     const migrations = result.rows || []
 
     expect(migrations).toHaveLength(2)
-    expect(migrations[0].id).toBe(1)
-    expect(migrations[1].id).toBe(2)
+    expect(migrations[0]?.id).toBe(1)
+    expect(migrations[1]?.id).toBe(2)
   })
 
   it('should set default timestamp', async () => {

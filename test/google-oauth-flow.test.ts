@@ -118,9 +118,9 @@ describe('Google OAuth Complete Flow Integration', () => {
       ` as { rows: PersonalAccessToken[] }
 
       expect(tokens.rows).toHaveLength(1)
-      expect(tokens.rows[0].tokenable_id).toBe(user!.id)
-      expect(tokens.rows[0].tokenable_type).toBe('user')
-      expect(tokens.rows[0].name).toBe('oauth_auth_token')
+      expect(tokens.rows[0]?.tokenable_id).toBe(user!.id)
+      expect(tokens.rows[0]?.tokenable_type).toBe('user')
+      expect(tokens.rows[0]?.name).toBe('oauth_auth_token')
 
       // Step 5: Simulate /me endpoint (verify token works)
       const { getCurrentUserFromToken } = await import('../src/runtime/server/utils/user')
@@ -142,7 +142,7 @@ describe('Google OAuth Complete Flow Integration', () => {
       `
 
       const existingUsers = await db.sql`SELECT * FROM users WHERE email = 'existing@example.com'` as { rows: User[] }
-      const existingUserId = existingUsers.rows[0].id
+      const existingUserId = existingUsers.rows[0]?.id
 
       // OAuth flow with same email
       const { findOrCreateGoogleUser, createAuthTokenForUser } = await import('../src/runtime/server/utils/google-oauth')
@@ -260,7 +260,7 @@ describe('Google OAuth Complete Flow Integration', () => {
 
       // Verify token expiration
       const tokens = await db.sql`SELECT expires_at FROM personal_access_tokens WHERE token = ${token}` as { rows: PersonalAccessToken[] }
-      const expiresAt = new Date(tokens.rows[0].expires_at!)
+      const expiresAt = new Date(tokens.rows[0]?.expires_at!)
       const now = new Date()
       const daysDifference = Math.floor((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 
@@ -312,7 +312,7 @@ describe('Google OAuth Complete Flow Integration', () => {
 
       // Verify last_used_at is null initially
       let tokens = await db.sql`SELECT last_used_at FROM personal_access_tokens WHERE token = ${token}` as { rows: PersonalAccessToken[] }
-      expect(tokens.rows[0].last_used_at).toBeNull()
+      expect(tokens.rows[0]?.last_used_at).toBeNull()
 
       // Use the token (simulating API call)
       const { getCurrentUserFromToken } = await import('../src/runtime/server/utils/user')
@@ -320,7 +320,7 @@ describe('Google OAuth Complete Flow Integration', () => {
 
       // Verify last_used_at was updated
       tokens = await db.sql`SELECT last_used_at FROM personal_access_tokens WHERE token = ${token}` as { rows: PersonalAccessToken[] }
-      expect(tokens.rows[0].last_used_at).not.toBeNull()
+      expect(tokens.rows[0]?.last_used_at).not.toBeNull()
     })
   })
 

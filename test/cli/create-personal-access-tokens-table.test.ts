@@ -135,8 +135,8 @@ describe('CLI: Create Personal Access Tokens Table', () => {
     const tokens = result.rows || []
 
     expect(tokens).toHaveLength(2)
-    expect(tokens[0].id).toBe(1)
-    expect(tokens[1].id).toBe(2)
+    expect(tokens[0]?.id).toBe(1)
+    expect(tokens[1]?.id).toBe(2)
   })
 
   it('should set default timestamps', async () => {

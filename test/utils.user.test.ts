@@ -76,8 +76,8 @@ describe('User Utilities (src/utils/user.ts)', () => {
       // Verify the password was hashed in the database
       const dbUser = await db.sql`SELECT * FROM {${testOptions.tables.users}} WHERE email = ${userData.email}` as { rows: Array<{ password: string }> }
       expect(dbUser.rows).toHaveLength(1)
-      expect(dbUser.rows[0].password).not.toBe(userData.password)
-      expect(dbUser.rows[0].password).toMatch(/^\$2[aby]\$\d{1,2}\$/)
+      expect(dbUser.rows[0]?.password).not.toBe(userData.password)
+      expect(dbUser.rows[0]?.password).toMatch(/^\$2[aby]\$\d{1,2}\$/)
     })
 
     it('should return the created user (without password)', async () => {
@@ -146,13 +146,13 @@ describe('User Utilities (src/utils/user.ts)', () => {
 
       // Get the original password hash
       const originalUser = await db.sql`SELECT password FROM {${testOptions.tables.users}} WHERE email = ${email}` as { rows: Array<{ password: string }> }
-      const originalPasswordHash = originalUser.rows[0].password
+      const originalPasswordHash = originalUser.rows[0]?.password
 
       await updateUserPassword(email, newPassword, testOptions)
 
       // Get the updated password hash
       const updatedUser = await db.sql`SELECT password FROM {${testOptions.tables.users}} WHERE email = ${email}` as { rows: Array<{ password: string }> }
-      const updatedPasswordHash = updatedUser.rows[0].password
+      const updatedPasswordHash = updatedUser.rows[0]?.password
 
       // Verify the password was changed
       expect(updatedPasswordHash).not.toBe(originalPasswordHash)
@@ -173,7 +173,8 @@ describe('User Utilities (src/utils/user.ts)', () => {
 
       // 3. Fetch the user directly from the database to verify the update
       const result = await db.sql`SELECT * FROM {${testOptions.tables.users}} WHERE id = ${createdUser.id}`
-      const dbUser = result.rows![0]
+      const dbUser = result.rows?.[0]
+      if (!dbUser) throw new Error('User not found')
 
       // 4. Assert that the details are updated
       expect(dbUser.name).toBe(updates.name)
@@ -502,7 +503,7 @@ describe('User Utilities (src/utils/user.ts)', () => {
         WHERE token = ${token}
       ` as { rows: Array<{ last_used_at: string | null }> }
 
-      expect(tokenResult.rows[0].last_used_at).not.toBeNull()
+      expect(tokenResult.rows[0]?.last_used_at).not.toBeNull()
     })
 
     it('should return null for invalid token', async () => {

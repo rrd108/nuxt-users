@@ -188,7 +188,7 @@ describe('Database Sharing Feature', () => {
       const userResult = await db.sql`SELECT id FROM {${testOptions.tables.users}} WHERE email = 'testuser@example.com'`
       expect(userResult.rows).toBeDefined()
       expect(userResult.rows?.length).toBe(1)
-      const userId = userResult.rows![0].id
+      const userId = userResult.rows?.[0]?.id
 
       // Insert post linked to user (consumer's table)
       await db.sql`
@@ -217,8 +217,8 @@ describe('Database Sharing Feature', () => {
 
       expect(joinQuery.rows).toBeDefined()
       expect(joinQuery.rows?.length).toBe(1)
-      expect(joinQuery.rows![0].name).toBe('Test User')
-      expect(joinQuery.rows![0].title).toBe('My First Post')
+      expect(joinQuery.rows?.[0]?.name).toBe('Test User')
+      expect(joinQuery.rows?.[0]?.title).toBe('My First Post')
     })
 
     it('should handle multiple consumer tables in shared database', async () => {
@@ -261,7 +261,7 @@ describe('Database Sharing Feature', () => {
       // Verify all tables were created and contain data
       for (const tableName of tables) {
         const result = await db.sql`SELECT COUNT(*) as count FROM {${tableName}}`
-        expect(Number(result.rows![0].count)).toBeGreaterThan(0)
+        expect(Number(result.rows?.[0]?.count)).toBeGreaterThan(0)
       }
 
       // Clean up the additional tables
@@ -305,7 +305,7 @@ describe('Database Sharing Feature', () => {
       await customSetup.db.sql`INSERT INTO custom_test (message) VALUES ('Custom database works!')`
 
       const result = await customSetup.db.sql`SELECT message FROM custom_test`
-      expect(result.rows![0].message).toBe('Custom database works!')
+      expect(result.rows?.[0]?.message).toBe('Custom database works!')
 
       // Clean up
       await cleanupTestSetup('sqlite', customSetup.db, [customConfig.connector.options.path!], 'custom_test')
@@ -322,7 +322,7 @@ describe('Database Sharing Feature', () => {
       `
 
       const userResult = await db.sql`SELECT COUNT(*) as count FROM {${testOptions.tables.users}}`
-      expect(Number(userResult.rows![0].count)).toBe(1)
+      expect(Number(userResult.rows?.[0]?.count)).toBe(1)
 
       // The afterEach hook should clean this up automatically
       // Next test should start with a clean database
@@ -366,7 +366,7 @@ describe('Database Sharing Feature', () => {
 
       expect(result.rows).toBeDefined()
       expect(result.rows?.length).toBe(1)
-      expect(result.rows![0].name).toBe(`${dbType} test`)
+      expect(result.rows?.[0]?.name).toBe(`${dbType} test`)
 
       // Clean up
       await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], 'type_test')

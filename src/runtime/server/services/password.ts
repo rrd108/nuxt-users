@@ -155,8 +155,18 @@ export const resetPassword = async (
 
   // Parse the original timestamp and add expiration hours
   const [datePart, timePart] = validTokenRecord.created_at.split(/[ T]/) // Split on space or T
+  if (!datePart || !timePart) {
+    console.log(`[Nuxt Users] Invalid timestamp format for token: ${validTokenRecord.created_at}`)
+    return false
+  }
+
   const [year, month, day] = datePart.split('-').map(Number)
   const [hour, minute, second] = timePart.split(':').map(Number)
+
+  if (!year || !month || !day || hour === undefined || minute === undefined || second === undefined) {
+    console.log(`[Nuxt Users] Invalid timestamp components`)
+    return false
+  }
 
   // Calculate expiration time by adding hours
   let expirationHour = hour + TOKEN_EXPIRATION_HOURS

@@ -131,8 +131,8 @@ describe('CLI: Create Users Table', () => {
     const users = result.rows || []
 
     expect(users).toHaveLength(2)
-    expect(users[0].id).toBe(1)
-    expect(users[1].id).toBe(2)
+    expect(users[0]?.id).toBe(1)
+    expect(users[1]?.id).toBe(2)
   })
 
   it('should set default timestamps', async () => {

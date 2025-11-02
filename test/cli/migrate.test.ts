@@ -187,12 +187,12 @@ describe('CLI: Migrate', () => {
     const migrationsResult2 = await db.sql`SELECT id, name, executed_at FROM migrations ORDER BY id`
     const migrations = migrationsResult2.rows || []
     expect(migrations).toHaveLength(6)
-    expect(migrations[0].name).toBe('create_migrations_table')
-    expect(migrations[1].name).toBe('create_users_table')
-    expect(migrations[2].name).toBe('create_personal_access_tokens_table')
-    expect(migrations[3].name).toBe('create_password_reset_tokens_table')
-    expect(migrations[4].name).toBe('add_active_to_users')
-    expect(migrations[5].name).toBe('add_google_oauth_fields')
+    expect(migrations[0]?.name).toBe('create_migrations_table')
+    expect(migrations[1]?.name).toBe('create_users_table')
+    expect(migrations[2]?.name).toBe('create_personal_access_tokens_table')
+    expect(migrations[3]?.name).toBe('create_password_reset_tokens_table')
+    expect(migrations[4]?.name).toBe('add_active_to_users')
+    expect(migrations[5]?.name).toBe('add_google_oauth_fields')
   })
 
   it('should handle partial migrations correctly', async () => {

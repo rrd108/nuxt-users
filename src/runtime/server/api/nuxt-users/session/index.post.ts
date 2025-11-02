@@ -32,6 +32,13 @@ export default defineEventHandler(async (event) => {
   }
 
   const user = userResult.rows[0]
+  if (!user) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Invalid email or password',
+    })
+  }
+
   if (!user.active) {
     throw createError({
       statusCode: 403,

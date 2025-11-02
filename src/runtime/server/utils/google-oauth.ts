@@ -97,6 +97,9 @@ export async function findOrCreateGoogleUser(
 
   if (userResult.rows.length > 0) {
     const user = userResult.rows[0]
+    if (!user) {
+      return null
+    }
 
     // Update profile picture if it has changed
     if (user.profile_picture !== googleUser.picture) {
@@ -120,6 +123,10 @@ export async function findOrCreateGoogleUser(
   if (userResult.rows.length > 0) {
     // User exists with same email, link Google account
     const user = userResult.rows[0]
+    if (!user) {
+      return null
+    }
+
     await db.sql`
       UPDATE {${usersTable}} 
       SET google_id = ${googleUser.id}, 
@@ -164,7 +171,7 @@ export async function findOrCreateGoogleUser(
     WHERE google_id = ${googleUser.id}
   ` as { rows: User[] }
 
-  return createdUserResult.rows[0]
+  return createdUserResult.rows[0] ?? null
 }
 
 /**

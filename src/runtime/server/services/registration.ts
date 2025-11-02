@@ -62,6 +62,9 @@ export const registerUser = async (
   }
 
   const user = result.rows[0]
+  if (!user) {
+    throw new Error('Failed to retrieve created user.')
+  }
 
   // Store confirmation token (reuse the password_reset_tokens table structure for confirmation tokens)
   const passwordResetTokensTable = options.tables.passwordResetTokens
@@ -226,8 +229,18 @@ export const confirmUserEmail = async (
     : String(validTokenRecord.created_at)
 
   const [datePart, timePart] = createdAtString.split(/[ T]/)
+  if (!datePart || !timePart) {
+    console.log(`[Nuxt Users] Invalid timestamp format for token: ${createdAtString}`)
+    return false
+  }
+
   const [year, month, day] = datePart.split('-').map(Number)
   const [hour, minute, second] = timePart.split(':').map(Number)
+
+  if (!year || !month || !day || hour === undefined || minute === undefined || second === undefined) {
+    console.log(`[Nuxt Users] Invalid timestamp components`)
+    return false
+  }
 
   // Calculate expiration time by adding hours
   let expirationHour = hour + TOKEN_EXPIRATION_HOURS
@@ -244,7 +257,9 @@ export const confirmUserEmail = async (
     if (expirationYear % 4 === 0 && (expirationYear % 100 !== 0 || expirationYear % 400 === 0)) {
       daysInMonth[1] = 29 // leap year
     }
-    if (expirationDay > daysInMonth[expirationMonth - 1]) {
+    const monthIndex = expirationMonth - 1
+    const daysInCurrentMonth = daysInMonth[monthIndex]
+    if (daysInCurrentMonth && expirationDay > daysInCurrentMonth) {
       expirationDay = 1
       expirationMonth++
       if (expirationMonth > 12) {

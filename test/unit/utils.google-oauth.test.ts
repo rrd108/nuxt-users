@@ -204,7 +204,7 @@ describe('Google OAuth Utilities', () => {
 
       // Verify in database
       const dbUser = await db.sql`SELECT google_id FROM users WHERE email = 'test@example.com'` as { rows: User[] }
-      expect(dbUser.rows[0].google_id).toBe('google-123')
+      expect(dbUser.rows[0]?.google_id).toBe('google-123')
     })
 
     it('should create new user when allowAutoRegistration is true', async () => {

@@ -93,8 +93,8 @@ describe('Login API Route', async () => {
     const db = createDatabase(connector(testOptions.connector!.options))
     const tokenRecord = await db.sql`SELECT * FROM personal_access_tokens WHERE tokenable_id = ${testUser.id}` as { rows: Array<{ name: string, tokenable_type: string, token: string }> }
     expect(tokenRecord.rows.length).toBe(1)
-    expect(tokenRecord.rows[0].name).toBe('auth_token')
-    expect(tokenRecord.rows[0].tokenable_type).toBe('user')
+    expect(tokenRecord.rows[0]?.name).toBe('auth_token')
+    expect(tokenRecord.rows[0]?.tokenable_type).toBe('user')
   })
 
   it('should return 401 for incorrect email', async () => {

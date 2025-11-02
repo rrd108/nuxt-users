@@ -46,6 +46,9 @@ export const createUser = async (userData: CreateUserParams, options: ModuleOpti
   }
 
   const user = result.rows[0]
+  if (!user) {
+    throw new Error('Failed to retrieve created user.')
+  }
 
   // Convert Date objects to ISO strings if needed
   return {
@@ -73,6 +76,9 @@ export const findUserByEmail = async (email: string, options: ModuleOptions): Pr
   }
 
   const user = result.rows[0]
+  if (!user) {
+    return null
+  }
 
   // Convert Date objects to ISO strings if needed
   return {
@@ -105,6 +111,9 @@ export const findUserById = async <T extends boolean = false>(
   }
 
   const user = result.rows[0]
+  if (!user) {
+    return null
+  }
 
   const normalizedUser = {
     ...user,
@@ -221,7 +230,8 @@ export const hasAnyUsers = async (options: ModuleOptions) => {
     const db = await useDb(options)
 
     const users = await db.sql`SELECT COUNT(*) as count FROM {${options.tables.users}}` as CountResult
-    return users.rows?.[0]?.count > 0
+    const firstRow = users.rows?.[0]
+    return firstRow ? firstRow.count > 0 : false
   }
   catch {
     // If the table doesn't exist or connection fails, there are no users
@@ -252,7 +262,12 @@ export const getCurrentUserFromToken = async <T extends boolean = false>(
     return null
   }
 
-  const userId = tokenResult.rows[0].tokenable_id
+  const tokenRow = tokenResult.rows[0]
+  if (!tokenRow) {
+    return null
+  }
+
+  const userId = tokenRow.tokenable_id
 
   // Update last_used_at timestamp for the token
   await db.sql`
@@ -272,6 +287,9 @@ export const getCurrentUserFromToken = async <T extends boolean = false>(
   }
 
   const user = userResult.rows[0]
+  if (!user) {
+    return null
+  }
 
   if (!user.active) {
     return null
@@ -370,7 +388,12 @@ export const getLastLoginTime = async (userId: number, options: ModuleOptions): 
     return null
   }
 
-  const lastLogin = result.rows[0].created_at
+  const resultRow = result.rows[0]
+  if (!resultRow) {
+    return null
+  }
+
+  const lastLogin = resultRow.created_at
 
   // Convert Date objects to ISO strings if needed
   return lastLogin instanceof Date ? lastLogin.toISOString() : lastLogin

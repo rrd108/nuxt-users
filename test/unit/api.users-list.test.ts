@@ -108,10 +108,10 @@ describe('Users List API Route', () => {
 
     // Verify users data
     expect(response.users).toHaveLength(2)
-    expect(response.users[0].id).toBe(1)
-    expect(response.users[0].email).toBe('user1@example.com')
-    expect(response.users[1].id).toBe(2)
-    expect(response.users[1].email).toBe('user2@example.com')
+    expect(response.users[0]?.id).toBe(1)
+    expect(response.users[0]?.email).toBe('user1@example.com')
+    expect(response.users[1]?.id).toBe(2)
+    expect(response.users[1]?.email).toBe('user2@example.com')
 
     // Verify pagination data
     expect(response.pagination.page).toBe(1)

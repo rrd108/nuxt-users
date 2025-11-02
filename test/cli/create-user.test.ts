@@ -108,9 +108,9 @@ describe('CLI: Create User', () => {
     const createdUsers = result.rows || []
 
     expect(createdUsers).toHaveLength(3)
-    expect(createdUsers[0].id).toBe(1)
-    expect(createdUsers[1].id).toBe(2)
-    expect(createdUsers[2].id).toBe(3)
+    expect(createdUsers[0]?.id).toBe(1)
+    expect(createdUsers[1]?.id).toBe(2)
+    expect(createdUsers[2]?.id).toBe(3)
   })
 
   it('should set created_at and updated_at timestamps', async () => {
