@@ -1,6 +1,59 @@
 # Changelog
 
 
+## v1.36.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.35.0...v1.36.0)
+
+### 🚀 Enhancements
+
+- Implement google authentication ([e830872](https://github.com/rrd108/nuxt-users/commit/e830872))
+- Add google auth to the playground ([2b43ca0](https://github.com/rrd108/nuxt-users/commit/2b43ca0))
+- Add migration ([0280eca](https://github.com/rrd108/nuxt-users/commit/0280eca))
+- Unregistered user gets error message ([eefbdf5](https://github.com/rrd108/nuxt-users/commit/eefbdf5))
+- Enhances project info command output ([2d91bd9](https://github.com/rrd108/nuxt-users/commit/2d91bd9))
+
+### 🩹 Fixes
+
+- Add api endpoints to public endpoints ([16aefa9](https://github.com/rrd108/nuxt-users/commit/16aefa9))
+- Completes Google OAuth user fetch on client ([6c95b94](https://github.com/rrd108/nuxt-users/commit/6c95b94))
+- **deps:** Update nuxtjs monorepo to v4 ([0c4b199](https://github.com/rrd108/nuxt-users/commit/0c4b199))
+- Ts errors ([44f5d9e](https://github.com/rrd108/nuxt-users/commit/44f5d9e))
+- Add nuxt builder ([aaa8288](https://github.com/rrd108/nuxt-users/commit/aaa8288))
+- Ts errors ([d488513](https://github.com/rrd108/nuxt-users/commit/d488513))
+- **docs:** Updates last release timestamp ([3d3e0d8](https://github.com/rrd108/nuxt-users/commit/3d3e0d8))
+
+### 📖 Documentation
+
+- Adds Google OAuth authentication ([463c19f](https://github.com/rrd108/nuxt-users/commit/463c19f))
+- Adds Google OAuth registration ([2e0eebf](https://github.com/rrd108/nuxt-users/commit/2e0eebf))
+- Adds project info command to troubleshooting ([8768090](https://github.com/rrd108/nuxt-users/commit/8768090))
+
+### 🏡 Chore
+
+- Remove unused files ([8bd3e58](https://github.com/rrd108/nuxt-users/commit/8bd3e58))
+- Replace googleapis package with google-auth ([0e8e3d4](https://github.com/rrd108/nuxt-users/commit/0e8e3d4))
+- Fix lint errors ([3ed5bcc](https://github.com/rrd108/nuxt-users/commit/3ed5bcc))
+- Update lock ([8cd4a97](https://github.com/rrd108/nuxt-users/commit/8cd4a97))
+- **release:** V1.35.0 ([41cb690](https://github.com/rrd108/nuxt-users/commit/41cb690))
+- Add snyk ([9c932c8](https://github.com/rrd108/nuxt-users/commit/9c932c8))
+- Remove unsued import ([04fd61d](https://github.com/rrd108/nuxt-users/commit/04fd61d))
+- Package updates ([3173073](https://github.com/rrd108/nuxt-users/commit/3173073))
+
+### ✅ Tests
+
+- Google OAuth authentication ([7d7bd68](https://github.com/rrd108/nuxt-users/commit/7d7bd68))
+- Add oauth flow test ([b805718](https://github.com/rrd108/nuxt-users/commit/b805718))
+- Fix db setup ([a097c4a](https://github.com/rrd108/nuxt-users/commit/a097c4a))
+- Replace smoke test with middleware test ([7ee1893](https://github.com/rrd108/nuxt-users/commit/7ee1893))
+- Add security checks ([a206962](https://github.com/rrd108/nuxt-users/commit/a206962))
+- Fix ts errors ([d7e6c61](https://github.com/rrd108/nuxt-users/commit/d7e6c61))
+- Fix gauth ([b925cf2](https://github.com/rrd108/nuxt-users/commit/b925cf2))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.35.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.34.7...v1.35.0)
