@@ -97,7 +97,7 @@ The MySQL test script (`scripts/test-mysql.sh`) automatically:
 - Host: `localhost`
 - Port: `3306`
 - User: `root`
-- Password: `123`
+- Password: `rrd`
 - Database: `test_db`
 
 ### PostgreSQL Tests
@@ -135,7 +135,7 @@ The PostgreSQL test script (`scripts/test-postgresql.sh`) automatically:
 ```bash
 # Start MySQL container for testing
 docker run --name mysql-test \
-  -e MYSQL_ROOT_PASSWORD=123 \
+  -e MYSQL_ROOT_PASSWORD=rrd \
   -e MYSQL_DATABASE=test_db \
   -p 3306:3306 \
   -d mysql:5.7
@@ -449,7 +449,7 @@ The project includes CI configuration that:
 **MySQL not running:**
 ```bash
 # Start MySQL with Docker
-docker run --name mysql-test -e MYSQL_ROOT_PASSWORD=123 -e MYSQL_DATABASE=test_db -p 3306:3306 -d mysql:5.7
+docker run --name mysql-test -e MYSQL_ROOT_PASSWORD=rrd -e MYSQL_DATABASE=test_db -p 3306:3306 -d mysql:5.7
 ```
 
 **PostgreSQL not running:**

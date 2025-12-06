@@ -106,7 +106,7 @@ For MySQL testing, you need a running MySQL instance:
 ```bash
 # Using Docker
 docker run --name mysql-test \
-  -e MYSQL_ROOT_PASSWORD=123 \
+  -e MYSQL_ROOT_PASSWORD=rrd \
   -e MYSQL_DATABASE=test_db \
   -p 3306:3306 \
   -d mysql:5.7
@@ -116,7 +116,7 @@ export DB_CONNECTOR=mysql
 export DB_HOST=localhost
 export DB_PORT=3306
 export DB_USER=root
-export DB_PASSWORD=123
+export DB_PASSWORD=rrd
 export DB_NAME=test_db
 ```
 

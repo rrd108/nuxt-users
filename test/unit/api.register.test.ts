@@ -1,5 +1,29 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils'
+import { createUsersTable } from '../../src/runtime/server/utils/create-users-table'
+import { createPasswordResetTokensTable } from '../../src/runtime/server/utils/create-password-reset-tokens-table'
+import { addActiveToUsers } from '../../src/runtime/server/utils/add-active-to-users'
+import type { ModuleOptions } from '../../src/types'
+import { defaultOptions } from '../../src/module'
+
+async function setupDatabaseTables() {
+  // Use the default options which match the playground configuration
+  // The playground uses SQLite with path './data/users.sqlite3' by default
+  const options: ModuleOptions = {
+    ...defaultOptions,
+    connector: {
+      name: 'sqlite',
+      options: {
+        path: './data/users.sqlite3'
+      }
+    }
+  }
+
+  // Create all required tables
+  await createUsersTable(options)
+  await addActiveToUsers(options)
+  await createPasswordResetTokensTable(options)
+}
 
 describe('API: Registration', async () => {
   await setup({
@@ -7,9 +31,8 @@ describe('API: Registration', async () => {
   })
 
   beforeEach(async () => {
-    // Clean up any existing test users
-    // Clean up any existing test users - we'll use a different approach
-    // since the DELETE method isn't available on the users endpoint
+    // Set up database tables before each test
+    await setupDatabaseTables()
   })
 
   it('should register a new user successfully', async () => {

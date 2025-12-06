@@ -10,7 +10,7 @@ export DB_CONNECTOR="mysql"
 export DB_HOST=${DB_HOST:-"localhost"}
 export DB_PORT=${DB_PORT:-"3306"}
 export DB_USER=${DB_USER:-"root"}
-export DB_PASSWORD=${DB_PASSWORD:-"123"}
+export DB_PASSWORD=${DB_PASSWORD:-"rrd"}
 export DB_NAME=${DB_NAME:-"test_db"}
 
 echo "Database configuration:"
@@ -36,7 +36,7 @@ done
 # Final check if MySQL is running
 if ! mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -e "SELECT 1;" >/dev/null 2>&1; then
     echo "Error: Cannot connect to MySQL after multiple retries. Please ensure MySQL is running and accessible."
-    echo "You can start MySQL with: docker run --name mysql-test -e MYSQL_ROOT_PASSWORD=123 -e MYSQL_DATABASE=test_db -p 3306:3306 -d mysql:5.7"
+    echo "You can start MySQL with: docker run --name mysql-test -e MYSQL_ROOT_PASSWORD=rrd -e MYSQL_DATABASE=test_db -p 3306:3306 -d mysql:5.7"
     exit 1
 fi
 
