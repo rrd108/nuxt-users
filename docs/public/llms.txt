@@ -1,0 +1,120 @@
+# Nuxt Users
+
+> A user authentication and authorization module for Nuxt with database support for SQLite, My SQL, and Postgre SQL
+
+## Home
+[Home](https://nuxt-users.webmania.cc/)
+
+## Get Started
+[Get Started](https://nuxt-users.webmania.cc/user-guide/getting-started.html)
+
+## Get Started
+[Get Started](https://nuxt-users.webmania.cc/get-started.html)
+
+## Overview
+[Overview](https://nuxt-users.webmania.cc/user-guide/index.html)
+
+## Installation
+[Installation](https://nuxt-users.webmania.cc/user-guide/installation.html)
+
+## Configuration
+[Configuration](https://nuxt-users.webmania.cc/user-guide/configuration.html)
+
+## Authentication
+[Authentication](https://nuxt-users.webmania.cc/user-guide/authentication.html)
+
+## Authorization (RBAC)
+[Authorization (RBAC)](https://nuxt-users.webmania.cc/user-guide/authorization.html)
+
+## Password Reset
+[Password Reset](https://nuxt-users.webmania.cc/user-guide/password-reset.html)
+
+## Components
+[Components](https://nuxt-users.webmania.cc/user-guide/components.html)
+
+## NUsers Login Form
+[NUsers Login Form](https://nuxt-users.webmania.cc/user-guide/components.html#nusersloginform)
+
+## NUsers Register Form
+[NUsers Register Form](https://nuxt-users.webmania.cc/user-guide/components.html#nusersregisterform)
+
+## NUsers Email Confirmation
+[NUsers Email Confirmation](https://nuxt-users.webmania.cc/user-guide/components.html#nusersemailconfirmation)
+
+## NUsers Logout Link
+[NUsers Logout Link](https://nuxt-users.webmania.cc/user-guide/components.html#nuserslogoutlink)
+
+## NUsers Reset Password Form
+[NUsers Reset Password Form](https://nuxt-users.webmania.cc/user-guide/components.html#nusersresetpasswordform)
+
+## NUsers List
+[NUsers List](https://nuxt-users.webmania.cc/user-guide/components.html#nuserslist)
+
+## NUsers User Card
+[NUsers User Card](https://nuxt-users.webmania.cc/user-guide/components.html#nusersusercard)
+
+## NUsers User Form
+[NUsers User Form](https://nuxt-users.webmania.cc/user-guide/components.html#nusersuserform)
+
+## Composables
+[Composables](https://nuxt-users.webmania.cc/user-guide/composables.html)
+
+## use Users()
+[use Users()](https://nuxt-users.webmania.cc/user-guide/composables.html#useusers)
+
+## use Authentication()
+[use Authentication()](https://nuxt-users.webmania.cc/user-guide/composables.html#useauthentication)
+
+## get Current User()
+[get Current User()](https://nuxt-users.webmania.cc/user-guide/composables.html#getcurrentuser)
+
+## use Public Paths()
+[use Public Paths()](https://nuxt-users.webmania.cc/user-guide/composables.html#usepublicpaths)
+
+## use Password Validation()
+[use Password Validation()](https://nuxt-users.webmania.cc/user-guide/composables.html#usepasswordvalidation)
+
+## Troubleshooting
+[Troubleshooting](https://nuxt-users.webmania.cc/user-guide/troubleshooting.html)
+
+## HTTP Endpoints
+[HTTP Endpoints](https://nuxt-users.webmania.cc/api/index.html)
+
+## Public Types
+[Public Types](https://nuxt-users.webmania.cc/api/types.html)
+
+## Basic Setup
+[Basic Setup](https://nuxt-users.webmania.cc/examples/basic-setup.html)
+
+## Custom Components
+[Custom Components](https://nuxt-users.webmania.cc/examples/custom-components.html)
+
+## Advanced Configuration
+[Advanced Configuration](https://nuxt-users.webmania.cc/examples/advanced-configuration.html)
+
+## Overview
+[Overview](https://nuxt-users.webmania.cc/developer-guide/index.html)
+
+## Development Setup
+[Development Setup](https://nuxt-users.webmania.cc/developer-guide/development-setup.html)
+
+## Architecture
+[Architecture](https://nuxt-users.webmania.cc/developer-guide/architecture.html)
+
+## Composables
+[Composables](https://nuxt-users.webmania.cc/developer-guide/composables.html)
+
+## Database Internals
+[Database Internals](https://nuxt-users.webmania.cc/developer-guide/database-internals.html)
+
+## Server Utilities
+[Server Utilities](https://nuxt-users.webmania.cc/developer-guide/server-utilities.html)
+
+## Testing
+[Testing](https://nuxt-users.webmania.cc/developer-guide/testing.html)
+
+## Contributing
+[Contributing](https://nuxt-users.webmania.cc/developer-guide/contributing.html)
+
+## Code Style
+[Code Style](https://nuxt-users.webmania.cc/developer-guide/code-style.html)
