@@ -1,6 +1,38 @@
 # Changelog
 
 
+## v1.37.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.37.1...v1.37.2)
+
+### 🩹 Fixes
+
+- Updates default MySQL root password ([38ea927](https://github.com/rrd108/nuxt-users/commit/38ea927))
+
+### 📖 Documentation
+
+- Add info about .env.local ([6026a06](https://github.com/rrd108/nuxt-users/commit/6026a06))
+- Add `SECURITY.md` ([a7104dc](https://github.com/rrd108/nuxt-users/commit/a7104dc))
+
+### 🏡 Chore
+
+- Fix release tagging ([9b56a2f](https://github.com/rrd108/nuxt-users/commit/9b56a2f))
+
+### ✅ Tests
+
+- Increase time ([6c8e7b5](https://github.com/rrd108/nuxt-users/commit/6c8e7b5))
+
+### 🤖 CI
+
+- Fixes peer dependency version resolution ([ca6610a](https://github.com/rrd108/nuxt-users/commit/ca6610a))
+- Fix: Nuxt 4 app creation in CI ([827ffaf](https://github.com/rrd108/nuxt-users/commit/827ffaf))
+- Fix nuxt4 app creation command ([ca8707a](https://github.com/rrd108/nuxt-users/commit/ca8707a))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+- Kolja Nolte ([@thaikolja](https://github.com/thaikolja))
+
 ## v1.37.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.37.0...v1.37.1)
