@@ -32,7 +32,7 @@ jobs:
 
       - name: Create Nuxt 4 app
         run: |
-          npx nuxi@4 init nuxt4-app --no-install
+          npx nuxi init nuxt4-app -t v4 --no-install
           if [ ! -d "nuxt4-app" ]; then
             echo "Error: nuxt4-app directory was not created"
             exit 1
