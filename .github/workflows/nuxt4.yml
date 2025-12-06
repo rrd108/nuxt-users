@@ -31,7 +31,14 @@ jobs:
         run: npm run prepack
 
       - name: Create Nuxt 4 app
-        run: npx nuxi@latest init nuxt4-app
+        run: |
+          npx nuxi@4 init nuxt4-app --no-install
+          if [ ! -d "nuxt4-app" ]; then
+            echo "Error: nuxt4-app directory was not created"
+            exit 1
+          fi
+          cd nuxt4-app
+          npm install
 
       - name: Install module in Nuxt 4 app
         run: |
