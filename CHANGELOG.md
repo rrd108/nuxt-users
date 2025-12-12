@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v1.37.3
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.37.2...v1.37.3)
+
+### 🩹 Fixes
+
+- Keep session alive in new browser tabs closes #137 ([#137](https://github.com/rrd108/nuxt-users/issues/137))
+
+### 📖 Documentation
+
+- Added llms.txt ([7ceadeb](https://github.com/rrd108/nuxt-users/commit/7ceadeb))
+- Update for auto user initialization ([6a97bcc](https://github.com/rrd108/nuxt-users/commit/6a97bcc))
+
+### 🏡 Chore
+
+- **release:** V1.37.2 ([8fa7147](https://github.com/rrd108/nuxt-users/commit/8fa7147))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+- Kolja Nolte ([@pasathai-org](https://github.com/pasathai-org))
+
 ## v1.37.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.37.1...v1.37.2)
