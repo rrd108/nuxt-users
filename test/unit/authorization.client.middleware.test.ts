@@ -62,9 +62,13 @@ describe('Auth Client Middleware', () => {
       value: false
     }
 
+    // Mock initializeUser function
+    const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
+
     mockuseAuthentication.mockReturnValue({
       user: mockUser,
-      isAuthenticated: mockIsAuthenticated
+      isAuthenticated: mockIsAuthenticated,
+      initializeUser: mockInitializeUser
     })
 
     // Mock defineNuxtRouteMiddleware to return the middleware function
@@ -97,9 +101,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user with no id and not authenticated
       mockUser.value = null
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: false }
+        isAuthenticated: { value: false },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)
@@ -114,9 +120,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user without id and not authenticated
       mockUser.value = { id: undefined }
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: false }
+        isAuthenticated: { value: false },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)
@@ -131,9 +139,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user with valid id and authenticated
       mockUser.value = { id: 1, role: 'user' }
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: true }
+        isAuthenticated: { value: true },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)
@@ -169,9 +179,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user with admin role and authenticated
       mockUser.value = { id: 1, role: 'admin' }
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: true }
+        isAuthenticated: { value: true },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)
@@ -186,9 +198,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user with user role and authenticated
       mockUser.value = { id: 2, role: 'user' }
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: true }
+        isAuthenticated: { value: true },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)
@@ -203,9 +217,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user with user role and authenticated
       mockUser.value = { id: 2, role: 'user' }
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: true }
+        isAuthenticated: { value: true },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)
@@ -220,9 +236,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user with moderator role and authenticated
       mockUser.value = { id: 3, role: 'moderator' }
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: true }
+        isAuthenticated: { value: true },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)
@@ -237,9 +255,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user with moderator role and authenticated
       mockUser.value = { id: 3, role: 'moderator' }
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: true }
+        isAuthenticated: { value: true },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)
@@ -254,9 +274,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user with unknown role and authenticated
       mockUser.value = { id: 4, role: 'unknown' }
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: true }
+        isAuthenticated: { value: true },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)
@@ -284,9 +306,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user with user role and authenticated
       mockUser.value = { id: 1, role: 'user' }
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: true }
+        isAuthenticated: { value: true },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)
@@ -301,9 +325,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user with moderator role and authenticated
       mockUser.value = { id: 3, role: 'moderator' }
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: true }
+        isAuthenticated: { value: true },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)
@@ -318,9 +344,11 @@ describe('Auth Client Middleware', () => {
 
       // Mock user as null but authenticated
       mockUser.value = null
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockuseAuthentication.mockReturnValue({
         user: mockUser,
-        isAuthenticated: { value: true }
+        isAuthenticated: { value: true },
+        initializeUser: mockInitializeUser
       })
 
       const result = await clientAuthMiddleware.default(mockTo, mockFrom)

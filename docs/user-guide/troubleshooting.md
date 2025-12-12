@@ -201,7 +201,12 @@ console.log('Database connection test:', data)
 **Solutions:**
 
 1. **User initialization is automatic:**
-   The module automatically initializes the user on app startup via a client plugin. If you're experiencing session persistence issues, check the following:
+   The module automatically initializes the user on app startup via an early initialization plugin that runs on both server and client. This ensures:
+   - Session is restored from cookies during SSR (server-side rendering)
+   - Session is restored from storage/cookies on client-side
+   - New tabs recognize authentication immediately without redirecting to login first
+   
+   If you're experiencing session persistence issues, check the following:
 
    - Ensure you're using the latest version of the module (auto-initialization was added in a recent update)
    - Check that cookies are enabled in your browser

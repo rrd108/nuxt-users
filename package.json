@@ -63,7 +63,7 @@
     "build": "nuxt-module-build build",
     "postbuild": "node scripts/post-build.js",
     "prerelease": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
-    "release": "yarn lint && yarn test && yarn prepack && changelogen --release && yarn publish && git push --follow-tags",
+    "release": "yarn lint && yarn test && yarn prepack && changelogen --release && npm publish && git push --follow-tags",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "pretest": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for testing' && exit 1)",

@@ -81,10 +81,12 @@ describe('Google OAuth Client Middleware', () => {
     it('should fetch user via SSR when oauth_success=true and user not authenticated', async () => {
       const mockFetchUser = vi.fn().mockResolvedValue(undefined)
 
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({
         isAuthenticated: { value: false },
         user: { value: null },
-        fetchUser: mockFetchUser
+        fetchUser: mockFetchUser,
+        initializeUser: mockInitializeUser
       })
 
       const to = {
@@ -117,10 +119,12 @@ describe('Google OAuth Client Middleware', () => {
         userRef.value = mockUser
       })
 
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({
         isAuthenticated: isAuthenticatedRef,
         user: userRef,
-        fetchUser: mockFetchUser
+        fetchUser: mockFetchUser,
+        initializeUser: mockInitializeUser
       })
 
       const to = {
@@ -139,10 +143,12 @@ describe('Google OAuth Client Middleware', () => {
     it('should handle fetch user failure gracefully', async () => {
       const mockFetchUser = vi.fn().mockRejectedValue(new Error('Network error'))
 
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({
         isAuthenticated: { value: false },
         user: { value: null },
-        fetchUser: mockFetchUser
+        fetchUser: mockFetchUser,
+        initializeUser: mockInitializeUser
       })
 
       const to = {
@@ -167,10 +173,12 @@ describe('Google OAuth Client Middleware', () => {
         role: 'user'
       }
 
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({
         isAuthenticated: { value: true },
         user: { value: mockUser },
-        fetchUser: mockFetchUser
+        fetchUser: mockFetchUser,
+        initializeUser: mockInitializeUser
       })
 
       const to = {
@@ -190,10 +198,12 @@ describe('Google OAuth Client Middleware', () => {
     it('should not fetch user when oauth_success is not present', async () => {
       const mockFetchUser = vi.fn()
 
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({
         isAuthenticated: { value: false },
         user: { value: null },
-        fetchUser: mockFetchUser
+        fetchUser: mockFetchUser,
+        initializeUser: mockInitializeUser
       })
 
       const to = {
@@ -215,10 +225,12 @@ describe('Google OAuth Client Middleware', () => {
     it('should use SSR fetch (useFetch) for OAuth callback', async () => {
       const mockFetchUser = vi.fn().mockResolvedValue(undefined)
 
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({
         isAuthenticated: { value: false },
         user: { value: null },
-        fetchUser: mockFetchUser
+        fetchUser: mockFetchUser,
+        initializeUser: mockInitializeUser
       })
 
       const to = {
@@ -247,10 +259,12 @@ describe('Google OAuth Client Middleware', () => {
       const mockFetchUser = vi.fn()
       mockHasPermission.mockReturnValue(true)
 
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({
         isAuthenticated: { value: true },
         user: { value: mockUser },
-        fetchUser: mockFetchUser
+        fetchUser: mockFetchUser,
+        initializeUser: mockInitializeUser
       })
 
       const to = {
@@ -277,10 +291,12 @@ describe('Google OAuth Client Middleware', () => {
       const mockFetchUser = vi.fn()
       mockHasPermission.mockReturnValue(false)
 
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({
         isAuthenticated: { value: true },
         user: { value: mockUser },
-        fetchUser: mockFetchUser
+        fetchUser: mockFetchUser,
+        initializeUser: mockInitializeUser
       })
 
       const to = {
@@ -300,10 +316,12 @@ describe('Google OAuth Client Middleware', () => {
       mockIsWhitelisted.mockReturnValue(true)
 
       const mockFetchUser = vi.fn()
+      const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({
         isAuthenticated: { value: false },
         user: { value: null },
-        fetchUser: mockFetchUser
+        fetchUser: mockFetchUser,
+        initializeUser: mockInitializeUser
       })
 
       const to = {

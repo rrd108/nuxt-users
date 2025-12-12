@@ -158,6 +158,13 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       apiBasePath: runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
     }
 
+    // Add early auth initialization plugin (runs before middleware)
+    // Name starts with '0' to ensure it runs early in plugin lifecycle
+    addPlugin({
+      src: resolver.resolve('./runtime/plugin.auth-init'),
+      name: '0-auth-init-nuxt-users'
+    })
+
     addPlugin({
       src: resolver.resolve('./runtime/plugin'),
       mode: 'server'

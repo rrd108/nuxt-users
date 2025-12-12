@@ -27,7 +27,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
-  const { isAuthenticated, user, fetchUser } = useAuthentication()
+  const { isAuthenticated, user, fetchUser, initializeUser } = useAuthentication()
+
+  // Ensure user initialization is complete before checking authentication
+  // This prevents redirects when opening new tabs with valid session cookies
+  // The initialization promise is shared globally to prevent concurrent calls
+  if (!isAuthenticated.value) {
+    // Wait for initialization to complete (checks localStorage, sessionStorage, and server cookies)
+    await initializeUser()
+  }
 
   // If not authenticated but oauth_success flag is present, fetch user using SSR
   if (!isAuthenticated.value && to.query?.oauth_success === 'true') {

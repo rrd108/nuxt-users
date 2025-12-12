@@ -168,7 +168,7 @@ export const useAuthentication = () => {
   }
 
   // Auto-initialize user on first access (client-side only)
-  // This is a fallback - the plugin.client.ts ensures initialization on app startup
+  // This is a fallback - the plugin.auth-init.ts ensures initialization on app startup
   if (import.meta.client && !initializationPromise) {
     initializeUser()
   }
