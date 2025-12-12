@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v1.38.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.37.3...v1.38.0)
+
+### 🚀 Enhancements
+
+- Adds last release timestamp file ([c7299e4](https://github.com/rrd108/nuxt-users/commit/c7299e4))
+- Enhance session persistence and initialization ([2d9b915](https://github.com/rrd108/nuxt-users/commit/2d9b915))
+
+### 🏡 Chore
+
+- **release:** V1.37.3 ([0556423](https://github.com/rrd108/nuxt-users/commit/0556423))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.37.3
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.37.2...v1.37.3)
