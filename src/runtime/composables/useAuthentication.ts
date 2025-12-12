@@ -26,11 +26,10 @@ export const useAuthentication = () => {
       if (rememberMe) {
         // Store in localStorage for persistent login across browser sessions
         localStorage.setItem('user', JSON.stringify(userWithoutPassword))
+        return
       }
-      else {
-        // Store in sessionStorage for session-only login
-        sessionStorage.setItem('user', JSON.stringify(userWithoutPassword))
-      }
+      // Store in sessionStorage for session-only login
+      sessionStorage.setItem('user', JSON.stringify(userWithoutPassword))
     }
   }
 
@@ -72,7 +71,7 @@ export const useAuthentication = () => {
 
         userData = data.value?.user || null
       }
-      else {
+      if (!useSSR) {
         // Use $fetch for client-only requests
         const response = await $fetch<{ user: UserWithoutPassword }>(`${apiBasePath}/me`, {
           method: 'GET'
@@ -95,10 +94,10 @@ export const useAuthentication = () => {
         if (wasInLocalStorage) {
           localStorage.setItem('user', JSON.stringify(userData))
         }
-        else if (wasInSessionStorage) {
+        if (wasInSessionStorage) {
           sessionStorage.setItem('user', JSON.stringify(userData))
         }
-        else {
+        if (!wasInLocalStorage && !wasInSessionStorage) {
           // Default to sessionStorage for new sessions without rememberMe
           sessionStorage.setItem('user', JSON.stringify(userData))
         }
@@ -123,34 +122,55 @@ export const useAuthentication = () => {
       return
     }
 
-    // Check both localStorage and sessionStorage for stored user data
-    const storedUserLocal = localStorage.getItem('user')
-    const storedUserSession = sessionStorage.getItem('user')
-    const storedUser = storedUserLocal || storedUserSession
+    // If initialization is already in progress, wait for it
+    if (initializationPromise) {
+      return initializationPromise
+    }
 
-    if (storedUser) {
+    // Start initialization and store the promise to prevent concurrent calls
+    initializationPromise = (async () => {
+      // Check both localStorage and sessionStorage for stored user data
+      const storedUserLocal = localStorage.getItem('user')
+      const storedUserSession = sessionStorage.getItem('user')
+      const storedUser = storedUserLocal || storedUserSession
+
+      if (storedUser) {
+        try {
+          // First set the user from storage for immediate UI response
+          user.value = JSON.parse(storedUser)
+          // Then validate with server to ensure token is still valid
+          await fetchUser()
+        }
+        catch (error) {
+          console.error('Failed to parse stored user:', error)
+          // Clear invalid data from both storages
+          localStorage.removeItem('user')
+          sessionStorage.removeItem('user')
+          user.value = null
+        }
+        return
+      }
+      // No stored user data, but check server for valid session cookie
+      // This handles cases where a new tab opens with a valid server-side session
       try {
-        // First set the user from storage for immediate UI response
-        user.value = JSON.parse(storedUser)
-        // Then validate with server to ensure token is still valid
         await fetchUser()
       }
-      catch (error) {
-        console.error('Failed to parse stored user:', error)
-        // Clear invalid data from both storages
-        localStorage.removeItem('user')
-        sessionStorage.removeItem('user')
-        user.value = null
+      catch {
+        // Silently fail - no valid session cookie exists
+        // This is expected when user is not logged in
       }
-    }
-  }
-
-  // Auto-initialize user on first access (client-side only)
-  if (import.meta.client && !initializationPromise) {
-    initializationPromise = initializeUser().catch(() => {
+    })().catch((_error) => {
       // Silently handle initialization errors
       // Don't prevent the composable from working
     })
+
+    return initializationPromise
+  }
+
+  // Auto-initialize user on first access (client-side only)
+  // This is a fallback - the plugin.client.ts ensures initialization on app startup
+  if (import.meta.client && !initializationPromise) {
+    initializeUser()
   }
 
   return {
