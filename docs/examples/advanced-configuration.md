@@ -274,9 +274,8 @@ const updateUserRole = async (newRole) => {
 import { useAuthentication } from '#imports'
 
 export default defineNuxtRouteMiddleware((to) => {
-  const { user, initializeUser } = useAuthentication()
-  
-  initializeUser()
+  // User is automatically initialized on app startup
+  const { user } = useAuthentication()
   
   if (!user.value) {
     return navigateTo('/login')

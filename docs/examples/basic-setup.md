@@ -54,10 +54,8 @@ const handleLoginSuccess = (user) => {
 <script setup>
 import { useAuthentication } from '#imports'
 
-const { user, initializeUser } = useAuthentication()
-
-// Initialize user from localStorage on page load
-initializeUser()
+// User is automatically initialized on app startup
+const { user } = useAuthentication()
 
 // Redirect if not authenticated
 if (!user.value) {
@@ -109,9 +107,8 @@ export default defineNuxtConfig({
 <script setup>
 import { useAuthentication } from '#imports'
 
-const { user, initializeUser } = useAuthentication()
-
-initializeUser()
+// User is automatically initialized on app startup
+const { user } = useAuthentication()
 </script>
 
 <template>
@@ -141,9 +138,8 @@ initializeUser()
 <script setup>
 import { useAuthentication } from '#imports'
 
-const { user, initializeUser } = useAuthentication()
-
-initializeUser()
+// User is automatically initialized on app startup
+const { user } = useAuthentication()
 
 // Redirect if not authenticated
 if (!user.value) {
@@ -202,9 +198,8 @@ export default defineNuxtConfig({
 <script setup>
 import { useAuthentication } from '#imports'
 
-const { user, initializeUser } = useAuthentication()
-
-initializeUser()
+// User is automatically initialized on app startup
+const { user } = useAuthentication()
 
 if (!user.value) {
   navigateTo('/login?redirect=/account')
@@ -303,9 +298,8 @@ export default defineNuxtConfig({
 import { useAuthentication } from '#imports'
 
 export default defineNuxtRouteMiddleware((to) => {
-  const { user, initializeUser } = useAuthentication()
-  
-  initializeUser()
+  // User is automatically initialized on app startup
+  const { user } = useAuthentication()
   
   if (!user.value) {
     return navigateTo(`/login?redirect=${to.path}`)
@@ -363,12 +357,9 @@ const handleLoginSuccess = (user) => {
 <script setup>
 import { useAuthentication } from '#imports'
 
-const { user, initializeUser, isLoading } = useAuthentication()
-
-// Initialize user on component mount
-onMounted(() => {
-  initializeUser()
-})
+// User is automatically initialized on app startup
+// Manual initialization is optional and usually not needed
+const { user, isLoading } = useAuthentication()
 </script>
 
 <template>
@@ -485,9 +476,7 @@ npm run dev
 <script setup>
 import { useAuthentication } from '#imports'
 
-const { user, login, logout, initializeUser } = useAuthentication()
-
-// Initialize on page load
-initializeUser()
+// User is automatically initialized on app startup
+const { user, login, logout } = useAuthentication()
 </script>
 ```

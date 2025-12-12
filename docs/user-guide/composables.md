@@ -126,7 +126,7 @@ The `useAuthentication` composable returns the following reactive properties and
 | `login(email: string, password: string)` | `Function` | Authenticates a user with the provided credentials. |
 | `logout()` | `Function` | Logs out the current user, clearing their session. |
 | `fetchUser()` | `Function` | Fetches the current user's data from the API and updates the `user` state. |
-| `initializeUser()` | `Function` | Initializes the user state, typically by checking local storage and then validating with the server. |
+| `initializeUser()` | `Function` | Initializes the user state, typically by checking local storage and then validating with the server. **Note:** User initialization happens automatically on app startup via a client plugin. Manual calls are optional and can be used if you need to re-initialize the user state. |
 
 ## `usePublicPaths()`
 

@@ -200,15 +200,21 @@ console.log('Database connection test:', data)
 
 **Solutions:**
 
-1. **Initialize user on app start:**
+1. **User initialization is automatic:**
+   The module automatically initializes the user on app startup via a client plugin. If you're experiencing session persistence issues, check the following:
+
+   - Ensure you're using the latest version of the module (auto-initialization was added in a recent update)
+   - Check that cookies are enabled in your browser
+   - Verify your `nuxt.config.ts` has `ssr: true` for proper cookie handling
+
+   If you need to manually re-initialize the user (e.g., after a specific event), you can still call `initializeUser()`:
 ```vue
-<!-- app.vue or layouts/default.vue -->
 <script setup>
 import { useAuthentication } from '#imports'
 
 const { initializeUser } = useAuthentication()
 
-// Initialize user from stored session on app start
+// Manual re-initialization (usually not needed)
 onMounted(() => {
   initializeUser()
 })

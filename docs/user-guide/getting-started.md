@@ -112,10 +112,9 @@ Display logged-in user information anywhere in your app:
 <script setup>
 import { useAuthentication } from '#imports'
 
-const { user, initializeUser } = useAuthentication()
-
-// Initialize user from localStorage on page load
-initializeUser()
+// User is automatically initialized on app startup
+// No need to manually call initializeUser() anymore
+const { user } = useAuthentication()
 </script>
 
 <template>
