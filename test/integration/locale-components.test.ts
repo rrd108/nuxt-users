@@ -198,51 +198,77 @@ describe('Locale System Integration Tests', () => {
   })
 
   describe('All translation keys coverage', () => {
-    it('should have all common keys in all locales', () => {
-      const commonKeys = ['email', 'password', 'name']
+    const assertKeysExistInAllLocales = (
+      keys: string[],
+      path: string,
+      enLocale: LocaleMessages,
+      huLocale: LocaleMessages,
+      huFormalLocale: LocaleMessages
+    ) => {
+      keys.forEach((key) => {
+        const pathParts = path.split('.')
+        let enObj: LocaleMessages = enLocale
+        let huObj: LocaleMessages = huLocale
+        let huFormalObj: LocaleMessages = huFormalLocale
 
-      commonKeys.forEach((key) => {
-        expect((en.common as LocaleMessages)[key]).toBeDefined()
-        expect((hu.common as LocaleMessages)[key]).toBeDefined()
-        expect((huFormal.common as LocaleMessages)[key]).toBeDefined()
+        for (const part of pathParts) {
+          enObj = enObj[part] as LocaleMessages
+          huObj = huObj[part] as LocaleMessages
+          huFormalObj = huFormalObj[part] as LocaleMessages
+        }
+
+        expect(enObj[key]).toBeDefined()
+        expect(huObj[key]).toBeDefined()
+        expect(huFormalObj[key]).toBeDefined()
       })
+    }
+
+    it('should have all common keys in all locales', () => {
+      assertKeysExistInAllLocales(
+        ['email', 'password', 'name'],
+        'common',
+        en,
+        hu,
+        huFormal
+      )
     })
 
     it('should have all login keys in all locales', () => {
-      const loginKeys = ['title', 'subtitle', 'forgotPassword', 'rememberMe', 'submit']
-
-      loginKeys.forEach((key) => {
-        expect((en.login as LocaleMessages)[key]).toBeDefined()
-        expect((hu.login as LocaleMessages)[key]).toBeDefined()
-        expect((huFormal.login as LocaleMessages)[key]).toBeDefined()
-      })
+      assertKeysExistInAllLocales(
+        ['title', 'subtitle', 'forgotPassword', 'rememberMe', 'submit'],
+        'login',
+        en,
+        hu,
+        huFormal
+      )
     })
 
     it('should have all register keys in all locales', () => {
-      const registerKeys = ['title', 'subtitle', 'passwordLabel', 'confirmPasswordLabel', 'submit', 'alreadyHaveAccount']
-
-      registerKeys.forEach((key) => {
-        expect((en.register as LocaleMessages)[key]).toBeDefined()
-        expect((hu.register as LocaleMessages)[key]).toBeDefined()
-        expect((huFormal.register as LocaleMessages)[key]).toBeDefined()
-      })
+      assertKeysExistInAllLocales(
+        ['title', 'subtitle', 'passwordLabel', 'confirmPasswordLabel', 'submit', 'alreadyHaveAccount'],
+        'register',
+        en,
+        hu,
+        huFormal
+      )
     })
 
     it('should have all password strength keys in all locales', () => {
-      const strengthKeys = ['weak', 'medium', 'strong', 'veryStrong']
-      const requirementKeys = ['minLength', 'uppercase', 'lowercase', 'numbers', 'specialChars']
+      assertKeysExistInAllLocales(
+        ['weak', 'medium', 'strong', 'veryStrong'],
+        'passwordStrength.strength',
+        en,
+        hu,
+        huFormal
+      )
 
-      strengthKeys.forEach((key) => {
-        expect(((en.passwordStrength as LocaleMessages).strength as LocaleMessages)[key]).toBeDefined()
-        expect(((hu.passwordStrength as LocaleMessages).strength as LocaleMessages)[key]).toBeDefined()
-        expect(((huFormal.passwordStrength as LocaleMessages).strength as LocaleMessages)[key]).toBeDefined()
-      })
-
-      requirementKeys.forEach((key) => {
-        expect(((en.passwordStrength as LocaleMessages).requirements as LocaleMessages)[key]).toBeDefined()
-        expect(((hu.passwordStrength as LocaleMessages).requirements as LocaleMessages)[key]).toBeDefined()
-        expect(((huFormal.passwordStrength as LocaleMessages).requirements as LocaleMessages)[key]).toBeDefined()
-      })
+      assertKeysExistInAllLocales(
+        ['minLength', 'uppercase', 'lowercase', 'numbers', 'specialChars'],
+        'passwordStrength.requirements',
+        en,
+        hu,
+        huFormal
+      )
     })
   })
 })
