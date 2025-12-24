@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { getTranslation, deepMerge, getNestedValue } from '../../src/runtime/utils/locale'
 import { defaultLocaleMessages } from '../../src/runtime/locales'
 import type { LocaleMessages } from '../../src/types'
@@ -182,6 +182,39 @@ describe('Locale Utility Functions', () => {
       expect(informal).toBe('Emlékezz rám')
       expect(formal).toBe('Maradjon bejelentkezve')
       expect(informal).not.toBe(formal)
+    })
+
+    it('should warn when parameter count does not match (in development)', () => {
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const originalEnv = process.env.NODE_ENV
+      process.env.NODE_ENV = 'development'
+
+      // Translation expects 1 parameter but we provide 2
+      getTranslation('userCard.deleteConfirm', 'en', undefined, 'en', ['John', 'Extra'])
+      
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Parameter count mismatch for key "userCard.deleteConfirm"')
+      )
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('expected 1 parameter(s), but received 2')
+      )
+
+      process.env.NODE_ENV = originalEnv
+      consoleSpy.mockRestore()
+    })
+
+    it('should not warn in production mode', () => {
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const originalEnv = process.env.NODE_ENV
+      process.env.NODE_ENV = 'production'
+
+      // Translation expects 1 parameter but we provide 2 - should not warn in production
+      getTranslation('userCard.deleteConfirm', 'en', undefined, 'en', ['John', 'Extra'])
+      
+      expect(consoleSpy).not.toHaveBeenCalled()
+
+      process.env.NODE_ENV = originalEnv
+      consoleSpy.mockRestore()
     })
   })
 })

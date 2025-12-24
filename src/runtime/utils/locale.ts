@@ -84,6 +84,19 @@ export const getTranslation = (
   
   // Replace parameters if provided
   if (translation && params && params.length > 0) {
+    // Count expected placeholders in the translation
+    const placeholderMatches = translation.match(/\{\d+\}/g)
+    const expectedParamCount = placeholderMatches ? placeholderMatches.length : 0
+    
+    // Warn if parameter count doesn't match (in development)
+    if (expectedParamCount !== params.length && process.env.NODE_ENV !== 'production') {
+      console.warn(
+        `[nuxt-users locale] Parameter count mismatch for key "${key}": ` +
+        `expected ${expectedParamCount} parameter(s), but received ${params.length}`
+      )
+    }
+    
+    // Replace all parameters
     params.forEach((param, index) => {
       translation = translation!.replace(`{${index}}`, String(param))
     })
