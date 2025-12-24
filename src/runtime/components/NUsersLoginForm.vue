@@ -3,9 +3,11 @@ import { ref, computed } from 'vue'
 import { navigateTo } from '#app'
 import type { LoginFormData, UserWithoutPassword, ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
+import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
 const { passwordValidation } = nuxtUsers as ModuleOptions
+const { t } = useNuxtUsersLocale()
 
 // Note: We define Props interface inline instead of importing LoginFormProps from 'nuxt-users/utils'
 // because the Vue SFC transformer cannot resolve these imported types during the module build process
@@ -13,6 +15,18 @@ interface Props {
   apiEndpoint?: string
   forgotPasswordEndpoint?: string
   redirectTo?: string
+  // Optional label overrides
+  title?: string
+  subtitle?: string
+  emailLabel?: string
+  emailPlaceholder?: string
+  passwordLabel?: string
+  passwordPlaceholder?: string
+  rememberMeLabel?: string
+  submitLabel?: string
+  submittingLabel?: string
+  forgotPasswordLabel?: string
+  forgotPasswordSendingLabel?: string
 }
 
 interface Emits {
@@ -120,10 +134,10 @@ const handleForgotPassword = async () => {
       <slot name="header">
         <div class="n-users-login-header">
           <h2 class="n-users-login-title">
-            Welcome Back
+            {{ props.title || t('login.title') }}
           </h2>
           <p class="n-users-login-subtitle">
-            Sign in to your account
+            {{ props.subtitle || t('login.subtitle') }}
           </p>
         </div>
       </slot>
@@ -131,13 +145,13 @@ const handleForgotPassword = async () => {
       <!-- Email field -->
       <slot name="email-field">
         <div class="n-users-form-group">
-          <label for="email">Email</label>
+          <label for="email">{{ props.emailLabel || t('login.emailLabel') }}</label>
           <input
             id="email"
             v-model="formData.email"
             type="email"
             name="email"
-            placeholder="Enter your email"
+            :placeholder="props.emailPlaceholder || t('login.emailPlaceholder')"
             required
           >
         </div>
@@ -146,13 +160,13 @@ const handleForgotPassword = async () => {
       <!-- Password field -->
       <slot name="password-field">
         <div class="n-users-form-group">
-          <label for="password">Password</label>
+          <label for="password">{{ props.passwordLabel || t('login.passwordLabel') }}</label>
           <input
             id="password"
             v-model="formData.password"
             type="password"
             name="password"
-            placeholder="Enter your password"
+            :placeholder="props.passwordPlaceholder || t('login.passwordPlaceholder')"
             required
             :minlength="passwordValidation.minLength"
           >
@@ -168,7 +182,7 @@ const handleForgotPassword = async () => {
             type="checkbox"
             name="rememberMe"
           >
-          <label for="rememberMe">Remember me</label>
+          <label for="rememberMe">{{ props.rememberMeLabel || t('login.rememberMe') }}</label>
         </div>
       </slot>
 
@@ -182,7 +196,7 @@ const handleForgotPassword = async () => {
             v-if="isLoading"
             class="n-users-loading-spinner"
           />
-          {{ isLoading ? 'Signing in...' : 'Sign In' }}
+          {{ isLoading ? (props.submittingLabel || t('login.submitting')) : (props.submitLabel || t('login.submit')) }}
         </button>
       </slot>
 
@@ -200,7 +214,7 @@ const handleForgotPassword = async () => {
                 v-if="isForgotPasswordLoading"
                 class="n-users-loading-spinner"
               />
-              {{ isForgotPasswordLoading ? 'Sending...' : 'Forgot your password?' }}
+              {{ isForgotPasswordLoading ? (props.forgotPasswordSendingLabel || t('login.forgotPasswordSending')) : (props.forgotPasswordLabel || t('login.forgotPassword')) }}
             </a>
           </p>
         </div>
