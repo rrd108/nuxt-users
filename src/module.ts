@@ -45,6 +45,11 @@ export const defaultOptions: ModuleOptions = {
     preventCommonPasswords: true,
   },
   hardDelete: false,
+  locale: {
+    locale: 'en',
+    fallbackLocale: 'en',
+    texts: {}
+  }
 }
 
 export default defineNuxtModule<RuntimeModuleOptions>({
@@ -117,6 +122,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {}
     nuxt.options.runtimeConfig.public.nuxtUsers = {
       passwordValidation: runtimeConfigOptions.passwordValidation,
+      locale: runtimeConfigOptions.locale,
       auth: {
         whitelist: (() => {
           const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]

@@ -1,0 +1,90 @@
+import type { LocaleMessages } from '../../types'
+import { defaultLocaleMessages } from '../locales'
+
+/**
+ * Deep merge two objects
+ */
+export const deepMerge = (target: LocaleMessages, source: LocaleMessages): LocaleMessages => {
+  const result = { ...target }
+  
+  for (const key in source) {
+    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      result[key] = deepMerge(
+        (result[key] as LocaleMessages) || {},
+        source[key] as LocaleMessages
+      )
+    }
+    else {
+      result[key] = source[key]
+    }
+  }
+  
+  return result
+}
+
+/**
+ * Get a nested value from an object using dot notation
+ */
+export const getNestedValue = (obj: LocaleMessages, path: string): string | undefined => {
+  const keys = path.split('.')
+  let value: string | LocaleMessages | undefined = obj
+  
+  for (const key of keys) {
+    if (value && typeof value === 'object') {
+      value = value[key]
+    }
+    else {
+      return undefined
+    }
+  }
+  
+  return typeof value === 'string' ? value : undefined
+}
+
+/**
+ * Get translation for a key
+ * @param key - Translation key (e.g., 'login.title')
+ * @param locale - Current locale
+ * @param customTexts - Custom texts from config
+ * @param fallbackLocale - Fallback locale
+ * @param params - Parameters to replace in the translation (e.g., {0}, {1})
+ */
+export const getTranslation = (
+  key: string,
+  locale: string = 'en',
+  customTexts?: Record<string, LocaleMessages>,
+  fallbackLocale: string = 'en',
+  params?: (string | number)[]
+): string => {
+  // Merge custom texts with defaults for the current locale
+  const localeMessages = customTexts?.[locale]
+    ? deepMerge(defaultLocaleMessages[locale] || {}, customTexts[locale])
+    : defaultLocaleMessages[locale]
+  
+  // Try to get the translation from the current locale
+  let translation = localeMessages ? getNestedValue(localeMessages, key) : undefined
+  
+  // If not found and fallback is different, try fallback locale
+  if (!translation && fallbackLocale !== locale) {
+    const fallbackMessages = customTexts?.[fallbackLocale]
+      ? deepMerge(defaultLocaleMessages[fallbackLocale] || {}, customTexts[fallbackLocale])
+      : defaultLocaleMessages[fallbackLocale]
+    
+    translation = fallbackMessages ? getNestedValue(fallbackMessages, key) : undefined
+  }
+  
+  // If still not found, try default English
+  if (!translation && locale !== 'en' && fallbackLocale !== 'en') {
+    translation = getNestedValue(defaultLocaleMessages.en, key)
+  }
+  
+  // Replace parameters if provided
+  if (translation && params && params.length > 0) {
+    params.forEach((param, index) => {
+      translation = translation!.replace(`{${index}}`, String(param))
+    })
+  }
+  
+  // Return the translation or the key as fallback
+  return translation || key
+}
