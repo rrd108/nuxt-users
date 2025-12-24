@@ -2,6 +2,9 @@
 import { computed } from 'vue'
 import { useRuntimeConfig } from '#app'
 import type { PasswordValidationResult, ModuleOptions } from 'nuxt-users/utils'
+import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
+
+const { t } = useNuxtUsersLocale()
 
 // Note: We define Props interface inline to ensure compatibility during the module build process
 interface Props {
@@ -9,6 +12,13 @@ interface Props {
   validationResult: PasswordValidationResult | null
   showHints?: boolean
   showRules?: boolean
+  // Optional label overrides
+  weakLabel?: string
+  mediumLabel?: string
+  strongLabel?: string
+  unknownLabel?: string
+  requirementsTitleText?: string
+  hintsTitleText?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -32,7 +42,7 @@ const validationRules = computed(() => {
   if (moduleOptions.passwordValidation.minLength) {
     const hasMinLength = props.password.length >= moduleOptions.passwordValidation.minLength
     rules.push({
-      text: `At least ${moduleOptions.passwordValidation.minLength} characters`,
+      text: t('passwordStrength.minLength', [moduleOptions.passwordValidation.minLength]),
       passed: hasMinLength
     })
   }
@@ -40,7 +50,7 @@ const validationRules = computed(() => {
   if (moduleOptions.passwordValidation.requireUppercase) {
     const hasUppercase = /[A-Z]/.test(props.password)
     rules.push({
-      text: 'Contains uppercase letter (A-Z)',
+      text: t('passwordStrength.uppercase'),
       passed: hasUppercase
     })
   }
@@ -48,7 +58,7 @@ const validationRules = computed(() => {
   if (moduleOptions.passwordValidation.requireLowercase) {
     const hasLowercase = /[a-z]/.test(props.password)
     rules.push({
-      text: 'Contains lowercase letter (a-z)',
+      text: t('passwordStrength.lowercase'),
       passed: hasLowercase
     })
   }
@@ -56,7 +66,7 @@ const validationRules = computed(() => {
   if (moduleOptions.passwordValidation.requireNumbers) {
     const hasNumbers = /\d/.test(props.password)
     rules.push({
-      text: 'Contains number (0-9)',
+      text: t('passwordStrength.number'),
       passed: hasNumbers
     })
   }
@@ -64,7 +74,7 @@ const validationRules = computed(() => {
   if (moduleOptions.passwordValidation.requireSpecialChars) {
     const hasSpecialChars = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(props.password)
     rules.push({
-      text: 'Contains special character (!@#$%^&*)',
+      text: t('passwordStrength.specialChar'),
       passed: hasSpecialChars
     })
   }
@@ -97,9 +107,10 @@ const validationRules = computed(() => {
             : validationResult?.strength === 'strong' ? '#28a745' : '#6c757d',
       }"
     >
-      {{ validationResult?.strength === 'weak' ? 'Weak'
-        : validationResult?.strength === 'medium' ? 'Medium'
-          : validationResult?.strength === 'strong' ? 'Strong' : 'Unknown' }}
+      {{ validationResult?.strength === 'weak' ? (props.weakLabel || t('passwordStrength.weak'))
+        : validationResult?.strength === 'medium' ? (props.mediumLabel || t('passwordStrength.medium'))
+          : validationResult?.strength === 'strong' ? (props.strongLabel || t('passwordStrength.strong'))
+            : (props.unknownLabel || t('passwordStrength.unknown')) }}
       ({{ validationResult?.score || 0 }}%)
     </span>
   </div>
@@ -110,7 +121,7 @@ const validationRules = computed(() => {
     class="n-users-validation-rules n-users-validation-container"
   >
     <div class="n-users-rules-title n-users-container-title">
-      Password Requirements:
+      {{ props.requirementsTitleText || t('passwordStrength.requirementsTitle') }}
     </div>
     <ul class="n-users-rules-list n-users-list-unstyled">
       <li
@@ -149,7 +160,7 @@ const validationRules = computed(() => {
     class="n-users-password-hints n-users-validation-container"
   >
     <div class="n-users-hint-title n-users-container-title">
-      How to make your password stronger:
+      {{ props.hintsTitleText || t('passwordStrength.hintsTitle') }}
     </div>
     <ul class="n-users-hint-list n-users-list-unstyled">
       <li

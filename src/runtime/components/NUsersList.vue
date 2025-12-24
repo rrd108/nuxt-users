@@ -2,6 +2,9 @@
 import { onMounted, computed, ref } from 'vue'
 import { useUsers } from '../composables/useUsers'
 import { defaultDisplayFields, defaultFieldLabels, type User } from 'nuxt-users/utils'
+import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
+
+const { t } = useNuxtUsersLocale()
 
 // Note: We define Props interface inline instead of importing DisplayFieldsProps from 'nuxt-users/utils'
 // because the Vue SFC transformer cannot resolve these imported types during the module build process
@@ -9,6 +12,18 @@ interface Props {
   displayFields?: string[]
   fieldLabels?: Record<string, string>
   filter?: Partial<User> | ((object: unknown) => boolean)
+  title?: string
+  loadingText?: string
+  noUsersText?: string
+  errorText?: string
+  editButtonText?: string
+  deleteButtonText?: string
+  pageText?: string
+  ofText?: string
+  totalText?: string
+  usersText?: string
+  previousText?: string
+  nextText?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -93,7 +108,7 @@ const handleFetchUsers = (page?: number, limit?: number) => {
   <div class="n-users-list">
     <slot name="title">
       <h2>
-        Users List
+        {{ props.title || t('usersList.title') }}
       </h2>
     </slot>
 
@@ -102,7 +117,7 @@ const handleFetchUsers = (page?: number, limit?: number) => {
       :loading="loading"
     >
       <div v-if="loading">
-        Loading users...
+        {{ props.loadingText || t('usersList.loading') }}
       </div>
     </slot>
 
@@ -111,13 +126,13 @@ const handleFetchUsers = (page?: number, limit?: number) => {
       :error="error"
     >
       <div v-if="error">
-        Error: {{ error }}
+        {{ props.errorText || t('usersList.error') }} {{ error }}
       </div>
     </slot>
 
     <slot name="noUsers">
       <div v-if="users.length === 0">
-        No users found
+        {{ props.noUsersText || t('usersList.noUsers') }}
       </div>
     </slot>
 
@@ -160,7 +175,7 @@ const handleFetchUsers = (page?: number, limit?: number) => {
                         class="n-users-edit-btn"
                         @click="editUserFn"
                       >
-                        Edit
+                        {{ props.editButtonText || t('common.edit') }}
                       </button>
                     </slot>
                   </template>
@@ -176,7 +191,7 @@ const handleFetchUsers = (page?: number, limit?: number) => {
                         class="n-users-delete-btn"
                         @click="deleteUserFn"
                       >
-                        Delete
+                        {{ props.deleteButtonText || t('common.delete') }}
                       </button>
                     </slot>
                   </template>
@@ -244,8 +259,8 @@ const handleFetchUsers = (page?: number, limit?: number) => {
       >
         <div v-if="pagination && pagination.totalPages > 1">
           <div>
-            <span>Page {{ pagination.page }} of {{ pagination.totalPages }}</span>
-            <span>Total: {{ pagination.total }} users</span>
+            <span>{{ props.pageText || t('usersList.page') }} {{ pagination.page }} {{ props.ofText || t('usersList.of') }} {{ pagination.totalPages }}</span>
+            <span>{{ props.totalText || t('usersList.total') }} {{ pagination.total }} {{ props.usersText || t('usersList.users') }}</span>
           </div>
         </div>
       </slot>
@@ -263,7 +278,7 @@ const handleFetchUsers = (page?: number, limit?: number) => {
               :disabled="loading"
               @click="handleFetchUsers(pagination.page - 1)"
             >
-              Previous
+              {{ props.previousText || t('usersList.previous') }}
             </button>
 
             <button
@@ -271,7 +286,7 @@ const handleFetchUsers = (page?: number, limit?: number) => {
               :disabled="loading"
               @click="handleFetchUsers(pagination.page + 1)"
             >
-              Next
+              {{ props.nextText || t('usersList.next') }}
             </button>
           </div>
         </div>
