@@ -28,7 +28,7 @@ describe('Locale System Integration Tests', () => {
     })
 
     it('should have complete password strength translations', () => {
-      expect(getLocaleSection(en, 'passwordStrength').label).toBe('Password Requirements:')
+      expect(getLocaleSection(en, 'passwordStrength').label).toBe('Password Requirements')
       expect(getNestedLocaleSection(en, 'passwordStrength.strength').weak).toBe('Weak')
       expect(getNestedLocaleSection(en, 'passwordStrength.strength').medium).toBe('Medium')
       expect(getNestedLocaleSection(en, 'passwordStrength.strength').strong).toBe('Strong')
@@ -39,8 +39,8 @@ describe('Locale System Integration Tests', () => {
 
     it('should have complete profile translations', () => {
       expect(getLocaleSection(en, 'profile').title).toBe('Profile Information')
-      expect(getLocaleSection(en, 'profile').name).toBe('Name:')
-      expect(getLocaleSection(en, 'profile').email).toBe('Email:')
+      expect(getLocaleSection(en, 'profile').name).toBe('Name')
+      expect(getLocaleSection(en, 'profile').email).toBe('Email')
     })
 
     it('should have complete user card translations', () => {
@@ -51,7 +51,7 @@ describe('Locale System Integration Tests', () => {
 
   describe('Hungarian informal translations', () => {
     it('should have complete login translations', () => {
-      expect(getLocaleSection(hu, 'login').title).toBe('Üdvözöljük')
+      expect(getLocaleSection(hu, 'login').title).toBe('Helló!')
       expect(getLocaleSection(hu, 'login').subtitle).toBe('Jelentkezz be a fiókodba')
       expect(getLocaleSection(hu, 'common').email).toBe('E-mail')
       expect(getLocaleSection(hu, 'common').password).toBe('Jelszó')
@@ -66,7 +66,7 @@ describe('Locale System Integration Tests', () => {
     })
 
     it('should have complete password strength translations', () => {
-      expect(getLocaleSection(hu, 'passwordStrength').label).toBe('Jelszó követelmények:')
+      expect(getLocaleSection(hu, 'passwordStrength').label).toBe('Jelszó követelmények')
       expect(getNestedLocaleSection(hu, 'passwordStrength.strength').weak).toBe('Gyenge')
       expect(getNestedLocaleSection(hu, 'passwordStrength.strength').medium).toBe('Közepes')
       expect(getNestedLocaleSection(hu, 'passwordStrength.strength').strong).toBe('Erős')

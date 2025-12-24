@@ -46,7 +46,7 @@ export const defaultOptions: ModuleOptions = {
   },
   hardDelete: false,
   locale: {
-    locale: 'en',
+    default: 'en',
     fallbackLocale: 'en',
     texts: {}
   }
@@ -69,8 +69,13 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     const { connector: _defaultConnector, ...defaultsWithoutConnector } = defaultOptions
     const runtimeConfigOptions = defu(nuxt.options.runtimeConfig.nuxtUsers || {}, options, defaultsWithoutConnector) as ModuleOptions
 
+    // Ensure locale defaults are set (defu should handle this, but ensure it's present)
+    if (!runtimeConfigOptions.locale) {
+      runtimeConfigOptions.locale = defaultOptions.locale!
+    }
+
     // Use the configured connector or fallback to default (don't merge connector options)
-    const configuredConnector = (nuxt.options.runtimeConfig.nuxtUsers as ModuleOptions)?.connector || options.connector
+    const configuredConnector = (nuxt.options.runtimeConfig.nuxtUsers as unknown as ModuleOptions)?.connector || options.connector
     runtimeConfigOptions.connector = configuredConnector || defaultOptions.connector
 
     nuxt.options.runtimeConfig.nuxtUsers = {
@@ -162,7 +167,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
         permissions: runtimeConfigOptions.auth?.permissions || defaultOptions.auth.permissions
       },
       apiBasePath: runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
-    }
+    } as unknown as typeof nuxt.options.runtimeConfig.public.nuxtUsers
 
     // Add early auth initialization plugin (runs before middleware)
     // Name starts with '0' to ensure it runs early in plugin lifecycle
@@ -192,7 +197,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     })
 
     // Register API routes under configurable base path
-    const base = (nuxt.options.runtimeConfig.nuxtUsers as ModuleOptions).apiBasePath || defaultOptions.apiBasePath
+    const base = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
 
     // Auth/session
     addServerHandler({
@@ -311,7 +316,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       nitroConfig.prerender = nitroConfig.prerender || {}
       nitroConfig.prerender.ignore = nitroConfig.prerender.ignore || []
 
-      const apiBasePath = (nuxt.options.runtimeConfig.nuxtUsers as ModuleOptions).apiBasePath || defaultOptions.apiBasePath
+      const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
       const ignorePattern = `${apiBasePath}/**`
 
       if (!nitroConfig.prerender.ignore.includes(ignorePattern)) {

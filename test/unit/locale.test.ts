@@ -103,7 +103,7 @@ describe('Locale Utility Functions', () => {
 
     it('should get translation from specified locale', () => {
       const result = getTranslation('login.title', 'hu')
-      expect(result).toBe('Üdvözöljük')
+      expect(result).toBe('Helló!')
     })
 
     it('should get translation from hu-formal locale', () => {

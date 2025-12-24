@@ -76,7 +76,7 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
   },
   hardDelete: false,
   locale: {
-    locale: 'en',
+    default: 'en',
     fallbackLocale: 'en',
     texts: {}
   }

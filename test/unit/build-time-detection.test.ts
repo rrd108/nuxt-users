@@ -74,7 +74,7 @@ describe('Build-time Detection', () => {
         },
         hardDelete: false,
         locale: {
-          locale: 'en',
+          default: 'en',
           fallbackLocale: 'en',
           texts: {}
         }

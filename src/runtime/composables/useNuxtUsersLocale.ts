@@ -19,7 +19,7 @@ export const useNuxtUsersLocale = () => {
 
   // Get current locale from module config
   const currentLocale = computed(() => {
-    return moduleOptions.locale?.locale || 'en'
+    return moduleOptions.locale?.default || 'en'
   })
 
   // Get fallback locale from module config

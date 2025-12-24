@@ -59,7 +59,7 @@ describe('usePublicPaths', () => {
       },
       hardDelete: false,
       locale: {
-        locale: 'en',
+        default: 'en',
         fallbackLocale: 'en',
         texts: {}
       }

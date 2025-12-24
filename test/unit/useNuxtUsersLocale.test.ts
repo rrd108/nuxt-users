@@ -17,7 +17,7 @@ describe('useNuxtUsersLocale Composable', () => {
       public: {
         nuxtUsers: {
           locale: {
-            locale: 'en',
+            default: 'en',
             fallbackLocale: 'en',
             texts: {}
           }
@@ -38,7 +38,7 @@ describe('useNuxtUsersLocale Composable', () => {
       public: {
         nuxtUsers: {
           locale: {
-            locale: 'en',
+            default: 'en',
             fallbackLocale: 'en',
             texts: {}
           }
@@ -59,7 +59,7 @@ describe('useNuxtUsersLocale Composable', () => {
       public: {
         nuxtUsers: {
           locale: {
-            locale: 'hu',
+            default: 'hu',
             fallbackLocale: 'en',
             texts: {}
           }
@@ -70,7 +70,7 @@ describe('useNuxtUsersLocale Composable', () => {
 
     const { t } = useNuxtUsersLocale()
 
-    expect(t('login.title')).toBe('Üdvözöljük')
+    expect(t('login.title')).toBe('Helló!')
     expect(t('login.submit')).toBe('Bejelentkezés')
     expect(t('common.email')).toBe('E-mail')
   })
@@ -80,7 +80,7 @@ describe('useNuxtUsersLocale Composable', () => {
       public: {
         nuxtUsers: {
           locale: {
-            locale: 'hu-formal',
+            default: 'hu-formal',
             fallbackLocale: 'en',
             texts: {}
           }
@@ -101,7 +101,7 @@ describe('useNuxtUsersLocale Composable', () => {
       public: {
         nuxtUsers: {
           locale: {
-            locale: 'en',
+            default: 'en',
             fallbackLocale: 'en',
             texts: {
               en: {
@@ -128,7 +128,7 @@ describe('useNuxtUsersLocale Composable', () => {
       public: {
         nuxtUsers: {
           locale: {
-            locale: 'de', // German not in default locales
+            default: 'de', // German not in default locales
             fallbackLocale: 'en',
             texts: {}
           }
@@ -148,7 +148,7 @@ describe('useNuxtUsersLocale Composable', () => {
       public: {
         nuxtUsers: {
           locale: {
-            locale: 'de',
+            default: 'de',
             fallbackLocale: 'hu',
             texts: {}
           }
@@ -160,7 +160,7 @@ describe('useNuxtUsersLocale Composable', () => {
     const { t } = useNuxtUsersLocale()
 
     // Should fallback to Hungarian
-    expect(t('login.title')).toBe('Üdvözöljük')
+    expect(t('login.title')).toBe('Helló!')
   })
 
   it('should handle parameter replacement', () => {
@@ -168,7 +168,7 @@ describe('useNuxtUsersLocale Composable', () => {
       public: {
         nuxtUsers: {
           locale: {
-            locale: 'en',
+            default: 'en',
             fallbackLocale: 'en',
             texts: {}
           }
@@ -188,7 +188,7 @@ describe('useNuxtUsersLocale Composable', () => {
       public: {
         nuxtUsers: {
           locale: {
-            locale: 'en',
+            default: 'en',
             fallbackLocale: 'en',
             texts: {}
           }

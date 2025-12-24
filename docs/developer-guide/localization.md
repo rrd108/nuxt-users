@@ -394,7 +394,7 @@ describe('NUsersLoginForm Localization', () => {
           useRuntimeConfig: () => ({
             public: {
               nuxtUsers: {
-                locale: { locale: 'hu', fallbackLocale: 'en', texts: {} }
+                locale: { default: 'hu', fallbackLocale: 'en', texts: {} }
               }
             }
           })

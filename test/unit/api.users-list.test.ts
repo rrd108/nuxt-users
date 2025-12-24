@@ -71,7 +71,7 @@ const testOptions: ModuleOptions = {
   },
   hardDelete: false,
   locale: {
-    locale: 'en',
+    default: 'en',
     fallbackLocale: 'en',
     texts: {}
   }

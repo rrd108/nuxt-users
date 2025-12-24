@@ -12,9 +12,33 @@ Out of the box, Nuxt Users supports:
 
 ## Quick Start
 
-### Basic Setup
+### Minimal Setup (No Configuration Required)
 
-Configure the locale in your `nuxt.config.ts`:
+The module works out of the box with English (`en`) as the default locale. **You don't need to configure anything** to start using translations:
+
+```typescript
+export default defineNuxtConfig({
+  modules: ['nuxt-users']
+  // No locale configuration needed - defaults to English
+})
+```
+
+You can immediately use translations in your components:
+
+```vue
+<script setup>
+const { t } = useNuxtUsersLocale()
+</script>
+
+<template>
+  <h1>{{ t('login.title') }}</h1>
+  <!-- Output: "Welcome Back" -->
+</template>
+```
+
+### Changing the Locale
+
+To use a different locale, configure it in your `nuxt.config.ts`:
 
 ```typescript
 export default defineNuxtConfig({
@@ -24,14 +48,18 @@ export default defineNuxtConfig({
     public: {
       nuxtUsers: {
         locale: {
-          locale: 'hu',              // Current locale
-          fallbackLocale: 'en',      // Fallback when translation missing
+          default: 'hu',              // Current locale (optional, defaults to 'en')
+          fallbackLocale: 'en',      // Fallback when translation missing (optional, defaults to 'en')
         }
       }
     }
   }
 })
 ```
+
+**Note:** The `locale` configuration is completely optional. If you don't specify it, the module will use:
+- `default: 'en'`
+- `fallbackLocale: 'en'`
 
 ### Using Translations in Components
 
@@ -59,7 +87,7 @@ const { t, currentLocale, fallbackLocale } = useNuxtUsersLocale()
 
 ### Override Existing Translations
 
-You can override default translations or add new ones:
+You can override default translations or add new ones. The `locale` configuration is optional - you only need to include it if you want to customize translations:
 
 ```typescript
 export default defineNuxtConfig({
@@ -67,7 +95,7 @@ export default defineNuxtConfig({
     public: {
       nuxtUsers: {
         locale: {
-          locale: 'en',
+          default: 'en',
           fallbackLocale: 'en',
           texts: {
             en: {
@@ -86,7 +114,15 @@ export default defineNuxtConfig({
 
 ### Add New Language
 
-Add support for a new language:
+#### ⚠️ Temporary Solution (Config-Based)
+
+You can temporarily add a new language by providing translations in your config. **However, this approach has limitations:**
+
+- **Won't survive module updates**: When the module adds new translation keys (new components, features, etc.), your custom translations won't include them
+- **Manual maintenance**: You'll need to manually add translations for every new key
+- **Incomplete coverage**: You'll only have translations for the keys you explicitly define
+
+**Quick and dirty approach** (for testing or temporary use):
 
 ```typescript
 export default defineNuxtConfig({
@@ -94,7 +130,7 @@ export default defineNuxtConfig({
     public: {
       nuxtUsers: {
         locale: {
-          locale: 'de',
+          default: 'de',
           fallbackLocale: 'en',
           texts: {
             de: {
@@ -119,6 +155,23 @@ export default defineNuxtConfig({
   }
 })
 ```
+
+#### ✅ Recommended Solution (Contribute to Module)
+
+For proper, long-term language support, **please create a locale file and submit a Pull Request** to the module repository. This ensures:
+
+- ✅ **Automatic updates**: New translation keys will be added to your locale file when the module is updated
+- ✅ **Community benefit**: Other users can benefit from your translations
+- ✅ **Maintained**: The translation will be kept up-to-date with module changes
+
+**To contribute a new language:**
+
+1. Create a new locale file in the module's `src/runtime/locales/` directory (e.g., `de.ts`)
+2. Export a complete `LocaleMessages` object with all required translation keys
+3. Add the locale to `src/runtime/locales/index.ts`
+4. Submit a Pull Request
+
+See the [Developer Guide on Localization](../developer-guide/localization.md) for detailed instructions on creating locale files.
 
 ## Translation Keys
 
@@ -361,14 +414,16 @@ const { t } = useNuxtUsersLocale()
 
 ### 2. Provide Fallback Locale
 
-Always configure a fallback locale for missing translations:
+When using a non-English locale, configure a fallback locale for missing translations:
 
 ```typescript
 locale: {
-  locale: 'de',
+  default: 'de',
   fallbackLocale: 'en',  // Falls back to English if German translation missing
 }
 ```
+
+**Note:** If you don't specify `fallbackLocale`, it defaults to `'en'`, so you only need to configure it if you want a different fallback.
 
 ### 3. Use Descriptive Keys
 
@@ -401,7 +456,7 @@ t('deleteConfirm')                      // Warns about missing parameter
 
 ## Complete Example
 
-Here's a complete example with custom German translations:
+Here's a complete example with custom German translations. Remember, the `locale` configuration is optional - you only need it if you want to change from the default English locale:
 
 ```typescript
 // nuxt.config.ts
@@ -412,7 +467,7 @@ export default defineNuxtConfig({
     public: {
       nuxtUsers: {
         locale: {
-          locale: 'de',
+          default: 'de',
           fallbackLocale: 'en',
           texts: {
             de: {

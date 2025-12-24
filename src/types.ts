@@ -22,10 +22,10 @@ export interface LocaleMessages {
 
 export interface LocaleOptions {
   /**
-   * Current locale code
+   * Default locale code
    * @default 'en'
    */
-  locale?: string
+  default?: string
   /**
    * Custom messages to override or extend default translations
    * Use nested object structure for organizing translations
@@ -233,10 +233,10 @@ export interface ModuleOptions {
     preventCommonPasswords: boolean
   }
   hardDelete: boolean
-  locale: {
-    locale: string
-    fallbackLocale: string
-    texts: Record<string, LocaleMessages>
+  locale?: {
+    default: string
+    fallbackLocale?: string
+    texts?: Record<string, LocaleMessages>
   }
 }
 
