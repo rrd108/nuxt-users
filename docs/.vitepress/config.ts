@@ -46,6 +46,7 @@ export default defineConfig({
               { text: 'Authentication', link: '/user-guide/authentication' },
               { text: 'Authorization (RBAC)', link: '/user-guide/authorization' },
               { text: 'Password Reset', link: '/user-guide/password-reset' },
+              { text: 'Localization (i18n)', link: '/user-guide/localization' },
               {
                 text: 'Components',
                 link: '/user-guide/components',
@@ -68,7 +69,8 @@ export default defineConfig({
                   { text: 'useAuthentication()', link: '/user-guide/composables#useauthentication' },
                   { text: 'getCurrentUser()', link: '/user-guide/composables#getcurrentuser' },
                   { text: 'usePublicPaths()', link: '/user-guide/composables#usepublicpaths' },
-                  { text: 'usePasswordValidation()', link: '/user-guide/composables#usepasswordvalidation' }
+                  { text: 'usePasswordValidation()', link: '/user-guide/composables#usepasswordvalidation' },
+                  { text: 'useNuxtUsersLocale()', link: '/user-guide/composables#usenuxtuserslocale' }
                 ]
               },
               { text: 'Troubleshooting', link: '/user-guide/troubleshooting' }
@@ -98,6 +100,7 @@ export default defineConfig({
               { text: 'Composables', link: '/developer-guide/composables' },
               { text: 'Database Internals', link: '/developer-guide/database-internals' },
               { text: 'Server Utilities', link: '/developer-guide/server-utilities' },
+              { text: 'Localization', link: '/developer-guide/localization' },
               { text: 'Testing', link: '/developer-guide/testing' },
               { text: 'Contributing', link: '/developer-guide/contributing' },
               { text: 'Code Style', link: '/developer-guide/code-style' }
