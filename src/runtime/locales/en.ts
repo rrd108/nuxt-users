@@ -61,7 +61,9 @@ export const en: LocaleMessages = {
     submitUpdate: 'Update Password',
     submittingReset: 'Resetting...',
     submittingUpdate: 'Updating...',
-    passwordHelpText: 'Password must contain at least'
+    passwordHelpText: 'Password must contain at least',
+    secureResetInfo: 'You are resetting your password using a secure link.',
+    emailLabel: 'Email:'
   },
   passwordStrength: {
     label: 'Password Requirements:',

@@ -49,7 +49,9 @@ const huBase: LocaleMessages = {
     submitUpdate: 'Jelszó frissítése',
     submittingReset: 'Visszaállítás...',
     submittingUpdate: 'Frissítés...',
-    passwordHelpText: 'A jelszónak tartalmaznia kell legalább'
+    passwordHelpText: 'A jelszónak tartalmaznia kell legalább',
+    secureResetInfo: 'Biztonságos linket használva állítod vissza a jelszavad.',
+    emailLabel: 'E-mail:'
   },
   passwordStrength: {
     label: 'Jelszó követelmények:',

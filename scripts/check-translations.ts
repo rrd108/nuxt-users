@@ -1,6 +1,12 @@
-import { defineCommand } from 'citty'
+#!/usr/bin/env node
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { dirname } from 'node:path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const rootDir = join(__dirname, '..')
 
 interface StringMatch {
   file: string
@@ -169,30 +175,18 @@ const findHardcodedStrings = (template: string, filePath: string): StringMatch[]
   return matches
 }
 
-export default defineCommand({
-  meta: {
-    name: 'check-translations',
-    description: 'Check Vue files for hardcoded strings that should use t() function'
-  },
-  args: {
-    path: {
-      type: 'string',
-      description: 'Path to scan (defaults to src/runtime/components)',
-      default: 'src/runtime/components'
-    },
-    strict: {
-      type: 'boolean',
-      description: 'Enable strict mode (report all potential strings)',
-      default: false
-    }
-  },
-  async run({ args }) {
-    try {
-      const scanPath = join(process.cwd(), args.path)
-      console.log(`[Nuxt Users] 🔍 Scanning Vue files in: ${scanPath}`)
-      console.log()
+// Main execution
+const main = () => {
+  try {
+    const args = process.argv.slice(2)
+    const pathArg = args.find(arg => arg.startsWith('--path='))
+    const scanPathRelative = pathArg ? pathArg.split('=')[1] : 'src/runtime/components'
+    const scanPath = join(rootDir, scanPathRelative)
+    
+    console.log(`[Nuxt Users] 🔍 Scanning Vue files in: ${scanPath}`)
+    console.log()
 
-      const vueFiles = findVueFiles(scanPath)
+    const vueFiles = findVueFiles(scanPath)
       
       if (vueFiles.length === 0) {
         console.log('[Nuxt Users] ⚠️  No Vue files found in the specified path')
@@ -215,12 +209,12 @@ export default defineCommand({
 
         const matches = findHardcodedStrings(template, filePath)
         
-        if (matches.length > 0) {
-          const relativePath = relative(process.cwd(), filePath)
-          fileResults[relativePath] = matches
-          totalMatches += matches.length
-        }
+      if (matches.length > 0) {
+        const relativePath = relative(rootDir, filePath)
+        fileResults[relativePath] = matches
+        totalMatches += matches.length
       }
+    }
 
       if (totalMatches === 0) {
         console.log('[Nuxt Users] ✅ No hardcoded strings found! All strings appear to use t()')
@@ -245,12 +239,13 @@ export default defineCommand({
       console.log('[Nuxt Users] Example: "Login" → {{ t(\'login.submit\') }}')
       console.log()
 
-      // Exit with error code if hardcoded strings found
-      process.exit(1)
-    }
-    catch (error) {
-      console.error('[Nuxt Users] ❌ Error:', error instanceof Error ? error.message : 'Unknown error')
-      process.exit(1)
-    }
+    // Exit with error code if hardcoded strings found
+    process.exit(1)
   }
-})
+  catch (error) {
+    console.error('[Nuxt Users] ❌ Error:', error instanceof Error ? error.message : 'Unknown error')
+    process.exit(1)
+  }
+}
+
+main()

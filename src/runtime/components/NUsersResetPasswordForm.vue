@@ -198,8 +198,8 @@ const handleSubmit = () => {
       v-if="isPasswordReset"
       class="n-users-info-message"
     >
-      <p>You are resetting your password using a secure link.</p>
-      <p><strong>Email:</strong> {{ resetEmail }}</p>
+      <p>{{ t('resetPassword.secureResetInfo') }}</p>
+      <p><strong>{{ t('resetPassword.emailLabel') }}</strong> {{ resetEmail }}</p>
     </div>
 
     <form @submit.prevent="handleSubmit">

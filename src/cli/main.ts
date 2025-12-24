@@ -10,7 +10,6 @@ import createMigrationsTable from './create-migrations-table'
 import addActiveToUsers from './add-active-to-users'
 import addGoogleOauthFields from './add-google-oauth-fields'
 import projectInfo from './project-info'
-import checkTranslations from './check-translations'
 
 // Dynamically load version from package.json at runtime
 const getVersion = () => {
@@ -40,8 +39,7 @@ const main = defineCommand({
     'create-migrations-table': createMigrationsTable,
     'add-active-to-users': addActiveToUsers,
     'add-google-oauth-fields': addGoogleOauthFields,
-    'project-info': projectInfo,
-    'check-translations': checkTranslations
+    'project-info': projectInfo
   }
 })
 
