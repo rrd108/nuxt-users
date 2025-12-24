@@ -4,15 +4,33 @@ import { navigateTo } from '#app'
 import type { UserWithoutPassword, ModuleOptions, PasswordValidationResult } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import { validatePassword } from 'nuxt-users/utils'
+import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
 const { passwordValidation } = nuxtUsers as ModuleOptions
+const { t } = useNuxtUsersLocale()
 
 // Props interface
 interface Props {
   apiEndpoint?: string
   redirectTo?: string
   loginLink?: string
+  // Optional label overrides
+  title?: string
+  subtitle?: string
+  nameLabel?: string
+  namePlaceholder?: string
+  emailLabel?: string
+  emailPlaceholder?: string
+  passwordLabel?: string
+  passwordPlaceholder?: string
+  confirmPasswordLabel?: string
+  confirmPasswordPlaceholder?: string
+  passwordMismatchError?: string
+  submitLabel?: string
+  submittingLabel?: string
+  alreadyHaveAccountText?: string
+  signInLinkText?: string
 }
 
 interface Emits {
@@ -133,10 +151,10 @@ const handleSubmit = async () => {
       <slot name="header">
         <div class="n-users-register-header">
           <h2 class="n-users-register-title">
-            Create Account
+            {{ props.title || t('register.title') }}
           </h2>
           <p class="n-users-register-subtitle">
-            Sign up for a new account
+            {{ props.subtitle || t('register.subtitle') }}
           </p>
         </div>
       </slot>
@@ -144,13 +162,13 @@ const handleSubmit = async () => {
       <!-- Name field -->
       <slot name="name-field">
         <div class="n-users-form-group">
-          <label for="name">Full Name</label>
+          <label for="name">{{ props.nameLabel || t('register.nameLabel') }}</label>
           <input
             id="name"
             v-model="formData.name"
             type="text"
             name="name"
-            placeholder="Enter your full name"
+            :placeholder="props.namePlaceholder || t('register.namePlaceholder')"
             required
           >
         </div>
@@ -159,13 +177,13 @@ const handleSubmit = async () => {
       <!-- Email field -->
       <slot name="email-field">
         <div class="n-users-form-group">
-          <label for="email">Email</label>
+          <label for="email">{{ props.emailLabel || t('register.emailLabel') }}</label>
           <input
             id="email"
             v-model="formData.email"
             type="email"
             name="email"
-            placeholder="Enter your email"
+            :placeholder="props.emailPlaceholder || t('register.emailPlaceholder')"
             required
           >
         </div>
@@ -174,13 +192,13 @@ const handleSubmit = async () => {
       <!-- Password field -->
       <slot name="password-field">
         <div class="n-users-form-group">
-          <label for="password">Password</label>
+          <label for="password">{{ props.passwordLabel || t('register.passwordLabel') }}</label>
           <input
             id="password"
             v-model="formData.password"
             type="password"
             name="password"
-            placeholder="Enter your password"
+            :placeholder="props.passwordPlaceholder || t('register.passwordPlaceholder')"
             required
             :minlength="passwordValidation.minLength"
           >
@@ -201,13 +219,13 @@ const handleSubmit = async () => {
       <!-- Confirm Password field -->
       <slot name="confirm-password-field">
         <div class="n-users-form-group">
-          <label for="confirmPassword">Confirm Password</label>
+          <label for="confirmPassword">{{ props.confirmPasswordLabel || t('register.confirmPasswordLabel') }}</label>
           <input
             id="confirmPassword"
             v-model="formData.confirmPassword"
             type="password"
             name="confirmPassword"
-            placeholder="Confirm your password"
+            :placeholder="props.confirmPasswordPlaceholder || t('register.confirmPasswordPlaceholder')"
             required
             :class="{ 'n-users-input-error': !passwordsMatch }"
           >
@@ -215,7 +233,7 @@ const handleSubmit = async () => {
             v-if="!passwordsMatch && formData.confirmPassword"
             class="n-users-error-text"
           >
-            Passwords do not match
+            {{ props.passwordMismatchError || t('register.passwordMismatch') }}
           </small>
         </div>
       </slot>
@@ -230,7 +248,7 @@ const handleSubmit = async () => {
             v-if="isLoading"
             class="n-users-loading-spinner"
           />
-          {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+          {{ isLoading ? (props.submittingLabel || t('register.submitting')) : (props.submitLabel || t('register.submit')) }}
         </button>
       </slot>
 
@@ -238,12 +256,12 @@ const handleSubmit = async () => {
       <slot name="footer">
         <div class="n-users-register-footer">
           <p class="n-users-login-link">
-            Already have an account?
+            {{ props.alreadyHaveAccountText || t('register.alreadyHaveAccount') }}
             <a
               :href="loginLink || '/login'"
               class="n-users-link"
             >
-              Sign in here
+              {{ props.signInLinkText || t('register.signInLink') }}
             </a>
           </p>
         </div>
