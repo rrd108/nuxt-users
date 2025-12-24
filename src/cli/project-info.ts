@@ -65,7 +65,7 @@ export default defineCommand({
               })
             }
           }
-          else {
+          if (!migrationsTableExists) {
             console.log('[Nuxt Users]    Table exists: no ❌')
             console.log('[Nuxt Users]    ➡️  Run "npx nuxt-users migrate" to set up the database')
           }
@@ -74,7 +74,7 @@ export default defineCommand({
           console.log('[Nuxt Users]    Status: ⚠️  Error -', error instanceof Error ? error.message : 'Unknown error')
         }
       }
-      else {
+      if (!nuxtUsersConfig) {
         console.log('[Nuxt Users] ⚠️  Nuxt Users module not configured in runtime config')
       }
     }

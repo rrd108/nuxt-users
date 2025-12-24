@@ -108,7 +108,7 @@ describe('Locale Utility Functions', () => {
 
     it('should get translation from hu-formal locale', () => {
       const result = getTranslation('login.rememberMe', 'hu-formal')
-      expect(result).toBe('Maradjon bejelentkezve')
+      expect(result).toBe('Bejelentkezve maradok')
     })
 
     it('should fallback to English when translation not found', () => {
@@ -181,7 +181,7 @@ describe('Locale Utility Functions', () => {
       const formal = getTranslation('login.rememberMe', 'hu-formal')
 
       expect(informal).toBe('Emlékezz rám')
-      expect(formal).toBe('Maradjon bejelentkezve')
+      expect(formal).toBe('Bejelentkezve maradok')
       expect(informal).not.toBe(formal)
     })
 

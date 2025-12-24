@@ -91,7 +91,7 @@ describe('useNuxtUsersLocale Composable', () => {
 
     const { t } = useNuxtUsersLocale()
 
-    expect(t('login.rememberMe')).toBe('Maradjon bejelentkezve')
+    expect(t('login.rememberMe')).toBe('Bejelentkezve maradok')
     // Common translations should be same
     expect(t('common.email')).toBe('E-mail')
   })

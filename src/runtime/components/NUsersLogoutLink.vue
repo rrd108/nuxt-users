@@ -100,7 +100,7 @@ const handleLogout = async (event: Event) => {
     >
       <slot>
         <span v-if="isLoading">{{ props.loggingOutText || t('logout.loggingOut') }}</span>
-        <span v-else>{{ props.linkText || t('logout.linkText') }}</span>
+        <span v-if="!isLoading">{{ props.linkText || t('logout.linkText') }}</span>
       </slot>
     </a>
   </div>

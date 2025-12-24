@@ -42,11 +42,9 @@ watch(() => props.user, (newUser) => {
 })
 
 watch(() => formData.value.name, (name) => {
+  nameError.value = ''
   if (!name || name.trim().length < 3) {
     nameError.value = 'Name must be at least 3 characters long'
-  }
-  else {
-    nameError.value = ''
   }
 })
 
@@ -54,7 +52,7 @@ watch(() => formData.value.password, (newPassword) => {
   if (newPassword) {
     passwordValidation.validate(newPassword)
   }
-  else {
+  if (!newPassword) {
     passwordValidation.clearValidation()
   }
 })
@@ -87,7 +85,7 @@ const handleSubmit = async () => {
         body: userData
       })
     }
-    else {
+    if (!isEditMode.value) {
       // Create new user
       await $fetch(nuxtUsers.apiBasePath, {
         method: 'POST',

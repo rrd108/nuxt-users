@@ -44,7 +44,7 @@ const { user } = useAuthentication()
       </div>
 
       <div
-        v-else
+        v-if="!user"
         class="login-section"
       >
         <p>Please log in to access your profile</p>

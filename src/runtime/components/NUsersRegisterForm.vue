@@ -70,7 +70,7 @@ watch(() => formData.value.password, (newPassword) => {
   if (newPassword) {
     passwordValidationResult.value = validatePassword(newPassword, passwordValidation)
   }
-  else {
+  if (!newPassword) {
     passwordValidationResult.value = null
   }
 }, { immediate: true })

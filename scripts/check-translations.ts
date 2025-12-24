@@ -27,8 +27,10 @@ const findVueFiles = (dir: string, fileList: string[] = []): string[] => {
 
     if (stat.isDirectory()) {
       findVueFiles(filePath, fileList)
+      continue
     }
-    else if (file.endsWith('.vue')) {
+
+    if (file.endsWith('.vue')) {
       fileList.push(filePath)
     }
   }

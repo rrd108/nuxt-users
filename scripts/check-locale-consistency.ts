@@ -52,13 +52,17 @@ const getHungarianKeys = (): { base: Set<string>, informal: Set<string>, formal:
         if (match && match[1]) {
           stack.push(match[1])
         }
+        continue
       }
+
       // Check for closing brace
-      else if (trimmed === '},') {
+      if (trimmed === '},') {
         stack.pop()
+        continue
       }
+
       // Check for key-value pair
-      else if (trimmed.match(/^(\w+):/)) {
+      if (trimmed.match(/^(\w+):/)) {
         const match = trimmed.match(/^(\w+):/)
         if (match) {
           const key = match[1]

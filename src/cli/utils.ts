@@ -90,10 +90,10 @@ export const loadOptions = async (): Promise<ModuleOptions> => {
 
       return mergedConfig
     }
-    else {
-      console.log('[Nuxt Users] No nuxt-users configuration found, using environment variables')
-      return getOptionsFromEnv()
-    }
+
+    // No configuration found, use environment variables
+    console.log('[Nuxt Users] No nuxt-users configuration found, using environment variables')
+    return getOptionsFromEnv()
   }
   catch (error) {
     console.log('[Nuxt Users] Could not load Nuxt project, using environment variables')

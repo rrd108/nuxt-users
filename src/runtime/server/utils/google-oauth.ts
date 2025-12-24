@@ -194,7 +194,7 @@ export async function createAuthTokenForUser(
     const longTermDays = moduleOptions.auth.rememberMeExpiration || 30
     expiresAt.setDate(expiresAt.getDate() + longTermDays)
   }
-  else {
+  if (!rememberMe) {
     expiresAt.setMinutes(expiresAt.getMinutes() + moduleOptions.auth.tokenExpiration)
   }
 

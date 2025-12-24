@@ -80,7 +80,7 @@ watch(() => passwordForm.value.newPassword, (newPassword) => {
   if (newPassword) {
     passwordValidation.validate(newPassword)
   }
-  else {
+  if (!newPassword) {
     passwordValidation.clearValidation()
   }
 })
@@ -182,7 +182,7 @@ const handleSubmit = () => {
   if (isPasswordReset.value) {
     resetPassword()
   }
-  else {
+  if (!isPasswordReset.value) {
     updatePassword()
   }
 }
@@ -289,7 +289,7 @@ const handleSubmit = () => {
         <span v-if="isPasswordLoading">
           {{ isPasswordReset ? (props.submittingResetLabel || t('resetPassword.submittingReset')) : (props.submittingUpdateLabel || t('resetPassword.submittingUpdate')) }}
         </span>
-        <span v-else>
+        <span v-if="!isPasswordLoading">
           {{ isPasswordReset ? (props.submitResetLabel || t('resetPassword.submitReset')) : (props.submitUpdateLabel || t('resetPassword.submitUpdate')) }}
         </span>
       </button>

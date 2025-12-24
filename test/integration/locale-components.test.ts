@@ -77,7 +77,7 @@ describe('Locale System Integration Tests', () => {
   describe('Hungarian formal translations', () => {
     it('should have formal login translations', () => {
       expect(getLocaleSection(huFormal, 'login').subtitle).toBe('Jelentkezzen be fiókjába')
-      expect(getLocaleSection(huFormal, 'login').rememberMe).toBe('Maradjon bejelentkezve')
+      expect(getLocaleSection(huFormal, 'login').rememberMe).toBe('Bejelentkezve maradok')
     })
 
     it('should have formal register translations', () => {

@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
       redirectUrl.searchParams.set('message', 'Email confirmed successfully! Your account is now active. You can now log in.')
       return sendRedirect(event, redirectUrl.pathname + redirectUrl.search, 302)
     }
-    else {
+    if (!success) {
       // Redirect to error page with error status
       const redirectUrl = new URL(options.emailConfirmationUrl, 'http://localhost')
       redirectUrl.searchParams.set('status', 'error')
@@ -47,11 +47,9 @@ export default defineEventHandler(async (event) => {
     const redirectUrl = new URL(options.emailConfirmationUrl, 'http://localhost')
     redirectUrl.searchParams.set('status', 'error')
 
+    redirectUrl.searchParams.set('message', 'Email confirmation failed')
     if (error instanceof Error) {
       redirectUrl.searchParams.set('message', error.message)
-    }
-    else {
-      redirectUrl.searchParams.set('message', 'Email confirmation failed')
     }
 
     return sendRedirect(event, redirectUrl.pathname + redirectUrl.search, 302)

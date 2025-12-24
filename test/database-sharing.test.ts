@@ -113,7 +113,7 @@ describe('Database Sharing Feature', () => {
           )
         `
       }
-      else if (dbType === 'mysql') {
+      if (dbType === 'mysql') {
         await db.sql`
           CREATE TABLE IF NOT EXISTS consumer_table (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -123,7 +123,7 @@ describe('Database Sharing Feature', () => {
           )
         `
       }
-      else if (dbType === 'postgresql') {
+      if (dbType === 'postgresql') {
         await db.sql`
           CREATE TABLE IF NOT EXISTS consumer_table (
             id SERIAL PRIMARY KEY,
@@ -155,7 +155,7 @@ describe('Database Sharing Feature', () => {
           )
         `
       }
-      else if (dbType === 'mysql') {
+      if (dbType === 'mysql') {
         await db.sql`
           CREATE TABLE IF NOT EXISTS custom_posts (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -166,7 +166,7 @@ describe('Database Sharing Feature', () => {
           )
         `
       }
-      else if (dbType === 'postgresql') {
+      if (dbType === 'postgresql') {
         await db.sql`
           CREATE TABLE IF NOT EXISTS custom_posts (
             id SERIAL PRIMARY KEY,
@@ -206,7 +206,7 @@ describe('Database Sharing Feature', () => {
           WHERE u.email = 'testuser@example.com'
         `
       }
-      else {
+      if (dbType === 'mysql' || dbType === 'postgresql') {
         joinQuery = await db.sql`
           SELECT u.name, u.email, p.title, p.content
           FROM {${testOptions.tables.users}} u
@@ -215,10 +215,10 @@ describe('Database Sharing Feature', () => {
         `
       }
 
-      expect(joinQuery.rows).toBeDefined()
-      expect(joinQuery.rows?.length).toBe(1)
-      expect(joinQuery.rows?.[0]?.name).toBe('Test User')
-      expect(joinQuery.rows?.[0]?.title).toBe('My First Post')
+      expect(joinQuery!.rows).toBeDefined()
+      expect(joinQuery!.rows?.length).toBe(1)
+      expect(joinQuery!.rows?.[0]?.name).toBe('Test User')
+      expect(joinQuery!.rows?.[0]?.title).toBe('My First Post')
     })
 
     it('should handle multiple consumer tables in shared database', async () => {
@@ -235,7 +235,7 @@ describe('Database Sharing Feature', () => {
             )
           `
         }
-        else if (dbType === 'mysql') {
+        if (dbType === 'mysql') {
           await db.sql`
             CREATE TABLE IF NOT EXISTS {${tableName}} (
               id INT AUTO_INCREMENT PRIMARY KEY,
@@ -244,7 +244,7 @@ describe('Database Sharing Feature', () => {
             )
           `
         }
-        else if (dbType === 'postgresql') {
+        if (dbType === 'postgresql') {
           await db.sql`
             CREATE TABLE IF NOT EXISTS {${tableName}} (
               id SERIAL PRIMARY KEY,
@@ -341,7 +341,7 @@ describe('Database Sharing Feature', () => {
           )
         `
       }
-      else if (dbType === 'mysql') {
+      if (dbType === 'mysql') {
         await db.sql`
           CREATE TABLE IF NOT EXISTS type_test (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -350,7 +350,7 @@ describe('Database Sharing Feature', () => {
           )
         `
       }
-      else if (dbType === 'postgresql') {
+      if (dbType === 'postgresql') {
         await db.sql`
           CREATE TABLE IF NOT EXISTS type_test (
             id SERIAL PRIMARY KEY,

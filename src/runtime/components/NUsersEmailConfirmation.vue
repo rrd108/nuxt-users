@@ -87,7 +87,7 @@ const _props = withDefaults(defineProps<Props>(), {
 
       <!-- Error state -->
       <div
-        v-else-if="isError"
+        v-if="isError"
         class="n-users-confirmation-content"
       >
         <slot name="error-icon">
@@ -144,7 +144,7 @@ const _props = withDefaults(defineProps<Props>(), {
 
       <!-- Loading/unknown state -->
       <div
-        v-else
+        v-if="!isError"
         class="n-users-confirmation-content"
       >
         <slot name="loading-content">

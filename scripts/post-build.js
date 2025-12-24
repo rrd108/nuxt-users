@@ -44,7 +44,7 @@ function fixImportPaths(dir) {
     if (item.isDirectory()) {
       fixImportPaths(fullPath)
     }
-    else if (item.isFile() && (item.name.endsWith('.js') || item.name.endsWith('.mjs') || item.name.endsWith('.vue') || item.name.endsWith('.ts'))) {
+    if (item.isFile() && (item.name.endsWith('.js') || item.name.endsWith('.mjs') || item.name.endsWith('.vue') || item.name.endsWith('.ts'))) {
       let content = readFileSync(fullPath, 'utf8')
       let modified = false
 

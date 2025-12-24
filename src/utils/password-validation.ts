@@ -63,7 +63,7 @@ export const validatePassword = (
     errors.push(`Password must be at least ${config.minLength} characters long`)
     hints.push(`Use at least ${config.minLength} characters`)
   }
-  else {
+  if (password.length >= config.minLength) {
     score += 20
     if (password.length < 12) {
       hints.push('Use 12 or more characters for extra security')
@@ -75,7 +75,7 @@ export const validatePassword = (
     errors.push('Password must contain at least one uppercase letter')
     hints.push('Add an uppercase letter (A-Z)')
   }
-  else if (/[A-Z]/.test(password)) {
+  if (/[A-Z]/.test(password)) {
     score += 15
   }
 
@@ -84,7 +84,7 @@ export const validatePassword = (
     errors.push('Password must contain at least one lowercase letter')
     hints.push('Add a lowercase letter (a-z)')
   }
-  else if (/[a-z]/.test(password)) {
+  if (/[a-z]/.test(password)) {
     score += 15
   }
 
@@ -93,7 +93,7 @@ export const validatePassword = (
     errors.push('Password must contain at least one number')
     hints.push('Add a number (0-9)')
   }
-  else if (/\d/.test(password)) {
+  if (/\d/.test(password)) {
     score += 15
   }
 
@@ -102,7 +102,7 @@ export const validatePassword = (
     errors.push('Password must contain at least one special character')
     hints.push('Add a special character (e.g. !@#$%)')
   }
-  else if (/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
+  if (/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
     score += 15
   }
 
@@ -116,7 +116,7 @@ export const validatePassword = (
   if (password.length >= 12) {
     score += 10
   }
-  else if (password.length >= 10) {
+  if (password.length >= 10 && password.length < 12) {
     score += 5
   }
 
@@ -130,7 +130,7 @@ export const validatePassword = (
   if (complexityTypes >= 4) {
     score += 10
   }
-  else if (complexityTypes >= 3) {
+  if (complexityTypes >= 3 && complexityTypes < 4) {
     score += 5
     hints.push('Use a mix of uppercase, lowercase, numbers, and special characters')
   }
@@ -140,7 +140,7 @@ export const validatePassword = (
   if (score >= 80) {
     strength = 'strong'
   }
-  else if (score >= 60) {
+  if (score >= 60 && score < 80) {
     strength = 'medium'
   }
 
