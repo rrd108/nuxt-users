@@ -132,7 +132,8 @@ const huInformalOverrides: LocaleMessages = {
     passwordPlaceholder: 'Add meg a jelszavad',
     confirmPasswordPlaceholder: 'Erősítsd meg a jelszavad',
     alreadyHaveAccount: 'Már van fiókod?',
-    signInLink: 'Jelentkezz be itt'
+    signInLink: 'Jelentkezz be itt',
+    submit: 'Regisztrálj'
   },
   passwordStrength: {
     hintsTitle: 'Hogyan tedd erősebbé a jelszavad:'
