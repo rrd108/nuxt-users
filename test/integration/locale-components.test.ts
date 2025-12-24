@@ -6,76 +6,76 @@ import type { LocaleMessages } from '../../src/types'
 describe('Locale System Integration Tests', () => {
   describe('English translations', () => {
     it('should have complete login translations', () => {
-      expect((en.login as any).title).toBe('Welcome Back')
-      expect((en.login as any).subtitle).toBe('Sign in to your account')
-      expect((en.common as any).email).toBe('Email')
-      expect((en.common as any).password).toBe('Password')
-      expect((en.login as any).rememberMe).toBe('Remember me')
-      expect((en.login as any).submit).toBe('Sign In')
+      expect((en.login as LocaleMessages).title).toBe('Welcome Back')
+      expect((en.login as LocaleMessages).subtitle).toBe('Sign in to your account')
+      expect((en.common as LocaleMessages).email).toBe('Email')
+      expect((en.common as LocaleMessages).password).toBe('Password')
+      expect((en.login as LocaleMessages).rememberMe).toBe('Remember me')
+      expect((en.login as LocaleMessages).submit).toBe('Sign In')
     })
 
     it('should have complete password strength translations', () => {
-      expect((en.passwordStrength as any).label).toBe('Password Requirements:')
-      expect(((en.passwordStrength as any).strength as any).weak).toBe('Weak')
-      expect(((en.passwordStrength as any).strength as any).medium).toBe('Medium')
-      expect(((en.passwordStrength as any).strength as any).strong).toBe('Strong')
-      expect(((en.passwordStrength as any).strength as any).veryStrong).toBe('Very Strong')
-      expect(((en.passwordStrength as any).requirements as any).minLength).toBe('At least {0} characters')
-      expect(((en.passwordStrength as any).requirements as any).uppercase).toBe('Contains uppercase letter')
+      expect((en.passwordStrength as LocaleMessages).label).toBe('Password Requirements:')
+      expect(((en.passwordStrength as LocaleMessages).strength as LocaleMessages).weak).toBe('Weak')
+      expect(((en.passwordStrength as LocaleMessages).strength as LocaleMessages).medium).toBe('Medium')
+      expect(((en.passwordStrength as LocaleMessages).strength as LocaleMessages).strong).toBe('Strong')
+      expect(((en.passwordStrength as LocaleMessages).strength as LocaleMessages).veryStrong).toBe('Very Strong')
+      expect(((en.passwordStrength as LocaleMessages).requirements as LocaleMessages).minLength).toBe('At least {0} characters')
+      expect(((en.passwordStrength as LocaleMessages).requirements as LocaleMessages).uppercase).toBe('Contains uppercase letter')
     })
 
     it('should have complete profile translations', () => {
-      expect((en.profile as any).title).toBe('Profile Information')
-      expect((en.profile as any).name).toBe('Name:')
-      expect((en.profile as any).email).toBe('Email:')
+      expect((en.profile as LocaleMessages).title).toBe('Profile Information')
+      expect((en.profile as LocaleMessages).name).toBe('Name:')
+      expect((en.profile as LocaleMessages).email).toBe('Email:')
     })
 
     it('should have complete user card translations', () => {
-      expect((en.userCard as any).delete).toBe('Delete')
-      expect((en.userCard as any).deleteConfirm).toBe('Are you sure you want to delete user {0}?')
+      expect((en.userCard as LocaleMessages).delete).toBe('Delete')
+      expect((en.userCard as LocaleMessages).deleteConfirm).toBe('Are you sure you want to delete user {0}?')
     })
   })
 
   describe('Hungarian informal translations', () => {
     it('should have complete login translations', () => {
-      expect((hu.login as any).title).toBe('Üdvözöljük')
-      expect((hu.login as any).subtitle).toBe('Jelentkezz be a fiókodba')
-      expect((hu.common as any).email).toBe('E-mail')
-      expect((hu.common as any).password).toBe('Jelszó')
-      expect((hu.login as any).rememberMe).toBe('Emlékezz rám')
-      expect((hu.login as any).submit).toBe('Bejelentkezés')
+      expect((hu.login as LocaleMessages).title).toBe('Üdvözöljük')
+      expect((hu.login as LocaleMessages).subtitle).toBe('Jelentkezz be a fiókodba')
+      expect((hu.common as LocaleMessages).email).toBe('E-mail')
+      expect((hu.common as LocaleMessages).password).toBe('Jelszó')
+      expect((hu.login as LocaleMessages).rememberMe).toBe('Emlékezz rám')
+      expect((hu.login as LocaleMessages).submit).toBe('Bejelentkezés')
     })
 
     it('should have informal register translations', () => {
-      expect((hu.register as any).title).toBe('Regisztráció')
-      expect((hu.register as any).subtitle).toBe('Hozz létre egy új fiókot')
-      expect((hu.register as any).submit).toBe('Regisztráció')
+      expect((hu.register as LocaleMessages).title).toBe('Regisztráció')
+      expect((hu.register as LocaleMessages).subtitle).toBe('Hozz létre egy új fiókot')
+      expect((hu.register as LocaleMessages).submit).toBe('Regisztráció')
     })
 
     it('should have complete password strength translations', () => {
-      expect((hu.passwordStrength as any).label).toBe('Jelszó követelmények:')
-      expect(((hu.passwordStrength as any).strength as any).weak).toBe('Gyenge')
-      expect(((hu.passwordStrength as any).strength as any).medium).toBe('Közepes')
-      expect(((hu.passwordStrength as any).strength as any).strong).toBe('Erős')
-      expect(((hu.passwordStrength as any).strength as any).veryStrong).toBe('Nagyon erős')
+      expect((hu.passwordStrength as LocaleMessages).label).toBe('Jelszó követelmények:')
+      expect(((hu.passwordStrength as LocaleMessages).strength as LocaleMessages).weak).toBe('Gyenge')
+      expect(((hu.passwordStrength as LocaleMessages).strength as LocaleMessages).medium).toBe('Közepes')
+      expect(((hu.passwordStrength as LocaleMessages).strength as LocaleMessages).strong).toBe('Erős')
+      expect(((hu.passwordStrength as LocaleMessages).strength as LocaleMessages).veryStrong).toBe('Nagyon erős')
     })
   })
 
   describe('Hungarian formal translations', () => {
     it('should have formal login translations', () => {
-      expect((huFormal.login as any).subtitle).toBe('Jelentkezzen be fiókjába')
-      expect((huFormal.login as any).rememberMe).toBe('Maradjon bejelentkezve')
+      expect((huFormal.login as LocaleMessages).subtitle).toBe('Jelentkezzen be fiókjába')
+      expect((huFormal.login as LocaleMessages).rememberMe).toBe('Maradjon bejelentkezve')
     })
 
     it('should have formal register translations', () => {
-      expect((huFormal.register as any).subtitle).toBe('Hozzon létre egy új fiókot')
-      expect((huFormal.register as any).submit).toBe('Regisztráljon')
+      expect((huFormal.register as LocaleMessages).subtitle).toBe('Hozzon létre egy új fiókot')
+      expect((huFormal.register as LocaleMessages).submit).toBe('Regisztráljon')
     })
 
     it('should share common translations with informal', () => {
-      expect((huFormal.common as any).email).toBe('E-mail')
-      expect((huFormal.common as any).password).toBe('Jelszó')
-      expect((huFormal.login as any).title).toBe('Üdvözöljük')
+      expect((huFormal.common as LocaleMessages).email).toBe('E-mail')
+      expect((huFormal.common as LocaleMessages).password).toBe('Jelszó')
+      expect((huFormal.login as LocaleMessages).title).toBe('Üdvözöljük')
     })
   })
 
@@ -200,48 +200,48 @@ describe('Locale System Integration Tests', () => {
   describe('All translation keys coverage', () => {
     it('should have all common keys in all locales', () => {
       const commonKeys = ['email', 'password', 'name']
-      
-      commonKeys.forEach(key => {
-        expect((en.common as any)[key]).toBeDefined()
-        expect((hu.common as any)[key]).toBeDefined()
-        expect((huFormal.common as any)[key]).toBeDefined()
+
+      commonKeys.forEach((key) => {
+        expect((en.common as LocaleMessages)[key]).toBeDefined()
+        expect((hu.common as LocaleMessages)[key]).toBeDefined()
+        expect((huFormal.common as LocaleMessages)[key]).toBeDefined()
       })
     })
 
     it('should have all login keys in all locales', () => {
       const loginKeys = ['title', 'subtitle', 'forgotPassword', 'rememberMe', 'submit']
-      
-      loginKeys.forEach(key => {
-        expect((en.login as any)[key]).toBeDefined()
-        expect((hu.login as any)[key]).toBeDefined()
-        expect((huFormal.login as any)[key]).toBeDefined()
+
+      loginKeys.forEach((key) => {
+        expect((en.login as LocaleMessages)[key]).toBeDefined()
+        expect((hu.login as LocaleMessages)[key]).toBeDefined()
+        expect((huFormal.login as LocaleMessages)[key]).toBeDefined()
       })
     })
 
     it('should have all register keys in all locales', () => {
       const registerKeys = ['title', 'subtitle', 'passwordLabel', 'confirmPasswordLabel', 'submit', 'alreadyHaveAccount']
-      
-      registerKeys.forEach(key => {
-        expect((en.register as any)[key]).toBeDefined()
-        expect((hu.register as any)[key]).toBeDefined()
-        expect((huFormal.register as any)[key]).toBeDefined()
+
+      registerKeys.forEach((key) => {
+        expect((en.register as LocaleMessages)[key]).toBeDefined()
+        expect((hu.register as LocaleMessages)[key]).toBeDefined()
+        expect((huFormal.register as LocaleMessages)[key]).toBeDefined()
       })
     })
 
     it('should have all password strength keys in all locales', () => {
       const strengthKeys = ['weak', 'medium', 'strong', 'veryStrong']
       const requirementKeys = ['minLength', 'uppercase', 'lowercase', 'numbers', 'specialChars']
-      
-      strengthKeys.forEach(key => {
-        expect(((en.passwordStrength as any).strength as any)[key]).toBeDefined()
-        expect(((hu.passwordStrength as any).strength as any)[key]).toBeDefined()
-        expect(((huFormal.passwordStrength as any).strength as any)[key]).toBeDefined()
+
+      strengthKeys.forEach((key) => {
+        expect(((en.passwordStrength as LocaleMessages).strength as LocaleMessages)[key]).toBeDefined()
+        expect(((hu.passwordStrength as LocaleMessages).strength as LocaleMessages)[key]).toBeDefined()
+        expect(((huFormal.passwordStrength as LocaleMessages).strength as LocaleMessages)[key]).toBeDefined()
       })
 
-      requirementKeys.forEach(key => {
-        expect(((en.passwordStrength as any).requirements as any)[key]).toBeDefined()
-        expect(((hu.passwordStrength as any).requirements as any)[key]).toBeDefined()
-        expect(((huFormal.passwordStrength as any).requirements as any)[key]).toBeDefined()
+      requirementKeys.forEach((key) => {
+        expect(((en.passwordStrength as LocaleMessages).requirements as LocaleMessages)[key]).toBeDefined()
+        expect(((hu.passwordStrength as LocaleMessages).requirements as LocaleMessages)[key]).toBeDefined()
+        expect(((huFormal.passwordStrength as LocaleMessages).requirements as LocaleMessages)[key]).toBeDefined()
       })
     })
   })

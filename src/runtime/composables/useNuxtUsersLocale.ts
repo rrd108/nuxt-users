@@ -5,7 +5,7 @@ import { getTranslation } from '../utils/locale'
 
 /**
  * Composable for accessing nuxt-users localized messages
- * 
+ *
  * @example
  * ```ts
  * const { t } = useNuxtUsersLocale()

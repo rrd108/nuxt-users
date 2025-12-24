@@ -1,37 +1,11 @@
 #!/usr/bin/env node
 import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { dirname } from 'node:path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const rootDir = join(__dirname, '..')
-
-interface LocaleMessages {
-  [key: string]: string | LocaleMessages
-}
-
-/**
- * Flatten nested object to dot notation paths
- */
-const flattenObject = (obj: LocaleMessages, prefix = ''): Record<string, string> => {
-  const result: Record<string, string> = {}
-  
-  for (const key in obj) {
-    const value = obj[key]
-    const newKey = prefix ? `${prefix}.${key}` : key
-    
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.assign(result, flattenObject(value as LocaleMessages, newKey))
-    }
-    else if (typeof value === 'string') {
-      result[newKey] = value
-    }
-  }
-  
-  return result
-}
 
 /**
  * Get all translation keys from the Hungarian locale file
@@ -39,39 +13,39 @@ const flattenObject = (obj: LocaleMessages, prefix = ''): Record<string, string>
 const getHungarianKeys = (): { base: Set<string>, informal: Set<string>, formal: Set<string> } => {
   const huFilePath = join(rootDir, 'src/runtime/locales/hu.ts')
   const content = readFileSync(huFilePath, 'utf8')
-  
+
   // Extract huBase object
-  const baseMatch = content.match(/const huBase: LocaleMessages = \{([\s\S]*?)\n\}/m)
+  const baseMatch = content.match(/const huBase: LocaleMessages = \{([\s\S]*?)\n\}/)
   if (!baseMatch) {
     throw new Error('Could not find huBase in hu.ts')
   }
-  
+
   // Extract huInformalOverrides object
-  const informalMatch = content.match(/const huInformalOverrides: LocaleMessages = \{([\s\S]*?)\n\}/m)
+  const informalMatch = content.match(/const huInformalOverrides: LocaleMessages = \{([\s\S]*?)\n\}/)
   if (!informalMatch) {
     throw new Error('Could not find huInformalOverrides in hu.ts')
   }
-  
+
   // Extract huFormalOverrides object
-  const formalMatch = content.match(/const huFormalOverrides: LocaleMessages = \{([\s\S]*?)\n\}/m)
+  const formalMatch = content.match(/const huFormalOverrides: LocaleMessages = \{([\s\S]*?)\n\}/)
   if (!formalMatch) {
     throw new Error('Could not find huFormalOverrides in hu.ts')
   }
-  
+
   // Parse the objects (simple parsing for nested structures)
-  const parseKeys = (objString: string, parentKey = ''): Set<string> => {
+  const parseKeys = (objString: string): Set<string> => {
     const keys = new Set<string>()
     const lines = objString.split('\n')
     const stack: string[] = []
-    
+
     for (const line of lines) {
       const trimmed = line.trim()
-      
+
       // Skip empty lines and comments
       if (!trimmed || trimmed.startsWith('//')) {
         continue
       }
-      
+
       // Check for opening brace (nested object)
       if (trimmed.match(/^(\w+):\s*\{/)) {
         const match = trimmed.match(/^(\w+):\s*\{/)
@@ -93,14 +67,14 @@ const getHungarianKeys = (): { base: Set<string>, informal: Set<string>, formal:
         }
       }
     }
-    
+
     return keys
   }
-  
+
   const baseKeys = parseKeys(baseMatch[1])
   const informalKeys = parseKeys(informalMatch[1])
   const formalKeys = parseKeys(formalMatch[1])
-  
+
   return { base: baseKeys, informal: informalKeys, formal: formalKeys }
 }
 
@@ -109,15 +83,15 @@ const getHungarianKeys = (): { base: Set<string>, informal: Set<string>, formal:
  */
 const checkConsistency = () => {
   console.log('[Nuxt Users] 🔍 Checking Hungarian locale formal/informal consistency...\n')
-  
+
   const { base, informal, formal } = getHungarianKeys()
-  
-  console.log(`[Nuxt Users] 📊 Statistics:`)
+
+  console.log('[Nuxt Users] 📊 Statistics:')
   console.log(`   Base keys: ${base.size}`)
   console.log(`   Informal override keys: ${informal.size}`)
   console.log(`   Formal override keys: ${formal.size}`)
   console.log()
-  
+
   // Check 1: Formal keys that don't exist in informal
   const formalOnlyKeys: string[] = []
   for (const key of formal) {
@@ -125,7 +99,7 @@ const checkConsistency = () => {
       formalOnlyKeys.push(key)
     }
   }
-  
+
   // Check 2: Informal keys that don't exist in formal
   const informalOnlyKeys: string[] = []
   for (const key of informal) {
@@ -133,9 +107,9 @@ const checkConsistency = () => {
       informalOnlyKeys.push(key)
     }
   }
-  
+
   let hasErrors = false
-  
+
   if (formalOnlyKeys.length > 0) {
     hasErrors = true
     console.log('❌ Formal keys without informal equivalent:\n')
@@ -144,7 +118,7 @@ const checkConsistency = () => {
     }
     console.log()
   }
-  
+
   if (informalOnlyKeys.length > 0) {
     hasErrors = true
     console.log('❌ Informal keys without formal equivalent:\n')
@@ -153,7 +127,7 @@ const checkConsistency = () => {
     }
     console.log()
   }
-  
+
   if (hasErrors) {
     console.log('[Nuxt Users] ⚠️  Inconsistencies found!')
     console.log('[Nuxt Users] 💡 Tip: All formal variants must have an informal equivalent and vice versa.')
@@ -161,7 +135,7 @@ const checkConsistency = () => {
     console.log()
     process.exit(1)
   }
-  
+
   console.log('[Nuxt Users] ✅ All formal/informal translations are consistent!')
   console.log()
 }

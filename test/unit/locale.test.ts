@@ -159,8 +159,8 @@ describe('Locale Utility Functions', () => {
 
     it('should work with all default locales', () => {
       const locales = Object.keys(defaultLocaleMessages)
-      
-      locales.forEach(locale => {
+
+      locales.forEach((locale) => {
         const result = getTranslation('login.title', locale)
         expect(result).toBeTruthy()
         expect(typeof result).toBe('string')
@@ -170,7 +170,7 @@ describe('Locale Utility Functions', () => {
     it('should preserve common translations across formal/informal variants', () => {
       const informalEmail = getTranslation('common.email', 'hu')
       const formalEmail = getTranslation('common.email', 'hu-formal')
-      
+
       expect(informalEmail).toBe(formalEmail)
       expect(informalEmail).toBe('E-mail')
     })
@@ -178,7 +178,7 @@ describe('Locale Utility Functions', () => {
     it('should have different translations for formal/informal variants', () => {
       const informal = getTranslation('login.rememberMe', 'hu')
       const formal = getTranslation('login.rememberMe', 'hu-formal')
-      
+
       expect(informal).toBe('Emlékezz rám')
       expect(formal).toBe('Maradjon bejelentkezve')
       expect(informal).not.toBe(formal)
@@ -191,7 +191,7 @@ describe('Locale Utility Functions', () => {
 
       // Translation expects 1 parameter but we provide 2
       getTranslation('userCard.deleteConfirm', 'en', undefined, 'en', ['John', 'Extra'])
-      
+
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('Parameter count mismatch for key "userCard.deleteConfirm"')
       )
@@ -210,7 +210,7 @@ describe('Locale Utility Functions', () => {
 
       // Translation expects 1 parameter but we provide 2 - should not warn in production
       getTranslation('userCard.deleteConfirm', 'en', undefined, 'en', ['John', 'Extra'])
-      
+
       expect(consoleSpy).not.toHaveBeenCalled()
 
       process.env.NODE_ENV = originalEnv

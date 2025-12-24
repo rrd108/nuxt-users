@@ -6,7 +6,7 @@ import { defaultLocaleMessages } from '../locales'
  */
 export const deepMerge = (target: LocaleMessages, source: LocaleMessages): LocaleMessages => {
   const result: LocaleMessages = { ...target }
-  
+
   for (const key in source) {
     const sourceValue = source[key]
     if (!sourceValue) {
@@ -22,7 +22,7 @@ export const deepMerge = (target: LocaleMessages, source: LocaleMessages): Local
       result[key] = sourceValue as string
     }
   }
-  
+
   return result
 }
 
@@ -32,7 +32,7 @@ export const deepMerge = (target: LocaleMessages, source: LocaleMessages): Local
 export const getNestedValue = (obj: LocaleMessages, path: string): string | undefined => {
   const keys = path.split('.')
   let value: string | LocaleMessages | undefined = obj
-  
+
   for (const key of keys) {
     if (value && typeof value === 'object') {
       value = value[key]
@@ -41,7 +41,7 @@ export const getNestedValue = (obj: LocaleMessages, path: string): string | unde
       return undefined
     }
   }
-  
+
   return typeof value === 'string' ? value : undefined
 }
 
@@ -64,44 +64,44 @@ export const getTranslation = (
   const localeMessages = customTexts?.[locale]
     ? deepMerge(defaultLocaleMessages[locale] || {}, customTexts[locale])
     : defaultLocaleMessages[locale]
-  
+
   // Try to get the translation from the current locale
   let translation = localeMessages ? getNestedValue(localeMessages, key) : undefined
-  
+
   // If not found and fallback is different, try fallback locale
   if (!translation && fallbackLocale !== locale) {
     const fallbackMessages = customTexts?.[fallbackLocale]
       ? deepMerge(defaultLocaleMessages[fallbackLocale] || {}, customTexts[fallbackLocale])
       : defaultLocaleMessages[fallbackLocale]
-    
+
     translation = fallbackMessages ? getNestedValue(fallbackMessages, key) : undefined
   }
-  
+
   // If still not found, try default English
   if (!translation && locale !== 'en' && fallbackLocale !== 'en' && defaultLocaleMessages.en) {
     translation = getNestedValue(defaultLocaleMessages.en, key)
   }
-  
+
   // Replace parameters if provided
   if (translation && params && params.length > 0) {
     // Count expected placeholders in the translation
     const placeholderMatches = translation.match(/\{\d+\}/g)
     const expectedParamCount = placeholderMatches ? placeholderMatches.length : 0
-    
+
     // Warn if parameter count doesn't match (in development)
     if (expectedParamCount !== params.length && process.env.NODE_ENV !== 'production') {
       console.warn(
-        `[nuxt-users locale] Parameter count mismatch for key "${key}": ` +
-        `expected ${expectedParamCount} parameter(s), but received ${params.length}`
+        `[nuxt-users locale] Parameter count mismatch for key "${key}": `
+        + `expected ${expectedParamCount} parameter(s), but received ${params.length}`
       )
     }
-    
+
     // Replace all parameters
     params.forEach((param, index) => {
       translation = translation!.replace(`{${index}}`, String(param))
     })
   }
-  
+
   // Return the translation or the key as fallback
   return translation || key
 }

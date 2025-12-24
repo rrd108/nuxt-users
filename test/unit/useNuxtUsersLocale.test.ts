@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useNuxtUsersLocale } from '../../src/runtime/composables/useNuxtUsersLocale'
-import type { ModuleOptions } from '../../src/types'
 import { useRuntimeConfig } from '#app'
 
 // Mock the Nuxt composables
@@ -14,7 +13,6 @@ describe('useNuxtUsersLocale Composable', () => {
   })
 
   it('should return translation function and locale info', () => {
-    
     vi.mocked(useRuntimeConfig).mockReturnValue({
       public: {
         nuxtUsers: {
@@ -25,6 +23,7 @@ describe('useNuxtUsersLocale Composable', () => {
           }
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
     const { t, currentLocale, fallbackLocale } = useNuxtUsersLocale()
@@ -35,7 +34,6 @@ describe('useNuxtUsersLocale Composable', () => {
   })
 
   it('should translate keys using default English locale', () => {
-    
     vi.mocked(useRuntimeConfig).mockReturnValue({
       public: {
         nuxtUsers: {
@@ -46,6 +44,7 @@ describe('useNuxtUsersLocale Composable', () => {
           }
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
     const { t } = useNuxtUsersLocale()
@@ -56,7 +55,6 @@ describe('useNuxtUsersLocale Composable', () => {
   })
 
   it('should translate keys using Hungarian locale', () => {
-    
     vi.mocked(useRuntimeConfig).mockReturnValue({
       public: {
         nuxtUsers: {
@@ -67,6 +65,7 @@ describe('useNuxtUsersLocale Composable', () => {
           }
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
     const { t } = useNuxtUsersLocale()
@@ -77,7 +76,6 @@ describe('useNuxtUsersLocale Composable', () => {
   })
 
   it('should translate keys using Hungarian formal locale', () => {
-    
     vi.mocked(useRuntimeConfig).mockReturnValue({
       public: {
         nuxtUsers: {
@@ -88,6 +86,7 @@ describe('useNuxtUsersLocale Composable', () => {
           }
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
     const { t } = useNuxtUsersLocale()
@@ -98,7 +97,6 @@ describe('useNuxtUsersLocale Composable', () => {
   })
 
   it('should use custom texts from config', () => {
-    
     vi.mocked(useRuntimeConfig).mockReturnValue({
       public: {
         nuxtUsers: {
@@ -115,6 +113,7 @@ describe('useNuxtUsersLocale Composable', () => {
           }
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
     const { t } = useNuxtUsersLocale()
@@ -125,7 +124,6 @@ describe('useNuxtUsersLocale Composable', () => {
   })
 
   it('should fallback to English when translation missing', () => {
-    
     vi.mocked(useRuntimeConfig).mockReturnValue({
       public: {
         nuxtUsers: {
@@ -136,6 +134,7 @@ describe('useNuxtUsersLocale Composable', () => {
           }
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
     const { t } = useNuxtUsersLocale()
@@ -145,7 +144,6 @@ describe('useNuxtUsersLocale Composable', () => {
   })
 
   it('should use specified fallback locale', () => {
-    
     vi.mocked(useRuntimeConfig).mockReturnValue({
       public: {
         nuxtUsers: {
@@ -156,6 +154,7 @@ describe('useNuxtUsersLocale Composable', () => {
           }
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
     const { t } = useNuxtUsersLocale()
@@ -165,7 +164,6 @@ describe('useNuxtUsersLocale Composable', () => {
   })
 
   it('should handle parameter replacement', () => {
-    
     vi.mocked(useRuntimeConfig).mockReturnValue({
       public: {
         nuxtUsers: {
@@ -176,6 +174,7 @@ describe('useNuxtUsersLocale Composable', () => {
           }
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
     const { t } = useNuxtUsersLocale()
@@ -185,7 +184,6 @@ describe('useNuxtUsersLocale Composable', () => {
   })
 
   it('should return key when translation not found', () => {
-    
     vi.mocked(useRuntimeConfig).mockReturnValue({
       public: {
         nuxtUsers: {
@@ -196,6 +194,7 @@ describe('useNuxtUsersLocale Composable', () => {
           }
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
     const { t } = useNuxtUsersLocale()
@@ -204,13 +203,13 @@ describe('useNuxtUsersLocale Composable', () => {
   })
 
   it('should default to en when locale config is missing', () => {
-    
     vi.mocked(useRuntimeConfig).mockReturnValue({
       public: {
         nuxtUsers: {
           locale: {}
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
     const { t, currentLocale, fallbackLocale } = useNuxtUsersLocale()
@@ -219,5 +218,4 @@ describe('useNuxtUsersLocale Composable', () => {
     expect(fallbackLocale.value).toBe('en')
     expect(t('login.title')).toBe('Welcome Back')
   })
-
 })
