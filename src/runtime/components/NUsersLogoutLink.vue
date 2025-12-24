@@ -2,11 +2,15 @@
 import { ref, onMounted } from 'vue'
 import { navigateTo } from '#app'
 import { useAuthentication } from '../composables/useAuthentication'
+import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
+
+const { t } = useNuxtUsersLocale()
 
 interface LogoutLinkProps {
   redirectTo?: string
   linkText?: string
   confirmMessage?: string
+  loggingOutText?: string
   class?: string
   style?: string | Record<string, string | number>
   linkClass?: string
@@ -23,9 +27,7 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<LogoutLinkProps>(), {
-  redirectTo: '/login',
-  linkText: 'Logout',
-  confirmMessage: 'Are you sure you want to logout?'
+  redirectTo: '/login'
 })
 
 const emit = defineEmits<Emits>()
@@ -43,7 +45,7 @@ onMounted(() => {
 const handleLogout = async (event: Event) => {
   event.preventDefault()
 
-  if (!confirm(props.confirmMessage)) {
+  if (!confirm(props.confirmMessage || t('logout.confirmMessage'))) {
     return
   }
 
@@ -97,8 +99,8 @@ const handleLogout = async (event: Event) => {
       @click="handleLogout"
     >
       <slot>
-        <span v-if="isLoading">Logging out...</span>
-        <span v-else>{{ linkText }}</span>
+        <span v-if="isLoading">{{ props.loggingOutText || t('logout.loggingOut') }}</span>
+        <span v-else>{{ props.linkText || t('logout.linkText') }}</span>
       </slot>
     </a>
   </div>
