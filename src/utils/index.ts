@@ -1,5 +1,10 @@
 export { validatePassword, getPasswordValidationOptions, getPasswordStrengthColor, getPasswordStrengthText, type PasswordValidationResult, type PasswordValidationOptions } from './password-validation'
 
+// Export locale utilities
+export { defaultLocaleMessages, en, hu, huFormal } from '../runtime/locales'
+export { getTranslation, getNestedValue } from '../runtime/utils/locale'
+export { deepMerge } from '../runtime/utils/deep-merge'
+
 // Export types and constants for consumers
 export type {
   User,
@@ -15,7 +20,9 @@ export type {
   Permission,
   DatabaseType,
   DatabaseConfig,
-  GoogleOAuthOptions
+  GoogleOAuthOptions,
+  LocaleOptions,
+  LocaleMessages
 } from '../types'
 
 export { defaultDisplayFields, defaultFieldLabels } from '../types'

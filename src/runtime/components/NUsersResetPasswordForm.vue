@@ -15,6 +15,9 @@ import type { UserWithoutPassword, ModuleOptions } from 'nuxt-users/utils'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
 import { useRuntimeConfig, useRoute, useRouter } from '#imports'
 import NUsersPasswordStrengthIndicator from './NUsersPasswordStrengthIndicator.vue'
+import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
+
+const { t } = useNuxtUsersLocale()
 
 // Note: We define Props interface inline instead of importing ResetPasswordFormProps from 'nuxt-users/utils'
 // because the Vue SFC transformer cannot resolve these imported types during the module build process
@@ -22,6 +25,16 @@ interface Props {
   updatePasswordEndpoint?: string
   resetPasswordEndpoint?: string
   redirectTo?: string
+  // Optional label overrides
+  titleReset?: string
+  titleChange?: string
+  currentPasswordLabel?: string
+  newPasswordLabel?: string
+  confirmPasswordLabel?: string
+  submitResetLabel?: string
+  submitUpdateLabel?: string
+  submittingResetLabel?: string
+  submittingUpdateLabel?: string
 }
 
 interface Emits {
@@ -67,7 +80,7 @@ watch(() => passwordForm.value.newPassword, (newPassword) => {
   if (newPassword) {
     passwordValidation.validate(newPassword)
   }
-  else {
+  if (!newPassword) {
     passwordValidation.clearValidation()
   }
 })
@@ -169,7 +182,7 @@ const handleSubmit = () => {
   if (isPasswordReset.value) {
     resetPassword()
   }
-  else {
+  if (!isPasswordReset.value) {
     updatePassword()
   }
 }
@@ -178,15 +191,15 @@ const handleSubmit = () => {
 <template>
   <div class="n-users-reset-password-container n-users-section">
     <h2 class="n-users-section-header">
-      {{ isPasswordReset ? 'Reset Password' : 'Change Password' }}
+      {{ isPasswordReset ? (props.titleReset || t('resetPassword.titleReset')) : (props.titleChange || t('resetPassword.titleChange')) }}
     </h2>
 
     <div
       v-if="isPasswordReset"
       class="n-users-info-message"
     >
-      <p>You are resetting your password using a secure link.</p>
-      <p><strong>Email:</strong> {{ resetEmail }}</p>
+      <p>{{ t('resetPassword.secureResetInfo') }}</p>
+      <p><strong>{{ t('common.email') }}:</strong> {{ resetEmail }}</p>
     </div>
 
     <form @submit.prevent="handleSubmit">
@@ -198,7 +211,7 @@ const handleSubmit = () => {
         <label
           for="currentPassword"
           class="n-users-form-label"
-        >Current Password</label>
+        >{{ props.currentPasswordLabel || t('resetPassword.currentPasswordLabel') }}</label>
         <input
           id="currentPassword"
           v-model="passwordForm.currentPassword"
@@ -213,7 +226,7 @@ const handleSubmit = () => {
         <label
           for="newPassword"
           class="n-users-form-label"
-        >{{ isPasswordReset ? 'New Password' : 'New Password' }}</label>
+        >{{ props.newPasswordLabel || t('resetPassword.newPasswordLabel') }}</label>
         <input
           id="newPassword"
           v-model="passwordForm.newPassword"
@@ -243,7 +256,7 @@ const handleSubmit = () => {
         <label
           for="newPasswordConfirmation"
           class="n-users-form-label"
-        >Confirm {{ isPasswordReset ? 'New Password' : 'New Password' }}</label>
+        >{{ props.confirmPasswordLabel || t('resetPassword.confirmPasswordLabel') }}</label>
         <input
           id="newPasswordConfirmation"
           v-model="passwordForm.newPasswordConfirmation"
@@ -274,10 +287,10 @@ const handleSubmit = () => {
         :disabled="isPasswordLoading"
       >
         <span v-if="isPasswordLoading">
-          {{ isPasswordReset ? 'Resetting...' : 'Updating...' }}
+          {{ isPasswordReset ? (props.submittingResetLabel || t('resetPassword.submittingReset')) : (props.submittingUpdateLabel || t('resetPassword.submittingUpdate')) }}
         </span>
-        <span v-else>
-          {{ isPasswordReset ? 'Reset Password' : 'Update Password' }}
+        <span v-if="!isPasswordLoading">
+          {{ isPasswordReset ? (props.submitResetLabel || t('resetPassword.submitReset')) : (props.submitUpdateLabel || t('resetPassword.submitUpdate')) }}
         </span>
       </button>
     </form>

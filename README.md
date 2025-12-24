@@ -39,7 +39,7 @@ A user authentication module for Nuxt 3 and Nuxt 4 with database support for SQL
 
 MIT
 
-## Dev misc
+## Dev Misc
 
 ### Using yalc
 
@@ -49,4 +49,8 @@ yalc publish
 
 # Install the module in the consumer app
 yalc add nuxt-users
+
+# Clean up consumer app
+yalc remove nuxt-users
+yarn add nuxt-users
 ```

@@ -26,7 +26,7 @@ const updateFilter = (field: keyof User, value: string) => {
     const { [field]: _, ...rest } = filter.value
     filter.value = rest
   }
-  else {
+  if (value.trim()) {
     filter.value = { ...filter.value, [field]: value }
   }
 }

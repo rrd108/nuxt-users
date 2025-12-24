@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     if (success) {
       return { message: 'Password has been reset successfully. You can now log in with your new password.' }
     }
-    else {
+    if (!success) {
       throw createError({
         statusCode: 400, // Or 422 if you prefer for semantic validation errors
         statusMessage: 'Invalid or expired token, or email mismatch. Please request a new password reset link.',
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
     if (error instanceof Error) {
       console.error('[Nuxt Users] Error in reset-password endpoint:', error.message)
     }
-    else {
+    if (!(error instanceof Error)) {
       console.error('[Nuxt Users] Error in reset-password endpoint:', error)
     }
     // If it's a known error from resetPassword, it might already be an H3Error

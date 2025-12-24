@@ -1,6 +1,24 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useAuthentication } from '../composables/useAuthentication'
+import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
+
+const { t } = useNuxtUsersLocale()
+
+interface Props {
+  title?: string
+  nameLabel?: string
+  emailLabel?: string
+  roleLabel?: string
+  registeredLabel?: string
+  lastUpdatedLabel?: string
+  activeLabel?: string
+  idLabel?: string
+  yesText?: string
+  noText?: string
+}
+
+const props = defineProps<Props>()
 
 // Initialize the composable state as null initially
 const authComposable = ref<ReturnType<typeof useAuthentication> | null>(null)
@@ -17,31 +35,31 @@ onMounted(() => {
 <template>
   <div class="n-users-profile-info n-users-section">
     <h2 class="n-users-section-header">
-      Profile Information
+      {{ props.title || t('profile.title') }}
     </h2>
     <dl
       v-if="user"
       class="n-users-profile-details n-users-grid n-users-grid-2"
     >
-      <dt>Name:</dt>
+      <dt>{{ props.nameLabel || t('profile.name') }}</dt>
       <dd>{{ user.name }}</dd>
 
-      <dt>Email:</dt>
+      <dt>{{ props.emailLabel || t('profile.email') }}</dt>
       <dd>{{ user.email }}</dd>
 
-      <dt>Role:</dt>
+      <dt>{{ props.roleLabel || t('profile.role') }}</dt>
       <dd>{{ user.role }}</dd>
 
-      <dt>Registered:</dt>
+      <dt>{{ props.registeredLabel || t('profile.registered') }}</dt>
       <dd>{{ Intl.DateTimeFormat().format(new Date(user.created_at)) }}</dd>
 
-      <dt>Last updated:</dt>
+      <dt>{{ props.lastUpdatedLabel || t('profile.lastUpdated') }}</dt>
       <dd>{{ Intl.DateTimeFormat().format(new Date(user.updated_at)) }}</dd>
 
-      <dt>Active:</dt>
-      <dd>{{ user.active ? 'Yes' : 'No' }}</dd>
+      <dt>{{ props.activeLabel || t('profile.active') }}</dt>
+      <dd>{{ user.active ? (props.yesText || t('common.yes')) : (props.noText || t('common.no')) }}</dd>
 
-      <dt>ID:</dt>
+      <dt>{{ props.idLabel || t('profile.id') }}</dt>
       <dd>{{ user.id }}</dd>
     </dl>
   </div>

@@ -548,3 +548,41 @@ The `usePasswordValidation` composable returns the following reactive properties
 | `strengthColor` | `Ref<string>` | A computed CSS color string based on password strength. |
 | `strengthText` | `Ref<string>` | A computed text description of password strength. |
 | `clearValidation()` | `Function` | Clears the current password and validation results. |
+
+## `useNuxtUsersLocale()`
+
+The `useNuxtUsersLocale` composable provides access to the localization system, allowing you to translate component labels and messages based on the configured locale.
+
+### Usage
+
+```vue
+<script setup>
+import { useNuxtUsersLocale } from 'nuxt-users/composables'
+
+const { t, currentLocale, fallbackLocale } = useNuxtUsersLocale()
+
+// Translate a simple key
+const title = t('login.title')  // "Welcome Back"
+
+// Translate with parameters
+const message = t('userCard.deleteConfirm', ['John Doe'])
+// "Are you sure you want to delete user John Doe?"
+</script>
+
+<template>
+  <div>
+    <h1>{{ t('login.title') }}</h1>
+    <p>{{ t('login.subtitle') }}</p>
+  </div>
+</template>
+```
+
+### Returned Properties and Methods
+
+| Name | Type | Description |
+|---|---|---|
+| `t(key, params?)` | `Function` | Translates a key to the current locale |
+| `currentLocale` | `ComputedRef<string>` | The currently active locale code |
+| `fallbackLocale` | `ComputedRef<string>` | The fallback locale |
+
+For more information, see the [Localization Guide](./localization.md).

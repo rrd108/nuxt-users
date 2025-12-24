@@ -2,6 +2,9 @@
 import { ref, computed } from 'vue'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig, navigateTo } from '#imports'
+import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
+
+const { t } = useNuxtUsersLocale()
 
 interface Props {
   /**
@@ -11,9 +14,12 @@ interface Props {
   redirectEndpoint?: string
   /**
    * Button text
-   * @default 'Continue with Google'
    */
   buttonText?: string
+  /**
+   * Redirecting text
+   */
+  redirectingText?: string
   /**
    * Show Google logo in button
    * @default true
@@ -30,7 +36,6 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  buttonText: 'Continue with Google',
   showLogo: true
 })
 
@@ -105,7 +110,7 @@ const handleGoogleLogin = async () => {
 
     <!-- Button text -->
     <span class="n-users-google-text">
-      {{ isLoading ? 'Redirecting...' : buttonText }}
+      {{ isLoading ? (props.redirectingText || t('googleLogin.redirecting')) : (props.buttonText || t('googleLogin.buttonText')) }}
     </span>
   </button>
 </template>

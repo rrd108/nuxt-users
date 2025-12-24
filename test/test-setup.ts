@@ -74,7 +74,12 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
     requireSpecialChars: false,
     preventCommonPasswords: false,
   },
-  hardDelete: false
+  hardDelete: false,
+  locale: {
+    default: 'en',
+    fallbackLocale: 'en',
+    texts: {}
+  }
 })
 
 export const cleanupTestSetup = async (dbType: DatabaseType, db: Database, cleanupFiles: string[], tableName: string) => {

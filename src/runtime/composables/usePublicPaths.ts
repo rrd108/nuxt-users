@@ -86,7 +86,7 @@ export const usePublicPaths = () => {
       if (typeof permission === 'string') {
         roleBasedPaths.push(permission)
       }
-      else if (typeof permission === 'object' && permission.path) {
+      if (typeof permission === 'object' && permission.path) {
         roleBasedPaths.push(permission.path)
       }
     })

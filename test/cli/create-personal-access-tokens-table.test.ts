@@ -340,7 +340,7 @@ describe('CLI: Create Personal Access Tokens Table', () => {
           VALUES ('App-Models-User', 1, ${`Token for ${abilities}`}, ${token})
         `).resolves.not.toThrow()
       }
-      else {
+      if (abilities !== null) {
         await expect(db.sql`
           INSERT INTO {${testOptions.tables.personalAccessTokens}} (tokenable_type, tokenable_id, name, token, abilities)
           VALUES ('App-Models-User', 1, ${`Token for ${abilities}`}, ${token}, ${abilities})

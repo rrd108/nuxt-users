@@ -58,16 +58,16 @@ function getPackageManagerCommand() {
   if (existsSync(join(cwd, 'pnpm-lock.yaml'))) {
     return 'pnpm add'
   }
-  else if (existsSync(join(cwd, 'yarn.lock'))) {
+  if (existsSync(join(cwd, 'yarn.lock'))) {
     return 'yarn add'
   }
-  else if (existsSync(join(cwd, 'package-lock.json'))) {
+  if (existsSync(join(cwd, 'package-lock.json'))) {
     return 'npm install'
   }
-  else if (process.env.npm_config_user_agent?.includes('pnpm')) {
+  if (process.env.npm_config_user_agent?.includes('pnpm')) {
     return 'pnpm add'
   }
-  else if (process.env.npm_config_user_agent?.includes('yarn')) {
+  if (process.env.npm_config_user_agent?.includes('yarn')) {
     return 'yarn add'
   }
 
@@ -123,7 +123,7 @@ function displayResults({ missing, optional, packageName }) {
   if (missing.length === 0 && optional.length === 0) {
     console.log(`✅ nuxt-users: All dependencies found in ${packageName}!`)
   }
-  else if (missing.length === 0) {
+  if (missing.length === 0) {
     console.log(`✅ nuxt-users: All required dependencies found in ${packageName}!`)
   }
 }

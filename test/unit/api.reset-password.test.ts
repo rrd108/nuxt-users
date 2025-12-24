@@ -141,7 +141,7 @@ describe('Reset Password API Route', () => {
 
     // Verify response structure
     expect(response).toBeDefined()
-    expect(response.message).toBe('Password has been reset successfully. You can now log in with your new password.')
+    expect(response?.message).toBe('Password has been reset successfully. You can now log in with your new password.')
   })
 
   it('should return 400 when email is missing', async () => {
@@ -553,7 +553,7 @@ describe('Reset Password API Route', () => {
 
     // Verify response structure
     expect(response).toBeDefined()
-    expect(response.message).toBe('Password has been reset successfully. You can now log in with your new password.')
+    expect(response?.message).toBe('Password has been reset successfully. You can now log in with your new password.')
   })
 
   it('should handle complex passwords', async () => {
@@ -595,6 +595,6 @@ describe('Reset Password API Route', () => {
 
     // Verify response structure
     expect(response).toBeDefined()
-    expect(response.message).toBe('Password has been reset successfully. You can now log in with your new password.')
+    expect(response?.message).toBe('Password has been reset successfully. You can now log in with your new password.')
   })
 })

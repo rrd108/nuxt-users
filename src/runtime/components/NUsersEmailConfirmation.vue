@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from '#app'
+import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
+
+const { t } = useNuxtUsersLocale()
 
 // Get status and message from URL query parameters
 const route = useRoute()
@@ -15,14 +18,16 @@ interface Props {
   successTitle?: string
   errorTitle?: string
   loginButtonText?: string
+  backToLoginText?: string
+  processingTitle?: string
+  processingMessage?: string
+  successMessage?: string
+  errorMessage?: string
   loginUrl?: string
   showLoginButton?: boolean
 }
 
 const _props = withDefaults(defineProps<Props>(), {
-  successTitle: 'Email Confirmed!',
-  errorTitle: 'Confirmation Failed',
-  loginButtonText: 'Continue to Login',
   loginUrl: '/login',
   showLoginButton: true
 })
@@ -57,10 +62,10 @@ const _props = withDefaults(defineProps<Props>(), {
         <div class="n-users-section-header">
           <slot name="success-content">
             <h1 class="n-users-login-title">
-              {{ successTitle }}
+              {{ _props.successTitle || t('emailConfirmation.successTitle') }}
             </h1>
             <div class="n-users-success-message">
-              {{ message || 'Your email has been confirmed and your account is now active.' }}
+              {{ message || _props.successMessage || t('emailConfirmation.successMessage') }}
             </div>
           </slot>
         </div>
@@ -71,10 +76,10 @@ const _props = withDefaults(defineProps<Props>(), {
             class="n-users-form-actions"
           >
             <a
-              :href="loginUrl"
+              :href="_props.loginUrl"
               class="n-users-btn n-users-btn-primary"
             >
-              {{ loginButtonText }}
+              {{ _props.loginButtonText || t('emailConfirmation.loginButton') }}
             </a>
           </div>
         </slot>
@@ -82,7 +87,7 @@ const _props = withDefaults(defineProps<Props>(), {
 
       <!-- Error state -->
       <div
-        v-else-if="isError"
+        v-if="isError"
         class="n-users-confirmation-content"
       >
         <slot name="error-icon">
@@ -117,10 +122,10 @@ const _props = withDefaults(defineProps<Props>(), {
         <div class="n-users-section-header">
           <slot name="error-content">
             <h1 class="n-users-login-title">
-              {{ errorTitle }}
+              {{ _props.errorTitle || t('emailConfirmation.errorTitle') }}
             </h1>
             <div class="n-users-error-message">
-              {{ message || 'The confirmation link is invalid or has expired. Please try registering again or contact support.' }}
+              {{ message || _props.errorMessage || t('emailConfirmation.errorMessage') }}
             </div>
           </slot>
         </div>
@@ -128,10 +133,10 @@ const _props = withDefaults(defineProps<Props>(), {
         <slot name="error-actions">
           <div class="n-users-form-actions">
             <a
-              :href="loginUrl"
+              :href="_props.loginUrl"
               class="n-users-btn n-users-btn-secondary"
             >
-              Back to Login
+              {{ _props.backToLoginText || t('emailConfirmation.backToLogin') }}
             </a>
           </div>
         </slot>
@@ -139,7 +144,7 @@ const _props = withDefaults(defineProps<Props>(), {
 
       <!-- Loading/unknown state -->
       <div
-        v-else
+        v-if="!isError"
         class="n-users-confirmation-content"
       >
         <slot name="loading-content">
@@ -148,10 +153,10 @@ const _props = withDefaults(defineProps<Props>(), {
           </div>
           <div class="n-users-section-header">
             <h1 class="n-users-login-title">
-              Processing...
+              {{ _props.processingTitle || t('emailConfirmation.processing') }}
             </h1>
             <div class="n-users-form-help">
-              Please wait while we process your email confirmation.
+              {{ _props.processingMessage || t('emailConfirmation.processingMessage') }}
             </div>
           </div>
         </slot>

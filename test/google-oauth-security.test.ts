@@ -120,7 +120,7 @@ describe('Google OAuth Security & Edge Cases', () => {
         expect(content).toContain('Email verification')
         expect(content).toContain('verified')
       }
-      else {
+      if (!fs.existsSync(docsPath)) {
         // Docs file doesn't exist yet, just pass the test
         expect(true).toBe(true)
       }

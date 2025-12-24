@@ -57,7 +57,12 @@ describe('usePublicPaths', () => {
         requireSpecialChars: true,
         preventCommonPasswords: true
       },
-      hardDelete: false
+      hardDelete: false,
+      locale: {
+        default: 'en',
+        fallbackLocale: 'en',
+        texts: {}
+      }
     }
 
     mockUseRuntimeConfig.mockReturnValue({

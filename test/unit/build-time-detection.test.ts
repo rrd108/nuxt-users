@@ -72,7 +72,12 @@ describe('Build-time Detection', () => {
           requireSpecialChars: true,
           preventCommonPasswords: true
         },
-        hardDelete: false
+        hardDelete: false,
+        locale: {
+          default: 'en',
+          fallbackLocale: 'en',
+          texts: {}
+        }
       }
 
       // Should throw an error indicating build-time detection

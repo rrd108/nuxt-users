@@ -15,6 +15,37 @@ export type DatabaseConfig = {
   password?: string
   database?: string
 }
+
+export interface LocaleMessages {
+  [key: string]: string | LocaleMessages
+}
+
+export interface LocaleOptions {
+  /**
+   * Default locale code
+   * @default 'en'
+   */
+  default?: string
+  /**
+   * Custom messages to override or extend default translations
+   * Use nested object structure for organizing translations
+   * @example
+   * {
+   *   en: {
+   *     login: { title: 'Welcome', submit: 'Sign In' }
+   *   },
+   *   hu: {
+   *     login: { title: 'Üdvözöljük', submit: 'Bejelentkezés' }
+   *   }
+   * }
+   */
+  texts?: Record<string, LocaleMessages>
+  /**
+   * Fallback locale when translation is missing
+   * @default 'en'
+   */
+  fallbackLocale?: string
+}
 export interface GoogleOAuthOptions {
   /**
    * Google OAuth client ID from Google Cloud Console
@@ -164,6 +195,10 @@ export interface RuntimeModuleOptions {
    * @default false
    */
   hardDelete?: boolean
+  /**
+   * Locale configuration for component labels and messages
+   */
+  locale?: LocaleOptions
 }
 
 // Runtime config type with all properties required (after merging with defaults)
@@ -198,6 +233,11 @@ export interface ModuleOptions {
     preventCommonPasswords: boolean
   }
   hardDelete: boolean
+  locale?: {
+    default: string
+    fallbackLocale?: string
+    texts?: Record<string, LocaleMessages>
+  }
 }
 
 export interface MailerOptions {
