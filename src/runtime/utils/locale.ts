@@ -1,30 +1,6 @@
 import type { LocaleMessages } from '../../types'
 import { defaultLocaleMessages } from '../locales'
-
-/**
- * Deep merge two objects
- */
-export const deepMerge = (target: LocaleMessages, source: LocaleMessages): LocaleMessages => {
-  const result: LocaleMessages = { ...target }
-
-  for (const key in source) {
-    const sourceValue = source[key]
-    if (!sourceValue) {
-      result[key] = sourceValue as string
-    }
-    else if (typeof sourceValue === 'object' && !Array.isArray(sourceValue)) {
-      result[key] = deepMerge(
-        (result[key] as LocaleMessages) || {},
-        sourceValue as LocaleMessages
-      )
-    }
-    else {
-      result[key] = sourceValue as string
-    }
-  }
-
-  return result
-}
+import { deepMerge } from './deep-merge'
 
 /**
  * Get a nested value from an object using dot notation

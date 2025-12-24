@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
-import { getTranslation, deepMerge, getNestedValue } from '../../src/runtime/utils/locale'
+import { getTranslation, getNestedValue } from '../../src/runtime/utils/locale'
+import { deepMerge } from '../../src/utils'
 import { defaultLocaleMessages } from '../../src/runtime/locales'
 import type { LocaleMessages } from '../../src/types'
 

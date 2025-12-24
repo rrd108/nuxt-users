@@ -79,7 +79,7 @@ const shouldIgnoreString = (str: string): boolean => {
  */
 const extractTemplate = (content: string): string | null => {
   const templateMatch = content.match(/<template>([\s\S]*?)<\/template>/)
-  return templateMatch ? templateMatch[1] : null
+  return templateMatch ? templateMatch[1] || null : null
 }
 
 /**
@@ -91,6 +91,9 @@ const findHardcodedStrings = (template: string, filePath: string): StringMatch[]
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) {
+      continue
+    }
     const lineNum = i + 1
 
     // Skip lines that already use t() function or have Vue directives/bindings
@@ -106,7 +109,7 @@ const findHardcodedStrings = (template: string, filePath: string): StringMatch[]
     let match
     while ((match = interpolationRegex.exec(line)) !== null) {
       const str = match[1]
-      if (!shouldIgnoreString(str)) {
+      if (str && !shouldIgnoreString(str)) {
         matches.push({
           file: filePath,
           line: lineNum,
@@ -131,14 +134,14 @@ const findHardcodedStrings = (template: string, filePath: string): StringMatch[]
       // Skip certain attributes that are typically technical
       const technicalAttrs = ['id', 'class', 'data-', 'aria-', 'role', 'type', 'name', 'for', 'src', 'href', 'alt',
         'viewBox', 'd', 'stroke', 'fill', 'xmlns', 'width', 'height', 'to', 'method']
-      const isTechnical = technicalAttrs.some(attr => attrName.startsWith(attr))
+      const isTechnical = technicalAttrs.some(attr => attrName && attrName.startsWith(attr))
 
       // Skip if value looks like a variable name, function call, or expression
-      if (/^[a-z][a-zA-Z0-9]*$/.test(attrValue) || attrValue.includes('(') || attrValue.includes('.')) {
+      if (/^[a-z][a-zA-Z0-9]*$/.test(attrValue || '') || attrValue?.includes('(') || attrValue?.includes('.')) {
         continue
       }
 
-      if (!isTechnical && !shouldIgnoreString(attrValue) && attrValue.length > 1) {
+      if (!isTechnical && attrValue && !shouldIgnoreString(attrValue) && attrValue.length > 1) {
         matches.push({
           file: filePath,
           line: lineNum,
@@ -153,7 +156,7 @@ const findHardcodedStrings = (template: string, filePath: string): StringMatch[]
     // This is a simplified check - a full parser would be better but more complex
     const textContentRegex = />([^<{]+)</g
     while ((match = textContentRegex.exec(line)) !== null) {
-      const text = match[1].trim()
+      const text = match[1]?.trim()
 
       // Check if it's actual text content (contains letters and is meaningful)
       if (text && /[a-z]{2,}/i.test(text) && !shouldIgnoreString(text)) {
@@ -180,7 +183,7 @@ const main = () => {
     const args = process.argv.slice(2)
     const pathArg = args.find(arg => arg.startsWith('--path='))
     const scanPathRelative = pathArg ? pathArg.split('=')[1] : 'src/runtime/components'
-    const scanPath = join(rootDir, scanPathRelative)
+    const scanPath = join(rootDir, scanPathRelative || '')
 
     console.log(`[Nuxt Users] 🔍 Scanning Vue files in: ${scanPath}`)
     console.log()

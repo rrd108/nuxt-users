@@ -49,7 +49,7 @@ describe('Locale System Integration Tests', () => {
     it('should have informal register translations', () => {
       expect((hu.register as LocaleMessages).title).toBe('Regisztráció')
       expect((hu.register as LocaleMessages).subtitle).toBe('Hozz létre egy új fiókot')
-      expect((hu.register as LocaleMessages).submit).toBe('Regisztráció')
+      expect((hu.register as LocaleMessages).submit).toBe('Regisztrálj')
     })
 
     it('should have complete password strength translations', () => {

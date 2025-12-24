@@ -1,4 +1,5 @@
 import type { LocaleMessages } from '../../types'
+import { deepMerge } from '../utils/deep-merge'
 
 // Base Hungarian (ONLY shared content between formal and informal)
 const huBase: LocaleMessages = {
@@ -185,27 +186,6 @@ const huFormalOverrides: LocaleMessages = {
     successMessage: 'Az e-mail címe megerősítésre került és a fiókja aktív.',
     errorMessage: 'A megerősítő link érvénytelen vagy lejárt. Kérjük, próbáljon meg újra regisztrálni vagy lépjen kapcsolatba az ügyfélszolgálattal.'
   }
-}
-
-// Deep merge helper
-const deepMerge = (base: LocaleMessages, override: LocaleMessages): LocaleMessages => {
-  const result: LocaleMessages = { ...base }
-  for (const key in override) {
-    const overrideValue = override[key]
-    if (!overrideValue) {
-      result[key] = overrideValue as string
-    }
-    else if (typeof overrideValue === 'object' && !Array.isArray(overrideValue)) {
-      result[key] = deepMerge(
-        (result[key] as LocaleMessages) || {},
-        overrideValue as LocaleMessages
-      )
-    }
-    else {
-      result[key] = overrideValue as string
-    }
-  }
-  return result
 }
 
 // Export variants

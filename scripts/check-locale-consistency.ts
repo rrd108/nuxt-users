@@ -49,7 +49,7 @@ const getHungarianKeys = (): { base: Set<string>, informal: Set<string>, formal:
       // Check for opening brace (nested object)
       if (trimmed.match(/^(\w+):\s*\{/)) {
         const match = trimmed.match(/^(\w+):\s*\{/)
-        if (match) {
+        if (match && match[1]) {
           stack.push(match[1])
         }
       }
@@ -63,7 +63,9 @@ const getHungarianKeys = (): { base: Set<string>, informal: Set<string>, formal:
         if (match) {
           const key = match[1]
           const fullKey = stack.length > 0 ? `${stack.join('.')}.${key}` : key
-          keys.add(fullKey)
+          if (fullKey) {
+            keys.add(fullKey)
+          }
         }
       }
     }
@@ -71,9 +73,9 @@ const getHungarianKeys = (): { base: Set<string>, informal: Set<string>, formal:
     return keys
   }
 
-  const baseKeys = parseKeys(baseMatch[1])
-  const informalKeys = parseKeys(informalMatch[1])
-  const formalKeys = parseKeys(formalMatch[1])
+  const baseKeys = parseKeys(baseMatch[1] || '')
+  const informalKeys = parseKeys(informalMatch[1] || '')
+  const formalKeys = parseKeys(formalMatch[1] || '')
 
   return { base: baseKeys, informal: informalKeys, formal: formalKeys }
 }

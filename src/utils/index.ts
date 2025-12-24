@@ -2,7 +2,8 @@ export { validatePassword, getPasswordValidationOptions, getPasswordStrengthColo
 
 // Export locale utilities
 export { defaultLocaleMessages, en, hu, huFormal } from '../runtime/locales'
-export { getTranslation, deepMerge, getNestedValue } from '../runtime/utils/locale'
+export { getTranslation, getNestedValue } from '../runtime/utils/locale'
+export { deepMerge } from '../runtime/utils/deep-merge'
 
 // Export types and constants for consumers
 export type {
