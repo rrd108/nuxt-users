@@ -28,7 +28,9 @@ const huBase: LocaleMessages = {
     passwordLabel: 'Jelszó',
     submit: 'Bejelentkezés',
     submitting: 'Bejelentkezés...',
-    forgotPasswordSending: 'Küldés...'
+    forgotPasswordSending: 'Küldés...',
+    loginFailed: 'Bejelentkezés sikertelen',
+    forgotPasswordFailed: 'A jelszó visszaállító e-mail küldése sikertelen'
   },
   register: {
     title: 'Regisztráció',
@@ -124,7 +126,10 @@ const huInformalOverrides: LocaleMessages = {
     emailPlaceholder: 'Add meg az e-mail címed',
     passwordPlaceholder: 'Add meg a jelszavad',
     forgotPassword: 'Elfelejtetted a jelszavad?',
-    rememberMe: 'Emlékezz rám'
+    rememberMe: 'Emlékezz rám',
+    emailRequiredForForgotPassword: 'Kérjük, először add meg az e-mail címed',
+    loginFailed: 'Bejelentkezés sikertelen',
+    forgotPasswordFailed: 'A jelszó visszaállító e-mail küldése sikertelen'
   },
   register: {
     subtitle: 'Hozz létre egy új fiókot',
@@ -160,7 +165,10 @@ const huFormalOverrides: LocaleMessages = {
     emailPlaceholder: 'Adja meg az e-mail címét',
     passwordPlaceholder: 'Adja meg a jelszavát',
     forgotPassword: 'Elfelejtette a jelszavát?',
-    rememberMe: 'Maradjon bejelentkezve'
+    rememberMe: 'Bejelentkezve maradok',
+    emailRequiredForForgotPassword: 'Kérjük, először adja meg az e-mail címét',
+    loginFailed: 'Bejelentkezés sikertelen',
+    forgotPasswordFailed: 'A jelszó visszaállító e-mail küldése sikertelen'
   },
   register: {
     subtitle: 'Hozzon létre egy új fiókot',

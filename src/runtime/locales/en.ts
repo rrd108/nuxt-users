@@ -32,7 +32,10 @@ export const en: LocaleMessages = {
     submit: 'Sign In',
     submitting: 'Signing in...',
     forgotPassword: 'Forgot your password?',
-    forgotPasswordSending: 'Sending...'
+    forgotPasswordSending: 'Sending...',
+    emailRequiredForForgotPassword: 'Please enter your email address first',
+    loginFailed: 'Login failed',
+    forgotPasswordFailed: 'Failed to send password reset email'
   },
   register: {
     title: 'Create Account',

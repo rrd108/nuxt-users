@@ -88,7 +88,7 @@ const handleSubmit = async () => {
     }
   }
   catch (err: unknown) {
-    const errorMessage = extractErrorMessage(err, 'Login failed')
+    const errorMessage = extractErrorMessage(err, t('login.loginFailed'))
     error.value = errorMessage
     emit('error', errorMessage)
   }
@@ -99,7 +99,7 @@ const handleSubmit = async () => {
 
 const handleForgotPassword = async () => {
   if (!formData.value.email) {
-    error.value = 'Please enter your email address first'
+    error.value = t('login.emailRequiredForForgotPassword')
     return
   }
 
@@ -119,7 +119,7 @@ const handleForgotPassword = async () => {
     emit('forgot-password-success')
   }
   catch (err: unknown) {
-    const errorMessage = extractErrorMessage(err, 'Failed to send password reset email')
+    const errorMessage = extractErrorMessage(err, t('login.forgotPasswordFailed'))
     error.value = errorMessage
     emit('forgot-password-error', errorMessage)
   }
