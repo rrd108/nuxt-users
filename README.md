@@ -52,5 +52,5 @@ yalc add nuxt-users
 
 # Clean up consumer app
 yalc remove nuxt-users
-yarn install
+yarn add nuxt-users
 ```
