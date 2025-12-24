@@ -40,6 +40,16 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<Emits>()
 
+const extractErrorMessage = (err: unknown, defaultMessage: string): string => {
+  if (err && typeof err === 'object' && 'data' in err && err.data && typeof err.data === 'object' && 'statusMessage' in err.data) {
+    return String(err.data.statusMessage)
+  }
+  if (err instanceof Error) {
+    return err.message
+  }
+  return defaultMessage
+}
+
 // Compute default endpoints if not provided
 const apiEndpoint = computed(() => props.apiEndpoint || `${(nuxtUsers as { apiBasePath?: string })?.apiBasePath}/session`)
 const forgotPasswordEndpoint = computed(() => props.forgotPasswordEndpoint || `${(nuxtUsers as { apiBasePath?: string })?.apiBasePath}/password/forgot`)
@@ -78,11 +88,7 @@ const handleSubmit = async () => {
     }
   }
   catch (err: unknown) {
-    const errorMessage = err && typeof err === 'object' && 'data' in err && err.data && typeof err.data === 'object' && 'statusMessage' in err.data
-      ? String(err.data.statusMessage)
-      : err instanceof Error
-        ? err.message
-        : 'Login failed'
+    const errorMessage = extractErrorMessage(err, 'Login failed')
     error.value = errorMessage
     emit('error', errorMessage)
   }
@@ -113,11 +119,7 @@ const handleForgotPassword = async () => {
     emit('forgot-password-success')
   }
   catch (err: unknown) {
-    const errorMessage = err && typeof err === 'object' && 'data' in err && err.data && typeof err.data === 'object' && 'statusMessage' in err.data
-      ? String(err.data.statusMessage)
-      : err instanceof Error
-        ? err.message
-        : 'Failed to send password reset email'
+    const errorMessage = extractErrorMessage(err, 'Failed to send password reset email')
     error.value = errorMessage
     emit('forgot-password-error', errorMessage)
   }
