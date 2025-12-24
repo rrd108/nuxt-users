@@ -81,7 +81,6 @@ export const en: LocaleMessages = {
       numbers: 'Contains number',
       specialChars: 'Contains special character'
     },
-    requirementsTitle: 'Password Requirements:',
     hintsTitle: 'How to make your password stronger:'
   },
   profile: {

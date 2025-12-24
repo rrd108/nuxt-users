@@ -121,7 +121,7 @@ const validationRules = computed(() => {
     class="n-users-validation-rules n-users-validation-container"
   >
     <div class="n-users-rules-title n-users-container-title">
-      {{ props.requirementsTitleText || t('passwordStrength.requirementsTitle') }}
+      {{ props.requirementsTitleText || t('passwordStrength.label') }}
     </div>
     <ul class="n-users-rules-list n-users-list-unstyled">
       <li

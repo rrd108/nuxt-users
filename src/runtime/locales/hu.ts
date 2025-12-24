@@ -35,23 +35,23 @@ const huBase: LocaleMessages = {
     title: 'Regisztráció',
     nameLabel: 'Teljes név',
     passwordLabel: 'Jelszó',
-    confirmPasswordLabel: 'Jelszó megerősítése',
+    confirmPasswordLabel: 'Jelszó megerősítés',
     passwordMismatch: 'A jelszavak nem egyeznek',
     submit: 'Regisztráció',
     submitting: 'Fiók létrehozása...',
   },
   resetPassword: {
-    titleReset: 'Jelszó visszaállítása',
+    titleReset: 'Jelszó visszaállítás',
     titleChange: 'Jelszó megváltoztatása',
     currentPasswordLabel: 'Jelenlegi jelszó',
     newPasswordLabel: 'Új jelszó',
     confirmPasswordLabel: 'Új jelszó megerősítése',
-    submitReset: 'Jelszó visszaállítása',
+    submitReset: 'Jelszó visszaállítás',
     submitUpdate: 'Jelszó frissítése',
     submittingReset: 'Visszaállítás...',
     submittingUpdate: 'Frissítés...',
     passwordHelpText: 'A jelszónak tartalmaznia kell legalább',
-    secureResetInfo: 'Biztonságos linket használva állítod vissza a jelszavad.'
+    secureResetInfo: 'Biztonságos linket használva állíthatod vissza a jelszavad.'
   },
   passwordStrength: {
     label: 'Jelszó követelmények:',
@@ -68,8 +68,7 @@ const huBase: LocaleMessages = {
       lowercase: 'Tartalmaz kisbetűt',
       numbers: 'Tartalmaz számot',
       specialChars: 'Tartalmaz speciális karaktert'
-    },
-    requirementsTitle: 'Jelszó követelmények:'
+    }
   },
   profile: {
     title: 'Profil információk',
