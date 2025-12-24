@@ -69,7 +69,12 @@ const testOptions: ModuleOptions = {
     requireSpecialChars: false,
     preventCommonPasswords: false,
   },
-  hardDelete: false
+  hardDelete: false,
+  locale: {
+    locale: 'en',
+    fallbackLocale: 'en',
+    texts: {}
+  }
 }
 
 describe('Users List API Route', () => {
