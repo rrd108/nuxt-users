@@ -54,7 +54,7 @@ const huBase: LocaleMessages = {
     secureResetInfo: 'Biztonságos linket használva állíthatod vissza a jelszavad.'
   },
   passwordStrength: {
-    label: 'Jelszó követelmények:',
+    label: 'Jelszó követelmények',
     strength: {
       weak: 'Gyenge',
       medium: 'Közepes',
@@ -72,13 +72,13 @@ const huBase: LocaleMessages = {
   },
   profile: {
     title: 'Profil információk',
-    name: 'Név:',
-    email: 'E-mail:',
-    role: 'Szerepkör:',
-    registered: 'Regisztrálva:',
-    lastUpdated: 'Utoljára frissítve:',
-    active: 'Aktív:',
-    id: 'Azonosító:'
+    name: 'Név',
+    email: 'E-mail',
+    role: 'Jogosultság',
+    registered: 'Regisztrálva',
+    lastUpdated: 'Utoljára frissítve',
+    active: 'Aktív',
+    id: 'ID'
   },
   emailConfirmation: {
     successTitle: 'E-mail megerősítve!',
@@ -104,10 +104,10 @@ const huBase: LocaleMessages = {
     title: 'Felhasználók listája',
     loading: 'Felhasználók betöltése...',
     noUsers: 'Nem található felhasználó',
-    error: 'Hiba:',
+    error: 'Hiba',
     page: 'Oldal',
     of: '/',
-    total: 'Összesen:',
+    total: 'Összesen',
     users: 'felhasználó',
     previous: 'Előző',
     next: 'Következő'
@@ -117,7 +117,7 @@ const huBase: LocaleMessages = {
 // Informal Hungarian (tegező forma)
 const huInformalOverrides: LocaleMessages = {
   login: {
-    title: 'Üdvözöljük',
+    title: 'Helló!',
     subtitle: 'Jelentkezz be a fiókodba',
     emailPlaceholder: 'Add meg az e-mail címed',
     passwordPlaceholder: 'Add meg a jelszavad',
@@ -138,7 +138,7 @@ const huInformalOverrides: LocaleMessages = {
     submit: 'Regisztrálj'
   },
   passwordStrength: {
-    hintsTitle: 'Hogyan tedd erősebbé a jelszavad:'
+    hintsTitle: 'Hogyan tedd erősebbé a jelszavad'
   },
   logout: {
     confirmMessage: 'Biztosan ki szeretnél jelentkezni?'
@@ -177,7 +177,7 @@ const huFormalOverrides: LocaleMessages = {
     submit: 'Regisztráljon'
   },
   passwordStrength: {
-    hintsTitle: 'Hogyan tegye erősebbé a jelszavát:'
+    hintsTitle: 'Hogyan tegye erősebbé a jelszavát?'
   },
   logout: {
     confirmMessage: 'Biztosan ki szeretne jelentkezni?'

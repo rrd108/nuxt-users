@@ -66,7 +66,7 @@ export const en: LocaleMessages = {
     secureResetInfo: 'You are resetting your password using a secure link.'
   },
   passwordStrength: {
-    label: 'Password Requirements:',
+    label: 'Password Requirements',
     strength: {
       weak: 'Weak',
       medium: 'Medium',
@@ -81,17 +81,17 @@ export const en: LocaleMessages = {
       numbers: 'Contains number',
       specialChars: 'Contains special character'
     },
-    hintsTitle: 'How to make your password stronger:'
+    hintsTitle: 'How to make your password stronger?'
   },
   profile: {
     title: 'Profile Information',
-    name: 'Name:',
-    email: 'Email:',
-    role: 'Role:',
-    registered: 'Registered:',
-    lastUpdated: 'Last updated:',
-    active: 'Active:',
-    id: 'ID:'
+    name: 'Name',
+    email: 'Email',
+    role: 'Role',
+    registered: 'Registered',
+    lastUpdated: 'Last updated',
+    active: 'Active',
+    id: 'ID'
   },
   emailConfirmation: {
     successTitle: 'Email Confirmed!',
@@ -121,10 +121,10 @@ export const en: LocaleMessages = {
     title: 'Users List',
     loading: 'Loading users...',
     noUsers: 'No users found',
-    error: 'Error:',
+    error: 'Error',
     page: 'Page',
     of: 'of',
-    total: 'Total:',
+    total: 'Total',
     users: 'users',
     previous: 'Previous',
     next: 'Next'
