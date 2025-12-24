@@ -23,7 +23,7 @@ describe('useNuxtUsersLocale Composable', () => {
             fallbackLocale: 'en',
             texts: {}
           }
-        } as ModuleOptions
+        }
       }
     } as any)
 
@@ -44,7 +44,7 @@ describe('useNuxtUsersLocale Composable', () => {
             fallbackLocale: 'en',
             texts: {}
           }
-        } as ModuleOptions
+        }
       }
     } as any)
 
@@ -65,7 +65,7 @@ describe('useNuxtUsersLocale Composable', () => {
             fallbackLocale: 'en',
             texts: {}
           }
-        } as ModuleOptions
+        }
       }
     } as any)
 
@@ -86,7 +86,7 @@ describe('useNuxtUsersLocale Composable', () => {
             fallbackLocale: 'en',
             texts: {}
           }
-        } as ModuleOptions
+        }
       }
     } as any)
 
@@ -113,7 +113,7 @@ describe('useNuxtUsersLocale Composable', () => {
               }
             }
           }
-        } as ModuleOptions
+        }
       }
     } as any)
 
@@ -134,7 +134,7 @@ describe('useNuxtUsersLocale Composable', () => {
             fallbackLocale: 'en',
             texts: {}
           }
-        } as ModuleOptions
+        }
       }
     } as any)
 
@@ -154,7 +154,7 @@ describe('useNuxtUsersLocale Composable', () => {
             fallbackLocale: 'hu',
             texts: {}
           }
-        } as ModuleOptions
+        }
       }
     } as any)
 
@@ -174,14 +174,14 @@ describe('useNuxtUsersLocale Composable', () => {
             fallbackLocale: 'en',
             texts: {}
           }
-        } as ModuleOptions
+        }
       }
     } as any)
 
     const { t } = useNuxtUsersLocale()
 
     expect(t('userCard.deleteConfirm', ['John Doe'])).toBe('Are you sure you want to delete user John Doe?')
-    expect(t('passwordStrength.minLength', [8])).toBe('At least 8 characters')
+    expect(t('passwordStrength.requirements.minLength', [8])).toBe('At least 8 characters')
   })
 
   it('should return key when translation not found', () => {
@@ -194,7 +194,7 @@ describe('useNuxtUsersLocale Composable', () => {
             fallbackLocale: 'en',
             texts: {}
           }
-        } as ModuleOptions
+        }
       }
     } as any)
 
@@ -209,7 +209,7 @@ describe('useNuxtUsersLocale Composable', () => {
       public: {
         nuxtUsers: {
           locale: {}
-        } as ModuleOptions
+        }
       }
     } as any)
 

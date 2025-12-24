@@ -153,7 +153,7 @@ describe('Locale Utility Functions', () => {
     })
 
     it('should replace multiple parameters', () => {
-      const result = getTranslation('passwordStrength.minLength', 'en', undefined, 'en', [8])
+      const result = getTranslation('passwordStrength.requirements.minLength', 'en', undefined, 'en', [8])
       expect(result).toBe('At least 8 characters')
     })
 
