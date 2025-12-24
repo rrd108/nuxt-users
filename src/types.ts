@@ -233,7 +233,11 @@ export interface ModuleOptions {
     preventCommonPasswords: boolean
   }
   hardDelete: boolean
-  locale: LocaleOptions
+  locale: {
+    locale: string
+    fallbackLocale: string
+    texts: Record<string, LocaleMessages>
+  }
 }
 
 export interface MailerOptions {

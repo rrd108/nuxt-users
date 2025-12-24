@@ -5,17 +5,21 @@ import { defaultLocaleMessages } from '../locales'
  * Deep merge two objects
  */
 export const deepMerge = (target: LocaleMessages, source: LocaleMessages): LocaleMessages => {
-  const result = { ...target }
+  const result: LocaleMessages = { ...target }
   
   for (const key in source) {
-    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+    const sourceValue = source[key]
+    if (!sourceValue) {
+      result[key] = sourceValue as string
+    }
+    else if (typeof sourceValue === 'object' && !Array.isArray(sourceValue)) {
       result[key] = deepMerge(
         (result[key] as LocaleMessages) || {},
-        source[key] as LocaleMessages
+        sourceValue as LocaleMessages
       )
     }
     else {
-      result[key] = source[key]
+      result[key] = sourceValue as string
     }
   }
   
@@ -74,7 +78,7 @@ export const getTranslation = (
   }
   
   // If still not found, try default English
-  if (!translation && locale !== 'en' && fallbackLocale !== 'en') {
+  if (!translation && locale !== 'en' && fallbackLocale !== 'en' && defaultLocaleMessages.en) {
     translation = getNestedValue(defaultLocaleMessages.en, key)
   }
   

@@ -30,13 +30,13 @@ const huBase: LocaleMessages = {
     forgotPasswordSending: 'Küldés...'
   },
   register: {
-    title: 'Fiók létrehozása',
+    title: 'Regisztráció',
     nameLabel: 'Teljes név',
     emailLabel: 'E-mail',
     passwordLabel: 'Jelszó',
     confirmPasswordLabel: 'Jelszó megerősítése',
     passwordMismatch: 'A jelszavak nem egyeznek',
-    submit: 'Fiók létrehozása',
+    submit: 'Regisztráció',
     submitting: 'Fiók létrehozása...',
   },
   resetPassword: {
@@ -52,16 +52,22 @@ const huBase: LocaleMessages = {
     passwordHelpText: 'A jelszónak tartalmaznia kell legalább'
   },
   passwordStrength: {
-    weak: 'Gyenge',
-    medium: 'Közepes',
-    strong: 'Erős',
-    unknown: 'Ismeretlen',
-    requirementsTitle: 'Jelszó követelmények:',
-    minLength: 'Legalább {0} karakter',
-    uppercase: 'Tartalmaz nagybetűt (A-Z)',
-    lowercase: 'Tartalmaz kisbetűt (a-z)',
-    number: 'Tartalmaz számot (0-9)',
-    specialChar: 'Tartalmaz speciális karaktert (!@#$%^&*)'
+    label: 'Jelszó követelmények:',
+    strength: {
+      weak: 'Gyenge',
+      medium: 'Közepes',
+      strong: 'Erős',
+      veryStrong: 'Nagyon erős',
+      unknown: 'Ismeretlen'
+    },
+    requirements: {
+      minLength: 'Legalább {0} karakter',
+      uppercase: 'Tartalmaz nagybetűt',
+      lowercase: 'Tartalmaz kisbetűt',
+      numbers: 'Tartalmaz számot',
+      specialChars: 'Tartalmaz speciális karaktert'
+    },
+    requirementsTitle: 'Jelszó követelmények:'
   },
   profile: {
     title: 'Profil információk',
@@ -86,9 +92,8 @@ const huBase: LocaleMessages = {
     confirmMessage: 'Biztosan ki szeretnél jelentkezni?'
   },
   userCard: {
-    editButton: 'Szerkesztés',
-    deleteButton: 'Törlés',
-    deleteConfirm: 'Biztosan törli {0} felhasználót?'
+    edit: 'Szerkesztés',
+    delete: 'Törlés'
   },
   googleLogin: {
     buttonText: 'Folytatás Google-lel',
@@ -119,7 +124,7 @@ const huInformalOverrides: LocaleMessages = {
     rememberMe: 'Emlékezz rám'
   },
   register: {
-    subtitle: 'Regisztrálj új fiókot',
+    subtitle: 'Hozz létre egy új fiókot',
     namePlaceholder: 'Add meg a teljes neved',
     emailPlaceholder: 'Add meg az e-mail címed',
     passwordPlaceholder: 'Add meg a jelszavad',
@@ -132,6 +137,9 @@ const huInformalOverrides: LocaleMessages = {
   },
   logout: {
     confirmMessage: 'Biztosan ki szeretnél jelentkezni?'
+  },
+  userCard: {
+    deleteConfirm: 'Biztosan törlöd {0} felhasználót?'
   },
   emailConfirmation: {
     processingMessage: 'Kérjük, várj, amíg feldolgozzuk az e-mail megerősítését.',
@@ -151,13 +159,14 @@ const huFormalOverrides: LocaleMessages = {
     rememberMe: 'Maradjon bejelentkezve'
   },
   register: {
-    subtitle: 'Regisztráljon új fiókot',
+    subtitle: 'Hozzon létre egy új fiókot',
     namePlaceholder: 'Adja meg a teljes nevét',
     emailPlaceholder: 'Adja meg az e-mail címét',
     passwordPlaceholder: 'Adja meg a jelszavát',
     confirmPasswordPlaceholder: 'Erősítse meg a jelszavát',
     alreadyHaveAccount: 'Már van fiókja?',
-    signInLink: 'Jelentkezzen be itt'
+    signInLink: 'Jelentkezzen be itt',
+    submit: 'Regisztráljon'
   },
   passwordStrength: {
     hintsTitle: 'Hogyan tegye erősebbé a jelszavát:'
@@ -165,26 +174,32 @@ const huFormalOverrides: LocaleMessages = {
   logout: {
     confirmMessage: 'Biztosan ki szeretne jelentkezni?'
   },
+  userCard: {
+    deleteConfirm: 'Biztosan törli {0} felhasználót?'
+  },
   emailConfirmation: {
     processingMessage: 'Kérjük, várjon, amíg feldolgozzuk az e-mail megerősítését.',
     successMessage: 'Az e-mail címe megerősítésre került és a fiókja aktív.',
     errorMessage: 'A megerősítő link érvénytelen vagy lejárt. Kérjük, próbáljon meg újra regisztrálni vagy lépjen kapcsolatba az ügyfélszolgálattal.'
   }
-
 }
 
 // Deep merge helper
 const deepMerge = (base: LocaleMessages, override: LocaleMessages): LocaleMessages => {
-  const result = { ...base }
+  const result: LocaleMessages = { ...base }
   for (const key in override) {
-    if (override[key] && typeof override[key] === 'object' && !Array.isArray(override[key])) {
+    const overrideValue = override[key]
+    if (!overrideValue) {
+      result[key] = overrideValue as string
+    }
+    else if (typeof overrideValue === 'object' && !Array.isArray(overrideValue)) {
       result[key] = deepMerge(
         (result[key] as LocaleMessages) || {},
-        override[key] as LocaleMessages
+        overrideValue as LocaleMessages
       )
     }
     else {
-      result[key] = override[key]
+      result[key] = overrideValue as string
     }
   }
   return result

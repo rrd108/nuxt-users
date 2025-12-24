@@ -64,17 +64,23 @@ export const en: LocaleMessages = {
     passwordHelpText: 'Password must contain at least'
   },
   passwordStrength: {
-    weak: 'Weak',
-    medium: 'Medium',
-    strong: 'Strong',
-    unknown: 'Unknown',
+    label: 'Password Requirements:',
+    strength: {
+      weak: 'Weak',
+      medium: 'Medium',
+      strong: 'Strong',
+      veryStrong: 'Very Strong',
+      unknown: 'Unknown'
+    },
+    requirements: {
+      minLength: 'At least {0} characters',
+      uppercase: 'Contains uppercase letter',
+      lowercase: 'Contains lowercase letter',
+      numbers: 'Contains number',
+      specialChars: 'Contains special character'
+    },
     requirementsTitle: 'Password Requirements:',
-    hintsTitle: 'How to make your password stronger:',
-    minLength: 'At least {0} characters',
-    uppercase: 'Contains uppercase letter (A-Z)',
-    lowercase: 'Contains lowercase letter (a-z)',
-    number: 'Contains number (0-9)',
-    specialChar: 'Contains special character (!@#$%^&*)'
+    hintsTitle: 'How to make your password stronger:'
   },
   profile: {
     title: 'Profile Information',
@@ -102,8 +108,8 @@ export const en: LocaleMessages = {
     confirmMessage: 'Are you sure you want to logout?'
   },
   userCard: {
-    editButton: 'Edit',
-    deleteButton: 'Delete',
+    edit: 'Edit',
+    delete: 'Delete',
     deleteConfirm: 'Are you sure you want to delete user {0}?'
   },
   googleLogin: {
