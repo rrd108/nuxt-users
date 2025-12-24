@@ -12,7 +12,7 @@ const huBase: LocaleMessages = {
     active: 'Aktív',
     yes: 'Igen',
     no: 'Nem',
-    id: 'Azonosító',
+    id: 'ID',
     created: 'Létrehozva',
     updated: 'Frissítve',
     lastLogin: 'Utolsó belépés',
@@ -24,7 +24,6 @@ const huBase: LocaleMessages = {
     error: 'Hiba'
   },
   login: {
-    emailLabel: 'E-mail',
     passwordLabel: 'Jelszó',
     submit: 'Bejelentkezés',
     submitting: 'Bejelentkezés...',
@@ -35,7 +34,6 @@ const huBase: LocaleMessages = {
   register: {
     title: 'Regisztráció',
     nameLabel: 'Teljes név',
-    emailLabel: 'E-mail',
     passwordLabel: 'Jelszó',
     confirmPasswordLabel: 'Jelszó megerősítése',
     passwordMismatch: 'A jelszavak nem egyeznek',
@@ -53,8 +51,7 @@ const huBase: LocaleMessages = {
     submittingReset: 'Visszaállítás...',
     submittingUpdate: 'Frissítés...',
     passwordHelpText: 'A jelszónak tartalmaznia kell legalább',
-    secureResetInfo: 'Biztonságos linket használva állítod vissza a jelszavad.',
-    emailLabel: 'E-mail:'
+    secureResetInfo: 'Biztonságos linket használva állítod vissza a jelszavad.'
   },
   passwordStrength: {
     label: 'Jelszó követelmények:',

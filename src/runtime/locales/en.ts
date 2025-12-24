@@ -24,7 +24,6 @@ export const en: LocaleMessages = {
   login: {
     title: 'Welcome Back',
     subtitle: 'Sign in to your account',
-    emailLabel: 'Email',
     emailPlaceholder: 'Enter your email',
     passwordLabel: 'Password',
     passwordPlaceholder: 'Enter your password',
@@ -42,7 +41,6 @@ export const en: LocaleMessages = {
     subtitle: 'Sign up for a new account',
     nameLabel: 'Full Name',
     namePlaceholder: 'Enter your full name',
-    emailLabel: 'Email',
     emailPlaceholder: 'Enter your email',
     passwordLabel: 'Password',
     passwordPlaceholder: 'Enter your password',
@@ -65,8 +63,7 @@ export const en: LocaleMessages = {
     submittingReset: 'Resetting...',
     submittingUpdate: 'Updating...',
     passwordHelpText: 'Password must contain at least',
-    secureResetInfo: 'You are resetting your password using a secure link.',
-    emailLabel: 'Email:'
+    secureResetInfo: 'You are resetting your password using a secure link.'
   },
   passwordStrength: {
     label: 'Password Requirements:',

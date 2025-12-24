@@ -177,7 +177,7 @@ const handleSubmit = async () => {
       <!-- Email field -->
       <slot name="email-field">
         <div class="n-users-form-group">
-          <label for="email">{{ props.emailLabel || t('register.emailLabel') }}</label>
+          <label for="email">{{ props.emailLabel || t('common.email') }}</label>
           <input
             id="email"
             v-model="formData.email"

@@ -199,7 +199,7 @@ const handleSubmit = () => {
       class="n-users-info-message"
     >
       <p>{{ t('resetPassword.secureResetInfo') }}</p>
-      <p><strong>{{ t('resetPassword.emailLabel') }}</strong> {{ resetEmail }}</p>
+      <p><strong>{{ t('common.email') }}:</strong> {{ resetEmail }}</p>
     </div>
 
     <form @submit.prevent="handleSubmit">

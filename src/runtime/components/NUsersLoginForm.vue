@@ -147,7 +147,7 @@ const handleForgotPassword = async () => {
       <!-- Email field -->
       <slot name="email-field">
         <div class="n-users-form-group">
-          <label for="email">{{ props.emailLabel || t('login.emailLabel') }}</label>
+          <label for="email">{{ props.emailLabel || t('common.email') }}</label>
           <input
             id="email"
             v-model="formData.email"
