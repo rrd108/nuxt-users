@@ -1,0 +1,146 @@
+# Nuxt Users Module Context
+
+This document provides context for LLMs to understand the `nuxt-users` module structure, configuration, and runtime usage.
+
+## 1. Module Configuration (nuxt.config.ts)
+
+The module is configured via the `nuxtUsers` property in `nuxt.config.ts`. The configuration interface `RuntimeModuleOptions` defines the available options:
+
+```typescript
+export interface RuntimeModuleOptions {
+  // Database connection settings
+  connector?: {
+    name: 'sqlite' | 'mysql' | 'postgresql'
+    options: {
+      path?: string // For SQLite
+      host?: string
+      port?: number
+      user?: string
+      password?: string
+      database?: string
+    }
+  }
+
+  // Base path for API endpoints (default: '/api/nuxt-users')
+  apiBasePath?: string
+
+  // Custom table names
+  tables?: {
+    migrations?: string
+    users?: string
+    personalAccessTokens?: string
+    passwordResetTokens?: string
+  }
+
+  // Mailer configuration (nodemailer)
+  mailer?: {
+    host: string
+    port: number
+    secure?: boolean
+    auth: {
+      user: string
+      pass: string
+    }
+    defaults?: {
+      from: string
+    }
+  }
+
+  // URLs
+  passwordResetUrl?: string       // default: '/reset-password'
+  emailConfirmationUrl?: string   // default: '/login'
+
+  // Authentication Settings
+  auth?: {
+    whitelist?: string[]          // Public routes, e.g. ['/register'] login is always public
+    tokenExpiration?: number      // Minutes (default: 1440)
+    rememberMeExpiration?: number // Days (default: 30)
+    
+    // Role-based permissions
+    // Example: { admin: ['*'], user: ['/profile'] }
+    permissions?: Record<string, (string | { path: string, methods: string[] })[]>
+
+    // Google OAuth
+    google?: {
+      clientId: string
+      clientSecret: string
+      callbackUrl?: string
+      successRedirect?: string
+      errorRedirect?: string
+      scopes?: string[]
+      allowAutoRegistration?: boolean
+    }
+  }
+
+  // Password Policy
+  passwordValidation?: {
+    minLength?: number            // default: 8
+    requireUppercase?: boolean    // default: true
+    requireLowercase?: boolean    // default: true
+    requireNumbers?: boolean      // default: true
+    requireSpecialChars?: boolean // default: true
+    preventCommonPasswords?: boolean // default: true
+  }
+
+  // Data Management
+  hardDelete?: boolean            // true = delete row, false = soft delete (active=false)
+
+  // Localization
+  locale?: {
+    default?: string              // default: 'en'
+    texts?: Record<string, any>   // Custom translations
+    fallbackLocale?: string       // default: 'en'
+  }
+}
+```
+
+## 2. Runtime Composables (Components & Pages)
+
+These composables are auto-imported and available in your Vue components.
+
+### `useAuthentication()`
+Manages user session, login, and logout.
+
+- **user**: `Ref<UserWithoutPassword | null>` (Readonly) - Current user state.
+- **isAuthenticated**: `ComputedRef<boolean>` - Check if user is logged in.
+- **login(userData: User, rememberMe?: boolean)**: plain function - Updates local state and storage.
+- **logout()**: `Promise<void>` - Clears session and state.
+- **fetchUser(useSSR?: boolean)**: `Promise<User | null>` - Refreshes user data from API.
+- **initializeUser()**: `Promise<void>` - Restores session from storage (Client-side only).
+
+### `useNuxtUsersLocale()`
+Accesses the module's localization system.
+
+- **t(key: string, params?: (string|number)[])**: `string` - Translate a key (e.g., `t('login.title')`).
+- **currentLocale**: `ComputedRef<string>` - The currently active locale.
+- **fallbackLocale**: `ComputedRef<string>` - The fallback locale.
+
+### `usePasswordValidation(moduleOptions?, options?)`
+Validates passwords against the configured policy.
+
+- **validate(password: string)**: Returns validation result.
+- **isValid**: `ComputedRef<boolean>`
+- **errors**: `ComputedRef<string[]>` - List of validation error keys.
+- **strength**: `ComputedRef<'weak'|'medium'|'strong'|'very_strong'>`
+- **score**: `ComputedRef<number>` - Zxcvbn score (0-4).
+- **clearValidation()**: Resets the validation state.
+
+### `usePublicPaths()`
+Utilities for checking route accessibility and handling public/protected paths.
+
+- **getPublicPaths()**: Returns object with `all`, `builtIn`, `whitelist`.
+- **getAccessiblePaths()**: Returns paths accessible to the current user (public + role-based).
+- **isPublicPath(path: string)**: `boolean` - Checks if a path is public.
+- **isAccessiblePath(path: string, method?: string)**: `boolean` - Checks if user can access a path.
+
+### `useUsers()`
+Admin utility for managing users.
+
+- **users**: `Ref<User[]>` - List of users.
+- **pagination**: `Ref<Pagination | null>` - Pagination metadata.
+- **loading**: `Ref<boolean>`
+- **error**: `Ref<string | null>`
+- **fetchUsers(page?: number, limit?: number)**: `Promise<void>`
+- **updateUser(user: User)**: local state update.
+- **addUser(user: User)**: local state update.
+- **removeUser(userId: number)**: `Promise<void>` - Deletes user via API.
