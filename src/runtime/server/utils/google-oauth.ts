@@ -1,8 +1,8 @@
 import { OAuth2Client } from 'google-auth-library'
 import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
-import type { ModuleOptions, User, GoogleOAuthOptions } from 'nuxt-users/utils'
-import { useDb } from './db'
+import type { ModuleOptions, User, GoogleOAuthOptions } from '../../../types.ts'
+import { useDb } from './db.ts'
 
 export interface GoogleUserInfo {
   id: string

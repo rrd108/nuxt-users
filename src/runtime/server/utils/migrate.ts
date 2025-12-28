@@ -1,11 +1,11 @@
-import { useDb } from './db'
-import type { ModuleOptions } from 'nuxt-users/utils'
-import { createUsersTable } from './create-users-table'
-import { createPersonalAccessTokensTable } from './create-personal-access-tokens-table'
-import { createPasswordResetTokensTable } from './create-password-reset-tokens-table'
-import { createMigrationsTable } from './create-migrations-table'
-import { addActiveToUsers } from './add-active-to-users'
-import { addGoogleOauthFields } from './add-google-oauth-fields'
+import { useDb } from './db.ts'
+import type { ModuleOptions } from '../../../types.ts'
+import { createUsersTable } from './create-users-table.ts'
+import { createPersonalAccessTokensTable } from './create-personal-access-tokens-table.ts'
+import { createPasswordResetTokensTable } from './create-password-reset-tokens-table.ts'
+import { createMigrationsTable } from './create-migrations-table.ts'
+import { addActiveToUsers } from './add-active-to-users.ts'
+import { addGoogleOauthFields } from './add-google-oauth-fields.ts'
 
 interface Migration {
   name: string

@@ -1,0 +1,21 @@
+
+name: 'Breaking Changes'
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+
+      - name: 'Install Dependencies'
+        run: yarn install --frozen-lockfile
+
+      - name: 'Check for Breaking Changes'
+        run: yarn check-breaking-changes

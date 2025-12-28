@@ -1,7 +1,7 @@
-import { useDb } from './db'
+import { useDb } from './db.ts'
 import bcrypt from 'bcrypt'
-import { validatePassword, getPasswordValidationOptions } from 'nuxt-users/utils'
-import type { ModuleOptions, User, UserWithoutPassword } from 'nuxt-users/utils'
+import { validatePassword, getPasswordValidationOptions } from '../../../utils/password-validation.ts'
+import type { ModuleOptions, User, UserWithoutPassword } from '../../../types.ts'
 
 interface CreateUserParams {
   email: string

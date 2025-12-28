@@ -344,4 +344,4 @@ export default defineNuxtModule<RuntimeModuleOptions>({
 })
 
 // Export runtime server utils for CLI access
-export * from './runtime/server/internal/index'
+export * from './runtime/server/internal/index.ts'

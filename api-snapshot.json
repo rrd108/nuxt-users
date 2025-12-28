@@ -1,0 +1,139 @@
+{
+  "moduleOptions": [
+    "connector",
+    "apiBasePath",
+    "tables",
+    "mailer",
+    "passwordResetUrl",
+    "emailConfirmationUrl",
+    "auth",
+    "passwordValidation",
+    "hardDelete",
+    "locale"
+  ],
+  "components": {
+    "NUsersEmailConfirmation": {
+      "props": [],
+      "slots": [
+        "success-icon",
+        "success-content",
+        "success-actions",
+        "error-icon",
+        "error-content",
+        "error-actions",
+        "loading-content"
+      ],
+      "emits": []
+    },
+    "NUsersGoogleLoginButton": {
+      "props": [],
+      "slots": [],
+      "emits": []
+    },
+    "NUsersList": {
+      "props": [],
+      "slots": [
+        "title",
+        "loading",
+        "error",
+        "noUsers",
+        "usersList",
+        "user",
+        "editButton",
+        "deleteButton",
+        "paginationInfo",
+        "pagination"
+      ],
+      "emits": []
+    },
+    "NUsersLoginForm": {
+      "props": [],
+      "slots": [
+        "header",
+        "email-field",
+        "password-field",
+        "remember-me",
+        "submit-button",
+        "footer",
+        "success-message",
+        "error-message"
+      ],
+      "emits": []
+    },
+    "NUsersLogoutLink": {
+      "props": [],
+      "slots": [],
+      "emits": []
+    },
+    "NUsersPasswordStrengthIndicator": {
+      "props": [],
+      "slots": [],
+      "emits": []
+    },
+    "NUsersProfileInfo": {
+      "props": [],
+      "slots": [],
+      "emits": []
+    },
+    "NUsersRegisterForm": {
+      "props": [],
+      "slots": [
+        "header",
+        "name-field",
+        "email-field",
+        "password-field",
+        "password-strength",
+        "confirm-password-field",
+        "submit-button",
+        "footer",
+        "success-message",
+        "error-message"
+      ],
+      "emits": []
+    },
+    "NUsersResetPasswordForm": {
+      "props": [],
+      "slots": [],
+      "emits": []
+    },
+    "NUsersUserCard": {
+      "props": [],
+      "slots": [
+        "userCard",
+        "editButton",
+        "deleteButton"
+      ],
+      "emits": []
+    },
+    "NUsersUserForm": {
+      "props": [],
+      "slots": [],
+      "emits": []
+    }
+  },
+  "composables": {
+    "useAuthentication": {
+      "parameters": [],
+      "returnType": "{ user: any; isAuthenticated: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").ComputedRef<boolean>; login: (userData: User, rememberMe?: boolean) => void; logout: () => Promise<void>; fetchUser: (useSSR?: boolean) => Promise<any>; initializeUser: () => Promise<void>; }"
+    },
+    "useNuxtUsersLocale": {
+      "parameters": [],
+      "returnType": "{ t: (key: string, params?: (string | number)[]) => string; currentLocale: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").ComputedRef<string>; fallbackLocale: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").ComputedRef<string>; }"
+    },
+    "usePasswordValidation": {
+      "parameters": [
+        "moduleOptions",
+        "options"
+      ],
+      "returnType": "{ password: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").Ref<string, string>; validationResult: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").Ref<{ isValid: boolean; errors: string[]; strength: \"weak\" | \"medium\" | \"strong\"; score: number; hints: string[]; }, import(\"/app/src/utils/password-validation\").PasswordValidationResult | { isValid: boolean; errors: string[]; strength: \"weak\" | \"medium\" | \"strong\"; score: number; hints: string[]; }>; validate: (passwordToValidate: string) => { isValid: boolean; errors: string[]; strength: \"weak\" | \"medium\" | \"strong\"; score: number; hints: string[]; }; isValid: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").ComputedRef<boolean>; errors: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").ComputedRef<string[]>; hints: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").ComputedRef<string[]>; strength: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").ComputedRef<\"weak\" | \"medium\" | \"strong\">; score: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").ComputedRef<number>; strengthColor: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").ComputedRef<string>; strengthText: import(\"/app/node_modules/@vue/reactivity/dist/reactivity\").ComputedRef<string>; clearValidation: () => void; }"
+    },
+    "usePublicPaths": {
+      "parameters": [],
+      "returnType": "{ getPublicPaths: () => { all: any[]; builtIn: { pages: string[]; api: string[]; }; whitelist: any; customPasswordResetPath: any; apiBasePath: any; }; getAccessiblePaths: () => { all: any[]; public: any[]; roleBasedPaths: string[]; userRole: any; }; isPublicPath: (path: string) => boolean; isAccessiblePath: (path: string, method?: string) => boolean; }"
+    },
+    "useUsers": {
+      "parameters": [],
+      "returnType": "{ users: any; pagination: any; loading: any; error: any; fetchUsers: (page?: number, limit?: number) => Promise<void>; updateUser: (updatedUser: import(\"/app/src/types\").User) => void; addUser: (newUser: import(\"/app/src/types\").User) => void; removeUser: (userId: number) => Promise<void>; }"
+    }
+  }
+}

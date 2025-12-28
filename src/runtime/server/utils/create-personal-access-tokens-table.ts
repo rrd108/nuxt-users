@@ -1,5 +1,5 @@
-import { useDb } from './db'
-import type { ModuleOptions } from 'nuxt-users/utils'
+import { useDb } from './db.ts'
+import type { ModuleOptions } from '../../../types.ts'
 
 export const createPersonalAccessTokensTable = async (options: ModuleOptions) => {
   const connectorName = options.connector!.name

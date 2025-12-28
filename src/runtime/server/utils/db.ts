@@ -2,7 +2,7 @@ import { createDatabase } from 'db0'
 import type { Database } from 'db0'
 import type { ModuleOptions } from 'nuxt-users/utils'
 
-import { isBuildTime } from './build-time'
+import { isBuildTime } from './build-time.ts'
 
 const dbCache = new Map<string, Database>()
 
