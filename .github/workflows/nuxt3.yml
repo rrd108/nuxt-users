@@ -1,5 +1,4 @@
-
-name: nuxt4
+name: nuxt3
 
 on:
   push:
@@ -20,6 +19,8 @@ jobs:
       - run: npm i -g --force corepack@latest && corepack enable
       - name: Install dependencies
         run: npx nypm@latest i
+      - name: Install Nuxt 3
+        run: npx nypm@latest i nuxt@^3.17.6
       - name: Install sqlite3
         run: npx nypm@latest i better-sqlite3
       - name: Playground prepare
@@ -50,6 +51,8 @@ jobs:
       - run: npm i -g --force corepack@latest && corepack enable
       - name: Install dependencies
         run: npx nypm@latest i
+      - name: Install Nuxt 3
+        run: npx nypm@latest i nuxt@^3.17.6
       - name: Install mysql2
         run: npx nypm@latest i mysql2
       - name: Install DB Clients
@@ -85,6 +88,8 @@ jobs:
       - run: npm i -g --force corepack@latest && corepack enable
       - name: Install dependencies
         run: npx nypm@latest i
+      - name: Install Nuxt 3
+        run: npx nypm@latest i nuxt@^3.17.6
       - name: Install pg
         run: npx nypm@latest i pg
       - name: Install DB Clients

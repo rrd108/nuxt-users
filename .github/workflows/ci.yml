@@ -9,125 +9,43 @@ on:
       - main
 
 jobs:
-  test-sqlite:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-
       - run: npm i -g --force corepack@latest && corepack enable
-
       - name: Install dependencies
         run: npx nypm@latest i
+      - name: Lint
+        run: npm run lint
 
-      - name: Install peer dependencies
-        run: |
-          node -e "const pkg=require('./package.json');const peers=pkg.peerDependencies||{};Object.entries(peers).forEach(([k,v])=>{const version=v.split('||')[0].trim();console.log(k+'@'+version)})" | xargs npx nypm@latest i
-
-      - name: Install sqlite3
-        run: npx nypm@latest i sqlite3
-
-      - name: Playground prepare
-        run: npm run dev:prepare
-
-      - name: Test
-        run: npm run test:sqlite
-
-  test-mysql:
+  test-unit:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mariadb:10.11
-        env:
-          MARIADB_ROOT_PASSWORD: rrd
-          MARIADB_DATABASE: test_db
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -prrd"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
     steps:
       - uses: actions/checkout@v6
-
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-
       - run: npm i -g --force corepack@latest && corepack enable
-
       - name: Install dependencies
         run: npx nypm@latest i
-
-      - name: Install peer dependencies
-        run: |
-          node -e "const pkg=require('./package.json');const peers=pkg.peerDependencies||{};Object.entries(peers).forEach(([k,v])=>{const version=v.split('||')[0].trim();console.log(k+'@'+version)})" | xargs npx nypm@latest i
-
-      - name: Install mysql2
-        run: npx nypm@latest i mysql2
-
-      - name: Install mysql
-        run: sudo apt-get update && sudo apt-get install -y mariadb-client
-
       - name: Playground prepare
         run: npm run dev:prepare
+      - name: Run unit tests
+        run: npm run test:unit
 
-
-      - name: Install DB Clients
-        run: sudo apt-get update && sudo apt-get install -y mariadb-client
-
-      - name: Test
-        run: npm run test:mysql
-        env:
-          DB_HOST: 127.0.0.1
-
-  test-postgresql:
+  test-types:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_PASSWORD: 123
-          POSTGRES_DB: test_db
-          POSTGRES_USER: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
     steps:
       - uses: actions/checkout@v6
-
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-
       - run: npm i -g --force corepack@latest && corepack enable
-
       - name: Install dependencies
         run: npx nypm@latest i
-
-      - name: Install peer dependencies
-        run: |
-          node -e "const pkg=require('./package.json');const peers=pkg.peerDependencies||{};Object.entries(peers).forEach(([k,v])=>{const version=v.split('||')[0].trim();console.log(k+'@'+version)})" | xargs npx nypm@latest i
-
-      - name: Install pg
-        run: npx nypm@latest i pg
-
-      - name: Playground prepare
-        run: npm run dev:prepare
-
-      - name: Install DB Clients
-        run: sudo apt-get update && sudo apt-get install -y postgresql-client
-
-      - name: Test
-        run: npm run test:postgresql
+      - name: Run type checks
+        run: npm run test:types
