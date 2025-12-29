@@ -10,11 +10,12 @@ export default defineNuxtConfig({
     auth: {
       whitelist: ['/noauth', '/register', '/email-confirmation'],
       tokenExpiration: 10,
-      // TODO: if it is uncommented it makes `yarn test:types` fails - for some unknown reason
+      rememberMeExpiration: 30, // Added to satisfy ModuleOptions
       // INFO: if it is commented out you can not login to the playground
       /* permissions: {
         admin: ['*'],
       }, */
+      permissions: {},
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID || 'google-client-id',
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'google-client-secret',

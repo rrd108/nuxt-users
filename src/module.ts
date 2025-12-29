@@ -1,6 +1,6 @@
 import { defineNuxtModule, createResolver, addServerHandler, addComponentsDir, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir } from '@nuxt/kit'
 import { defu } from 'defu'
-import type { RuntimeModuleOptions, ModuleOptions } from './types'
+import type { ModuleOptions } from './types'
 
 export const defaultOptions: ModuleOptions = {
   connector: {
@@ -52,15 +52,18 @@ export const defaultOptions: ModuleOptions = {
   }
 }
 
-export default defineNuxtModule<RuntimeModuleOptions>({
+export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'nuxt-users',
     configKey: 'nuxtUsers',
+    compatibility: {
+      nuxt: '>=3.0.0'
+    }
   },
   // Default configuration options of the Nuxt module
   defaults: defaultOptions,
 
-  async setup(options, nuxt) {
+  async setup(options: ModuleOptions, nuxt) {
     const resolver = createResolver(import.meta.url)
 
     // Add runtime config (server-side)
@@ -342,6 +345,5 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     nuxt.options.css.push(resolver.resolve('./runtime/assets/nuxt-users.css'))
   },
 })
-
 // Export runtime server utils for CLI access
 export * from './runtime/server/internal/index'
