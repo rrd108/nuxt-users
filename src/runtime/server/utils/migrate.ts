@@ -13,7 +13,7 @@ interface Migration {
   run: (options: ModuleOptions) => Promise<void>
 }
 
-const migrations: Migration[] = [
+export const migrations: Migration[] = [
   {
     name: 'create_migrations_table',
     run: createMigrationsTable

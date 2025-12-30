@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
-import { runMigrations, getAppliedMigrations, markMigrationAsApplied } from '../../src/runtime/server/utils/migrate'
+import { runMigrations, getAppliedMigrations, markMigrationAsApplied, migrations } from '../../src/runtime/server/utils/migrate'
 import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../../src/types'
 import { cleanupTestSetup, createTestSetup } from '../test-setup'
 
@@ -76,12 +76,10 @@ describe('CLI: Migrate', () => {
     const appliedMigrations = await getAppliedMigrations(testOptions)
 
     expect(appliedMigrations).toContain('create_migrations_table')
-    expect(appliedMigrations).toContain('create_users_table')
     expect(appliedMigrations).toContain('create_personal_access_tokens_table')
-    expect(appliedMigrations).toContain('create_password_reset_tokens_table')
     expect(appliedMigrations).toContain('add_active_to_users')
     expect(appliedMigrations).toContain('add_google_oauth_fields')
-    expect(appliedMigrations).toHaveLength(6)
+    expect(appliedMigrations).toHaveLength(migrations.length)
   })
 
   it('should not run migrations twice', async () => {
@@ -89,13 +87,13 @@ describe('CLI: Migrate', () => {
     await runMigrations(testOptions)
 
     const firstRunMigrations = await getAppliedMigrations(testOptions)
-    expect(firstRunMigrations).toHaveLength(6)
+    expect(firstRunMigrations).toHaveLength(migrations.length)
 
     // Run migrations second time
     await runMigrations(testOptions)
 
     const secondRunMigrations = await getAppliedMigrations(testOptions)
-    expect(secondRunMigrations).toHaveLength(6)
+    expect(secondRunMigrations).toHaveLength(migrations.length)
 
     // Should be the same migrations
     expect(secondRunMigrations).toEqual(firstRunMigrations)
@@ -185,14 +183,14 @@ describe('CLI: Migrate', () => {
 
     // Test migrations table structure
     const migrationsResult2 = await db.sql`SELECT id, name, executed_at FROM migrations ORDER BY id`
-    const migrations = migrationsResult2.rows || []
-    expect(migrations).toHaveLength(6)
-    expect(migrations[0]?.name).toBe('create_migrations_table')
-    expect(migrations[1]?.name).toBe('create_users_table')
-    expect(migrations[2]?.name).toBe('create_personal_access_tokens_table')
-    expect(migrations[3]?.name).toBe('create_password_reset_tokens_table')
-    expect(migrations[4]?.name).toBe('add_active_to_users')
-    expect(migrations[5]?.name).toBe('add_google_oauth_fields')
+    const fetchedMigrations = migrationsResult2.rows || []
+    expect(fetchedMigrations).toHaveLength(migrations.length)
+    expect(fetchedMigrations[0]?.name).toBe('create_migrations_table')
+    expect(fetchedMigrations[1]?.name).toBe('create_users_table')
+    expect(fetchedMigrations[2]?.name).toBe('create_personal_access_tokens_table')
+    expect(fetchedMigrations[3]?.name).toBe('create_password_reset_tokens_table')
+    expect(fetchedMigrations[4]?.name).toBe('add_active_to_users')
+    expect(fetchedMigrations[5]?.name).toBe('add_google_oauth_fields')
   })
 
   it('should handle partial migrations correctly', async () => {
@@ -237,6 +235,6 @@ describe('CLI: Migrate', () => {
     expect(appliedMigrations).toContain('create_password_reset_tokens_table')
     expect(appliedMigrations).toContain('add_active_to_users')
     expect(appliedMigrations).toContain('add_google_oauth_fields')
-    expect(appliedMigrations).toHaveLength(6)
+    expect(appliedMigrations).toHaveLength(migrations.length)
   })
 })
