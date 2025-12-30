@@ -72,7 +72,7 @@
     "pretest": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for testing' && exit 1)",
     "test:quick": "yarn test:unit && yarn test:sqlite",
     "test:release": "yarn test && yarn build && yarn lint:fix",
-    "test:types": "yarn dev:prepare && vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
+    "test:types": "yarn dev:prepare && vue-tsc --noEmit --project tsconfig.vitest.json && cd playground && vue-tsc --noEmit",
     "test:unit": "./scripts/test-unit.sh",
     "test:integration": "./scripts/test-integration.sh",
     "test:sqlite": "./scripts/test-sqlite.sh",

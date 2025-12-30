@@ -10,6 +10,36 @@ The project includes comprehensive tests organized into several categories:
 - **Integration tests**: API endpoint testing with real databases
 - **CLI tests**: Database command and migration testing
 - **Component tests**: Vue component testing
+- **Type-level tests**: Ensure TypeScript type definitions remain stable
+
+### Type-Level Testing
+
+Type-level regression tests (`*.test-d.ts` files) are crucial for maintaining the stability and reliability of the module's TypeScript contracts. These tests use Vitest's `expectTypeOf` and `assertType` utilities to make assertions about our exported types, composables, and their return values.
+
+**Purpose:**
+
+*   **Prevent Type Regressions:** Catch unintentional changes to types (e.g., a `string` relaxing to `any`, removal of a property from an interface).
+*   **Maintain API Stability:** Ensure the public-facing type definitions remain consistent across versions, providing a stable developer experience.
+*   **Document Type Contracts:** Serve as living documentation for how the module's types are intended to behave.
+
+**How to Run:**
+
+Type-level tests are executed as part of the overall type-checking process:
+
+```bash
+yarn test:types
+```
+
+This command runs `vue-tsc` against a dedicated `tsconfig.vitest.json` configuration, which includes the necessary Vitest globals for type assertion.
+
+**When to Update Type-Level Tests:**
+
+*   **Intentional API Changes:** Update these tests *only* when you deliberately change the public API of the module, a composable's signature, or the structure of a type. The tests should reflect the new, intended contract.
+*   **Correction of Test Bugs:** If a type test itself is incorrectly written and produces false positives or negatives, it should be corrected.
+
+**When NOT to Update Type-Level Tests:**
+
+*   **Unexpected Test Failures:** If a type test fails after a code change, it likely indicates an *unintended regression* in your types. The first step should be to investigate and fix the underlying code, not to modify the failing test. Type tests are designed to prevent such regressions.
 
 ## Quick Start
 
