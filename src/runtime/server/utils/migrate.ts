@@ -51,7 +51,6 @@ export const migrations: Migration[] = [
 export const getAppliedMigrations = async (options: ModuleOptions): Promise<string[]> => {
   const db = await useDb(options)
 
-
   try {
     const result = await db.sql`SELECT name FROM migrations ORDER BY id` as { rows: Array<{ name: string }> }
     return result.rows.map(row => row.name)
