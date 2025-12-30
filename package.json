@@ -87,7 +87,7 @@
     "db:create-personal-access-tokens-table": "tsx src/cli/create-personal-access-tokens-table.ts",
     "db:create-password-reset-tokens-table": "tsx src/cli/create-password-reset-tokens-table.ts",
     "db:create-migrations-table": "tsx src/cli/create-migrations-table.ts",
-    "db:migrate": "tsx src/cli/migrate.ts",
+    "db:migrate": "tsx src/cli/main.ts migrate",
     "db:create-empty-sqlite": "node scripts/create-empty-sqlite.js",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",

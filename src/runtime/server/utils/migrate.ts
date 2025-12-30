@@ -6,6 +6,7 @@ import { createPasswordResetTokensTable } from './create-password-reset-tokens-t
 import { createMigrationsTable } from './create-migrations-table'
 import { addActiveToUsers } from './add-active-to-users'
 import { addGoogleOauthFields } from './add-google-oauth-fields'
+import { addActiveIndexToUsers, addTokenableIndexToPersonalAccessTokens } from './add-indexes'
 
 interface Migration {
   name: string
@@ -36,11 +37,20 @@ const migrations: Migration[] = [
   {
     name: 'add_google_oauth_fields',
     run: addGoogleOauthFields
+  },
+  {
+    name: 'add_active_index_to_users',
+    run: addActiveIndexToUsers
+  },
+  {
+    name: 'add_tokenable_index_to_personal_access_tokens',
+    run: addTokenableIndexToPersonalAccessTokens
   }
 ]
 
 export const getAppliedMigrations = async (options: ModuleOptions): Promise<string[]> => {
   const db = await useDb(options)
+
 
   try {
     const result = await db.sql`SELECT name FROM migrations ORDER BY id` as { rows: Array<{ name: string }> }
