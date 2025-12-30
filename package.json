@@ -80,7 +80,7 @@
     "test:postgresql": "./scripts/test-postgresql.sh",
     "test:nuxt3": "./scripts/test-nuxt3.sh unit && ./scripts/test-nuxt3.sh integration && ./scripts/test-nuxt3.sh sqlite && ./scripts/test-nuxt3.sh mysql && ./scripts/test-nuxt3.sh postgresql",
     "test:nuxt4": "yarn test:types && yarn test:unit && yarn test:integration && yarn test:sqlite && yarn test:mysql && yarn test:postgresql",
-    "test": "yarn test:nuxt3 && yarn test:nuxt4",
+    "test": "yarn lint && yarn test:nuxt3 && yarn test:nuxt4",
     "test:watch": "vitest watch",
     "db:create-users-table": "tsx src/cli/create-users-table.ts",
     "db:create-user": "tsx src/cli/create-user.ts",
