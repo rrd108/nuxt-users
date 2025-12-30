@@ -1,4 +1,3 @@
-
 import { assertType, expectTypeOf } from 'vitest'
 import type { ModuleOptions, User, UserWithoutPassword, RuntimeModuleOptions } from '../../src/types'
 import { useAuthentication } from '../../src/runtime/composables/useAuthentication'
