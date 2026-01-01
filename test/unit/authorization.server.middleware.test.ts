@@ -76,6 +76,16 @@ describe('Auth Server Middleware', () => {
       expect(mockSendRedirect).not.toHaveBeenCalled()
     })
 
+    it('should allow Nitro task requests without authentication', async () => {
+      const event = { path: '/_nitro/tasks', method: 'GET' } as H3Event
+      const result = await serverAuthMiddleware.default(event)
+
+      expect(result).toBeUndefined()
+      expect(mockGetCookie).not.toHaveBeenCalled()
+      expect(mockCreateError).not.toHaveBeenCalled()
+      expect(mockSendRedirect).not.toHaveBeenCalled()
+    })
+
     it('should allow the whitelisted /register route', async () => {
       const event = { path: '/register', method: 'GET' } as H3Event
       const result = await serverAuthMiddleware.default(event)
