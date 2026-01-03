@@ -49,42 +49,74 @@ export const loadOptions = async (): Promise<ModuleOptions> => {
   try {
     // Try to load Nuxt configuration first
     console.log('[Nuxt Users] Loading Nuxt project...')
+    console.log('[Nuxt Users] ℹ️  Note: CLI commands read .env files. If you use .env.local in development, export variables first:')
+    console.log('[Nuxt Users]    set -a; source .env.local; set +a; npx nuxt-users <command>')
+    console.log('[Nuxt Users]    In production, environment variables are set directly in the deployment environment.')
     const nuxt = await loadNuxt({ cwd: process.cwd(), ready: false })
 
-    // Get both configurations BEFORE module processing
+    // Get both configurations
     // 1. Top-level nuxtUsers (for module-style config)
-    // 2. runtimeConfig.nuxtUsers (for runtime-style config - read from the original config)
+    // 2. runtimeConfig.nuxtUsers (for runtime-style config - use processed config which has env vars resolved)
     const topLevelConfig = nuxt.options.nuxtUsers as ModuleOptions
 
-    // Read the original runtime config before it gets processed by the module
-    const originalRuntimeConfig = await (async () => {
-      try {
-        // Load the nuxt.config.ts file directly to get the original runtime config
-        const configPath = await import('node:path').then(p => p.resolve(process.cwd(), 'nuxt.config.ts'))
-        const config = await import(configPath).then(m => m.default)
-        return config?.runtimeConfig?.nuxtUsers
-      }
-      catch {
-        // Fallback to processed config if direct loading fails
-        return nuxt.options.runtimeConfig?.nuxtUsers
-      }
-    })()
+    // Use the processed runtime config which has environment variables already resolved
+    // This is important because Nuxt processes runtimeConfig and fills in NUXT_* env vars
+    const processedRuntimeConfig = nuxt.options.runtimeConfig?.nuxtUsers as ModuleOptions | undefined
 
     await nuxt.close()
 
     // Check if we have any configuration
-    if (topLevelConfig || originalRuntimeConfig) {
+    if (topLevelConfig || processedRuntimeConfig) {
       console.log('[Nuxt Users] Using configuration from nuxt.config')
       // Merge configurations with priority: topLevel > runtime > defaults
-      // Special handling for connector to avoid mixing sqlite and mysql settings
-      let mergedConfig = defu(topLevelConfig, originalRuntimeConfig, defaultOptions)
+      // Exclude connector from defaults to prevent mixing sqlite and mysql settings
+      const { connector: _defaultConnector, ...defaultsWithoutConnector } = defaultOptions
+      const mergedConfig = defu(topLevelConfig, processedRuntimeConfig, defaultsWithoutConnector) as ModuleOptions
 
-      // If a specific connector is configured, ensure we don't mix default connector settings
-      const configuredConnector = topLevelConfig?.connector || originalRuntimeConfig?.connector
-      if (configuredConnector) {
-        mergedConfig = {
-          ...mergedConfig,
-          connector: configuredConnector
+      // Use the configured connector or fallback to default (don't merge connector options)
+      const configuredConnector = topLevelConfig?.connector || processedRuntimeConfig?.connector
+      mergedConfig.connector = configuredConnector || defaultOptions.connector
+
+      // Validate connector options are complete, and fill in from env vars if missing
+      if (mergedConfig.connector.name === 'mysql' || mergedConfig.connector.name === 'postgresql') {
+        const options = mergedConfig.connector.options as DatabaseConfig & { user?: string, password?: string, host?: string, database?: string, port?: number }
+        const envOptions: Partial<DatabaseConfig> = {}
+
+        // Fill in missing values from environment variables
+        if (!options.user && process.env.DB_USER) {
+          envOptions.user = process.env.DB_USER
+        }
+        if (!options.password && process.env.DB_PASSWORD) {
+          envOptions.password = process.env.DB_PASSWORD
+        }
+        if (!options.host && process.env.DB_HOST) {
+          envOptions.host = process.env.DB_HOST
+        }
+        if (!options.database && process.env.DB_NAME) {
+          envOptions.database = process.env.DB_NAME
+        }
+        if (!options.port && process.env.DB_PORT) {
+          envOptions.port = Number.parseInt(process.env.DB_PORT)
+        }
+
+        // Merge env options if any were found
+        if (Object.keys(envOptions).length > 0) {
+          mergedConfig.connector.options = { ...options, ...envOptions } as DatabaseConfig
+          console.log('[Nuxt Users] Filled in missing connector options from environment variables')
+        }
+
+        // Final validation
+        const finalOptions = mergedConfig.connector.options as DatabaseConfig & { user?: string, password?: string, host?: string, database?: string }
+        if (!finalOptions.user || !finalOptions.password || !finalOptions.host || !finalOptions.database) {
+          console.warn('[Nuxt Users] Warning: MySQL/PostgreSQL connector options are incomplete.')
+          console.warn('[Nuxt Users] Required: user, password, host, database')
+          console.warn('[Nuxt Users] Found:', {
+            user: finalOptions.user || '(missing)',
+            password: finalOptions.password ? '***' : '(missing)',
+            host: finalOptions.host || '(missing)',
+            database: finalOptions.database || '(missing)'
+          })
+          console.warn('[Nuxt Users] Please set these in nuxt.config.ts or as environment variables (DB_USER, DB_PASSWORD, DB_HOST, DB_NAME)')
         }
       }
 

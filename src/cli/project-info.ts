@@ -12,7 +12,9 @@ export default defineCommand({
   async run() {
     try {
       console.log('[Nuxt Users] Loading Nuxt project...')
-      console.log('[Nuxt Users] ℹ️  Note: This command only reads .env files. If you use .env.local or other env files, export those variables first.')
+      console.log('[Nuxt Users] ℹ️  Note: CLI commands read .env files. If you use .env.local in development, export variables first:')
+      console.log('[Nuxt Users]    set -a; source .env.local; set +a; npx nuxt-users <command>')
+      console.log('[Nuxt Users]    In production, environment variables are set directly in the deployment environment.')
       const nuxt = await loadNuxt({ cwd: process.cwd() })
 
       console.log('[Nuxt Users] ✅ Nuxt project loaded successfully!')
