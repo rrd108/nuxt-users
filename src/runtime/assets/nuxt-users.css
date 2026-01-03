@@ -17,6 +17,7 @@
     --nu-color-success: #059669;
     --nu-color-success-light: #f0fdf4;
     --nu-color-success-border: #9ae6b4;
+    --nu-color-success-text: #047857;
 
     /* Error Colors */
     --nu-color-error: #dc2626;
@@ -43,7 +44,7 @@
     --nu-color-strength-bg: #e9ecef;
 
     /* Validation Colors */
-    --nu-color-validation-passed: #28a745;
+    --nu-color-validation-passed: #15803d;
     --nu-color-validation-failed: #dc3545;
     --nu-color-validation-hint: #6c757d;
 }
@@ -67,6 +68,7 @@
         --nu-color-success: #10b981;
         --nu-color-success-light: #064e3b;
         --nu-color-success-border: #065f46;
+        --nu-color-success-text: #6ee7b7;
 
         /* Error Colors - Adjusted for dark theme */
         --nu-color-error: #ef4444;
@@ -188,6 +190,14 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s, transform 0.1s;
+    text-decoration: none;
 }
 
 .n-users-google-logo {
@@ -199,8 +209,7 @@
 .n-users-submit-btn,
 .n-users-cancel-btn,
 .n-users-edit-btn,
-.n-users-delete-btn,
-.n-users-google-btn {
+.n-users-delete-btn {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 0.25rem;
@@ -238,22 +247,22 @@
 /* Secondary Button Variants */
 .n-users-btn-secondary,
 .n-users-cancel-btn {
-    background-color: var(--nu-color-gray-500, #6b7280);
+    background-color: var(--nu-color-gray-600, #4b5563);
     color: white;
 }
 
 .n-users-cancel-btn:hover {
-    background-color: var(--nu-color-gray-600, #4b5563);
+    background-color: var(--nu-color-gray-700, #374151);
 }
 
 /* Danger Button Variants */
 .n-users-delete-btn {
-    background-color: var(--nu-color-error, #ef4444);
+    background-color: var(--nu-color-error-dark, #b91c1c);
     color: white;
 }
 
 .n-users-delete-btn:hover {
-    background-color: var(--nu-color-error-alt, #dc2626);
+    background-color: #991b1b;
 }
 
 /* Enhanced Submit Button - Scoped to nuxt-users components only */
@@ -300,7 +309,7 @@ form.n-users-form button[type='submit']:disabled {
 /* Error and Success Messages */
 .n-users-error-message,
 .n-users-error-text {
-    color: var(--nu-color-error, #dc3545);
+    color: var(--nu-color-error-dark, #b91c1c);
     background-color: var(--nu-color-error-light, #fef2f2);
     border: 1px solid var(--nu-color-error-border, #fecaca);
     border-radius: 0.5rem;
@@ -310,8 +319,8 @@ form.n-users-form button[type='submit']:disabled {
 }
 
 .n-users-success-message {
-    color: var(--nu-color-success, #10b981);
-    background-color: var(--nu-color-success-light, #f0fff4);
+    color: var(--nu-color-success-text, #047857);
+    background-color: var(--nu-color-success-light, #f0fdf4);
     border: 1px solid var(--nu-color-success-border, #9ae6b4);
     border-radius: 0.5rem;
     padding: 0.75rem 1rem;
@@ -568,7 +577,7 @@ form.n-users-form {
 }
 
 .n-users-rule-passed {
-    color: var(--nu-color-validation-passed, #28a745);
+    color: var(--nu-color-validation-passed, #15803d);
 }
 
 .n-users-rule-failed {
@@ -618,7 +627,7 @@ form.n-users-form {
     border-radius: 0.5em;
     text-decoration: none;
     border: 2px solid transparent;
-    background: var(--nu-color-error);
+    background: var(--nu-color-error-dark, #b91c1c);
     color: white;
     border-color: var(--nu-color-error-dark);
 }
