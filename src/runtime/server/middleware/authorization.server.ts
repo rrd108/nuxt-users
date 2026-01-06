@@ -85,6 +85,9 @@ export default defineEventHandler(async (event) => {
 
   // Store authenticated user in event context for reuse by handlers
   // This avoids double validation in endpoints like /me
+  if (!event.context) {
+    event.context = {}
+  }
   event.context.nuxtUsers = event.context.nuxtUsers || {}
   event.context.nuxtUsers.user = user
 

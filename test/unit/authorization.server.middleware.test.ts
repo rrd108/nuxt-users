@@ -485,7 +485,7 @@ describe('Auth Server Middleware', () => {
     })
 
     it('should auto-whitelist /me endpoint for any authenticated user', async () => {
-      const event = { path: '/api/nuxt-users/me', method: 'GET' } as H3Event
+      const event = { path: '/api/nuxt-users/me', method: 'GET', context: {} } as H3Event
 
       // Mock getCookie to return a valid token
       mockGetCookie.mockReturnValue('valid-token')

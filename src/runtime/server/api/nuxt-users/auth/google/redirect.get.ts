@@ -1,7 +1,7 @@
 import { defineEventHandler, sendRedirect, createError, type H3Event } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { createGoogleOAuth2Client, getGoogleAuthUrl } from '../../../../utils/google-oauth'
+import { createGoogleOAuth2Client, getGoogleAuthUrl } from '../../../../utils'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()

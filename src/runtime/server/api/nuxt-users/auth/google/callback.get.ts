@@ -7,7 +7,7 @@ import {
   getGoogleUserFromCode,
   findOrCreateGoogleUser,
   createAuthTokenForUser
-} from '../../../../utils/google-oauth'
+} from '../../../../utils'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
