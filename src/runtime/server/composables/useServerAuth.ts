@@ -1,4 +1,4 @@
-import { getCurrentUserFromToken } from '../utils/user'
+import { getCurrentUserFromToken } from '../utils'
 import type { ModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
 
 /**

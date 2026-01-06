@@ -1,8 +1,7 @@
 import { defineCommand } from 'citty'
 import { loadNuxt } from '@nuxt/kit'
 import type { ModuleOptions } from 'nuxt-users/utils'
-import { checkTableExists } from '../runtime/server/utils/db'
-import { getAppliedMigrations } from '../runtime/server/utils/migrate'
+import { checkTableExists, getAppliedMigrations } from '../runtime/server/utils'
 
 export default defineCommand({
   meta: {

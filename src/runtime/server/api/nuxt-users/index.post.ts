@@ -1,7 +1,7 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { createUser } from '../../utils/user'
+import { createUser } from '../../utils'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()

@@ -1,8 +1,7 @@
 import { createError, defineEventHandler, getQuery } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { useDb } from '../../utils/db'
-import { getLastLoginTime } from '../../utils/user'
+import { useDb, getLastLoginTime } from '../../utils'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()

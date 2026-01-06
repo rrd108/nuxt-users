@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { isBuildTime } from '../../src/runtime/server/utils/build-time'
+import { isBuildTime } from '../../src/runtime/server/utils'
 
 describe('Build-time Detection', () => {
   const originalEnv = process.env

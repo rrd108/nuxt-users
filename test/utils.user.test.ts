@@ -2,9 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
 import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
-import { createUsersTable } from '../src/runtime/server/utils/create-users-table'
-import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/create-personal-access-tokens-table'
-import { createUser, findUserByEmail, findUserById, deleteUser, updateUser, updateUserPassword, getLastLoginTime, getCurrentUserFromToken } from '../src/runtime/server/utils/user'
+import { createUsersTable, createPersonalAccessTokensTable, createUser, findUserByEmail, findUserById, deleteUser, updateUser, updateUserPassword, getLastLoginTime, getCurrentUserFromToken } from '../src/runtime/server/utils'
 import { addActiveToUsers } from '../src/runtime/server/utils/add-active-to-users'
 
 describe('User Utilities (src/utils/user.ts)', () => {

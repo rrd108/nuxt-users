@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import crypto from 'node:crypto'
 import type { ModuleOptions, User } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { useDb } from '../../../utils/db'
+import { useDb } from '../../../utils'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

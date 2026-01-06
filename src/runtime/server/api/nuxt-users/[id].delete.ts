@@ -1,7 +1,7 @@
 import { createError, defineEventHandler } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { deleteUser } from '../../utils/user'
+import { deleteUser } from '../../utils'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
