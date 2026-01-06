@@ -188,9 +188,9 @@ export default defineNuxtModule<ModuleOptions>({
     addImportsDir(resolver.resolve('./runtime/composables'))
     addServerImportsDir(resolver.resolve('./runtime/server/composables'))
 
-    // Register server directory for Nitro to scan (includes tasks)
-    // This ensures Nitro discovers tasks, handlers, and other server files
-    addServerScanDir(resolver.resolve('./runtime/server'))
+    // Register server tasks directory for Nitro to scan
+    // This ensures Nitro discovers tasks within the module's runtime server directory
+    addServerScanDir(resolver.resolve('./runtime/server/tasks'))
 
     // Add server middleware for authentication
     addServerHandler({
