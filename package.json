@@ -1,6 +1,6 @@
 {
   "name": "nuxt-users",
-  "version": "1.39.0",
+  "version": "1.40.0",
   "description": "A comprehensive user management module for Nuxt 3 and Nuxt 4 applications with authentication, authorization, database support, and CLI tools",
   "keywords": [
     "nuxt",
@@ -64,7 +64,7 @@
     "postbuild": "node scripts/post-build.js",
     "check:translations": "tsx scripts/check-translations.ts",
     "check:locale-consistency": "tsx scripts/check-locale-consistency.ts",
-    "check:auth": "npm whoami || (echo '❌ Not authenticated with npm. Please run: npm login' && exit 1)",
+    "check:auth": "npm whoami --registry=https://registry.npmjs.org/ || (echo '❌ Not authenticated with npm. Please run: npm login' && exit 1)",
     "prerelease": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
     "release": "yarn check:auth && yarn lint && yarn check:translations && yarn check:locale-consistency && yarn test && yarn prepack && changelogen --release && npm publish && git push --follow-tags",
     "lint": "eslint .",

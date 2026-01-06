@@ -1,6 +1,77 @@
 # Changelog
 
 
+## v1.40.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.39.0...v1.40.0)
+
+### 🚀 Enhancements
+
+- Add locale system foundation ([6262334](https://github.com/rrd108/nuxt-users/commit/6262334))
+- Add locale support to NUsersLoginForm component ([43ee5da](https://github.com/rrd108/nuxt-users/commit/43ee5da))
+- Add locale support to NUsersRegisterForm component ([c573efb](https://github.com/rrd108/nuxt-users/commit/c573efb))
+- Add locale support to simpler components ([3cde440](https://github.com/rrd108/nuxt-users/commit/3cde440))
+- Add locale support to remaining 5 components ([b8d5ed9](https://github.com/rrd108/nuxt-users/commit/b8d5ed9))
+- Add check-translations CLI command ([ceacadc](https://github.com/rrd108/nuxt-users/commit/ceacadc))
+- Add translation checker and fix remaining hardcoded strings ([f9101bd](https://github.com/rrd108/nuxt-users/commit/f9101bd))
+- Add locale consistency checker for Hungarian formal/informal variants ([529e06c](https://github.com/rrd108/nuxt-users/commit/529e06c))
+- Add parameter count validation to translation system ([a9f35a5](https://github.com/rrd108/nuxt-users/commit/a9f35a5))
+- Add context7.json configuration file. ([0f78aa3](https://github.com/rrd108/nuxt-users/commit/0f78aa3))
+- Adds database indexes and migrates CLI command ([3ace60e](https://github.com/rrd108/nuxt-users/commit/3ace60e))
+- Add type-level regression testing ([0d5b39e](https://github.com/rrd108/nuxt-users/commit/0d5b39e))
+- Improves CLI configuration loading ([622b45e](https://github.com/rrd108/nuxt-users/commit/622b45e))
+- Adds automatic token cleanup task ([65452bb](https://github.com/rrd108/nuxt-users/commit/65452bb))
+
+### 🩹 Fixes
+
+- Correct translation key path in locale tests ([2c60e7e](https://github.com/rrd108/nuxt-users/commit/2c60e7e))
+- Resolve linting errors in locale files ([84ba18f](https://github.com/rrd108/nuxt-users/commit/84ba18f))
+- Add missing tranlations ([c7cb834](https://github.com/rrd108/nuxt-users/commit/c7cb834))
+- Updates password strength label ([b3adce4](https://github.com/rrd108/nuxt-users/commit/b3adce4))
+- Standardizes locale text ([c27ac90](https://github.com/rrd108/nuxt-users/commit/c27ac90))
+- Add npm auth check ([6f1e5fa](https://github.com/rrd108/nuxt-users/commit/6f1e5fa))
+- Lot of unwanted 401 errors closes #157 ([#157](https://github.com/rrd108/nuxt-users/issues/157))
+- Registers server directory for Nitro ([dfb52de](https://github.com/rrd108/nuxt-users/commit/dfb52de))
+
+### 💅 Refactors
+
+- Deep-merge extracted ([e6ddb36](https://github.com/rrd108/nuxt-users/commit/e6ddb36))
+- Extraxt assertKeysExists ([f56153f](https://github.com/rrd108/nuxt-users/commit/f56153f))
+- Extract getLocaleSection ([c6e9736](https://github.com/rrd108/nuxt-users/commit/c6e9736))
+- Huge ternaries ([a1655da](https://github.com/rrd108/nuxt-users/commit/a1655da))
+- Remove all else stamenents ([a02c88b](https://github.com/rrd108/nuxt-users/commit/a02c88b))
+- **module:** Strengthen Module Definition for Stability closes #149 ([#149](https://github.com/rrd108/nuxt-users/issues/149))
+- Styles for better contrast ([30794ec](https://github.com/rrd108/nuxt-users/commit/30794ec))
+
+### 📖 Documentation
+
+- Add comprehensive localization documentation ([52d6314](https://github.com/rrd108/nuxt-users/commit/52d6314))
+- Add LLM context for nuxt-users module closes #146 ([#146](https://github.com/rrd108/nuxt-users/issues/146))
+- Update release date ([dd047f3](https://github.com/rrd108/nuxt-users/commit/dd047f3))
+
+### 📦 Build
+
+- Include linting in yarn test script ([fcf4904](https://github.com/rrd108/nuxt-users/commit/fcf4904))
+
+### 🏡 Chore
+
+- Add locale config to test module options ([4276231](https://github.com/rrd108/nuxt-users/commit/4276231))
+- EmailLabel removed ([3aa8c17](https://github.com/rrd108/nuxt-users/commit/3aa8c17))
+- **release:** V1.39.0 ([a8f7b95](https://github.com/rrd108/nuxt-users/commit/a8f7b95))
+
+### ✅ Tests
+
+- Add comprehensive unit tests for locale utility ([ccab284](https://github.com/rrd108/nuxt-users/commit/ccab284))
+- Add unit tests for useNuxtUsersLocale composable ([757c6dd](https://github.com/rrd108/nuxt-users/commit/757c6dd))
+- **ci:** Enhance Nuxt 4 Compatibility Tests for Client-Side Behavior ([884b07e](https://github.com/rrd108/nuxt-users/commit/884b07e))
+- Excludes Nitro tasks from auth checks ([ad9573d](https://github.com/rrd108/nuxt-users/commit/ad9573d))
+- Fixes ([6340050](https://github.com/rrd108/nuxt-users/commit/6340050))
+- Fix imports ([224a515](https://github.com/rrd108/nuxt-users/commit/224a515))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.39.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.38.0...v1.39.0)
