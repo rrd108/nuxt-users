@@ -1,29 +1,16 @@
-import { createError, defineEventHandler, getCookie } from 'h3'
-import type { ModuleOptions } from 'nuxt-users/utils'
-import { useRuntimeConfig } from '#imports'
-import { getCurrentUserFromToken } from '../../utils'
+import { createError, defineEventHandler } from 'h3'
+import type { UserWithoutPassword } from 'nuxt-users/utils'
 
 export default defineEventHandler(async (event) => {
-  const { nuxtUsers } = useRuntimeConfig()
-  const options = nuxtUsers as ModuleOptions
-
-  // Get the auth token from the cookie
-  const token = getCookie(event, 'auth_token')
-
-  if (!token) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized - No authentication token found'
-    })
-  }
-
-  // Get the current user from the token
-  const user = await getCurrentUserFromToken(token, options)
+  // The authorization middleware has already validated the token and stored the user
+  // in event.context.nuxtUsers.user. Use it to avoid double validation.
+  const user = event.context.nuxtUsers?.user as UserWithoutPassword | undefined
 
   if (!user) {
+    // This should not happen if middleware is working correctly, but handle it gracefully
     throw createError({
       statusCode: 401,
-      statusMessage: 'Unauthorized - Invalid authentication token'
+      statusMessage: 'Unauthorized - No authenticated user found'
     })
   }
 

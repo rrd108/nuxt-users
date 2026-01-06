@@ -66,6 +66,14 @@ export const useAuthentication = () => {
         })
 
         if (error.value) {
+          // Don't log expected 401 errors (user not authenticated)
+          // These are normal when user is not logged in
+          const statusCode = error.value.statusCode || error.value.status
+          if (statusCode === 401) {
+            // Expected: user is not authenticated
+            user.value = null
+            return null
+          }
           throw new Error(error.value.message || 'Failed to fetch user')
         }
 
@@ -104,7 +112,23 @@ export const useAuthentication = () => {
       }
       return userData
     }
-    catch (error) {
+    catch (error: unknown) {
+      // Don't log expected 401 errors (user not authenticated)
+      // These are normal when user is not logged in
+      const statusCode = (error as { statusCode?: number, status?: number, response?: { status?: number } })?.statusCode
+        || (error as { statusCode?: number, status?: number, response?: { status?: number } })?.status
+        || (error as { statusCode?: number, status?: number, response?: { status?: number } })?.response?.status
+      if (statusCode === 401) {
+        // Expected: user is not authenticated, silently handle it
+        user.value = null
+        if (import.meta.client) {
+          localStorage.removeItem('user')
+          sessionStorage.removeItem('user')
+        }
+        return null
+      }
+
+      // Log unexpected errors
       console.error('Failed to fetch user:', error)
       // Clear invalid user data from both storages
       user.value = null

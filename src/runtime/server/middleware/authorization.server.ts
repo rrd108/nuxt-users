@@ -46,9 +46,17 @@ export default defineEventHandler(async (event) => {
 
   // if the path is not whitelisted, check if the user is authenticated
   const token = getCookie(event, 'auth_token')
+  const isMeEndpoint = event.path === `${base}/me`
+
   if (!token) {
     if (event.path.startsWith('/api/')) {
-      console.warn(`[Nuxt Users] authorization: ${event.path} No token found - API request rejected`)
+      // /me endpoint is used to check auth status, so 401s are expected - use debug instead of warn
+      if (isMeEndpoint) {
+        console.debug(`[Nuxt Users] authorization: ${event.path} No token found - expected for auth check`)
+      }
+      else {
+        console.warn(`[Nuxt Users] authorization: ${event.path} No token found - API request rejected`)
+      }
       throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
     }
     if (!event.path.startsWith('/api/')) {
@@ -60,7 +68,13 @@ export default defineEventHandler(async (event) => {
   const user = await getCurrentUserFromToken(token!, options)
   if (!user) {
     if (event.path.startsWith('/api/')) {
-      console.warn(`[Nuxt Users] authorization: ${event.path} Invalid token - API request rejected`)
+      // /me endpoint is used to check auth status, so 401s are expected - use debug instead of warn
+      if (isMeEndpoint) {
+        console.debug(`[Nuxt Users] authorization: ${event.path} Invalid token - expected for auth check`)
+      }
+      else {
+        console.warn(`[Nuxt Users] authorization: ${event.path} Invalid token - API request rejected`)
+      }
       throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
     }
     if (!event.path.startsWith('/api/')) {
@@ -68,6 +82,11 @@ export default defineEventHandler(async (event) => {
       return
     }
   }
+
+  // Store authenticated user in event context for reuse by handlers
+  // This avoids double validation in endpoints like /me
+  event.context.nuxtUsers = event.context.nuxtUsers || {}
+  event.context.nuxtUsers.user = user
 
   // Auto-whitelist /me endpoint for any authenticated user
   if (event.path === `${base}/me`) {
