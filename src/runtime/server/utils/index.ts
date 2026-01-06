@@ -1,7 +1,7 @@
 // Internal utils - used by module's API routes, middleware, services, tasks
 export { useDb, checkTableExists } from './db'
 export { isBuildTime } from './build-time'
-export { createUser, findUserByEmail, updateUserPassword, getCurrentUserFromToken, hasAnyUsers, deleteExpiredPersonalAccessTokens, deleteTokensWithoutExpiration, cleanupPersonalAccessTokens, revokeUserTokens, getLastLoginTime, findUserById, updateUser, deleteUser } from './user'
+export { createUser, findUserByEmail, updateUserPassword, getCurrentUserFromToken, hasAnyUsers, deleteTokensWithoutExpiration, cleanupPersonalAccessTokens, revokeUserTokens, getLastLoginTime, findUserById, updateUser, deleteUser } from './user'
 export { createUsersTable } from './create-users-table'
 export { createPersonalAccessTokensTable } from './create-personal-access-tokens-table'
 export { createPasswordResetTokensTable } from './create-password-reset-tokens-table'

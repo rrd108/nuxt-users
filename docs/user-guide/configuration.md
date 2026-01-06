@@ -71,6 +71,11 @@ export default defineNuxtConfig({
       permissions: {} // Role-based access control
     },
     
+    // Token cleanup schedule (cron expression)
+    // Default: '0 2 * * *' (daily at 2 AM)
+    // Set to false or null to disable automatic cleanup
+    tokenCleanupSchedule: '0 2 * * *',
+    
     // Password strength requirements
     passwordValidation: {
       minLength: 8,
@@ -498,6 +503,32 @@ Common values:
 - `1440` - 24 hours (default, balanced)
 - `10080` - 7 days (convenience)
 - `43200` - 30 days (maximum convenience)
+
+### Token Cleanup Schedule
+
+Configure when expired tokens are automatically cleaned up:
+
+```ts
+nuxtUsers: {
+  // Run cleanup daily at 2 AM (default)
+  tokenCleanupSchedule: '0 2 * * *',
+  
+  // Or run cleanup every 6 hours
+  // tokenCleanupSchedule: '0 */6 * * *',
+  
+  // Or disable automatic cleanup
+  // tokenCleanupSchedule: false,
+}
+```
+
+**Cron Expression Examples:**
+- `'0 2 * * *'` - Daily at 2 AM (default)
+- `'0 */6 * * *'` - Every 6 hours
+- `'0 0 * * 0'` - Weekly on Sunday at midnight
+- `'0 0 1 * *'` - Monthly on the 1st at midnight
+- `false` or `null` - Disable automatic cleanup
+
+**Note:** Even if automatic cleanup is disabled, you can still run the cleanup task manually via the Nitro tasks API.
 
 ### Route Whitelisting
 

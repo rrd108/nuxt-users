@@ -5,20 +5,12 @@ interface CleanupTokensPayload {
   includeNoExpiration?: boolean
 }
 
-interface CleanupTokensResult {
-  result: 'success'
-  expiredTokensRemoved: number
-  noExpirationTokensRemoved: number
-  totalTokensCleaned: number
-  includeNoExpiration: boolean
-}
-
 export default defineTask({
   meta: {
     name: 'nuxt-users:cleanup-tokens',
     description: 'Clean up expired personal access tokens and tokens without expiration'
   },
-  async run({ payload }: { payload?: CleanupTokensPayload }): Promise<CleanupTokensResult> {
+  async run({ payload }: { payload?: CleanupTokensPayload }) {
     const { useRuntimeConfig } = await import('#imports')
     const { cleanupPersonalAccessTokens } = await import('../utils')
 

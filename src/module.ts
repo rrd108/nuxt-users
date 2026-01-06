@@ -49,7 +49,8 @@ export const defaultOptions: ModuleOptions = {
     default: 'en',
     fallbackLocale: 'en',
     texts: {}
-  }
+  },
+  tokenCleanupSchedule: '0 2 * * *' // Daily at 2 AM
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -314,6 +315,17 @@ export default defineNuxtModule<ModuleOptions>({
       // Add tasks directory to scan
       nitroConfig.scanDirs = nitroConfig.scanDirs || []
       nitroConfig.scanDirs.push(resolver.resolve('./runtime/server/tasks'))
+
+      // Schedule automatic token cleanup if enabled
+      const cleanupSchedule = runtimeConfigOptions.tokenCleanupSchedule ?? defaultOptions.tokenCleanupSchedule
+      if (cleanupSchedule) {
+        nitroConfig.scheduledTasks = nitroConfig.scheduledTasks || {}
+        nitroConfig.scheduledTasks[cleanupSchedule] = [
+          ...(nitroConfig.scheduledTasks[cleanupSchedule] || []),
+          'nuxt-users:cleanup-tokens'
+        ]
+        console.log(`[Nuxt Users] 🔄 Token cleanup scheduled: ${cleanupSchedule}`)
+      }
 
       // Automatically exclude nuxt-users API routes from prerendering to prevent build hangs
       nitroConfig.prerender = nitroConfig.prerender || {}

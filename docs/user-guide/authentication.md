@@ -387,9 +387,81 @@ The module provides secure "remember me" functionality that:
 
 The module automatically handles:
 - Token expiration validation
-- Automatic token cleanup
 - Token refresh on activity
+- **Automatic token cleanup**: Runs daily at 2 AM to remove expired tokens
 - **Hard reload persistence**: Users remain logged in after hard refresh (Ctrl+F5)
+
+### Token Cleanup Task
+
+The module automatically schedules token cleanup to run daily at 2 AM. The cleanup task removes expired tokens and optionally tokens without expiration dates.
+
+#### Listing Available Tasks
+
+To see all available tasks:
+
+```bash
+curl http://localhost:3000/_nitro/tasks/
+```
+
+#### Running the Cleanup Task
+
+Run the token cleanup task manually:
+
+```bash
+# Clean up expired tokens and tokens without expiration
+curl -X POST http://localhost:3000/_nitro/tasks/nuxt-users:cleanup-tokens \
+  -H "Content-Type: application/json" \
+  -d '{"includeNoExpiration": true}'
+
+# Clean up only expired tokens (keep tokens without expiration)
+curl -X POST http://localhost:3000/_nitro/tasks/nuxt-users:cleanup-tokens \
+  -H "Content-Type: application/json" \
+  -d '{"includeNoExpiration": false}'
+```
+
+**Response:**
+```json
+{
+  "result": "success",
+  "expiredTokensRemoved": 15,
+  "noExpirationTokensRemoved": 3,
+  "totalTokensCleaned": 18,
+  "includeNoExpiration": true
+}
+```
+
+#### Automatic Scheduling
+
+The cleanup task is **automatically scheduled** to run daily at 2 AM by default. You can customize or disable this schedule.
+
+**Configuring the Schedule:**
+
+Set the cleanup schedule using a cron expression in your `nuxt.config.ts`:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    // Run cleanup every 6 hours
+    tokenCleanupSchedule: '0 */6 * * *',
+    
+    // Or run cleanup daily at 3 AM instead of 2 AM
+    // tokenCleanupSchedule: '0 3 * * *',
+    
+    // Or disable automatic cleanup (task will still be available manually)
+    // tokenCleanupSchedule: false,
+  }
+})
+```
+
+**Cron Expression Examples:**
+- `'0 2 * * *'` - Daily at 2 AM (default)
+- `'0 */6 * * *'` - Every 6 hours
+- `'0 0 * * 0'` - Weekly on Sunday at midnight
+- `'0 0 1 * *'` - Monthly on the 1st at midnight
+- `false` or `null` - Disable automatic cleanup
+
+**Note:** The task will still be available for manual execution via the Nitro tasks API even if automatic scheduling is disabled.
 
 ## Security Features
 

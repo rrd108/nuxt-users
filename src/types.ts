@@ -238,6 +238,12 @@ export interface ModuleOptions {
     fallbackLocale?: string
     texts?: Record<string, LocaleMessages>
   }
+  /**
+   * Token cleanup schedule (cron expression)
+   * Set to null or false to disable automatic cleanup
+   * Default: '0 2 * * *' (daily at 2 AM)
+   */
+  tokenCleanupSchedule?: string | false | null
 }
 
 export interface MailerOptions {

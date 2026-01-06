@@ -444,8 +444,14 @@ nuxtUsers: {
 
 3. **Token cleanup:**
 ```bash
-# Regularly clean up expired tokens
-npx nuxt-users cleanup-expired-tokens
+# Run the cleanup task via Nitro tasks API
+curl -X POST http://localhost:3000/_nitro/tasks/nuxt-users:cleanup-tokens \
+  -H "Content-Type: application/json" \
+  -d '{"includeNoExpiration": true}'
+
+# Or schedule it via cron (production)
+# Add to your crontab to run daily at 2 AM
+0 2 * * * curl -X POST https://your-domain.com/_nitro/tasks/nuxt-users:cleanup-tokens -H "Content-Type: application/json" -d '{}'
 ```
 
 ## Development Issues
