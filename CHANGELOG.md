@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.40.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.40.0...v1.40.1)
+
+### 🩹 Fixes
+
+- Duplicate import warnings closes #158 ([#158](https://github.com/rrd108/nuxt-users/issues/158))
+
+### 🏡 Chore
+
+- **release:** V1.40.0 ([31aaf9b](https://github.com/rrd108/nuxt-users/commit/31aaf9b))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.40.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.39.0...v1.40.0)
