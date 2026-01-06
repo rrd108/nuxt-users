@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addServerHandler, addComponentsDir, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addServerHandler, addComponentsDir, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir, addServerScanDir } from '@nuxt/kit'
 import { defu } from 'defu'
 import type { ModuleOptions } from './types'
 
@@ -188,6 +188,10 @@ export default defineNuxtModule<ModuleOptions>({
     addImportsDir(resolver.resolve('./runtime/composables'))
     addServerImportsDir(resolver.resolve('./runtime/server/composables'))
 
+    // Register server directory for Nitro to scan (includes tasks)
+    // This ensures Nitro discovers tasks, handlers, and other server files
+    addServerScanDir(resolver.resolve('./runtime/server'))
+
     // Add server middleware for authentication
     addServerHandler({
       middleware: true,
@@ -311,10 +315,6 @@ export default defineNuxtModule<ModuleOptions>({
       nitroConfig.experimental = nitroConfig.experimental || {}
       nitroConfig.experimental.database = true
       nitroConfig.experimental.tasks = true
-
-      // Add tasks directory to scan
-      nitroConfig.scanDirs = nitroConfig.scanDirs || []
-      nitroConfig.scanDirs.push(resolver.resolve('./runtime/server/tasks'))
 
       // Schedule automatic token cleanup if enabled
       const cleanupSchedule = runtimeConfigOptions.tokenCleanupSchedule ?? defaultOptions.tokenCleanupSchedule
