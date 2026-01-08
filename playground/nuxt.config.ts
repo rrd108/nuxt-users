@@ -11,11 +11,9 @@ export default defineNuxtConfig({
       whitelist: ['/noauth', '/register', '/email-confirmation'],
       tokenExpiration: 10,
       rememberMeExpiration: 30, // Added to satisfy ModuleOptions
-      // INFO: if it is commented out you can not login to the playground
-      /* permissions: {
+      permissions: {
         admin: ['*'],
-      }, */
-      permissions: {},
+      },
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID || 'google-client-id',
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'google-client-secret',
