@@ -53,7 +53,7 @@ export const handleInvalidToken = (event: H3Event, isApiRoute: boolean, isMeEndp
  */
 export const handleUnauthorizedRequest = (event: H3Event, user: UserWithoutPassword, isApiRoute: boolean) => {
   if (isApiRoute) {
-    console.warn(`[Nuxt Users] authorization: ${event.path} User ${user.id} with role ${user.role} denied access - API request rejected`)
+    console.warn(`[Nuxt Users] authorization: ${event.method}: ${event.path} User ${user.id} with role ${user.role} denied access - API request rejected`)
     throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
   }
   // For pages, let client handle redirect
