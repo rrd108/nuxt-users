@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useAuthentication } from '../composables/useAuthentication'
 import { useRuntimeConfig } from '#imports'
-import { defaultDisplayFields, defaultFieldLabels, type User } from 'nuxt-users/utils'
+import { defaultDisplayFields, defaultFieldLabels, type User, type Permission } from 'nuxt-users/utils'
 import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
 
 const { t } = useNuxtUsersLocale()
@@ -45,15 +45,25 @@ const canEdit = computed(() => {
 
   // Check custom permissions if configured
   if (nuxtUsers.auth?.permissions) {
-    const userPermissions = nuxtUsers.auth.permissions[currentUser.value.role] || []
+    const userPermissions = (nuxtUsers.auth.permissions[currentUser.value.role as keyof typeof nuxtUsers.auth.permissions] || []) as (string | Permission)[]
     const apiBasePath = nuxtUsers.apiBasePath
 
-    return userPermissions.some((permission: string) =>
-      permission === '*'
-      || permission === `${apiBasePath}/*`
-      || permission === `${apiBasePath}/[id].put`
-      || permission === `${apiBasePath}/[id].patch`
-    )
+    return userPermissions.some((permission: Permission) => {
+      if (typeof permission === 'string') {
+        return permission === '*'
+          || permission === `${apiBasePath}/*`
+          || permission === `${apiBasePath}/[id].put`
+          || permission === `${apiBasePath}/[id].patch`
+      }
+      const pathMatches = permission.path === '*'
+        || permission.path === `${apiBasePath}/*`
+        || permission.path === `${apiBasePath}/[id].put`
+        || permission.path === `${apiBasePath}/[id].patch`
+      if (!pathMatches) {
+        return false
+      }
+      return permission.methods.some(method => method.toUpperCase() === 'PUT' || method.toUpperCase() === 'PATCH')
+    })
   }
   return false
 })
@@ -62,14 +72,23 @@ const canDelete = computed(() => {
 
   // Check custom permissions if configured
   if (nuxtUsers.auth?.permissions) {
-    const userPermissions = nuxtUsers.auth.permissions[currentUser.value.role] || []
+    const userPermissions = (nuxtUsers.auth.permissions[currentUser.value.role as keyof typeof nuxtUsers.auth.permissions] || []) as (string | Permission)[]
     const apiBasePath = nuxtUsers.apiBasePath
 
-    return userPermissions.some((permission: string) =>
-      permission === '*'
-      || permission === `${apiBasePath}/*`
-      || permission === `${apiBasePath}/[id].delete`
-    )
+    return userPermissions.some((permission: Permission) => {
+      if (typeof permission === 'string') {
+        return permission === '*'
+          || permission === `${apiBasePath}/*`
+          || permission === `${apiBasePath}/[id].delete`
+      }
+      const pathMatches = permission.path === '*'
+        || permission.path === `${apiBasePath}/*`
+        || permission.path === `${apiBasePath}/[id].delete`
+      if (!pathMatches) {
+        return false
+      }
+      return permission.methods.some(method => method.toUpperCase() === 'DELETE')
+    })
   }
   return false
 })
