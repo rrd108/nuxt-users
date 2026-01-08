@@ -30,13 +30,13 @@ export default defineEventHandler(async (event) => {
   // Public access checks (no authentication required)
   // ============================================
 
-  // Internal no-auth paths (e.g., /login, /reset-password) and custom password reset URL
-  const noAuthPaths = [...PUBLIC_PAGES]
+  // Internal public paths (e.g., /login, /reset-password) and custom password reset URL
+  const publicAuthPaths = [...PUBLIC_PAGES]
   if (options.passwordResetUrl && options.passwordResetUrl !== '/reset-password') {
-    noAuthPaths.push(options.passwordResetUrl)
+    publicAuthPaths.push(options.passwordResetUrl)
   }
 
-  if (noAuthPaths.includes(event.path)) {
+  if (publicAuthPaths.includes(event.path)) {
     console.debug(`[Nuxt Users] authorization: NO_AUTH_PATH: ${event.path}`)
     return
   }
