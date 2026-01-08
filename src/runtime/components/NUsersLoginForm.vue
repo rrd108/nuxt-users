@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { navigateTo } from '#app'
-import type { LoginFormData, UserWithoutPassword, ModuleOptions } from 'nuxt-users/utils'
+import type { LoginFormData, UserWithoutPassword, RuntimeModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
-const { passwordValidation } = nuxtUsers as ModuleOptions
+const { passwordValidation } = nuxtUsers as RuntimeModuleOptions
 const { t } = useNuxtUsersLocale()
 
 // Note: We define Props interface inline instead of importing LoginFormProps from 'nuxt-users/utils'
@@ -170,7 +170,7 @@ const handleForgotPassword = async () => {
             name="password"
             :placeholder="props.passwordPlaceholder || t('login.passwordPlaceholder')"
             required
-            :minlength="passwordValidation.minLength"
+            :minlength="passwordValidation?.minLength || 8"
           >
         </div>
       </slot>

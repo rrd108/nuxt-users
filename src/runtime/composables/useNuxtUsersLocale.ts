@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useRuntimeConfig } from '#app'
-import type { ModuleOptions } from '../../types'
+import type { RuntimeModuleOptions } from '../../types'
 import { getTranslation } from '../utils/locale'
 
 /**
@@ -15,7 +15,7 @@ import { getTranslation } from '../utils/locale'
  */
 export const useNuxtUsersLocale = () => {
   const { public: { nuxtUsers } } = useRuntimeConfig()
-  const moduleOptions = nuxtUsers as ModuleOptions
+  const moduleOptions = nuxtUsers as RuntimeModuleOptions
 
   // Get current locale from module config
   const currentLocale = computed(() => {

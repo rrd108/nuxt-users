@@ -11,7 +11,7 @@
  * For password change: requires user to be logged in and provide current password
  */
 import { ref, watch, computed } from 'vue'
-import type { UserWithoutPassword, ModuleOptions } from 'nuxt-users/utils'
+import type { UserWithoutPassword, RuntimeModuleOptions } from 'nuxt-users/utils'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
 import { useRuntimeConfig, useRoute, useRouter } from '#imports'
 import NUsersPasswordStrengthIndicator from './NUsersPasswordStrengthIndicator.vue'
@@ -44,7 +44,7 @@ interface Emits {
 }
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
-const moduleOptions = nuxtUsers as ModuleOptions
+const moduleOptions = nuxtUsers as RuntimeModuleOptions
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()

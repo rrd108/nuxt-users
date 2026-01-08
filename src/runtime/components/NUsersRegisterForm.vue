@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { navigateTo } from '#app'
-import type { UserWithoutPassword, ModuleOptions, PasswordValidationResult } from 'nuxt-users/utils'
+import type { UserWithoutPassword, RuntimeModuleOptions, PasswordValidationResult } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import { validatePassword } from 'nuxt-users/utils'
 import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
-const { passwordValidation } = nuxtUsers as ModuleOptions
+const { passwordValidation } = nuxtUsers as RuntimeModuleOptions
 const { t } = useNuxtUsersLocale()
 
 // Props interface
@@ -200,7 +200,7 @@ const handleSubmit = async () => {
             name="password"
             :placeholder="props.passwordPlaceholder || t('register.passwordPlaceholder')"
             required
-            :minlength="passwordValidation.minLength"
+            :minlength="passwordValidation?.minLength || 8"
           >
         </div>
       </slot>

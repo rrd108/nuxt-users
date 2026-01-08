@@ -2,7 +2,7 @@ import { useRuntimeConfig } from '#app'
 import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS, AUTHENTICATED_AUTO_ACCESS_ENDPOINTS } from '../constants'
 import { hasPermission, isWhitelisted } from '../utils/permissions'
 import { useAuthentication } from './useAuthentication'
-import type { ModuleOptions } from 'nuxt-users/utils'
+import type { RuntimeModuleOptions } from 'nuxt-users/utils'
 
 /**
  * Composable to get public paths and accessible paths for current user
@@ -10,7 +10,7 @@ import type { ModuleOptions } from 'nuxt-users/utils'
  */
 export const usePublicPaths = () => {
   const { public: { nuxtUsers } } = useRuntimeConfig()
-  const config = nuxtUsers as ModuleOptions
+  const config = nuxtUsers as RuntimeModuleOptions
   const apiBasePath = config.apiBasePath || '/api/nuxt-users'
   const { user } = useAuthentication()
 

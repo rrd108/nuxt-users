@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { ModuleOptions } from 'nuxt-users/utils'
+import type { RuntimeModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig, navigateTo } from '#imports'
 import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
 
@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>()
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
-const { apiBasePath } = nuxtUsers as ModuleOptions
+const { apiBasePath } = nuxtUsers as RuntimeModuleOptions
 
 const isLoading = ref(false)
 

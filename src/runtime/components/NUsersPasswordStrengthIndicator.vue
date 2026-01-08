@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRuntimeConfig } from '#app'
-import type { PasswordValidationResult, ModuleOptions } from 'nuxt-users/utils'
+import type { PasswordValidationResult, RuntimeModuleOptions } from 'nuxt-users/utils'
 import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
 
 const { t } = useNuxtUsersLocale()
@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { public: { nuxtUsers } } = useRuntimeConfig()
-const moduleOptions = nuxtUsers as ModuleOptions
+const moduleOptions = nuxtUsers as RuntimeModuleOptions
 
 const hasErrors = computed(() => (props.validationResult?.errors?.length || 0) > 0)
 const hasHints = computed(() => (props.validationResult?.hints?.length || 0) > 0)
@@ -39,7 +39,7 @@ const validationRules = computed(() => {
 
   const rules = []
 
-  if (moduleOptions.passwordValidation.minLength) {
+  if (moduleOptions.passwordValidation?.minLength) {
     const hasMinLength = props.password.length >= moduleOptions.passwordValidation.minLength
     rules.push({
       text: t('passwordStrength.minLength', [moduleOptions.passwordValidation.minLength]),
@@ -47,7 +47,7 @@ const validationRules = computed(() => {
     })
   }
 
-  if (moduleOptions.passwordValidation.requireUppercase) {
+  if (moduleOptions.passwordValidation?.requireUppercase) {
     const hasUppercase = /[A-Z]/.test(props.password)
     rules.push({
       text: t('passwordStrength.uppercase'),
@@ -55,7 +55,7 @@ const validationRules = computed(() => {
     })
   }
 
-  if (moduleOptions.passwordValidation.requireLowercase) {
+  if (moduleOptions.passwordValidation?.requireLowercase) {
     const hasLowercase = /[a-z]/.test(props.password)
     rules.push({
       text: t('passwordStrength.lowercase'),
@@ -63,7 +63,7 @@ const validationRules = computed(() => {
     })
   }
 
-  if (moduleOptions.passwordValidation.requireNumbers) {
+  if (moduleOptions.passwordValidation?.requireNumbers) {
     const hasNumbers = /\d/.test(props.password)
     rules.push({
       text: t('passwordStrength.number'),
@@ -71,7 +71,7 @@ const validationRules = computed(() => {
     })
   }
 
-  if (moduleOptions.passwordValidation.requireSpecialChars) {
+  if (moduleOptions.passwordValidation?.requireSpecialChars) {
     const hasSpecialChars = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(props.password)
     rules.push({
       text: t('passwordStrength.specialChar'),
