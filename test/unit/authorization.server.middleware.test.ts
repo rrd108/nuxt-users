@@ -186,7 +186,7 @@ describe('Auth Server Middleware', () => {
 
       // Configure handleUnauthenticatedRequest to call createError and throw
       const { handleUnauthenticatedRequest } = await import('../../src/runtime/server/utils')
-      vi.mocked(handleUnauthenticatedRequest).mockImplementation((event, isApiRoute, isMeEndpoint) => {
+      vi.mocked(handleUnauthenticatedRequest).mockImplementation((event, isApiRoute, _isMeEndpoint) => {
         if (isApiRoute) {
           const error = mockCreateError({ statusCode: 401, statusMessage: 'Unauthorized' })
           throw error
@@ -215,7 +215,7 @@ describe('Auth Server Middleware', () => {
       mockCreateError.mockReturnValue(mockError)
 
       // Configure handleInvalidToken to call createError and throw
-      vi.mocked(handleInvalidToken).mockImplementation((event, isApiRoute, isMeEndpoint) => {
+      vi.mocked(handleInvalidToken).mockImplementation((event, isApiRoute, _isMeEndpoint) => {
         if (isApiRoute) {
           const error = mockCreateError({ statusCode: 401, statusMessage: 'Unauthorized' })
           throw error

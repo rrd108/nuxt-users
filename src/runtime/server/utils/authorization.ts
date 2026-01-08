@@ -60,4 +60,3 @@ export const handleUnauthorizedRequest = (event: H3Event, user: UserWithoutPassw
   console.debug(`[Nuxt Users] authorization: ${event.path} User ${user.id} with role ${user.role} denied access - letting client handle page redirect`)
   return
 }
-

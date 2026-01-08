@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import type { ModuleOptions } from '../../src/types'
 import { defaultOptions } from '../../src/module'
-import type { PUBLIC_PAGES } from '~/src/runtime/constants'
 
 /**
  * Tests for Client-side Middleware OAuth Flow
