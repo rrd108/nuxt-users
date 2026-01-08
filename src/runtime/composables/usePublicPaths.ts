@@ -1,5 +1,5 @@
 import { useRuntimeConfig } from '#app'
-import { NO_AUTH_PATHS, NO_AUTH_API_PATHS } from '../constants'
+import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS, AUTHENTICATED_AUTO_ACCESS_ENDPOINTS } from '../constants'
 import { hasPermission, isWhitelisted } from '../utils/permissions'
 import { useAuthentication } from './useAuthentication'
 import type { ModuleOptions } from 'nuxt-users/utils'
@@ -20,10 +20,10 @@ export const usePublicPaths = () => {
    */
   const getPublicPaths = () => {
     // Built-in no-auth page paths
-    const noAuthPaths = [...NO_AUTH_PATHS]
+    const publicPages = [...PUBLIC_PAGES]
 
     // Built-in no-auth API paths (with base path prefix)
-    const noAuthApiPaths = NO_AUTH_API_PATHS.map(path => `${apiBasePath}${path}`)
+    const publicApiEndpoints = PUBLIC_API_ENDPOINTS.map(endpoint => `${endpoint.methods.join(', ')}: ${apiBasePath}${endpoint.path}`)
 
     // Custom whitelisted paths from configuration (truly public, no auth required)
     const whitelistedPaths = config.auth?.whitelist || []
@@ -34,8 +34,8 @@ export const usePublicPaths = () => {
       : null
 
     const allPublicPaths = [
-      ...noAuthPaths,
-      ...noAuthApiPaths,
+      ...publicPages,
+      ...publicApiEndpoints,
       ...whitelistedPaths
     ]
 
@@ -48,8 +48,8 @@ export const usePublicPaths = () => {
       all: allPublicPaths,
       // Categorized public paths
       builtIn: {
-        pages: noAuthPaths,
-        api: noAuthApiPaths
+        pages: publicPages,
+        api: publicApiEndpoints
       },
       whitelist: whitelistedPaths,
       customPasswordResetPath,
@@ -117,13 +117,13 @@ export const usePublicPaths = () => {
     }
 
     // Check built-in no-auth paths
-    if (NO_AUTH_PATHS.includes(path)) {
+    if (PUBLIC_PAGES.includes(path)) {
       return true
     }
 
-    // Check built-in no-auth API paths
-    const noAuthApiPaths = NO_AUTH_API_PATHS.map(p => `${apiBasePath}${p}`)
-    if (noAuthApiPaths.includes(path)) {
+    // Check built-in public API paths (no auth required)
+    const publicApiEndpoints = PUBLIC_API_ENDPOINTS.map(endpoint => `${endpoint.methods.join(', ')}: ${apiBasePath}${endpoint.path}`)
+    if (publicApiEndpoints.includes(path)) {
       return true
     }
 
@@ -137,8 +137,13 @@ export const usePublicPaths = () => {
       return true
     }
 
-    // If user is authenticated, check role-based permissions
+    // If user is authenticated, check auto-whitelisted endpoints and role-based permissions
     if (user.value) {
+      // Check auto-whitelisted endpoints for authenticated users
+      const autoWhitelistedApiEndpoints = AUTHENTICATED_AUTO_ACCESS_ENDPOINTS.map(endpoint => `${endpoint.methods.join(', ')}: ${apiBasePath}${endpoint.path}`)
+      if (autoWhitelistedApiEndpoints.includes(path)) {
+        return true
+      }
       return hasPermission(user.value.role, path, method, config.auth?.permissions || {})
     }
 
@@ -163,13 +168,13 @@ export const usePublicPaths = () => {
     }
 
     // Check built-in no-auth paths
-    if (NO_AUTH_PATHS.includes(path)) {
+    if (PUBLIC_PAGES.includes(path)) {
       return true
     }
 
-    // Check built-in no-auth API paths
-    const noAuthApiPaths = NO_AUTH_API_PATHS.map(p => `${apiBasePath}${p}`)
-    if (noAuthApiPaths.includes(path)) {
+    // Check built-in public API paths (no auth required)
+    const publicApiEndpoints = PUBLIC_API_ENDPOINTS.map(endpoint => `${endpoint.methods.join(', ')}: ${apiBasePath}${endpoint.path}`)
+    if (publicApiEndpoints.includes(path)) {
       return true
     }
 

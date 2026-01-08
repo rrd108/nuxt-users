@@ -4,26 +4,18 @@ import type { H3Event } from 'h3'
 import { defaultOptions } from '../../src/module'
 
 vi.mock('#imports', () => ({
-  useRuntimeConfig: mockUseRuntimeConfig
+  useRuntimeConfig: vi.fn()
 }))
 
-// Mock h3 functions
-const mockReadBody = vi.fn()
-const mockCreateError = vi.fn()
-const mockGetHeader = vi.fn()
-const mockDefineEventHandler = vi.fn(handler => handler)
-const mockUseRuntimeConfig = vi.fn()
-const mockSendPasswordResetLink = vi.fn()
-
 vi.mock('h3', () => ({
-  defineEventHandler: mockDefineEventHandler,
-  readBody: mockReadBody,
-  createError: mockCreateError,
-  getHeader: mockGetHeader
+  defineEventHandler: vi.fn(handler => handler),
+  readBody: vi.fn(),
+  createError: vi.fn(),
+  getHeader: vi.fn()
 }))
 
 vi.mock('../../src/runtime/server/services/password', () => ({
-  sendPasswordResetLink: mockSendPasswordResetLink
+  sendPasswordResetLink: vi.fn()
 }))
 
 // Import the forgot-password api endpoint after mocking
@@ -32,9 +24,27 @@ const forgotPasswordApiEndpoint = await import('../../src/runtime/server/api/nux
 describe('Forgot Password API Route', () => {
   let testOptions: ModuleOptions
   let mockEvent: H3Event
+  let mockReadBody: ReturnType<typeof vi.fn>
+  let mockCreateError: ReturnType<typeof vi.fn>
+  let mockGetHeader: ReturnType<typeof vi.fn>
+  let mockDefineEventHandler: ReturnType<typeof vi.fn>
+  let mockUseRuntimeConfig: ReturnType<typeof vi.fn>
+  let mockSendPasswordResetLink: ReturnType<typeof vi.fn>
 
   beforeEach(async () => {
     vi.clearAllMocks()
+
+    // Get the mocked functions
+    const h3 = await import('h3')
+    const imports = await import('#imports')
+    const passwordService = await import('../../src/runtime/server/services/password')
+
+    mockReadBody = h3.readBody as ReturnType<typeof vi.fn>
+    mockCreateError = h3.createError as ReturnType<typeof vi.fn>
+    mockGetHeader = h3.getHeader as ReturnType<typeof vi.fn>
+    mockDefineEventHandler = h3.defineEventHandler as ReturnType<typeof vi.fn>
+    mockUseRuntimeConfig = imports.useRuntimeConfig as ReturnType<typeof vi.fn>
+    mockSendPasswordResetLink = passwordService.sendPasswordResetLink as ReturnType<typeof vi.fn>
 
     // Mock test options
     testOptions = {

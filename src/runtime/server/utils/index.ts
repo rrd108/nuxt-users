@@ -8,3 +8,4 @@ export { createPasswordResetTokensTable } from './create-password-reset-tokens-t
 export { createMigrationsTable } from './create-migrations-table'
 export { runMigrations, getAppliedMigrations } from './migrate'
 export { createGoogleOAuth2Client, getGoogleAuthUrl, getGoogleUserFromCode, findOrCreateGoogleUser, createAuthTokenForUser, generateSecurePassword } from './google-oauth'
+export { handleUnauthenticatedRequest, handleInvalidToken, handleUnauthorizedRequest } from './authorization'

@@ -113,6 +113,10 @@ Authenticate a user with email and password.
 - `400 Bad Request`: Missing email or password
 - `401 Unauthorized`: Invalid credentials
 
+**Notes:**
+- No authentication required - this is a public endpoint
+- Sets an HTTP-only authentication cookie upon successful login
+
 ### Logout
 
 **Endpoint:** `DELETE /api/nuxt-users/session`
@@ -129,8 +133,23 @@ Logout the current user by removing their authentication token.
 ```
 
 **Notes:**
-- No authentication required (works with any valid token)
-- Invalidates the current session
+- No authentication required - accessible to everyone
+- If a valid token exists, it will be invalidated
+- Always clears the authentication cookie
+- Returns success even if no token was present
+
+## Public Endpoints Summary
+
+The following endpoints are **public** and do **not require authentication**:
+
+- `POST /api/nuxt-users/session` - Login
+- `DELETE /api/nuxt-users/session` - Logout
+- `POST /api/nuxt-users/password/forgot` - Request password reset
+- `POST /api/nuxt-users/password/reset` - Reset password
+- `POST /api/nuxt-users/register` - Register (if `/register` is whitelisted)
+- `GET /api/nuxt-users/confirm-email` - Email confirmation (if `/register` is whitelisted)
+
+All other endpoints require authentication and proper authorization based on user roles.
 
 ## User Management Endpoints
 

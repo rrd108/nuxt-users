@@ -547,7 +547,14 @@ nuxtUsers: {
 }
 ```
 
-**Note:** Login (`/login`), password reset page (default `/reset-password` or your custom `passwordResetUrl`), and password reset API endpoints are always whitelisted automatically.
+**Note:** The following are always accessible without authentication:
+- Login page (`/login`)
+- Password reset page (default `/reset-password` or your custom `passwordResetUrl`)
+- Public API endpoints:
+  - `POST /api/nuxt-users/session` (login)
+  - `DELETE /api/nuxt-users/session` (logout)
+  - `POST /api/nuxt-users/password/forgot` (request password reset)
+  - `POST /api/nuxt-users/password/reset` (reset password)
 
 ### Role-Based Access Control (RBAC)
 

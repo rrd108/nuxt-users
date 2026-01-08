@@ -84,9 +84,9 @@ describe('usePublicPaths', () => {
 
       expect(result.builtIn.pages).toEqual(['/login', '/reset-password'])
       expect(result.builtIn.api).toEqual([
-        '/api/nuxt-users/session',
-        '/api/nuxt-users/password/forgot',
-        '/api/nuxt-users/password/reset'
+        'POST: /api/nuxt-users/password/forgot',
+        'POST: /api/nuxt-users/password/reset',
+        'POST, DELETE: /api/nuxt-users/session',
       ])
       expect(result.whitelist).toEqual(['/about', '/contact'])
       expect(result.apiBasePath).toBe('/api/nuxt-users')
@@ -107,7 +107,7 @@ describe('usePublicPaths', () => {
 
       expect(isPublicPath('/login')).toBe(true)
       expect(isPublicPath('/reset-password')).toBe(true)
-      expect(isPublicPath('/api/nuxt-users/session')).toBe(true)
+      expect(isPublicPath('GET, PATCH: /api/nuxt-users/me')).toBe(false)
     })
 
     it('should identify whitelisted paths as public', () => {

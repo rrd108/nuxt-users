@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import type { ModuleOptions } from '../../src/types'
 import { defaultOptions } from '../../src/module'
+import type { PUBLIC_PAGES } from '~/src/runtime/constants'
 
 /**
  * Tests for Client-side Middleware OAuth Flow
@@ -30,8 +31,12 @@ vi.mock('../../src/runtime/utils/permissions', () => ({
 }))
 
 vi.mock('../../src/runtime/constants', () => ({
-  NO_AUTH_PATHS: ['/login', '/reset-password'],
-  NO_AUTH_API_PATHS: ['/session', '/password/forgot', '/password/reset']
+  PUBLIC_PAGES: ['/login', '/reset-password'],
+  AUTHENTICATED_AUTO_ACCESS_ENDPOINTS: [
+    { path: '/password/forgot', methods: ['POST'] },
+    { path: '/password/reset', methods: ['POST'] },
+    { path: '/session', methods: ['POST', 'DELETE'] }
+  ]
 }))
 
 const authorizationMiddleware = await import('../../src/runtime/middleware/authorization.client')

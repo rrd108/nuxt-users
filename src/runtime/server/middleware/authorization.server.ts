@@ -1,28 +1,37 @@
-import { defineEventHandler, getCookie, createError } from 'h3'
+import { defineEventHandler, getCookie } from 'h3'
 import { useRuntimeConfig } from '#imports'
-import { getCurrentUserFromToken } from '../utils'
+import { getCurrentUserFromToken, handleUnauthenticatedRequest, handleInvalidToken, handleUnauthorizedRequest } from '../utils'
 import { hasPermission, isWhitelisted } from '../../utils/permissions'
 import type { ModuleOptions } from 'nuxt-users/utils'
-import { NO_AUTH_PATHS, NO_AUTH_API_PATHS } from '../../constants'
+import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS, AUTHENTICATED_AUTO_ACCESS_ENDPOINTS } from '../../constants'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
   const options = nuxtUsers as ModuleOptions
   const base = options.apiBasePath || '/api/nuxt-users'
+  const isApiRoute = event.path.startsWith('/api/')
+  const isMeEndpoint = event.path === `${base}/me`
+
+  // ============================================
+  // Early exits: Skip non-applicable routes
+  // ============================================
 
   // Only apply authentication to pages and API routes
   const isPageOrApiRoute = !event.path.includes('.')
     && (event.path === '/'
-      || event.path.startsWith('/api/')
+      || isApiRoute
       || !event.path.startsWith('/_')) // nuxt internals
 
   if (!isPageOrApiRoute) {
     return
   }
 
-  // internal no-auth paths (e.g., /login, /reset-password) and custom password reset URL
-  const noAuthPaths = [...NO_AUTH_PATHS]
-  // Add custom password reset URL if different from default
+  // ============================================
+  // Public access checks (no authentication required)
+  // ============================================
+
+  // Internal no-auth paths (e.g., /login, /reset-password) and custom password reset URL
+  const noAuthPaths = [...PUBLIC_PAGES]
   if (options.passwordResetUrl && options.passwordResetUrl !== '/reset-password') {
     noAuthPaths.push(options.passwordResetUrl)
   }
@@ -32,55 +41,35 @@ export default defineEventHandler(async (event) => {
     return
   }
 
-  // Always-allowed API endpoints for auth flows
-  const openApiPaths = NO_AUTH_API_PATHS.map(path => `${base}${path}`)
-  if (openApiPaths.includes(event.path)) {
-    return
+  // Public API endpoints (no authentication required)
+  for (const endpoint of PUBLIC_API_ENDPOINTS) {
+    if (event.path === `${base}${endpoint.path}` && endpoint.methods.includes(event.method)) {
+      console.debug(`[Nuxt Users] authorization: Public API endpoint ${event.path} (${event.method})`)
+      return
+    }
   }
 
-  // whitelisted paths are allowed to access without authentication
+  // Whitelisted paths are allowed to access without authentication
   if (isWhitelisted(event.path, options.auth.whitelist)) {
     console.debug(`[Nuxt Users] authorization: whitelisted: ${event.path}`)
     return
   }
 
-  // if the path is not whitelisted, check if the user is authenticated
-  const token = getCookie(event, 'auth_token')
-  const isMeEndpoint = event.path === `${base}/me`
+  // ============================================
+  // Authentication checks
+  // ============================================
 
+  const token = getCookie(event, 'auth_token')
+
+  // Handle missing token
   if (!token) {
-    if (event.path.startsWith('/api/')) {
-      // /me endpoint is used to check auth status, so 401s are expected - use debug instead of warn
-      if (isMeEndpoint) {
-        console.debug(`[Nuxt Users] authorization: ${event.path} No token found - expected for auth check`)
-      }
-      else {
-        console.warn(`[Nuxt Users] authorization: ${event.path} No token found - API request rejected`)
-      }
-      throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
-    }
-    if (!event.path.startsWith('/api/')) {
-      console.debug(`[Nuxt Users] authorization: ${event.path} No token found - letting client handle page redirect`)
-      return
-    }
+    return handleUnauthenticatedRequest(event, isApiRoute, isMeEndpoint)
   }
 
-  const user = await getCurrentUserFromToken(token!, options)
+  // Validate token and get user
+  const user = await getCurrentUserFromToken(token, options)
   if (!user) {
-    if (event.path.startsWith('/api/')) {
-      // /me endpoint is used to check auth status, so 401s are expected - use debug instead of warn
-      if (isMeEndpoint) {
-        console.debug(`[Nuxt Users] authorization: ${event.path} Invalid token - expected for auth check`)
-      }
-      else {
-        console.warn(`[Nuxt Users] authorization: ${event.path} Invalid token - API request rejected`)
-      }
-      throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
-    }
-    if (!event.path.startsWith('/api/')) {
-      console.debug(`[Nuxt Users] authorization: ${event.path} Invalid token - letting client handle page redirect`)
-      return
-    }
+    return handleInvalidToken(event, isApiRoute, isMeEndpoint)
   }
 
   // Store authenticated user in event context for reuse by handlers
@@ -91,24 +80,29 @@ export default defineEventHandler(async (event) => {
   event.context.nuxtUsers = event.context.nuxtUsers || {}
   event.context.nuxtUsers.user = user
 
-  // Auto-whitelist /me endpoint for any authenticated user
-  if (event.path === `${base}/me`) {
-    console.debug(`[Nuxt Users] authorization: Auto-whitelisted /me endpoint for authenticated user ${user!.id}`)
-    return
-  }
+  // ============================================
+  // Auto-whitelisted endpoints for authenticated users
+  // ============================================
 
-  // Check role-based permissions
-  if (!hasPermission(user!.role, event.path, event.method, options.auth.permissions)) {
-    if (event.path.startsWith('/api/')) {
-      console.warn(`[Nuxt Users] authorization: ${event.path} User ${user!.id} with role ${user!.role} denied access - API request rejected`)
-      throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
-    }
-    if (!event.path.startsWith('/api/')) {
-      console.debug(`[Nuxt Users] authorization: ${event.path} User ${user!.id} with role ${user!.role} denied access - letting client handle page redirect`)
+  for (const endpoint of AUTHENTICATED_AUTO_ACCESS_ENDPOINTS) {
+    if (event.path === `${base}${endpoint.path}` && endpoint.methods.includes(event.method)) {
+      console.debug(`[Nuxt Users] authorization: Auto-whitelisted endpoint ${event.path} for authenticated user ${user.id}`)
       return
     }
   }
 
-  console.debug(`[Nuxt Users] authorization: Authenticated request to ${event.path} for ${user!.id} with role ${user!.role}`)
+  // ============================================
+  // Permission checks
+  // ============================================
+
+  if (!hasPermission(user.role, event.path, event.method, options.auth.permissions)) {
+    return handleUnauthorizedRequest(event, user, isApiRoute)
+  }
+
+  // ============================================
+  // Request authorized
+  // ============================================
+
+  console.debug(`[Nuxt Users] authorization: Authenticated request to ${event.path} for ${user.id} with role ${user.role}`)
   return
 })

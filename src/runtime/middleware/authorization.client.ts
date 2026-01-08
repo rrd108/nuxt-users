@@ -1,7 +1,7 @@
 import { defineNuxtRouteMiddleware, navigateTo, useRuntimeConfig } from '#app'
 import { useAuthentication } from '../composables/useAuthentication'
 import { hasPermission, isWhitelisted } from '../utils/permissions'
-import { NO_AUTH_PATHS, NO_AUTH_API_PATHS } from '../constants'
+import { PUBLIC_PAGES, AUTHENTICATED_AUTO_ACCESS_ENDPOINTS } from '../constants'
 import type { ModuleOptions } from 'nuxt-users/utils'
 
 export default defineNuxtRouteMiddleware(async (to) => {
@@ -10,13 +10,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const base = publicOptions.apiBasePath || '/api/nuxt-users'
 
   // internal no-auth paths (e.g., /login)
-  if (NO_AUTH_PATHS.includes(to.path)) {
+  if (PUBLIC_PAGES.includes(to.path)) {
     console.log(`[Nuxt Users] client.middleware.auth.global: ${to.path}`)
     return
   }
 
   // Always-allowed API endpoints for auth flows
-  const openApiPaths = NO_AUTH_API_PATHS.map(path => `${base}${path}`)
+  const openApiPaths = AUTHENTICATED_AUTO_ACCESS_ENDPOINTS.map(endpoint => `${endpoint.methods.join(', ')}: ${base}${endpoint.path}`)
   if (openApiPaths.includes(to.path)) {
     return
   }

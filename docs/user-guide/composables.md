@@ -151,10 +151,10 @@ const publicPaths = getPublicPaths()
 console.log(publicPaths)
 /*
 {
-  all: ['/login', '/reset-password', '/api/nuxt-users/session', '/about'],
+  all: ['/login', '/reset-password', '/api/nuxt-users/session', '/api/nuxt-users/password/forgot', '/api/nuxt-users/password/reset', '/about'],
   builtIn: {
     pages: ['/login', '/reset-password'],
-    api: ['/api/nuxt-users/session', '/api/nuxt-users/password/forgot', '/api/nuxt-users/password/reset']
+    api: ['POST /api/nuxt-users/session', 'DELETE /api/nuxt-users/session', 'POST /api/nuxt-users/password/forgot', 'POST /api/nuxt-users/password/reset']
   },
   whitelist: ['/about', '/contact'], // From your nuxt.config.ts
   customPasswordResetPath: null,

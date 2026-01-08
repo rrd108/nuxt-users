@@ -22,7 +22,10 @@ vi.mock('#imports', () => ({
 const serverAuthMiddleware = await import('../../src/runtime/server/middleware/authorization.server')
 
 vi.mock('../../src/runtime/server/utils', () => ({
-  getCurrentUserFromToken: vi.fn()
+  getCurrentUserFromToken: vi.fn(),
+  handleUnauthenticatedRequest: vi.fn(),
+  handleUnauthorizedRequest: vi.fn(),
+  handleInvalidToken: vi.fn()
 }))
 
 describe('Auth Server Middleware', () => {
@@ -181,9 +184,19 @@ describe('Auth Server Middleware', () => {
       const mockError = new Error('Unauthorized')
       mockCreateError.mockReturnValue(mockError)
 
+      // Configure handleUnauthenticatedRequest to call createError and throw
+      const { handleUnauthenticatedRequest } = await import('../../src/runtime/server/utils')
+      vi.mocked(handleUnauthenticatedRequest).mockImplementation((event, isApiRoute, isMeEndpoint) => {
+        if (isApiRoute) {
+          const error = mockCreateError({ statusCode: 401, statusMessage: 'Unauthorized' })
+          throw error
+        }
+      })
+
       await expect(serverAuthMiddleware.default(event)).rejects.toThrow('Unauthorized')
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
+      expect(handleUnauthenticatedRequest).toHaveBeenCalledWith(event, true, true)
       expect(mockCreateError).toHaveBeenCalledWith({ statusCode: 401, statusMessage: 'Unauthorized' })
     })
 
@@ -194,17 +207,26 @@ describe('Auth Server Middleware', () => {
       mockGetCookie.mockReturnValue('invalid-token')
 
       // Mock getCurrentUserFromToken to return null (invalid user)
-      const { getCurrentUserFromToken } = await import('../../src/runtime/server/utils')
+      const { getCurrentUserFromToken, handleInvalidToken } = await import('../../src/runtime/server/utils')
       vi.mocked(getCurrentUserFromToken).mockResolvedValue(null)
 
       // Mock createError to return an error object
       const mockError = new Error('Unauthorized')
       mockCreateError.mockReturnValue(mockError)
 
+      // Configure handleInvalidToken to call createError and throw
+      vi.mocked(handleInvalidToken).mockImplementation((event, isApiRoute, isMeEndpoint) => {
+        if (isApiRoute) {
+          const error = mockCreateError({ statusCode: 401, statusMessage: 'Unauthorized' })
+          throw error
+        }
+      })
+
       await expect(serverAuthMiddleware.default(event)).rejects.toThrow('Unauthorized')
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('invalid-token', mockOptions)
+      expect(handleInvalidToken).toHaveBeenCalledWith(event, true, true)
       expect(mockCreateError).toHaveBeenCalledWith({ statusCode: 401, statusMessage: 'Unauthorized' })
     })
 
@@ -215,7 +237,7 @@ describe('Auth Server Middleware', () => {
       mockGetCookie.mockReturnValue('valid-token')
 
       // Mock getCurrentUserFromToken to return a regular user
-      const { getCurrentUserFromToken } = await import('../../src/runtime/server/utils')
+      const { getCurrentUserFromToken, handleUnauthorizedRequest } = await import('../../src/runtime/server/utils')
       const mockUser = {
         id: 2,
         email: 'user@example.com',
@@ -231,10 +253,19 @@ describe('Auth Server Middleware', () => {
       const mockError = new Error('Forbidden')
       mockCreateError.mockReturnValue(mockError)
 
+      // Configure handleUnauthorizedRequest to call createError and throw
+      vi.mocked(handleUnauthorizedRequest).mockImplementation((event, user, isApiRoute) => {
+        if (isApiRoute) {
+          const error = mockCreateError({ statusCode: 403, statusMessage: 'Forbidden' })
+          throw error
+        }
+      })
+
       await expect(serverAuthMiddleware.default(event)).rejects.toThrow('Forbidden')
 
       expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
       expect(getCurrentUserFromToken).toHaveBeenCalledWith('valid-token', mockOptions)
+      expect(handleUnauthorizedRequest).toHaveBeenCalledWith(event, mockUser, true)
       expect(mockCreateError).toHaveBeenCalledWith({ statusCode: 403, statusMessage: 'Forbidden' })
     })
   })
