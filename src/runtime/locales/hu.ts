@@ -68,6 +68,24 @@ const huBase: LocaleMessages = {
       lowercase: 'Tartalmaz kisbetűt',
       numbers: 'Tartalmaz számot',
       specialChars: 'Tartalmaz speciális karaktert'
+    },
+    errors: {
+      minLength: 'A jelszónak legalább {0} karakter hosszúnak kell lennie',
+      uppercase: 'A jelszónak tartalmaznia kell legalább egy nagybetűt',
+      lowercase: 'A jelszónak tartalmaznia kell legalább egy kisbetűt',
+      numbers: 'A jelszónak tartalmaznia kell legalább egy számot',
+      specialChars: 'A jelszónak tartalmaznia kell legalább egy speciális karaktert',
+      common: 'Ez a jelszó túl gyakori. Kérjük, válassz egyedibbet'
+    },
+    hints: {
+      minLength: 'Használj legalább {0} karaktert',
+      length12: 'Használj 12 vagy több karaktert a nagyobb biztonság érdekében',
+      uppercase: 'Adj hozzá egy nagybetűt (A-Z)',
+      lowercase: 'Adj hozzá egy kisbetűt (a-z)',
+      numbers: 'Adj hozzá egy számot (0-9)',
+      specialChars: 'Adj hozzá egy speciális karaktert (pl. !@#$%)',
+      common: 'Kerüld a gyakori jelszavakat és neveket',
+      mix: 'Használj vegyesen nagybetűket, kisbetűket, számokat és speciális karaktereket'
     }
   },
   profile: {

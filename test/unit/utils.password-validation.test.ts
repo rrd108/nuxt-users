@@ -73,8 +73,8 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         const result = validatePassword('short', { minLength: 8 })
 
         expect(result.isValid).toBe(false)
-        expect(result.errors).toContain('Password must be at least 8 characters long')
-        expect(result.hints).toContain('Use at least 8 characters')
+        expect(result.errors).toContain('passwordStrength.errors.minLength|8')
+        expect(result.hints).toContain('passwordStrength.hints.minLength|8')
       })
 
       it('should pass when password meets minimum length', () => {
@@ -88,19 +88,19 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         })
 
         expect(result.isValid).toBe(true)
-        expect(result.errors).not.toContain('Password must be at least 8 characters long')
+        expect(result.errors).not.toContain('passwordStrength.errors.minLength|8')
       })
 
       it('should suggest longer password for better security', () => {
         const result = validatePassword('password123', { minLength: 8 })
 
-        expect(result.hints).toContain('Use 12 or more characters for extra security')
+        expect(result.hints).toContain('passwordStrength.hints.length12')
       })
 
       it('should not suggest longer password when already 12+ characters', () => {
         const result = validatePassword('verylongpassword123', { minLength: 8 })
 
-        expect(result.hints).not.toContain('Use 12 or more characters for extra security')
+        expect(result.hints).not.toContain('passwordStrength.hints.length12')
       })
     })
 
@@ -109,8 +109,8 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         const result = validatePassword('password123', { requireUppercase: true })
 
         expect(result.isValid).toBe(false)
-        expect(result.errors).toContain('Password must contain at least one uppercase letter')
-        expect(result.hints).toContain('Add an uppercase letter (A-Z)')
+        expect(result.errors).toContain('passwordStrength.errors.uppercase')
+        expect(result.hints).toContain('passwordStrength.hints.uppercase')
       })
 
       it('should pass when uppercase is required and present', () => {
@@ -123,7 +123,7 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         })
 
         expect(result.isValid).toBe(true)
-        expect(result.errors).not.toContain('Password must contain at least one uppercase letter')
+        expect(result.errors).not.toContain('passwordStrength.errors.uppercase')
       })
 
       it('should pass when uppercase is not required', () => {
@@ -136,7 +136,7 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         })
 
         expect(result.isValid).toBe(true)
-        expect(result.errors).not.toContain('Password must contain at least one uppercase letter')
+        expect(result.errors).not.toContain('passwordStrength.errors.uppercase')
       })
     })
 
@@ -145,8 +145,8 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         const result = validatePassword('PASSWORD123', { requireLowercase: true })
 
         expect(result.isValid).toBe(false)
-        expect(result.errors).toContain('Password must contain at least one lowercase letter')
-        expect(result.hints).toContain('Add a lowercase letter (a-z)')
+        expect(result.errors).toContain('passwordStrength.errors.lowercase')
+        expect(result.hints).toContain('passwordStrength.hints.lowercase')
       })
 
       it('should pass when lowercase is required and present', () => {
@@ -159,7 +159,7 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         })
 
         expect(result.isValid).toBe(true)
-        expect(result.errors).not.toContain('Password must contain at least one lowercase letter')
+        expect(result.errors).not.toContain('passwordStrength.errors.lowercase')
       })
 
       it('should pass when lowercase is not required', () => {
@@ -172,7 +172,7 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         })
 
         expect(result.isValid).toBe(true)
-        expect(result.errors).not.toContain('Password must contain at least one lowercase letter')
+        expect(result.errors).not.toContain('passwordStrength.errors.lowercase')
       })
     })
 
@@ -181,8 +181,8 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         const result = validatePassword('Password', { requireNumbers: true })
 
         expect(result.isValid).toBe(false)
-        expect(result.errors).toContain('Password must contain at least one number')
-        expect(result.hints).toContain('Add a number (0-9)')
+        expect(result.errors).toContain('passwordStrength.errors.numbers')
+        expect(result.hints).toContain('passwordStrength.hints.numbers')
       })
 
       it('should pass when numbers are required and present', () => {
@@ -195,7 +195,7 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         })
 
         expect(result.isValid).toBe(true)
-        expect(result.errors).not.toContain('Password must contain at least one number')
+        expect(result.errors).not.toContain('passwordStrength.errors.numbers')
       })
 
       it('should pass when numbers are not required', () => {
@@ -208,7 +208,7 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         })
 
         expect(result.isValid).toBe(true)
-        expect(result.errors).not.toContain('Password must contain at least one number')
+        expect(result.errors).not.toContain('passwordStrength.errors.numbers')
       })
     })
 
@@ -217,8 +217,8 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         const result = validatePassword('Password123', { requireSpecialChars: true })
 
         expect(result.isValid).toBe(false)
-        expect(result.errors).toContain('Password must contain at least one special character')
-        expect(result.hints).toContain('Add a special character (e.g. !@#$%)')
+        expect(result.errors).toContain('passwordStrength.errors.specialChars')
+        expect(result.hints).toContain('passwordStrength.hints.specialChars')
       })
 
       it('should pass when special characters are required and present', () => {
@@ -231,7 +231,7 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         })
 
         expect(result.isValid).toBe(true)
-        expect(result.errors).not.toContain('Password must contain at least one special character')
+        expect(result.errors).not.toContain('passwordStrength.errors.specialChars')
       })
 
       it('should pass when special characters are not required', () => {
@@ -244,7 +244,7 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         })
 
         expect(result.isValid).toBe(true)
-        expect(result.errors).not.toContain('Password must contain at least one special character')
+        expect(result.errors).not.toContain('passwordStrength.errors.specialChars')
       })
 
       it('should recognize various special characters', () => {
@@ -268,15 +268,15 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         const result = validatePassword('password', { preventCommonPasswords: true })
 
         expect(result.isValid).toBe(false)
-        expect(result.errors).toContain('Password is too common. Please choose a more unique password')
-        expect(result.hints).toContain('Avoid common passwords or names')
+        expect(result.errors).toContain('passwordStrength.errors.common')
+        expect(result.hints).toContain('passwordStrength.hints.common')
       })
 
       it('should pass when password is not in common passwords list', () => {
         const result = validatePassword('uniquePassword123!', { preventCommonPasswords: true })
 
         expect(result.isValid).toBe(true)
-        expect(result.errors).not.toContain('Password is too common. Please choose a more unique password')
+        expect(result.errors).not.toContain('passwordStrength.errors.common')
       })
 
       it('should pass when common password prevention is disabled', () => {
@@ -289,14 +289,14 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         })
 
         expect(result.isValid).toBe(true)
-        expect(result.errors).not.toContain('Password is too common. Please choose a more unique password')
+        expect(result.errors).not.toContain('passwordStrength.errors.common')
       })
 
       it('should be case insensitive for common passwords', () => {
         const result = validatePassword('PASSWORD', { preventCommonPasswords: true })
 
         expect(result.isValid).toBe(false)
-        expect(result.errors).toContain('Password is too common. Please choose a more unique password')
+        expect(result.errors).toContain('passwordStrength.errors.common')
       })
     })
 
@@ -394,7 +394,7 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
         const result = validatePassword('', { minLength: 8 })
 
         expect(result.isValid).toBe(false)
-        expect(result.errors).toContain('Password must be at least 8 characters long')
+        expect(result.errors).toContain('passwordStrength.errors.minLength|8')
         expect(result.score).toBe(0)
       })
 
@@ -514,10 +514,10 @@ describe('Password Validation Utilities (src/utils/password-validation.ts)', () 
 
       expect(result.isValid).toBe(false)
       expect(result.hints.length).toBeGreaterThan(0)
-      expect(result.hints).toContain('Add an uppercase letter (A-Z)')
-      expect(result.hints).toContain('Add a number (0-9)')
-      expect(result.hints).toContain('Add a special character (e.g. !@#$%)')
-      expect(result.hints).toContain('Avoid common passwords or names')
+      expect(result.hints).toContain('passwordStrength.hints.uppercase')
+      expect(result.hints).toContain('passwordStrength.hints.numbers')
+      expect(result.hints).toContain('passwordStrength.hints.specialChars')
+      expect(result.hints).toContain('passwordStrength.hints.common')
     })
   })
 })

@@ -81,6 +81,24 @@ export const en: LocaleMessages = {
       numbers: 'Contains number',
       specialChars: 'Contains special character'
     },
+    errors: {
+      minLength: 'Password must be at least {0} characters long',
+      uppercase: 'Password must contain at least one uppercase letter',
+      lowercase: 'Password must contain at least one lowercase letter',
+      numbers: 'Password must contain at least one number',
+      specialChars: 'Password must contain at least one special character',
+      common: 'Password is too common. Please choose a more unique password'
+    },
+    hints: {
+      minLength: 'Use at least {0} characters',
+      length12: 'Use 12 or more characters for extra security',
+      uppercase: 'Add an uppercase letter (A-Z)',
+      lowercase: 'Add a lowercase letter (a-z)',
+      numbers: 'Add a number (0-9)',
+      specialChars: 'Add a special character (e.g. !@#$%)',
+      common: 'Avoid common passwords or names',
+      mix: 'Use a mix of uppercase, lowercase, numbers, and special characters'
+    },
     hintsTitle: 'How to make your password stronger?'
   },
   profile: {

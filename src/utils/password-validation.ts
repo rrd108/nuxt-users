@@ -60,20 +60,20 @@ export const validatePassword = (
 
   // Check minimum length
   if (password.length < config.minLength) {
-    errors.push(`Password must be at least ${config.minLength} characters long`)
-    hints.push(`Use at least ${config.minLength} characters`)
+    errors.push(`passwordStrength.errors.minLength|${config.minLength}`)
+    hints.push(`passwordStrength.hints.minLength|${config.minLength}`)
   }
   if (password.length >= config.minLength) {
     score += 20
     if (password.length < 12) {
-      hints.push('Use 12 or more characters for extra security')
+      hints.push('passwordStrength.hints.length12')
     }
   }
 
   // Check for uppercase letters
   if (config.requireUppercase && !/[A-Z]/.test(password)) {
-    errors.push('Password must contain at least one uppercase letter')
-    hints.push('Add an uppercase letter (A-Z)')
+    errors.push('passwordStrength.errors.uppercase')
+    hints.push('passwordStrength.hints.uppercase')
   }
   if (/[A-Z]/.test(password)) {
     score += 15
@@ -81,8 +81,8 @@ export const validatePassword = (
 
   // Check for lowercase letters
   if (config.requireLowercase && !/[a-z]/.test(password)) {
-    errors.push('Password must contain at least one lowercase letter')
-    hints.push('Add a lowercase letter (a-z)')
+    errors.push('passwordStrength.errors.lowercase')
+    hints.push('passwordStrength.hints.lowercase')
   }
   if (/[a-z]/.test(password)) {
     score += 15
@@ -90,8 +90,8 @@ export const validatePassword = (
 
   // Check for numbers
   if (config.requireNumbers && !/\d/.test(password)) {
-    errors.push('Password must contain at least one number')
-    hints.push('Add a number (0-9)')
+    errors.push('passwordStrength.errors.numbers')
+    hints.push('passwordStrength.hints.numbers')
   }
   if (/\d/.test(password)) {
     score += 15
@@ -99,8 +99,8 @@ export const validatePassword = (
 
   // Check for special characters
   if (config.requireSpecialChars && !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
-    errors.push('Password must contain at least one special character')
-    hints.push('Add a special character (e.g. !@#$%)')
+    errors.push('passwordStrength.errors.specialChars')
+    hints.push('passwordStrength.hints.specialChars')
   }
   if (/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
     score += 15
@@ -108,8 +108,8 @@ export const validatePassword = (
 
   // Check for common passwords
   if (config.preventCommonPasswords && COMMON_PASSWORDS.includes(password.toLowerCase())) {
-    errors.push('Password is too common. Please choose a more unique password')
-    hints.push('Avoid common passwords or names')
+    errors.push('passwordStrength.errors.common')
+    hints.push('passwordStrength.hints.common')
   }
 
   // Length bonus
@@ -132,7 +132,7 @@ export const validatePassword = (
   }
   if (complexityTypes >= 3 && complexityTypes < 4) {
     score += 5
-    hints.push('Use a mix of uppercase, lowercase, numbers, and special characters')
+    hints.push('passwordStrength.hints.mix')
   }
 
   // Determine strength level

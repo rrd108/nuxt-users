@@ -42,7 +42,7 @@ const validationRules = computed(() => {
   if (moduleOptions.passwordValidation?.minLength) {
     const hasMinLength = props.password.length >= moduleOptions.passwordValidation.minLength
     rules.push({
-      text: t('passwordStrength.minLength', [moduleOptions.passwordValidation.minLength]),
+      text: t('passwordStrength.requirements.minLength', [moduleOptions.passwordValidation.minLength]),
       passed: hasMinLength
     })
   }
@@ -50,7 +50,7 @@ const validationRules = computed(() => {
   if (moduleOptions.passwordValidation?.requireUppercase) {
     const hasUppercase = /[A-Z]/.test(props.password)
     rules.push({
-      text: t('passwordStrength.uppercase'),
+      text: t('passwordStrength.requirements.uppercase'),
       passed: hasUppercase
     })
   }
@@ -58,7 +58,7 @@ const validationRules = computed(() => {
   if (moduleOptions.passwordValidation?.requireLowercase) {
     const hasLowercase = /[a-z]/.test(props.password)
     rules.push({
-      text: t('passwordStrength.lowercase'),
+      text: t('passwordStrength.requirements.lowercase'),
       passed: hasLowercase
     })
   }
@@ -66,7 +66,7 @@ const validationRules = computed(() => {
   if (moduleOptions.passwordValidation?.requireNumbers) {
     const hasNumbers = /\d/.test(props.password)
     rules.push({
-      text: t('passwordStrength.number'),
+      text: t('passwordStrength.requirements.numbers'),
       passed: hasNumbers
     })
   }
@@ -74,13 +74,23 @@ const validationRules = computed(() => {
   if (moduleOptions.passwordValidation?.requireSpecialChars) {
     const hasSpecialChars = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(props.password)
     rules.push({
-      text: t('passwordStrength.specialChar'),
+      text: t('passwordStrength.requirements.specialChars'),
       passed: hasSpecialChars
     })
   }
 
   return rules
 })
+
+const resolveTranslation = (message: string) => {
+  if (!message) return ''
+  if (message.includes('|')) {
+    const [key, paramStr] = message.split('|')
+    const params = paramStr ? paramStr.split(',') : []
+    return t(key, params)
+  }
+  return t(message)
+}
 </script>
 
 <template>
@@ -107,10 +117,10 @@ const validationRules = computed(() => {
             : validationResult?.strength === 'strong' ? '#28a745' : '#6c757d',
       }"
     >
-      {{ validationResult?.strength === 'weak' ? (props.weakLabel || t('passwordStrength.weak'))
-        : validationResult?.strength === 'medium' ? (props.mediumLabel || t('passwordStrength.medium'))
-          : validationResult?.strength === 'strong' ? (props.strongLabel || t('passwordStrength.strong'))
-            : (props.unknownLabel || t('passwordStrength.unknown')) }}
+      {{ validationResult?.strength === 'weak' ? (props.weakLabel || t('passwordStrength.strength.weak'))
+        : validationResult?.strength === 'medium' ? (props.mediumLabel || t('passwordStrength.strength.medium'))
+          : validationResult?.strength === 'strong' ? (props.strongLabel || t('passwordStrength.strength.strong'))
+            : (props.unknownLabel || t('passwordStrength.strength.unknown')) }}
       ({{ validationResult?.score || 0 }}%)
     </span>
   </div>
@@ -150,7 +160,7 @@ const validationRules = computed(() => {
       :key="String(error)"
       class="n-users-error-text"
     >
-      {{ error }}
+      {{ resolveTranslation(error) }}
     </small>
   </div>
 
@@ -168,7 +178,7 @@ const validationRules = computed(() => {
         :key="'hint-' + hint"
         class="n-users-hint-item n-users-list-item"
       >
-        {{ hint }}
+        {{ resolveTranslation(hint) }}
       </li>
     </ul>
   </div>

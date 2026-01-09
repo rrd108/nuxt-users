@@ -341,7 +341,7 @@ describe('Reset Password API Route', () => {
     // Mock password validation to fail
     mockValidatePassword.mockReturnValue({
       isValid: false,
-      errors: ['Password must be at least 8 characters long', 'Password must contain at least one uppercase letter']
+      errors: ['passwordStrength.errors.minLength|8', 'passwordStrength.errors.uppercase']
     })
 
     // Mock createError to throw an error
@@ -365,7 +365,7 @@ describe('Reset Password API Route', () => {
     expect(mockValidatePassword).toHaveBeenCalledWith(validData.password, mockPasswordOptions)
     expect(mockCreateError).toHaveBeenCalledWith({
       statusCode: 400,
-      statusMessage: 'Password validation failed: Password must be at least 8 characters long, Password must contain at least one uppercase letter'
+      statusMessage: 'Password validation failed: passwordStrength.errors.minLength|8, passwordStrength.errors.uppercase'
     })
   })
 
