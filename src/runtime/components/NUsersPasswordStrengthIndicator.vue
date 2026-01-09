@@ -85,7 +85,7 @@ const validationRules = computed(() => {
 const resolveTranslation = (message: string) => {
   if (!message) return ''
   if (message.includes('|')) {
-    const [key, paramStr] = message.split('|')
+    const [key = '', paramStr] = message.split('|')
     const params = paramStr ? paramStr.split(',') : []
     return t(key, params)
   }
