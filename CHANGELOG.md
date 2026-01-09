@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v1.40.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.40.1...v1.40.2)
+
+### 🩹 Fixes
+
+- Duplicate import warnings closes #158 ([#158](https://github.com/rrd108/nuxt-users/issues/158))
+- Linting errors ([1c258c6](https://github.com/rrd108/nuxt-users/commit/1c258c6))
+- Include HTTP method in authz logs ([da75bb4](https://github.com/rrd108/nuxt-users/commit/da75bb4))
+- Type errors ([3a2d74d](https://github.com/rrd108/nuxt-users/commit/3a2d74d))
+- Component to handle new auth list format ([9b9dbfa](https://github.com/rrd108/nuxt-users/commit/9b9dbfa))
+- Enforces npm token for release ([2a3036c](https://github.com/rrd108/nuxt-users/commit/2a3036c))
+
+### 💅 Refactors
+
+- Rename variable ([a0ecae2](https://github.com/rrd108/nuxt-users/commit/a0ecae2))
+
+### 🏡 Chore
+
+- **release:** V1.40.1 ([7ff2bc4](https://github.com/rrd108/nuxt-users/commit/7ff2bc4))
+- Remove outdated comment ([96c7578](https://github.com/rrd108/nuxt-users/commit/96c7578))
+
+### ✅ Tests
+
+- Add test for password change ([d6d5425](https://github.com/rrd108/nuxt-users/commit/d6d5425))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.40.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.40.0...v1.40.1)
