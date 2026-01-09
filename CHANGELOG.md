@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.40.3
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.40.2...v1.40.3)
+
+### 🩹 Fixes
+
+- Enforces npm token for release ([2a3036c](https://github.com/rrd108/nuxt-users/commit/2a3036c))
+
+### 🏡 Chore
+
+- **release:** V1.40.2 ([b92e2d1](https://github.com/rrd108/nuxt-users/commit/b92e2d1))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.40.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.40.1...v1.40.2)
