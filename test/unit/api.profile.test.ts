@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import type { ModuleOptions, UserWithoutPassword } from '../../src/types'
+import type { ModuleOptions, UserWithoutPassword, User } from '../../src/types'
 import type { H3Event } from 'h3'
 import crypto from 'node:crypto'
 import { defaultOptions } from '../../src/module'
@@ -8,7 +8,8 @@ import { defaultOptions } from '../../src/module'
 vi.mock('h3', () => ({
   defineEventHandler: vi.fn(handler => handler),
   getCookie: vi.fn(),
-  createError: vi.fn()
+  createError: vi.fn(),
+  readBody: vi.fn()
 }))
 
 vi.mock('#imports', () => ({
@@ -16,11 +17,26 @@ vi.mock('#imports', () => ({
 }))
 
 vi.mock('../../src/runtime/server/utils', () => ({
-  getCurrentUserFromToken: vi.fn()
+  getCurrentUserFromToken: vi.fn(),
+  updateUserPassword: vi.fn()
+}))
+
+vi.mock('bcrypt', () => ({
+  default: {
+    compare: vi.fn()
+  }
+}))
+
+vi.mock('../../src/utils', () => ({
+  validatePassword: vi.fn(),
+  getPasswordValidationOptions: vi.fn()
 }))
 
 // Import the profile api endpoint after mocking
 const profileApiEndpoint = await import('../../src/runtime/server/api/nuxt-users/me.get')
+
+// Import the password change api endpoint after mocking
+const passwordChangeApiEndpoint = await import('../../src/runtime/server/api/nuxt-users/password/index.patch')
 
 describe('Profile API Route', () => {
   let testOptions: ModuleOptions
@@ -268,5 +284,145 @@ describe('Profile API Route', () => {
     // Verify response is successful
     expect(response.user).toBeDefined()
     expect(response.user.email).toBe('profile@example.com')
+  })
+})
+
+describe('Password Change API Route', () => {
+  let testOptions: ModuleOptions
+  let testUserWithPassword: User
+  let mockEvent: H3Event
+  let mockGetCookie: ReturnType<typeof vi.fn>
+  let mockReadBody: ReturnType<typeof vi.fn>
+  let _mockCreateError: ReturnType<typeof vi.fn>
+  let _mockDefineEventHandler: ReturnType<typeof vi.fn>
+  let mockUseRuntimeConfig: ReturnType<typeof vi.fn>
+  let mockGetCurrentUserFromToken: ReturnType<typeof vi.fn>
+  let mockUpdateUserPassword: ReturnType<typeof vi.fn>
+  let mockBcryptCompare: ReturnType<typeof vi.fn>
+  let mockValidatePassword: ReturnType<typeof vi.fn>
+  let mockGetPasswordValidationOptions: ReturnType<typeof vi.fn>
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+
+    // Get the mocked functions
+    const h3 = await import('h3')
+    const imports = await import('#imports')
+    const utils = await import('../../src/runtime/server/utils')
+    const bcrypt = await import('bcrypt')
+    const passwordUtils = await import('../../src/utils')
+
+    mockGetCookie = h3.getCookie as ReturnType<typeof vi.fn>
+    mockReadBody = h3.readBody as ReturnType<typeof vi.fn>
+    _mockCreateError = h3.createError as ReturnType<typeof vi.fn>
+    _mockDefineEventHandler = h3.defineEventHandler as ReturnType<typeof vi.fn>
+    mockUseRuntimeConfig = imports.useRuntimeConfig as ReturnType<typeof vi.fn>
+    mockGetCurrentUserFromToken = utils.getCurrentUserFromToken as ReturnType<typeof vi.fn>
+    mockUpdateUserPassword = utils.updateUserPassword as ReturnType<typeof vi.fn>
+    mockBcryptCompare = bcrypt.default.compare as ReturnType<typeof vi.fn>
+    mockValidatePassword = passwordUtils.validatePassword as ReturnType<typeof vi.fn>
+    mockGetPasswordValidationOptions = passwordUtils.getPasswordValidationOptions as ReturnType<typeof vi.fn>
+
+    // Mock test options
+    testOptions = defaultOptions
+
+    // Mock runtime config
+    mockUseRuntimeConfig.mockReturnValue({
+      nuxtUsers: testOptions
+    })
+
+    // Create mock test user with password (needed for password change)
+    testUserWithPassword = {
+      id: 1,
+      email: 'profile@example.com',
+      name: 'Profile Test User',
+      role: 'user',
+      password: '$2a$10$hashedPasswordHere',
+      created_at: '2024-01-01T00:00:00.000Z',
+      updated_at: '2024-01-01T00:00:00.000Z',
+      active: true
+    }
+
+    // Create mock event
+    mockEvent = {} as H3Event
+
+    // Mock defineEventHandler to return the handler function
+    _mockDefineEventHandler.mockImplementation((handler: unknown) => handler)
+
+    // Mock password validation options
+    mockGetPasswordValidationOptions.mockReturnValue({
+      minLength: 8,
+      requireUppercase: true,
+      requireLowercase: true,
+      requireNumbers: true,
+      requireSpecialChars: false,
+      preventCommonPasswords: false
+    })
+  })
+
+  afterEach(async () => {
+    vi.clearAllMocks()
+  })
+
+  it('should allow authenticated users to change their password', async () => {
+    const mockToken = crypto.randomBytes(64).toString('hex')
+    const currentPassword = 'OldPassword123'
+    const newPassword = 'NewPassword123'
+    const requestBody = {
+      currentPassword,
+      newPassword,
+      newPasswordConfirmation: newPassword
+    }
+
+    // Mock getCookie to return the token
+    mockGetCookie.mockReturnValue(mockToken)
+
+    // Mock getCurrentUserFromToken to return user with password (third param true)
+    mockGetCurrentUserFromToken.mockResolvedValue(testUserWithPassword)
+
+    // Mock readBody to return the password change request
+    mockReadBody.mockResolvedValue(requestBody)
+
+    // Mock bcrypt.compare to return true (current password matches)
+    mockBcryptCompare.mockResolvedValue(true)
+
+    // Mock password validation to succeed
+    mockValidatePassword.mockReturnValue({
+      isValid: true,
+      errors: []
+    })
+
+    // Mock updateUserPassword to succeed
+    mockUpdateUserPassword.mockResolvedValue(undefined)
+
+    // Call the handler directly
+    const response = await passwordChangeApiEndpoint.default(mockEvent)
+
+    // Verify getCookie was called correctly
+    expect(mockGetCookie).toHaveBeenCalledWith(mockEvent, 'auth_token')
+
+    // Verify getCurrentUserFromToken was called with includePassword = true
+    expect(mockGetCurrentUserFromToken).toHaveBeenCalledWith(mockToken, testOptions, true)
+
+    // Verify readBody was called
+    expect(mockReadBody).toHaveBeenCalledWith(mockEvent)
+
+    // Verify password validation was called
+    expect(mockGetPasswordValidationOptions).toHaveBeenCalledWith(testOptions)
+    expect(mockValidatePassword).toHaveBeenCalledWith(newPassword, expect.any(Object))
+
+    // Verify current password was checked
+    expect(mockBcryptCompare).toHaveBeenCalledWith(currentPassword, testUserWithPassword.password)
+
+    // Verify updateUserPassword was called with correct parameters
+    expect(mockUpdateUserPassword).toHaveBeenCalledWith(
+      testUserWithPassword.email,
+      newPassword,
+      testOptions
+    )
+
+    // Verify response structure
+    expect(response).toBeDefined()
+    expect(response.message).toBe('Password updated successfully')
   })
 })
