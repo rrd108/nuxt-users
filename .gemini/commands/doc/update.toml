@@ -1,0 +1,2 @@
+description = "Update docs based on code changes"
+prompt = "Check the code changes and update the docs accordingly"
