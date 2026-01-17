@@ -21,7 +21,8 @@ export default defineNuxtPlugin(() => {
 
     if (prefersDark) {
       document.documentElement.classList.add('dark')
-    } else {
+    }
+    if (!prefersDark) {
       document.documentElement.classList.remove('dark')
     }
   }
