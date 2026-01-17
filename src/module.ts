@@ -180,6 +180,12 @@ export default defineNuxtModule<ModuleOptions>({
       name: '0-auth-init-nuxt-users'
     })
 
+    // Add theme detection plugin (client-side only)
+    addPlugin({
+      src: resolver.resolve('./runtime/plugin.theme'),
+      mode: 'client'
+    })
+
     addPlugin({
       src: resolver.resolve('./runtime/plugin'),
       mode: 'server'
