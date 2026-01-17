@@ -1,6 +1,42 @@
 # Changelog
 
 
+## v1.41.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.40.2...v1.41.0)
+
+### 🚀 Enhancements
+
+- Adds doc update command config ([8a1e4be](https://github.com/rrd108/nuxt-users/commit/8a1e4be))
+- Implements dark theme ([04f6333](https://github.com/rrd108/nuxt-users/commit/04f6333))
+- Adds theme detection plugin ([f81db16](https://github.com/rrd108/nuxt-users/commit/f81db16))
+
+### 🩹 Fixes
+
+- Enforces npm token for release ([2a3036c](https://github.com/rrd108/nuxt-users/commit/2a3036c))
+- Translate password strength indicator labels and validation messages ([#161](https://github.com/rrd108/nuxt-users/pull/161))
+- Type error ([b9feb2d](https://github.com/rrd108/nuxt-users/commit/b9feb2d))
+- **scripts:** Checks for NPM_TOKEN in .env ([80fa856](https://github.com/rrd108/nuxt-users/commit/80fa856))
+- Improves user list access safety ([10b162d](https://github.com/rrd108/nuxt-users/commit/10b162d))
+
+### 💅 Refactors
+
+- Move script tag to top ([b494755](https://github.com/rrd108/nuxt-users/commit/b494755))
+- Remove else ([ec18aa7](https://github.com/rrd108/nuxt-users/commit/ec18aa7))
+
+### 🏡 Chore
+
+- **release:** V1.40.2 ([b92e2d1](https://github.com/rrd108/nuxt-users/commit/b92e2d1))
+- **release:** V1.40.3 ([430de33](https://github.com/rrd108/nuxt-users/commit/430de33))
+
+### ✅ Tests
+
+- Adds Google OAuth HTTP callback tests ([c56df83](https://github.com/rrd108/nuxt-users/commit/c56df83))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.40.3
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.40.2...v1.40.3)
