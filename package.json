@@ -66,7 +66,7 @@
     "check:locale-consistency": "tsx scripts/check-locale-consistency.ts",
     "check:npm_token": "dotenv -- sh -c 'if [ -z \"$NPM_TOKEN\" ]; then echo \"❌ NPM_TOKEN environment variable is not set in .env file. Please set it to your npm token.\"; exit 1; fi'",
     "prerelease": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for deployment' && exit 1)",
-    "release": "yarn check:npm_token && yarn lint && yarn check:translations && yarn check:locale-consistency && yarn test && yarn prepack && dotenv -- changelogen --release && dotenv -- npm publish --registry https://registry.npmjs.org/ && git push --follow-tags",
+    "release": "yarn check:npm_token && yarn lint && yarn check:translations && yarn check:locale-consistency && yarn test && yarn prepack && dotenv -- changelogen --release && dotenv -- sh -c 'npm publish --//registry.npmjs.org/:_authToken=$NPM_TOKEN --registry https://registry.npmjs.org/' && git push --follow-tags",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "pretest": "node -v | grep -q 'v22' || (echo 'Please use Node.js v22 for testing' && exit 1)",
