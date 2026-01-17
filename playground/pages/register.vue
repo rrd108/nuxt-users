@@ -1,22 +1,3 @@
-<template>
-  <div>
-    <Head>
-      <Title>Register - Nuxt Users</Title>
-    </Head>
-
-    <div class="container">
-      <h1>Register</h1>
-
-      <NUsersRegisterForm
-        redirect-to="/login"
-        login-link="/login"
-        @success="onRegistrationSuccess"
-        @error="onRegistrationError"
-      />
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import type { UserWithoutPassword } from 'nuxt-users/utils'
 
@@ -34,6 +15,21 @@ const onRegistrationError = (error: string) => {
   // Additional error handling if needed
 }
 </script>
+
+<template>
+  <div>
+    <div class="container">
+      <h1>Register</h1>
+
+      <NUsersRegisterForm
+        redirect-to="/login"
+        login-link="/login"
+        @success="onRegistrationSuccess"
+        @error="onRegistrationError"
+      />
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .container {
