@@ -101,8 +101,8 @@ describe('useUsers Composable', () => {
 
       updateUser({ id: 1, name: 'Updated User 1' } as User)
 
-      expect(users.value[0].name).toBe('Updated User 1')
-      expect(users.value[1].name).toBe('User 2')
+      expect(users.value?.[0]?.name).toBe('Updated User 1')
+      expect(users.value?.[1]?.name).toBe('User 2')
     })
 
     it('should ignore updates for non-existent user', () => {
@@ -113,7 +113,7 @@ describe('useUsers Composable', () => {
       updateUser({ id: 999, name: 'New User' } as User)
 
       expect(users.value).toHaveLength(1)
-      expect(users.value[0].name).toBe('User 1')
+      expect(users.value?.[0]?.name).toBe('User 1')
     })
   })
 
@@ -126,8 +126,8 @@ describe('useUsers Composable', () => {
       addUser({ id: 2, name: 'User 2' } as User)
 
       expect(users.value).toHaveLength(2)
-      expect(users.value[0].name).toBe('User 2')
-      expect(users.value[1].name).toBe('User 1')
+      expect(users.value?.[0]?.name).toBe('User 2')
+      expect(users.value?.[1]?.name).toBe('User 1')
     })
   })
 
@@ -149,7 +149,7 @@ describe('useUsers Composable', () => {
 
       expect(mockFetch).toHaveBeenCalledWith('/api/nuxt-users/1', { method: 'DELETE' })
       expect(users.value).toHaveLength(1)
-      expect(users.value[0].id).toBe(2)
+      expect(users.value?.[0]?.id).toBe(2)
       expect(loading.value).toBe(false)
       expect(error.value).toBeNull()
     })
