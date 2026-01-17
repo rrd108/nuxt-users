@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   nuxtUsers: {
     emailConfirmationUrl: '/email-confirmation',
     auth: {
-      whitelist: ['/noauth', '/register', '/email-confirmation'],
+      whitelist: ['/noauth', '/register', '/email-confirmation', '/profile'],
       tokenExpiration: 10,
       rememberMeExpiration: 30, // Added to satisfy ModuleOptions
       permissions: {

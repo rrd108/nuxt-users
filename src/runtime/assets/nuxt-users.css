@@ -49,7 +49,13 @@
     --nu-color-validation-hint: #6c757d;
 }
 
-.dark {
+/*
+* NOTE: This is a hack to apply dark theme styles automatically via system preference or .dark class.
+* so @media (prefers-color-scheme: dark) and :root.dark are both required and are the same.
+*/
+
+/* Dark theme styles - applies automatically via system preference or .dark class */
+@media (prefers-color-scheme: dark) {
     :root {
         /* Primary Colors - Adjusted for dark theme */
         --nu-color-primary: #60a5fa;
@@ -99,6 +105,56 @@
         --nu-color-validation-failed: #ef4444;
         --nu-color-validation-hint: #9ca3af;
     }
+}
+
+:root.dark {
+    /* Primary Colors - Adjusted for dark theme */
+    --nu-color-primary: #60a5fa;
+    --nu-color-primary-dark: #3b82f6;
+    --nu-color-primary-light: #93c5fd;
+
+    /* Neutral Colors - Inverted for dark theme */
+    --nu-color-white: #000000;
+    --nu-color-gray-50: #111827;
+    --nu-color-gray-500: #9ca3af;
+    --nu-color-gray-600: #d1d5db;
+    --nu-color-gray-700: #e5e7eb;
+    --nu-color-gray-900: #f9fafb;
+
+    /* Success Colors - Adjusted for dark theme */
+    --nu-color-success: #10b981;
+    --nu-color-success-light: #064e3b;
+    --nu-color-success-border: #065f46;
+    --nu-color-success-text: #6ee7b7;
+
+    /* Error Colors - Adjusted for dark theme */
+    --nu-color-error: #ef4444;
+    --nu-color-error-light: #450a0a;
+    --nu-color-error-border: #7f1d1d;
+    --nu-color-error-alt: #f87171;
+    --nu-color-error-dark: #dc2626;
+
+    /* Border Colors - Adjusted for dark theme */
+    --nu-color-border: #374151;
+    --nu-color-border-light: #4b5563;
+    --nu-color-border-dark: #6b7280;
+
+    /* Background Colors - Inverted for dark theme */
+    --nu-color-bg-primary: #111827;
+    --nu-color-bg-secondary: #1f2937;
+    --nu-color-bg-tertiary: #374151;
+
+    /* Text Colors - Inverted for dark theme */
+    --nu-color-text-primary: #ffffff;
+    --nu-color-text-secondary: #9ca3af;
+
+    /* Strength Bar Colors - Adjusted for dark theme */
+    --nu-color-strength-bg: #374151;
+
+    /* Validation Colors - Adjusted for dark theme */
+    --nu-color-validation-passed: #22c55e;
+    --nu-color-validation-failed: #ef4444;
+    --nu-color-validation-hint: #9ca3af;
 }
 
 /* ===== COMMON COMPONENT STYLES ===== */
@@ -549,6 +605,27 @@ form.n-users-form {
     opacity: 0.6;
     cursor: not-allowed;
     pointer-events: none;
+}
+
+/* Register/Login Links */
+.n-users-link {
+    font-size: 0.875rem;
+    color: var(--nu-color-primary);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.n-users-link:hover {
+    color: var(--nu-color-primary-dark);
+    text-decoration: underline;
+}
+
+.n-users-link:visited {
+    color: var(--nu-color-primary);
+}
+
+.n-users-link:visited:hover {
+    color: var(--nu-color-primary-dark);
 }
 
 /* Password Strength Indicator */

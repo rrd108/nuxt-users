@@ -53,6 +53,7 @@ const dismissError = () => {
     <nav>
       <NuxtLink to="/profile">Profile</NuxtLink>
       <NuxtLink to="/noauth">No Auth</NuxtLink>
+      <NuxtLink to="/register">Register</NuxtLink>
     </nav>
 
     <h1>Nuxt Users</h1>
