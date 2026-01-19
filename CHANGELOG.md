@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v1.41.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.41.0...v1.41.1)
+
+### 🩹 Fixes
+
+- Updates npm publish command for release ([2978671](https://github.com/rrd108/nuxt-users/commit/2978671))
+- Integrates flexible theme system closes #168 ([#168](https://github.com/rrd108/nuxt-users/issues/168))
+
+### 🏡 Chore
+
+- **release:** V1.41.0 ([a028374](https://github.com/rrd108/nuxt-users/commit/a028374))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.41.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.40.2...v1.41.0)
