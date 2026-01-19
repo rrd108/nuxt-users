@@ -50,7 +50,10 @@ export const defaultOptions: ModuleOptions = {
     fallbackLocale: 'en',
     texts: {}
   },
-  tokenCleanupSchedule: '0 2 * * *' // Daily at 2 AM
+  tokenCleanupSchedule: '0 2 * * *', // Daily at 2 AM
+  theme: {
+    enabled: true
+  }
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -132,6 +135,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.runtimeConfig.public.nuxtUsers = {
       passwordValidation: runtimeConfigOptions.passwordValidation,
       locale: runtimeConfigOptions.locale,
+      theme: runtimeConfigOptions.theme,
       auth: {
         whitelist: (() => {
           const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]

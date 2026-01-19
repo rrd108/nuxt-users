@@ -199,6 +199,18 @@ export interface RuntimeModuleOptions {
    * Locale configuration for component labels and messages
    */
   locale?: LocaleOptions
+  /**
+   * Theme configuration for color scheme management
+   */
+  theme?: {
+    /**
+     * Enable the automatic theme plugin
+     * When disabled, the module won't manage themes automatically,
+     * allowing consumer apps full control over theme management
+     * @default true
+     */
+    enabled?: boolean
+  }
 }
 
 // Runtime config type with all properties required (after merging with defaults)
@@ -244,6 +256,18 @@ export interface ModuleOptions {
    * Default: '0 2 * * *' (daily at 2 AM)
    */
   tokenCleanupSchedule?: string | false | null
+  /**
+   * Theme configuration for color scheme management
+   */
+  theme?: {
+    /**
+     * Enable the automatic theme plugin
+     * When disabled, the module won't manage themes automatically,
+     * allowing consumer apps full control over theme management
+     * @default true
+     */
+    enabled?: boolean
+  }
 }
 
 export interface MailerOptions {

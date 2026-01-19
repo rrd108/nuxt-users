@@ -1450,7 +1450,116 @@ All component styles use the `n-users-` prefix to avoid conflicts with your appl
 
 ### Theme Support
 
-The components automatically adapt to light and dark themes based on system preferences. You can also force a specific theme:
+The module includes a flexible theme system that automatically adapts to light and dark color schemes. The theme system is designed to work seamlessly with consumer applications that have their own theme management.
+
+> **💡 Works with Nuxt UI**: This module is fully compatible with [Nuxt UI](https://ui.nuxt.com) and [@nuxtjs/color-mode](https://color-mode.nuxtjs.org). When using Nuxt UI, the nuxt-users components will automatically detect and follow Nuxt UI's theme changes via `MutationObserver`. No additional configuration needed - both systems work together seamlessly! See the [Theme Integration Guide](/developer-guide/theme-integration) for advanced integration patterns.
+
+#### How It Works
+
+The module's theme system supports multiple detection methods:
+
+1. **System Preferences** - Automatically detects OS dark mode via `prefers-color-scheme`
+2. **DOM Class Changes** - Responds when your app adds/removes the `dark` class
+3. **Custom Events** - Listens for theme change events from your app
+4. **Shared State** - Provides a composable for programmatic control
+
+#### Automatic Theme Detection (Default)
+
+By default, the module automatically applies themes based on system preferences:
+
+```vue
+<template>
+  <!-- Components automatically adapt to system theme -->
+  <NUsersLoginForm />
+</template>
+```
+
+#### Using the Theme Composable
+
+For programmatic control, use the `useTheme` composable:
+
+```vue
+<script setup>
+const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme()
+
+// Set specific theme
+const applyDarkTheme = () => setTheme('dark')
+const applyLightTheme = () => setTheme('light')
+const followSystem = () => setTheme('system')
+
+// Or toggle between light/dark
+const toggle = () => toggleTheme()
+</script>
+
+<template>
+  <div>
+    <button @click="toggleTheme">
+      Current theme: {{ resolvedTheme }}
+    </button>
+    <NUsersLoginForm />
+  </div>
+</template>
+```
+
+#### Integration with Existing Theme Systems
+
+If your app already has a theme system, the module will detect and respect your theme changes:
+
+**Method 1: Using the `dark` Class**
+
+```vue
+<script setup>
+// Your existing theme toggle
+const toggleTheme = () => {
+  document.documentElement.classList.toggle('dark')
+  // Module components automatically adapt!
+}
+</script>
+```
+
+**Method 2: Using Custom Events**
+
+```vue
+<script setup>
+const setTheme = (theme: 'light' | 'dark') => {
+  document.documentElement.classList.toggle('dark', theme === 'dark')
+  
+  // Notify the module
+  window.dispatchEvent(new CustomEvent('theme-change', {
+    detail: { theme }
+  }))
+}
+</script>
+```
+
+**Method 3: Disable Module's Theme Plugin**
+
+If you want complete control and don't want the module's automatic theme management:
+
+```typescript
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    theme: {
+      enabled: false  // Disable automatic theme management
+    }
+  }
+})
+```
+
+With the plugin disabled, you can still use the module's CSS by adding the `dark` class yourself:
+
+```vue
+<script setup>
+const isDark = ref(false)
+
+const toggleTheme = () => {
+  isDark.value = !isDark.value
+  document.documentElement.classList.toggle('dark', isDark.value)
+}
+</script>
+```
 
 #### Force Light Theme
 

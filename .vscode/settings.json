@@ -14,5 +14,11 @@
   "[vue]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
-  "eslint.validate": ["javascript", "typescript", "vue"]
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "vue"
+  ],
+  "snyk.advanced.organization": "49ceda2e-0136-47f6-bcaa-68368a8ffb52",
+  "snyk.advanced.autoSelectOrganization": true
 }
