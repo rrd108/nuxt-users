@@ -96,7 +96,7 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "citty": "^0.1.6",
+    "citty": "^0.2.0",
     "defu": "^6.1.4",
     "google-auth-library": "^10.4.0",
     "nodemailer": "^7.0.5"

@@ -4262,6 +4262,11 @@ citty@^0.1.5, citty@^0.1.6:
   dependencies:
     consola "^3.2.3"
 
+citty@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/citty/-/citty-0.2.0.tgz#2426b145c4bf2a2c5c33bd66a634dfe3d5ea67ea"
+  integrity sha512-8csy5IBFI2ex2hTVpaHN2j+LNE199AgiI7y4dMintrr8i0lQiFn+0AWMZrWdHKIgMOer65f8IThysYhoReqjWA==
+
 clean-regexp@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/clean-regexp/-/clean-regexp-1.0.0.tgz#8df7c7aae51fd36874e8f8d05b9180bc11a3fed7"
