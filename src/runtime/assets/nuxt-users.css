@@ -50,13 +50,14 @@
 }
 
 /*
-* NOTE: This is a hack to apply dark theme styles automatically via system preference or .dark class.
-* so @media (prefers-color-scheme: dark) and :root.dark are both required and are the same.
+* NOTE: This applies dark theme styles automatically via system preference or .dark class.
+* The media query respects explicit theme overrides (e.g., .light class) to prevent conflicts
+* with consumer app theme management systems like Nuxt UI.
 */
 
-/* Dark theme styles - applies automatically via system preference or .dark class */
+/* Dark theme styles - applies automatically via system preference, but respects explicit overrides */
 @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not(.light) {
         /* Primary Colors - Adjusted for dark theme */
         --nu-color-primary: #60a5fa;
         --nu-color-primary-dark: #3b82f6;
