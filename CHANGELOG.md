@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v1.41.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.41.1...v1.41.2)
+
+### 🩹 Fixes
+
+- Integrates flexible theme system closes #168 ([#168](https://github.com/rrd108/nuxt-users/issues/168))
+- **deps:** Update dependency citty to ^0.2.0 ([5b7f68e](https://github.com/rrd108/nuxt-users/commit/5b7f68e))
+- Respects explicit theme overrides in dark mode ([4a69122](https://github.com/rrd108/nuxt-users/commit/4a69122))
+
+### 🏡 Chore
+
+- **release:** V1.41.1 ([4849d42](https://github.com/rrd108/nuxt-users/commit/4849d42))
+
+### ✅ Tests
+
+- Add test for color schema override ([6dabe14](https://github.com/rrd108/nuxt-users/commit/6dabe14))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.41.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.41.0...v1.41.1)
