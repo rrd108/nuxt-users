@@ -759,14 +759,14 @@
     "@babel/template" "^7.28.6"
     "@babel/types" "^7.28.6"
 
-"@babel/parser@^7.27.0", "@babel/parser@^7.27.2", "@babel/parser@^7.28.4":
+"@babel/parser@^7.27.0", "@babel/parser@^7.28.4":
   version "7.28.5"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.28.5.tgz#0b0225ee90362f030efd644e8034c99468893b08"
   integrity sha512-KKBU1VGYR7ORr3At5HAtUQ+TV3SzRCXmA/8OdDZiLDBIZxVyzXuztPjfLd3BV1PRAQGCMWWSHYhL0F8d5uHBDQ==
   dependencies:
     "@babel/types" "^7.28.5"
 
-"@babel/parser@^7.28.5":
+"@babel/parser@^7.28.5", "@babel/parser@^7.28.6":
   version "7.28.6"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.28.6.tgz#f01a8885b7fa1e56dd8a155130226cd698ef13fd"
   integrity sha512-TeR9zWR18BvbfPmGbLampPMW+uW1NZnJlRuuHso8i87QZNq2JRF9i6RgxRqtEq+wQGsS19NNTWr2duhnE49mfQ==
@@ -836,10 +836,10 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.28.5"
 
-"@bomb.sh/tab@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@bomb.sh/tab/-/tab-0.0.10.tgz#5f266d6b9131ee1af57e4fbcf12ed98f89521236"
-  integrity sha512-6ALS2rh/4LKn0Yxwm35V6LcgQuSiECHbqQo7+9g4rkgGyXZ0siOc8K+IuWIq/4u0Zkv2mevP9QSqgKhGIvLJMw==
+"@bomb.sh/tab@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@bomb.sh/tab/-/tab-0.0.11.tgz#6b738330aad937aa4cab2805bf5cba899889415f"
+  integrity sha512-RSqyreeicYBALcMaNxIUJTBknftXsyW45VRq5gKDNwKroh0Re5SDoWwXZaphb+OTEzVdpm/BA8Uq6y0P+AtVYw==
 
 "@clack/core@0.5.0":
   version "0.5.0"
@@ -3761,7 +3761,7 @@
     "@vue/compiler-core" "3.5.26"
     "@vue/shared" "3.5.26"
 
-"@vue/compiler-dom@^3.5.0":
+"@vue/compiler-dom@3.5.27", "@vue/compiler-dom@^3.5.0":
   version "3.5.27"
   resolved "https://registry.yarnpkg.com/@vue/compiler-dom/-/compiler-dom-3.5.27.tgz#32b2bc87f0a652c253986796ace0ed6213093af8"
   integrity sha512-oAFea8dZgCtVVVTEC7fv3T5CbZW9BxpFzGGxC79xakTr6ooeEqmRuvQydIiDAkglZEAd09LgVf1RoDnL54fu5w==
@@ -3769,7 +3769,7 @@
     "@vue/compiler-core" "3.5.27"
     "@vue/shared" "3.5.27"
 
-"@vue/compiler-sfc@3.5.26", "@vue/compiler-sfc@^3.5.22":
+"@vue/compiler-sfc@3.5.26":
   version "3.5.26"
   resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-3.5.26.tgz#fb1c6c4bf9a9e22bb169e039e19437cb6995917a"
   integrity sha512-egp69qDTSEZcf4bGOSsprUr4xI73wfrY5oRs6GSgXFTiHrWj4Y3X5Ydtip9QMqiCMCPVwLglB9GBxXtTadJ3mA==
@@ -3879,7 +3879,7 @@
   dependencies:
     rfdc "^1.4.1"
 
-"@vue/language-core@3.2.3":
+"@vue/language-core@3.2.3", "@vue/language-core@^3.2.1":
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/@vue/language-core/-/language-core-3.2.3.tgz#e9d8765e202a4ab5bc72a6ac8807e8796c03404f"
   integrity sha512-VpN/GnYDzGLh44AI6i1OB/WsLXo6vwnl0EWHBelGc4TyC0yEq6azwNaed/+Tgr8anFlSdWYnMEkyHJDPe7ii7A==
@@ -3950,12 +3950,20 @@
     "@vue/compiler-ssr" "3.5.26"
     "@vue/shared" "3.5.26"
 
-"@vue/shared@3.5.26", "@vue/shared@^3.5.13", "@vue/shared@^3.5.22", "@vue/shared@^3.5.25":
+"@vue/server-renderer@3.5.27":
+  version "3.5.27"
+  resolved "https://registry.yarnpkg.com/@vue/server-renderer/-/server-renderer-3.5.27.tgz#8137d0d7ec3b59d5992bb04c553775d209dddba7"
+  integrity sha512-qOz/5thjeP1vAFc4+BY3Nr6wxyLhpeQgAE/8dDtKo6a6xdk+L4W46HDZgNmLOBUDEkFXV3G7pRiUqxjX0/2zWA==
+  dependencies:
+    "@vue/compiler-ssr" "3.5.27"
+    "@vue/shared" "3.5.27"
+
+"@vue/shared@3.5.26", "@vue/shared@^3.5.13", "@vue/shared@^3.5.22":
   version "3.5.26"
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.5.26.tgz#1e02ef2d64aced818cd31d81ce5175711dc90a9f"
   integrity sha512-7Z6/y3uFI5PRoKeorTOSXKcDj0MSasfNNltcslbFrPpcw6aXRUALq4IfJlaTRspiWIUOEZbrpM+iQGmCOiWe4A==
 
-"@vue/shared@3.5.27", "@vue/shared@^3.5.0":
+"@vue/shared@3.5.27", "@vue/shared@^3.5.0", "@vue/shared@^3.5.27":
   version "3.5.27"
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.5.27.tgz#33a63143d8fb9ca1b3efbc7ecf9bd0ab05f7e06e"
   integrity sha512-dXr/3CgqXsJkZ0n9F3I4elY8wM9jMJpP3pvRG52r6m0tu/MsAFIe6JpXVGeNMd/D9F4hQynWT8Rfuj0bdm9kFQ==
@@ -7914,7 +7922,7 @@ rollup@^4.20.0, rollup@^4.34.8, rollup@^4.46.2:
     "@rollup/rollup-win32-x64-msvc" "4.54.0"
     fsevents "~2.3.2"
 
-rollup@^4.43.0:
+rollup@^4.43.0, rollup@^4.55.1:
   version "4.56.0"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-4.56.0.tgz#65959d13cfbd7e48b8868c05165b1738f0143862"
   integrity sha512-9FwVqlgUHzbXtDg9RCMgodF3Ua4Na6Gau+Sdt9vyCN4RhHfVKX2DCHy3BjMLTDd47ITDhYAnTwGulWTblJSDLg==

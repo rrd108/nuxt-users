@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div class="test-element" data-testid="test-bg">
+    <div
+      class="test-element"
+      data-testid="test-bg"
+    >
       Theme test element
     </div>
   </div>
