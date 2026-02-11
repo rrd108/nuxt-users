@@ -102,7 +102,7 @@
     "citty": "^0.2.0",
     "defu": "^6.1.4",
     "google-auth-library": "^10.4.0",
-    "nodemailer": "^7.0.5"
+    "nodemailer": "^8.0.0"
   },
   "optionalDependencies": {
     "better-sqlite3": "^12.2.0",
