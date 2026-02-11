@@ -39,6 +39,16 @@ A user authentication module for Nuxt 3 and Nuxt 4 with database support for SQL
   - Nuxt 3 & 4 compatibility
   - Easy customization and extension
 
+## Agent Skill
+
+Install the **nuxt-users** [Agent Skill](https://agentskills.io/specification) so your AI coding agent (Cursor, Claude Code, etc.) has procedural knowledge for this module. One-time install:
+
+```bash
+npx skills add rrd108/nuxt-users
+```
+
+After that, your agent can use the skill when you work on auth, config, CLI, composables, or authorization. The skill is also [listed on the Skills directory](https://skills.sh/) once installs are tracked.
+
 ## Documentation
 
 📚 **Full documentation is available at: [https://nuxt-users.webmania.cc/](https://nuxt-users.webmania.cc/)**

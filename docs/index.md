@@ -27,6 +27,8 @@ features:
     details: Get started instantly with sensible defaults and automatic configuration (peer dependencies required)
   - title: 🔷 TypeScript First
     details: Full TypeScript support throughout the entire module for better development experience
+  - title: 🤖 Agent Skill
+    details: Install with npx skills add rrd108/nuxt-users so Cursor, Claude Code, and other agents have procedural knowledge for this module
 ---
 
 <span id="morphBlur"></span>

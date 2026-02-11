@@ -144,3 +144,7 @@ Admin utility for managing users.
 - **updateUser(user: User)**: local state update.
 - **addUser(user: User)**: local state update.
 - **removeUser(userId: number)**: `Promise<void>` - Deletes user via API.
+
+## 3. Agent Skill
+
+An Agent Skill for this module is available at `skills/nuxt-users/SKILL.md` (Agent Skills format: https://agentskills.io/specification). Use it when configuring authentication, database, CLI, composables, or authorization.

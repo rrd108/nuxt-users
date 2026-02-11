@@ -55,6 +55,9 @@ With Nuxt Users, you can easily create:
 ### ⚙️ Configuration
 - [Configuration Guide](./configuration.md) - Customize every aspect of the module
 
+### 🤖 Agent Skill
+- [Agent Skill](./agent-skill.md) - Install the nuxt-users skill so your AI coding agent can help with this module
+
 ## Need Help?
 
 - [Troubleshooting](./troubleshooting.md) - Solutions to common issues

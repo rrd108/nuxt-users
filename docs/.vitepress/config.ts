@@ -73,7 +73,8 @@ export default defineConfig({
                   { text: 'useNuxtUsersLocale()', link: '/user-guide/composables#usenuxtuserslocale' }
                 ]
               },
-              { text: 'Troubleshooting', link: '/user-guide/troubleshooting' }
+              { text: 'Troubleshooting', link: '/user-guide/troubleshooting' },
+              { text: 'Agent Skill', link: '/user-guide/agent-skill' }
             ]
           },
           {
