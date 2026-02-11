@@ -118,6 +118,7 @@
     }
   },
   "devDependencies": {
+    "@nuxt/cli": "^3.26.4",
     "@nuxt/devtools": "^3.0.0",
     "@nuxt/eslint-config": "^1.5.2",
     "@nuxt/kit": "^4.0.0",
