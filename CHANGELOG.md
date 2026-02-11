@@ -1,6 +1,38 @@
 # Changelog
 
 
+## v1.42.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.41.2...v1.42.0)
+
+### 🚀 Enhancements
+
+- Introduces Agent Skill for AI coding agents closes #182 ([#182](https://github.com/rrd108/nuxt-users/issues/182))
+- Adds `@nuxt/cli` dependency ([1ec2e26](https://github.com/rrd108/nuxt-users/commit/1ec2e26))
+
+### 🩹 Fixes
+
+- **deps:** Update dependency citty to ^0.2.0 ([5b7f68e](https://github.com/rrd108/nuxt-users/commit/5b7f68e))
+- Respects explicit theme overrides in dark mode ([4a69122](https://github.com/rrd108/nuxt-users/commit/4a69122))
+- Updates dependencies and formats code ([fa7d1fc](https://github.com/rrd108/nuxt-users/commit/fa7d1fc))
+
+### 📖 Documentation
+
+- Released ([9912a9d](https://github.com/rrd108/nuxt-users/commit/9912a9d))
+
+### 🏡 Chore
+
+- **release:** V1.41.2 ([c1f227a](https://github.com/rrd108/nuxt-users/commit/c1f227a))
+
+### ✅ Tests
+
+- Add test for color schema override ([6dabe14](https://github.com/rrd108/nuxt-users/commit/6dabe14))
+- Fix issues ([fc7fdef](https://github.com/rrd108/nuxt-users/commit/fc7fdef))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.41.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.41.1...v1.41.2)
