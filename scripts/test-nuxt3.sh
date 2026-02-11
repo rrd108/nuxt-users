@@ -38,7 +38,7 @@ cleanup() {
     if [ -f "yarn.lock.bak" ]; then
         mv yarn.lock.bak yarn.lock
     fi
-    npx nypm@latest i
+    yarn install
     print_success "Dependencies restored to Nuxt 4."
 }
 
@@ -53,17 +53,21 @@ fi
 # 2. Set up cleanup trap
 trap cleanup EXIT
 
-# 3. Backup original package files
-print_status "📦 Backing up package files..."
+# 3. Ensure lockfile matches package.json (nuxt 4.3.x), then backup
+print_status "📦 Syncing lockfile and backing up package files..."
+yarn install
 cp package.json package.json.bak
 cp yarn.lock yarn.lock.bak
 
-# 4. Install Nuxt 3
+# 4. Drop resolutions so Nuxt 3 gets Kit 3.x (otherwise resolution forces Kit 4 and breaks Nuxt 3)
+node -e "const p=require('./package.json'); delete p.resolutions; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2));"
+
+# 5. Install Nuxt 3
 print_status "🚀 Installing Nuxt v3 (version: ${NUXT3_VERSION})..."
 npx nypm@latest i nuxt@${NUXT3_VERSION}
 print_success "Nuxt 3 installed."
 
-# 5. Run the specified test
+# 6. Run the specified test
 print_status "🧪 Running tests for '$TEST_TYPE' against Nuxt 3..."
 if [ -f "scripts/test-${TEST_TYPE}.sh" ]; then
     "./scripts/test-${TEST_TYPE}.sh"
@@ -74,5 +78,5 @@ fi
 
 print_success "Nuxt 3 tests completed successfully!"
 
-# 6. Cleanup will be handled by the trap
+# 7. Cleanup will be handled by the trap
 exit 0
