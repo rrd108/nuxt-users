@@ -150,6 +150,43 @@ export default defineEventHandler(async (event) => {
 **Methods:**
 - `getCurrentUser(event)`: Returns the authenticated user or null
 
+#### Resource Ownership Checks
+
+When your consumer app adds related tables (e.g., `users_meta` with a `user_id` foreign key), use `getCurrentUser()` combined with `useNuxtUsersDatabase()` to verify ownership before allowing edits.
+
+```typescript
+import { useServerAuth } from '#nuxt-users/server'
+import { useNuxtUsersDatabase } from '#nuxt-users/server'
+
+// server/api/users-meta/[id].patch.ts
+export default defineEventHandler(async (event) => {
+  const { getCurrentUser } = useServerAuth()
+  const user = await getCurrentUser(event)
+
+  if (!user) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
+
+  const { database } = await useNuxtUsersDatabase()
+  const metaId = Number(event.context.params?.id)
+  const result = await database.sql`SELECT user_id FROM users_meta WHERE id = ${metaId}`
+  const meta = result.rows[0]
+
+  if (!meta) {
+    throw createError({ statusCode: 404, statusMessage: 'Not found' })
+  }
+
+  if (user.id !== meta.user_id) {
+    throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
+  }
+
+  // Safe to update — user owns this resource
+  const body = await readBody(event)
+  await database.sql`UPDATE users_meta SET bio = ${body.bio} WHERE id = ${metaId}`
+  return { success: true }
+})
+```
+
 ### useNuxtUsersDatabase()
 
 Server-side utility to access the module's database connection. Provides direct access to the same database instance used by the module.
