@@ -48,7 +48,7 @@ echo "Running tests against MySQL..."
 # Check if any arguments were passed
 if [ $# -eq 0 ]; then
     # Run all tests except unit tests (database-independent)
-    vitest run --exclude="test/unit/"
+    npx vitest run --exclude="test/unit/"
 else
-    vitest run "$@"
+    npx vitest run "$@"
 fi

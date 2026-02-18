@@ -3,6 +3,7 @@ import type { Database } from 'db0'
 import { runMigrations, getAppliedMigrations, markMigrationAsApplied, migrations } from '../../src/runtime/server/utils/migrate'
 import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../../src/types'
 import { cleanupTestSetup, createTestSetup } from '../test-setup'
+import { closeAllDbConnections } from '../../src/runtime/server/utils'
 
 describe('CLI: Migrate', () => {
   let db: Database
@@ -43,13 +44,31 @@ describe('CLI: Migrate', () => {
 
     db = settings.db
     testOptions = settings.testOptions
+
+    // Clean up any leftover tables from previous tests
+    // This ensures a fresh state even if previous tests didn't clean up properly
+    if (dbType !== 'sqlite') {
+      try {
+        await db.sql`DROP TABLE IF EXISTS {${testOptions.tables.passwordResetTokens}}`
+        await db.sql`DROP TABLE IF EXISTS {${testOptions.tables.personalAccessTokens}}`
+        await db.sql`DROP TABLE IF EXISTS {${testOptions.tables.users}}`
+        await db.sql`DROP TABLE IF EXISTS migrations`
+      }
+      catch {
+        // Ignore errors - tables might not exist
+      }
+    }
   })
 
   afterEach(async () => {
-    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], 'migrations')
-    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
-    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.personalAccessTokens)
+    // Close all cached connections first to avoid stale connections
+    await closeAllDbConnections()
+
+    // Clean up all tables - order matters due to foreign keys
     await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.passwordResetTokens)
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.personalAccessTokens)
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], testOptions.tables.users)
+    await cleanupTestSetup(dbType, db, [testOptions.connector!.options.path!], 'migrations')
   })
 
   it('should run all migrations successfully', async () => {
