@@ -1,6 +1,34 @@
 # Changelog
 
 
+## v1.43.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.42.0...v1.43.0)
+
+### 🚀 Enhancements
+
+- Auto-runs database migrations on startup ([f4a1527](https://github.com/rrd108/nuxt-users/commit/f4a1527))
+
+### 📖 Documentation
+
+- Released ([9912a9d](https://github.com/rrd108/nuxt-users/commit/9912a9d))
+- Adds resource ownership checks ([6847791](https://github.com/rrd108/nuxt-users/commit/6847791))
+- Update ([5e0346b](https://github.com/rrd108/nuxt-users/commit/5e0346b))
+- Adds auto-migration feature ([eec4ab9](https://github.com/rrd108/nuxt-users/commit/eec4ab9))
+
+### 🏡 Chore
+
+- **release:** V1.42.0 ([6a515fa](https://github.com/rrd108/nuxt-users/commit/6a515fa))
+
+### ✅ Tests
+
+- Fix issues ([fc7fdef](https://github.com/rrd108/nuxt-users/commit/fc7fdef))
+- Fix mysql error ([06b60a3](https://github.com/rrd108/nuxt-users/commit/06b60a3))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.42.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.41.2...v1.42.0)
