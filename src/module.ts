@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addServerHandler, addComponentsDir, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir, addServerScanDir } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addServerHandler, addComponentsDir, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir, addServerScanDir, addServerPlugin } from '@nuxt/kit'
 import { defu } from 'defu'
 import type { ModuleOptions } from './types'
 
@@ -207,6 +207,9 @@ export default defineNuxtModule<ModuleOptions>({
       middleware: true,
       handler: resolver.resolve('./runtime/server/middleware/authorization.server')
     })
+
+    // Auto-run migrations on server startup
+    addServerPlugin(resolver.resolve('./runtime/server/plugins/auto-migrate'))
 
     addRouteMiddleware({
       name: 'authorization.client',
