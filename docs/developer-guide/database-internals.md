@@ -143,6 +143,68 @@ console.log('Applied migrations:', applied)
 // Output: ['create_migrations_table', 'create_users_table', ...]
 ```
 
+### Auto-Migration on Startup
+
+The module automatically runs database migrations on server startup via a Nitro plugin. This ensures the database schema is always up-to-date without manual intervention.
+
+**How it works:**
+- The auto-migrate plugin runs as a Nitro app plugin
+- On every server start, it checks for pending migrations
+- Applied migrations are tracked in the `migrations` table
+- Only new migrations are executed
+
+**Behavior:**
+- Migrations run silently - no output on successful run
+- If migrations fail, an error is logged to the console
+- The server continues running even if migrations fail (for development convenience)
+
+**Disabling Auto-Migration:**
+
+If you need to disable auto-migration, you can override the plugin:
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nitro: {
+    plugins: ['~/my-custom-migrate-plugin.ts']
+  }
+})
+```
+
+Then create your custom plugin that manually controls when migrations run.
+
+**Manual Migration Control:**
+
+For production deployments, you may want to run migrations manually:
+
+```bash
+# Run migrations via CLI
+npx nuxt-users migrate
+```
+
+Or programmatically:
+
+```typescript
+// In your own server plugin
+import { runMigrations } from '#nuxt-users/server'
+
+export default defineNitroPlugin(async (nitroApp) => {
+  const config = useRuntimeConfig()
+  await runMigrations(config.nuxtUsers)
+})
+```
+
+**Migration Table:**
+
+The auto-migration system creates a `migrations` table to track applied migrations:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Auto-increment primary key |
+| name | VARCHAR(255) | Migration name |
+| executed_at | DATETIME | When the migration was applied |
+
 ### `markMigrationAsApplied(options, migrationName)`
 
 Marks a specific migration as applied in the migrations table.

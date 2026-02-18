@@ -22,6 +22,16 @@ This gives you:
 
 > **Important**: Even with zero-config, you must install the required peer dependencies (`db0`, `better-sqlite3`, `bcrypt`, `nodemailer`) as described in the [Installation Guide](/user-guide/installation#peer-dependencies).
 
+## Automatic Database Migrations
+
+The module automatically runs database migrations on server startup. This ensures your database schema is always up-to-date:
+
+- Migrations run automatically when the server starts
+- Only pending migrations are executed
+- Migration progress is tracked in the database
+
+For manual migration control, see the [Database Internals](/developer-guide/database-internals#auto-migration-on-startup) documentation.
+
 ## Complete Configuration Options
 
 When you need more control, here's the full configuration structure:

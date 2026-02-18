@@ -3,7 +3,7 @@ import { useRuntimeConfig } from '#imports'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { runMigrations } from '../utils'
 
-const plugin: NitroAppPlugin = async (nitroApp) => {
+const plugin: NitroAppPlugin = async () => {
   const config = useRuntimeConfig()
 
   if (!config.nuxtUsers) {
