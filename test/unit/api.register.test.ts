@@ -76,6 +76,22 @@ describe('API: Registration', async () => {
     })).rejects.toThrow()
   })
 
+  it('should ignore role property on registration and always assign user role', async () => {
+    const uniqueEmail = `test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}@example.com`
+    const response = await $fetch('/api/nuxt-users/register', {
+      method: 'POST',
+      body: {
+        email: uniqueEmail,
+        name: 'Test User',
+        password: 'testpass123',
+        role: 'superuser'
+      }
+    })
+
+    expect(response.user).toBeDefined()
+    expect(response.user.role).toBe('user')
+  })
+
   it('should handle email confirmation with invalid token', async () => {
     // Test that the endpoint redirects for invalid tokens
     const uniqueEmail = `test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}@example.com`
