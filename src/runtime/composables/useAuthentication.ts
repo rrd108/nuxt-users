@@ -1,4 +1,4 @@
-import { useState, useRuntimeConfig, useFetch } from '#app'
+import { useState, useRuntimeConfig, useFetch, useRequestHeaders } from '#app'
 import { computed, readonly } from 'vue'
 import type { User, UserWithoutPassword } from 'nuxt-users/utils'
 
@@ -59,10 +59,13 @@ export const useAuthentication = () => {
       let userData: UserWithoutPassword | null = null
 
       if (useSSR) {
-        // Use useFetch for SSR - properly handles cookies
+        // Use useFetch for SSR - must forward cookie header so /me can read auth_token.
+        // useRequestFetch does not always propagate in plugin->composable->useFetch chain.
+        const headers = useRequestHeaders(['cookie'])
         const { data, error } = await useFetch<{ user: UserWithoutPassword }>(`${apiBasePath}/me`, {
           server: true,
-          lazy: false
+          lazy: false,
+          ...(Object.keys(headers).length ? { headers } : {})
         })
 
         if (error.value) {
