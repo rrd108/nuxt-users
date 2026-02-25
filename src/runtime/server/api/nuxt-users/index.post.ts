@@ -22,12 +22,12 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Create the new user
+    // Create the new user - role is always set to default 'user' on registration
+    // Client should never be able to set their own role
     const newUser = await createUser({
       email: body.email,
       name: body.name,
-      password: body.password,
-      role: body.role // role is optional
+      password: body.password
     }, options)
 
     return { user: newUser }
