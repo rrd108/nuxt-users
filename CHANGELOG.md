@@ -1,6 +1,35 @@
 # Changelog
 
 
+## v1.44.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.43.0...v1.44.0)
+
+### 🚀 Enhancements
+
+- Auto-runs database migrations on startup ([f4a1527](https://github.com/rrd108/nuxt-users/commit/f4a1527))
+
+### 🩹 Fixes
+
+- **auth:** Propagate cookie for SSR authentication ([97faa2d](https://github.com/rrd108/nuxt-users/commit/97faa2d))
+
+### 📖 Documentation
+
+- Adds auto-migration feature ([eec4ab9](https://github.com/rrd108/nuxt-users/commit/eec4ab9))
+
+### 🏡 Chore
+
+- **release:** V1.43.0 ([f6f2f6e](https://github.com/rrd108/nuxt-users/commit/f6f2f6e))
+
+### ✅ Tests
+
+- Fix mysql error ([06b60a3](https://github.com/rrd108/nuxt-users/commit/06b60a3))
+- New test added ([3f67048](https://github.com/rrd108/nuxt-users/commit/3f67048))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.43.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.42.0...v1.43.0)
