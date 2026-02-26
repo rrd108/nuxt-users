@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v1.45.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.44.0...v1.45.0)
+
+### 🚀 Enhancements
+
+- Show/hide password icon at login ([4f69f85](https://github.com/rrd108/nuxt-users/commit/4f69f85))
+
+### 🩹 Fixes
+
+- **auth:** Propagate cookie for SSR authentication ([97faa2d](https://github.com/rrd108/nuxt-users/commit/97faa2d))
+
+### 🏡 Chore
+
+- **release:** V1.44.0 ([1c33ec9](https://github.com/rrd108/nuxt-users/commit/1c33ec9))
+
+### ✅ Tests
+
+- New test added ([3f67048](https://github.com/rrd108/nuxt-users/commit/3f67048))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.44.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.43.0...v1.44.0)
