@@ -238,7 +238,36 @@
 
 .n-users-form-group input[type="checkbox"] {
     width: auto;
-    margin: 0;
+    margin-right: 0.5rem;
+}
+
+/* Password Input with Toggle */
+.n-users-password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.n-users-password-wrapper input {
+    padding-right: 2.5rem;
+}
+
+.n-users-password-toggle {
+    position: absolute;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--nu-color-text-secondary, #6b7280);
+    transition: color 0.2s;
+}
+
+.n-users-password-toggle:hover {
+    color: var(--nu-color-text-primary, #000);
 }
 
 /* Google OAuth Button */

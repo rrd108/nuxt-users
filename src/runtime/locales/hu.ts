@@ -25,6 +25,8 @@ const huBase: LocaleMessages = {
   },
   login: {
     passwordLabel: 'Jelszó',
+    showPassword: 'Jelszó megjelenítése',
+    hidePassword: 'Jelszó elrejtése',
     submit: 'Bejelentkezés',
     submitting: 'Bejelentkezés...',
     forgotPasswordSending: 'Küldés...',

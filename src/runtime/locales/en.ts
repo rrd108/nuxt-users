@@ -27,6 +27,8 @@ export const en: LocaleMessages = {
     emailPlaceholder: 'Enter your email',
     passwordLabel: 'Password',
     passwordPlaceholder: 'Enter your password',
+    showPassword: 'Show password',
+    hidePassword: 'Hide password',
     rememberMe: 'Remember me',
     submit: 'Sign In',
     submitting: 'Signing in...',
