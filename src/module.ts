@@ -210,6 +210,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Auto-run migrations on server startup
     addServerPlugin(resolver.resolve('./runtime/server/plugins/auto-migrate'))
+    addServerPlugin(resolver.resolve('./runtime/server/plugins/validate-mailer-config'))
 
     addRouteMiddleware({
       name: 'authorization.client',
