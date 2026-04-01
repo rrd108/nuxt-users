@@ -1,7 +1,7 @@
 import { defineCommand } from 'citty'
-import { loadNuxt } from '@nuxt/kit'
 import type { ModuleOptions } from 'nuxt-users/utils'
-import { checkTableExists, getAppliedMigrations } from '../runtime/server/utils'
+import { checkTableExists } from '../runtime/server/utils/db'
+import { getAppliedMigrations } from '../runtime/server/utils/migrate'
 
 export default defineCommand({
   meta: {
@@ -10,6 +10,7 @@ export default defineCommand({
   },
   async run() {
     try {
+      const { loadNuxt } = await import('@nuxt/kit')
       console.log('[Nuxt Users] Loading Nuxt project...')
       console.log('[Nuxt Users] ℹ️  Note: CLI commands read .env files. If you use .env.local in development, export variables first:')
       console.log('[Nuxt Users]    set -a; source .env.local; set +a; npx nuxt-users <command>')

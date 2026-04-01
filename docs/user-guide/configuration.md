@@ -241,12 +241,22 @@ export default defineNuxtConfig({
 
 By default, the CLI reads `.env` files. If you use `.env.local` or another env file, export variables before running, otherwise `project-info` may show missing values.
 
+CLI commands can run in two ways:
+
+1. Local install in your app (`npm i nuxt-users`) and then `npx nuxt-users <command>`
+2. Ephemeral execution with `npx --yes nuxt-users <command>`
+
+If `npx` prompts with `Need to install...`, either accept the prompt or use `--yes`.
+
 ```bash
 # Using .env.local
 set -a; source .env.local; set +a; npx nuxt-users project-info
 
 # Or pass vars inline
 DB_CONNECTOR=mysql DB_HOST=localhost DB_USER=myapp DB_PASSWORD=secret DB_NAME=prod npx nuxt-users project-info
+
+# Force ephemeral npx execution without prompt
+npx --yes nuxt-users project-info
 
 # Standard commands
 npx nuxt-users migrate

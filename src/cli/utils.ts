@@ -1,6 +1,5 @@
-import { defaultOptions } from '../module'
+import { defaultOptions } from '../default-options'
 import type { DatabaseConfig, DatabaseType, ModuleOptions } from 'nuxt-users/utils'
-import { loadNuxt } from '@nuxt/kit'
 import { defu } from 'defu'
 
 export const getOptionsFromEnv = (): ModuleOptions => {
@@ -52,6 +51,7 @@ export const loadOptions = async (): Promise<ModuleOptions> => {
     console.log('[Nuxt Users] ℹ️  Note: CLI commands read .env files. If you use .env.local in development, export variables first:')
     console.log('[Nuxt Users]    set -a; source .env.local; set +a; npx nuxt-users <command>')
     console.log('[Nuxt Users]    In production, environment variables are set directly in the deployment environment.')
+    const { loadNuxt } = await import('@nuxt/kit')
     const nuxt = await loadNuxt({ cwd: process.cwd(), ready: false })
 
     // Get both configurations

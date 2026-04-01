@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { createPasswordResetTokensTable } from '../runtime/server/utils'
+import { createPasswordResetTokensTable } from '../runtime/server/utils/create-password-reset-tokens-table'
 import { loadOptions } from './utils'
 
 export default defineCommand({

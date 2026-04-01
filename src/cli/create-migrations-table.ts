@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { createMigrationsTable } from '../runtime/server/utils'
+import { createMigrationsTable } from '../runtime/server/utils/create-migrations-table'
 import { loadOptions } from './utils'
 
 export default defineCommand({

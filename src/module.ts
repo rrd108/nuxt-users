@@ -1,60 +1,9 @@
 import { defineNuxtModule, createResolver, addServerHandler, addComponentsDir, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir, addServerScanDir, addServerPlugin } from '@nuxt/kit'
 import { defu } from 'defu'
 import type { ModuleOptions } from './types'
+import { defaultOptions } from './default-options'
 
-export const defaultOptions: ModuleOptions = {
-  connector: {
-    name: 'sqlite',
-    options: {
-      path: './data/users.sqlite3',
-    },
-  },
-  apiBasePath: '/api/nuxt-users',
-  tables: {
-    migrations: 'migrations',
-    users: 'users',
-    personalAccessTokens: 'personal_access_tokens',
-    passwordResetTokens: 'password_reset_tokens',
-  },
-  mailer: { // Added default mailer (example using ethereal.email)
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false,
-    auth: {
-      user: 'user@ethereal.email', // Replace with actual Ethereal user
-      pass: 'password', // Replace with actual Ethereal password
-    },
-    defaults: {
-      from: '"Nuxt Users Module" <noreply@example.com>',
-    },
-  },
-  passwordResetUrl: '/reset-password',
-  emailConfirmationUrl: '/email-confirmation',
-  auth: {
-    whitelist: [],
-    tokenExpiration: 24 * 60, // 24 hours in minutes
-    rememberMeExpiration: 30, // 30 days
-    permissions: {}, // Empty by default - whitelist approach
-  },
-  passwordValidation: {
-    minLength: 8,
-    requireUppercase: true,
-    requireLowercase: true,
-    requireNumbers: true,
-    requireSpecialChars: true,
-    preventCommonPasswords: true,
-  },
-  hardDelete: false,
-  locale: {
-    default: 'en',
-    fallbackLocale: 'en',
-    texts: {}
-  },
-  tokenCleanupSchedule: '0 2 * * *', // Daily at 2 AM
-  theme: {
-    enabled: true
-  }
-}
+export { defaultOptions } from './default-options'
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {

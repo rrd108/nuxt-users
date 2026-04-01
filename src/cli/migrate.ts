@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { loadOptions } from './utils'
-import { runMigrations } from '../runtime/server/utils'
+import { runMigrations } from '../runtime/server/utils/migrate'
 
 export default defineCommand({
   meta: {
