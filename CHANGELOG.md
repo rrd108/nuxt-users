@@ -1,6 +1,29 @@
 # Changelog
 
 
+## v1.46.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.45.0...v1.46.0)
+
+### 🚀 Enhancements
+
+- Show/hide password icon at login ([4f69f85](https://github.com/rrd108/nuxt-users/commit/4f69f85))
+- Validate custom mailer 'from' address ([97a4ce0](https://github.com/rrd108/nuxt-users/commit/97a4ce0))
+
+### 💅 Refactors
+
+- **cli:** Improve module resolution and utility structure ([736e8b9](https://github.com/rrd108/nuxt-users/commit/736e8b9))
+
+### 🏡 Chore
+
+- **release:** V1.45.0 ([021b43a](https://github.com/rrd108/nuxt-users/commit/021b43a))
+- Update docs ([de562df](https://github.com/rrd108/nuxt-users/commit/de562df))
+- Package updates ([2f83354](https://github.com/rrd108/nuxt-users/commit/2f83354))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.45.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.44.0...v1.45.0)
