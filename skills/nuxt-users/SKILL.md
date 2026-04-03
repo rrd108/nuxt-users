@@ -114,6 +114,14 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
   npx nuxt-users create-migrations-table
   ```
 
+> **Production tip:** On servers without local `node_modules` (e.g., some production deployments), `npx` may try to download the package. Add a script to your app's `package.json` to avoid this:
+> ```json
+> "scripts": {
+>   "nuxt-users": "nuxt-users"
+> }
+> ```
+> Then run: `npm run nuxt-users create-user -e admin@example.com -n "Admin" -p password123 -r admin`
+
 ## Composables (auto-imported)
 
 - **useAuthentication()** — `user`, `isAuthenticated`, `login(user, rememberMe?)`, `logout()`, `fetchUser(useSSR?)`, `initializeUser()`

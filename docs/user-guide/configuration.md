@@ -263,6 +263,33 @@ npx nuxt-users migrate
 npx nuxt-users create-user -e admin@example.com -n "Admin" -p secure123
 ```
 
+### Using nuxt-users CLI in Production
+
+On production servers without a local `node_modules`, running `npx nuxt-users` may attempt to download the package. To avoid this, add the CLI as a script in your Nuxt app's `package.json`:
+
+```json
+{
+  "scripts": {
+    "nuxt-users": "nuxt-users"
+  }
+}
+```
+
+Then you can run CLI commands using `npm run nuxt-users`:
+
+```bash
+# Create a user
+npm run nuxt-users create-user -e admin@example.com -n "Admin User" -p password123 -r admin
+
+# Run migrations
+npm run nuxt-users migrate
+
+# Get project info
+npm run nuxt-users project-info
+```
+
+This approach works because npm adds the project's `node_modules/.bin` to the PATH during script execution.
+
 The CLI will:
 1. First try to load your `nuxt.config.ts` configuration
 2. Use top-level `nuxtUsers` if present
