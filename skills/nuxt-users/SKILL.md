@@ -90,7 +90,7 @@ All options live under `nuxtUsers` in `nuxt.config.ts`.
 | Data | `hardDelete` | `true` = hard delete, `false` = soft delete (default) |
 | Locale | `locale.default`, `locale.texts`, `locale.fallbackLocale` | Localization |
 
-Runtime config is also supported: use `runtimeConfig.nuxtUsers` for env-based or server-only settings; the CLI (e.g. `npx nuxt-users migrate`) reads from the same config when run from the project root.
+Runtime config is also supported: use `runtimeConfig.nuxtUsers` for env-based or server-only settings. The CLI merges that when `loadNuxt` succeeds from the **project root**. If `loadNuxt` fails (no `nuxt.config`, output-only deploy, or missing `nuxt`/`@nuxt/kit` under `--omit=dev`), the CLI falls back to `DB_*` env vars and **defaults** for other options — custom `tables` / `passwordValidation` from config may not apply. See `docs/user-guide/configuration.md` (CLI sections).
 
 ## CLI commands
 
@@ -114,13 +114,7 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
   npx nuxt-users create-migrations-table
   ```
 
-> **Production tip:** On servers without local `node_modules` (e.g., some production deployments), `npx` may try to download the package. Add a script to your app's `package.json` to avoid this:
-> ```json
-> "scripts": {
->   "nuxt-users": "nuxt-users"
-> }
-> ```
-> Then run: `npm run nuxt-users create-user -e admin@example.com -n "Admin" -p password123 -r admin`
+> **Production:** The CLI is not inside `.output/` alone; you need `nuxt-users` (and peers) installed where you run Node. `npx` may download the package if absent. A `package.json` script (`"nuxt-users": "nuxt-users"`) uses the local binary. **Full config** requires the app root with `nuxt.config` and resolvable `@nuxt/kit`; build-only or `omit=dev` deploys often hit **env fallback** (`DB_*`) instead — see configuration docs.
 
 ## Composables (auto-imported)
 
@@ -144,8 +138,8 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
 1. **Users get redirected to login on protected routes**  
    Configure `nuxtUsers.auth.permissions` so each role has access to the routes they need (e.g. `admin: ['*']`, `user: ['/profile']`).
 
-2. **CLI says config not found**  
-   Run CLI from the directory that contains `nuxt.config.ts`. For runtime-only options, ensure env vars or `runtimeConfig.nuxtUsers` are set as documented.
+2. **CLI says config not found or uses wrong tables / password rules**  
+   Run the CLI from the directory that contains `nuxt.config`. If you only deploy `.output/` or run with `nuxt` omitted from production, `loadNuxt` may fail and the CLI uses `DB_*` fallback with **defaults** for non-connector options. Set `DB_*` (and see docs) or run the CLI from CI with a full app checkout.
 
 3. **Migrations table missing**  
    Run `npx nuxt-users migrate` once from the project root. The module will warn at runtime if the migrations table is missing.

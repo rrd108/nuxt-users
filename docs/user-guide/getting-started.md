@@ -45,7 +45,7 @@ The module automatically sets up:
 
 ### 3. Initialize Your Database
 
-Run the migration command to set up your database:
+Run the migration command from your **project root** (where `nuxt.config` lives) to set up your database:
 
 ```bash
 npx nuxt-users migrate
@@ -56,6 +56,8 @@ npx nuxt-users migrate
 ```bash
 npx nuxt-users create-user -e admin@example.com -n "Admin User" -p password123 -r admin
 ```
+
+If you later run the CLI on a production host or in Docker, read [Using nuxt-users CLI in Production](/user-guide/configuration#using-nuxt-users-cli-in-production) so expectations match how you deploy (source tree vs. build output only, and `devDependencies`).
 
 > ⚠️ **IMPORTANT: Permissions Required for Protected Routes**
 > 

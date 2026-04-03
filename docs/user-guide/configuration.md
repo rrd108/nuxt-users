@@ -104,14 +104,14 @@ export default defineNuxtConfig({
 
 ## Runtime Configuration Pattern
 
-As an alternative to top-level `nuxtUsers` configuration, you can use Nuxt's `runtimeConfig` pattern. This approach works for both your Nuxt app runtime and CLI commands (like `npx nuxt-users migrate`).
+As an alternative to top-level `nuxtUsers` configuration, you can use Nuxt's `runtimeConfig` pattern. This approach works for both your Nuxt app runtime and CLI commands (like `npx nuxt-users migrate`), **when the CLI can load your Nuxt project** (see [CLI Command Support](#cli-command-support) and [Using nuxt-users CLI in Production](#using-nuxt-users-cli-in-production)).
 
 ### Why Use Runtime Config?
 
 - **Environment Variables**: Easier integration with environment variables
 - **Security**: Server-side configuration is not exposed to the client
 - **Deployment**: Better suited for production deployments
-- **CLI Compatibility**: Works seamlessly with CLI commands
+- **CLI compatibility**: The CLI merges `runtimeConfig.nuxtUsers` the same way as the app when it successfully loads `nuxt.config` via `loadNuxt`. If the CLI cannot load Nuxt (minimal deploy, missing `@nuxt/kit`, wrong working directory), it falls back to a smaller set of [environment variables](#cli-fallback-environment-variables) and does not replay your full `nuxtUsers` config.
 
 ### Basic Runtime Config Setup
 
@@ -239,6 +239,10 @@ export default defineNuxtConfig({
 
 ### CLI Command Support
 
+The CLI is a **separate Node binary** shipped with the `nuxt-users` package (`node_modules/.bin/nuxt-users`). It is **not** part of the Nitro build output (`.output/`). To run it on a server you still need a Node environment where `nuxt-users` and its peers are installed, or use `npx` (which may download the package).
+
+**Always run commands from the project root** — the directory that contains `nuxt.config` (or `.mjs`). That is where the CLI looks for configuration.
+
 By default, the CLI reads `.env` files. If you use `.env.local` or another env file, export variables before running, otherwise `project-info` may show missing values.
 
 CLI commands can run in two ways:
@@ -265,7 +269,15 @@ npx nuxt-users create-user -e admin@example.com -n "Admin" -p secure123
 
 ### Using nuxt-users CLI in Production
 
-On production servers without a local `node_modules`, running `npx nuxt-users` may attempt to download the package. To avoid this, add the CLI as a script in your Nuxt app's `package.json`:
+**What “production” usually breaks:** Many deploys copy only the **built app** (e.g. `.output/`) or install **production dependencies only** (`npm ci --omit=dev`). In those cases:
+
+| Situation | What happens |
+|-----------|----------------|
+| Only `.output/` on the server, no app source | There is no `nuxt.config` in the working directory. The CLI **cannot** merge your full `nuxtUsers` / `runtimeConfig` and will use the [DB_* fallback](#cli-fallback-environment-variables) if you set those variables. Custom table names, password validation rules, and most other `nuxtUsers` options are **not** applied in that fallback path. |
+| `nuxt` is a **devDependency** and prod uses `omit=dev` | `loadNuxt` may fail because `@nuxt/kit` is not installed. The CLI then falls back to env vars. To keep **full config loading** on the server, ensure `nuxt` (and thus `@nuxt/kit`) is available in the environment where you run the CLI, or rely on the documented fallback env vars and accept default non-connector options. |
+| No `node_modules` at all | `npx nuxt-users` may **fetch** the package from the registry (needs network). That still does not give you a local `nuxt.config` unless you run the command from a checkout or image that contains your app source. |
+
+**Using a local binary (no `npx` download):** If your production server has `node_modules` with `nuxt-users` installed, add a script so npm resolves the local CLI:
 
 ```json
 {
@@ -275,7 +287,7 @@ On production servers without a local `node_modules`, running `npx nuxt-users` m
 }
 ```
 
-Then you can run CLI commands using `npm run nuxt-users`:
+Then you can run:
 
 ```bash
 # Create a user
@@ -288,13 +300,14 @@ npm run nuxt-users migrate
 npm run nuxt-users project-info
 ```
 
-This approach works because npm adds the project's `node_modules/.bin` to the PATH during script execution.
+This works because npm adds the project's `node_modules/.bin` to the `PATH` during script execution. You still need the **app root** (with `nuxt.config`) on disk for full config loading, unless you intentionally use the env-only fallback.
 
-The CLI will:
-1. First try to load your `nuxt.config.ts` configuration
-2. Use top-level `nuxtUsers` if present
-3. Otherwise use `runtimeConfig.nuxtUsers` if present
-4. Fall back to environment variables if no Nuxt config is found
+**Order the CLI follows when loading configuration:**
+
+1. Try to load your Nuxt project and read `nuxt.config` (merges top-level `nuxtUsers` with `runtimeConfig.nuxtUsers`).
+2. If that fails or no `nuxtUsers` config is found, fall back to [CLI fallback environment variables](#cli-fallback-environment-variables) (`DB_*`, etc.).
+
+**Custom tables and password rules:** If you rely on fallback mode, the CLI uses **defaults** for options not covered by `DB_*` (for example default table names and default password validation). For parity with your running app, run the CLI from a full project tree with `loadNuxt` working, or run migrations / `create-user` in **CI** before deploy.
 
 ### Runtime Environment Variable Support ✨
 
@@ -879,7 +892,7 @@ TOKEN_EXPIRATION=1440
 
 ### CLI Fallback Environment Variables
 
-When CLI commands (like `npx nuxt-users migrate`) can't find a `nuxt.config.ts` file or when the configuration is invalid, they fall back to reading these specific environment variables:
+When CLI commands (like `npx nuxt-users migrate`) can't load your Nuxt project, they fall back to reading these environment variables. That includes: missing or unreadable `nuxt.config`, running outside the project root, invalid config, or **failing to load `@nuxt/kit`** (for example when `nuxt` is not installed in the current environment). In fallback mode, only these variables drive the database connection; other `nuxtUsers` settings use [module defaults](#default-configuration), not your config file.
 
 ```bash
 # Database Configuration
@@ -914,10 +927,12 @@ npx nuxt-users migrate
 ```
 
 **When CLI fallback is used:**
-- No `nuxt.config.ts` file exists
-- `nuxt.config.ts` file is malformed/invalid
-- Neither `nuxtUsers` nor `runtimeConfig.nuxtUsers` configuration is found
-- CLI is run outside a Nuxt project
+
+- No `nuxt.config` file exists in the current working directory (wrong directory, or output-only deploy without source)
+- `nuxt.config` is malformed or invalid
+- Neither `nuxtUsers` nor `runtimeConfig.nuxtUsers` is present after loading Nuxt
+- `loadNuxt` fails (for example **`@nuxt/kit` not installed** — common if `nuxt` is omitted via `--omit=dev`)
+- CLI is run outside a Nuxt project or from a folder that only contains the built server (e.g. only `.output/`)
 
 ## Configuration Validation
 

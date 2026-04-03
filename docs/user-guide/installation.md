@@ -86,7 +86,7 @@ export default defineNuxtConfig({
 
 ## Database Setup
 
-After installation, you need to set up your database:
+After installation, you need to set up your database. Run commands **from the project root** (next to `nuxt.config`). The CLI is installed with the package; it is not embedded in the production server bundle alone — see [Using nuxt-users CLI in Production](/user-guide/configuration#using-nuxt-users-cli-in-production) if you deploy after `nuxt build`.
 
 ```bash
 # Run all migrations (recommended)

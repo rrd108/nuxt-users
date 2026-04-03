@@ -179,9 +179,11 @@ Then create your custom plugin that manually controls when migrations run.
 For production deployments, you may want to run migrations manually:
 
 ```bash
-# Run migrations via CLI
+# Run from your Nuxt project root (where nuxt.config lives)
 npx nuxt-users migrate
 ```
+
+If you run this on a production server after build-only deploys, read [Using nuxt-users CLI in Production](/user-guide/configuration#using-nuxt-users-cli-in-production).
 
 Or programmatically:
 
