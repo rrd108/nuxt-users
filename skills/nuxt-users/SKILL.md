@@ -9,19 +9,7 @@ metadata:
 
 # Nuxt Users skill
 
-This skill helps you work with the **nuxt-users** module: user authentication, authorization, database setup, and CLI for Nuxt 3 and Nuxt 4 apps.
-
-## When to use this skill
-
-- User asks to add login, register, or logout to a Nuxt app
-- User needs to set up or change the database (SQLite, MySQL, PostgreSQL) for nuxt-users
-- User wants to run CLI commands: `npx nuxt-users migrate`, `npx nuxt-users create-user`
-- User needs to configure permissions, roles, or public routes (whitelist)
-- User is customizing password validation, session duration, or mailer (password reset)
-- User is using composables like `useAuthentication`, `useUsers`, `usePublicPaths`, or `usePasswordValidation`
-- User is styling or integrating components like `NUsersLoginForm`, `NUsersLogoutLink`, `NUsersProfileInfo`, `NUsersResetPasswordForm`, `NUsersList`, `NUsersUserForm`
-
-## Step-by-step: initial setup
+## Initial setup
 
 1. **Install the module and peer dependencies**
    ```bash
@@ -49,8 +37,7 @@ This skill helps you work with the **nuxt-users** module: user authentication, a
    ```
    Flags: `-e` email, `-n` name, `-p` password, `-r` role (optional).
 
-5. **Configure permissions (required for protected routes)**
-   Without `auth.permissions`, authenticated users cannot access protected routes. Prefer early configuration:
+5. **Configure permissions**
    ```ts
    export default defineNuxtConfig({
      modules: ['nuxt-users'],
@@ -90,7 +77,7 @@ All options live under `nuxtUsers` in `nuxt.config.ts`.
 | Data | `hardDelete` | `true` = hard delete, `false` = soft delete (default) |
 | Locale | `locale.default`, `locale.texts`, `locale.fallbackLocale` | Localization |
 
-Runtime config is also supported: use `runtimeConfig.nuxtUsers` for env-based or server-only settings. The CLI merges that when `loadNuxt` succeeds from the **project root**. If `loadNuxt` fails (no `nuxt.config`, output-only deploy, or missing `nuxt`/`@nuxt/kit` under `--omit=dev`), the CLI falls back to `DB_*` env vars and **defaults** for other options — custom `tables` / `passwordValidation` from config may not apply. See `docs/user-guide/configuration.md` (CLI sections).
+Runtime config is also supported: use `runtimeConfig.nuxtUsers` for env-based or server-only settings.
 
 ## CLI commands
 
@@ -106,7 +93,7 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
   npx nuxt-users create-user -e <email> -n "<name>" -p <password> [-r <role>]
   ```
 
-- **Legacy/table creation** (if needed for older setups)
+- **Legacy/table creation**
   ```bash
   npx nuxt-users create-users-table
   npx nuxt-users create-personal-access-tokens-table
@@ -114,7 +101,7 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
   npx nuxt-users create-migrations-table
   ```
 
-> **Production:** The CLI is not inside `.output/` alone; you need `nuxt-users` (and peers) installed where you run Node. `npx` may download the package if absent. A `package.json` script (`"nuxt-users": "nuxt-users"`) uses the local binary. **Full config** requires the app root with `nuxt.config` and resolvable `@nuxt/kit`; build-only or `omit=dev` deploys often hit **env fallback** (`DB_*`) instead — see configuration docs.
+> **Production:** The CLI requires `nuxt-users` (and peers) installed where Node runs — it is not bundled inside `.output/`. Full config needs the app root with `nuxt.config`; build-only or `--omit=dev` deploys fall back to `DB_*` env vars. See `docs/user-guide/configuration.md`.
 
 ## Composables (auto-imported)
 
@@ -133,25 +120,14 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
 - `NUsersList` — List users (admin)
 - `NUsersUserForm` — Create/edit user form
 
-## Common edge cases
+## Troubleshooting
 
-1. **Users get redirected to login on protected routes**  
-   Configure `nuxtUsers.auth.permissions` so each role has access to the routes they need (e.g. `admin: ['*']`, `user: ['/profile']`).
-
-2. **CLI says config not found or uses wrong tables / password rules**  
-   Run the CLI from the directory that contains `nuxt.config`. If you only deploy `.output/` or run with `nuxt` omitted from production, `loadNuxt` may fail and the CLI uses `DB_*` fallback with **defaults** for non-connector options. Set `DB_*` (and see docs) or run the CLI from CI with a full app checkout.
-
-3. **Migrations table missing**  
-   Run `npx nuxt-users migrate` once from the project root. The module will warn at runtime if the migrations table is missing.
-
-4. **Password validation too strict**  
-   Adjust `nuxtUsers.passwordValidation` (e.g. lower `minLength`, set `requireUppercase`/`requireNumbers`/`requireSpecialChars` to `false`). Do not disable all checks in production without good reason.
-
-5. **Database driver errors**  
-   Install the correct peer: SQLite → `better-sqlite3`, MySQL → `mysql2`, PostgreSQL → `pg`. Ensure `connector.name` and `connector.options` match the driver and environment (e.g. correct host, port, credentials).
-
-6. **Google OAuth**  
-   Set `nuxtUsers.auth.google` with `clientId`, `clientSecret`, and optionally `callbackUrl`, `successRedirect`, `errorRedirect`, `scopes`, `allowAutoRegistration`.
+| Symptom | Fix |
+|---------|-----|
+| Redirected to login on protected routes | Set `auth.permissions` so each role has access to needed routes |
+| CLI config not found / wrong tables | Run CLI from the directory containing `nuxt.config`; see production note above |
+| Migrations table missing | Run `npx nuxt-users migrate` from project root |
+| Database driver errors | Install correct peer: SQLite → `better-sqlite3`, MySQL → `mysql2`, PostgreSQL → `pg` |
 
 ## File references
 
