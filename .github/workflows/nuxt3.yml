@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mariadb:10.11
+        image: mariadb:12.2
         env:
           MARIADB_ROOT_PASSWORD: rrd
           MARIADB_DATABASE: test_db
