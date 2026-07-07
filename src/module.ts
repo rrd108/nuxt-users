@@ -255,6 +255,13 @@ export default defineNuxtModule<ModuleOptions>({
       handler: resolver.resolve('./runtime/server/api/nuxt-users/index.post')
     })
 
+    // Inactive users
+    addServerHandler({
+      route: `${base}/inactive`,
+      method: 'get',
+      handler: resolver.resolve('./runtime/server/api/nuxt-users/inactive.get')
+    })
+
     addServerHandler({
       route: `${base}/:id`,
       method: 'get',
