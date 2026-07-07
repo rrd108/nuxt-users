@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v1.48.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.47.0...v1.48.0)
+
+### 🚀 Enhancements
+
+- Improve nuxt-users skill score to 100% ([29d7f46](https://github.com/rrd108/nuxt-users/commit/29d7f46))
+
+### 🩹 Fixes
+
+- GET /api/nuxt-users/inactive returns 400 'Invalid user ID' — dynamic :id route captures /inactive path closes #195 ([#195](https://github.com/rrd108/nuxt-users/issues/195))
+
+### 📖 Documentation
+
+- Update info how to use cli on prod ([63799d1](https://github.com/rrd108/nuxt-users/commit/63799d1))
+- Clarify CLI configuration loading and production behavior ([7dba30f](https://github.com/rrd108/nuxt-users/commit/7dba30f))
+
+### 🏡 Chore
+
+- Add release preflight checks and dry-run ([30bd7b1](https://github.com/rrd108/nuxt-users/commit/30bd7b1))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+- Rohan-tessl ([@rohan-tessl](https://github.com/rohan-tessl))
+
 ## v1.46.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.45.0...v1.46.0)
