@@ -474,6 +474,8 @@ Configure email settings to enable password reset functionality:
 
 > **Required peer dependency**: `nodemailer` (for all email functionality)
 
+> **Important**: You must configure `mailer.defaults.from` to set the sender email address. Without this, emails will be sent from `"Nuxt Users Module" <noreply@example.com>`.
+
 ### Development Setup (Ethereal Email)
 
 For testing during development:
