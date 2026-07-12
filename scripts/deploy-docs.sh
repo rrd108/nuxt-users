@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # Configuration
-SERVER_HOST="34.159.83.210"
-SERVER_USER="sravanam"
+SERVER_HOST="sravanam"
 REMOTE_DOCS_PATH="/var/www/nuxt-users.webmania.cc"
 LOCAL_BUILD_PATH="docs/.vitepress/dist"
 
@@ -28,7 +27,7 @@ tar -czf "$TEMP_TAR" -C "$LOCAL_BUILD_PATH" .
 
 # Upload and deploy
 echo -e "${YELLOW}📤 Uploading to $SERVER_HOST...${NC}"
-ssh "$SERVER_USER@$SERVER_HOST" << EOF
+ssh "$SERVER_HOST" << EOF
     # Create backup of current docs
     if [ -d "$REMOTE_DOCS_PATH" ]; then
         echo "📋 Creating backup of current documentation..."
@@ -45,10 +44,10 @@ ssh "$SERVER_USER@$SERVER_HOST" << EOF
 EOF
 
 # Copy the tar file to server
-scp "$TEMP_TAR" "$SERVER_USER@$SERVER_HOST:/tmp/"
+scp "$TEMP_TAR" "$SERVER_HOST:/tmp/"
 
 # Extract and deploy on server
-ssh "$SERVER_USER@$SERVER_HOST" << EOF
+ssh "$SERVER_HOST" << EOF
     echo "📦 Extracting documentation..."
     tar -xzf "/tmp/$TEMP_TAR" -C "$REMOTE_DOCS_PATH"
     
