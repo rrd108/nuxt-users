@@ -31,6 +31,21 @@ pnpm install
 pnpm approve-builds
 ```
 
+### Yarn 2+ Users
+
+Yarn 2+ does not automatically run build scripts for security reasons. You need to "unplug" `better-sqlite3` by adding this to your `.yarnrc.yml` file:
+
+```yaml
+unplugged:
+  - "better-sqlite3"
+```
+
+Then run:
+
+```bash
+yarn install
+```
+
 ## Peer Dependencies
 
 This module uses peer dependencies to avoid bundling unnecessary packages and to give you control over which database and email providers you want to use. You must manually install these dependencies in your project:
