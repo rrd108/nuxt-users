@@ -22,6 +22,9 @@ This module uses peer dependencies to avoid bundling unnecessary packages and to
 # Database support (choose one or more based on your needs)
 npm install db0 better-sqlite3 mysql2 pg
 
+# TypeScript types for SQLite (recommended)
+npm install -D @types/better-sqlite3
+
 # Password hashing
 npm install bcrypt
 
