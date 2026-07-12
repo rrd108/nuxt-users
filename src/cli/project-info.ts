@@ -55,7 +55,7 @@ export default defineCommand({
 
         // Check migrations table
         try {
-          const migrationsTableExists = await checkTableExists(nuxtUsersConfig, 'migrations')
+          const migrationsTableExists = await checkTableExists(nuxtUsersConfig, nuxtUsersConfig.tables?.migrations || 'migrations')
           console.log('[Nuxt Users] 📊 Migration Status:')
           if (migrationsTableExists) {
             const appliedMigrations = await getAppliedMigrations(nuxtUsersConfig)

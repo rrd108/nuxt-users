@@ -52,7 +52,7 @@ export const getAppliedMigrations = async (options: ModuleOptions): Promise<stri
   const db = await useDb(options)
 
   try {
-    const result = await db.sql`SELECT name FROM migrations ORDER BY id` as { rows: Array<{ name: string }> }
+    const result = await db.sql`SELECT name FROM {${options.tables.migrations}} ORDER BY id` as { rows: Array<{ name: string }> }
     return result.rows.map(row => row.name)
   }
   catch {
@@ -64,7 +64,7 @@ export const getAppliedMigrations = async (options: ModuleOptions): Promise<stri
 export const markMigrationAsApplied = async (options: ModuleOptions, migrationName: string): Promise<void> => {
   const db = await useDb(options)
 
-  await db.sql`INSERT INTO migrations (name) VALUES (${migrationName})`
+  await db.sql`INSERT INTO {${options.tables.migrations}} (name) VALUES (${migrationName})`
 }
 
 export const runMigrations = async (options: ModuleOptions): Promise<void> => {

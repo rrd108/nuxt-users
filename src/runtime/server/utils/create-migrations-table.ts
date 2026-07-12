@@ -4,7 +4,7 @@ import type { ModuleOptions } from 'nuxt-users/utils'
 export const createMigrationsTable = async (options: ModuleOptions) => {
   const connectorName = options.connector!.name
   const db = await useDb(options)
-  const tableName = 'migrations'
+  const tableName = options.tables.migrations
 
   console.log(`[Nuxt Users] DB:Create Migrations ${connectorName} Table Creating ${tableName} table with ${connectorName} connector...`)
 

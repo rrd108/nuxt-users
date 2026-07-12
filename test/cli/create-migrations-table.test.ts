@@ -82,6 +82,21 @@ describe('CLI: Create Migrations Table', () => {
     `).rejects.toThrow()
   })
 
+  it('should use custom table name from options', async () => {
+    const customName = 'custom_migrations'
+    testOptions.tables.migrations = customName
+
+    await createMigrationsTable(testOptions)
+
+    // Verify custom table exists
+    const result = await db.sql`SELECT 1 FROM {${customName}} LIMIT 1`
+    expect(result).toBeDefined()
+
+    // Verify default table does NOT exist
+    const defaultResult = await db.sql`SELECT 1 FROM migrations LIMIT 1`.catch(() => null)
+    expect(defaultResult).toBeNull()
+  })
+
   it('should handle CREATE TABLE IF NOT EXISTS correctly', async () => {
     // Create table first time
     await createMigrationsTable(testOptions)
