@@ -6,15 +6,10 @@ import { isBuildTime } from './build-time'
 
 const dbCache = new Map<string, Database>()
 
-// Type for databases that have a disconnect method
-interface DisconnectableDatabase extends Database {
-  disconnect(): Promise<void>
-}
-
 export const closeAllDbConnections = async () => {
   for (const db of dbCache.values()) {
-    if (db && typeof (db as DisconnectableDatabase).disconnect === 'function') {
-      await (db as DisconnectableDatabase).disconnect()
+    if (db && typeof db.dispose === 'function') {
+      await db.dispose()
     }
   }
   dbCache.clear()
@@ -24,7 +19,7 @@ export const getConnector = async (name: string) => {
   try {
     switch (name) {
       case 'mysql':
-        return (await import('db0/connectors/mysql2')).default
+        return (await import('./mysql-connector')).default
       case 'postgresql':
         return (await import('db0/connectors/postgresql')).default
       case 'sqlite':

@@ -57,7 +57,7 @@ describe('Utils: DB', () => {
       expect(typeof connector).toBe('function')
     })
 
-    it.todo('should return mysql connector', async () => {
+    it('should return mysql connector', async () => {
       const connector = await getConnector('mysql')
       expect(connector).toBeDefined()
       expect(typeof connector).toBe('function')

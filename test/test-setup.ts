@@ -18,7 +18,7 @@ export const createTestSetup = async (options: TestSetupOptions) => {
 
   // Create database connection
   if (dbType === 'mysql') {
-    const mysql = await import('db0/connectors/mysql2')
+    const mysql = await import('../src/runtime/server/utils/mysql-connector')
     db = createDatabase(mysql.default(testOptions.connector!.options))
   }
   if (dbType === 'sqlite') {
