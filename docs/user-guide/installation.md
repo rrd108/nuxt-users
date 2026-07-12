@@ -10,6 +10,25 @@ This module is compatible with both **Nuxt 3** and **Nuxt 4**. The installation 
 npm install nuxt-users
 # or
 yarn add nuxt-users
+# or
+pnpm add nuxt-users
+```
+
+### pnpm Users
+
+If you're using pnpm with SQLite, you need to allow the `better-sqlite3` build script. Add this to your project's `package.json`:
+
+```json
+"pnpm": {
+  "allowed-build-scripts": ["better-sqlite3"]
+}
+```
+
+Then run:
+
+```bash
+pnpm install
+pnpm approve-builds
 ```
 
 ## Peer Dependencies
