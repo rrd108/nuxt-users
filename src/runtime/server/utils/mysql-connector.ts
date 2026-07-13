@@ -8,10 +8,16 @@ interface ConnectorOptions extends PoolOptions {
   database?: string
 }
 
-class BoundableStatement {
-  _statement: BoundableStatement | null
+interface RawStatement {
+  all(...args: unknown[]): Promise<unknown[]>
+  run(...args: unknown[]): Promise<{ success: boolean }>
+  get(...args: unknown[]): Promise<unknown>
+}
 
-  constructor(rawStmt: BoundableStatement | null) {
+class BoundableStatement {
+  _statement: RawStatement | null
+
+  constructor(rawStmt: RawStatement | null) {
     this._statement = rawStmt
   }
 
@@ -105,7 +111,7 @@ export default function mysqlPoolConnector(opts: ConnectorOptions) {
 
   return {
     name: 'mysql',
-    dialect: 'mysql',
+    dialect: 'mysql' as const,
     getInstance: getPool,
     exec: (sql: string) => query(sql),
     prepare: (sql: string) => new StatementWrapper(sql, query),
