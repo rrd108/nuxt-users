@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v1.48.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.48.0...v1.48.1)
+
+### 🩹 Fixes
+
+- **mysql:** Use connection pool instead of single connection ([#202](https://github.com/rrd108/nuxt-users/pull/202))
+- Use configured migrations table name instead of hardcoded 'migrations' ([#34](https://github.com/rrd108/nuxt-users/pull/34))
+- **docs:** Use SSH alias for deploy and update release timestamp ([23d1efd](https://github.com/rrd108/nuxt-users/commit/23d1efd))
+
+### 💅 Refactors
+
+- **mysql-connector:** Enhance type safety for raw statements ([be1ff2c](https://github.com/rrd108/nuxt-users/commit/be1ff2c))
+
+### 📖 Documentation
+
+- Add mailer.defaults.from note ([#97](https://github.com/rrd108/nuxt-users/pull/97))
+- Add @types/better-sqlite3 install instruction ([#69](https://github.com/rrd108/nuxt-users/pull/69))
+- Add pnpm install instructions ([#50](https://github.com/rrd108/nuxt-users/pull/50))
+- Add yarn 2+ install instructions ([#49](https://github.com/rrd108/nuxt-users/pull/49))
+
+### 🏡 Chore
+
+- **release:** V1.48.0 ([f37934d](https://github.com/rrd108/nuxt-users/commit/f37934d))
+- Updtae dependecies ([4740eca](https://github.com/rrd108/nuxt-users/commit/4740eca))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.48.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.47.0...v1.48.0)
