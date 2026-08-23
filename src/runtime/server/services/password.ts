@@ -124,7 +124,7 @@ export const resetPassword = async (
     SELECT * FROM {${passwordResetTokensTable}}
     WHERE email = ${email}
     ORDER BY created_at DESC
-  ` as { rows: { id: number, email: string, token: string, created_at: string }[] }
+  ` as { rows: { id: number, email: string, token: string, created_at: Date | string }[] }
 
   if (tokenRecords.rows.length === 0) {
     console.log(`[Nuxt Users] No password reset tokens found for email: ${email}`)
@@ -154,9 +154,14 @@ export const resetPassword = async (
   const currentTimeString = now.toISOString().slice(0, 19).replace('T', ' ')
 
   // Parse the original timestamp and add expiration hours
-  const [datePart, timePart] = validTokenRecord.created_at.split(/[ T]/) // Split on space or T
+  // Handle both Date objects and string timestamps from different databases
+  const createdAtString = validTokenRecord.created_at instanceof Date
+    ? validTokenRecord.created_at.toISOString().slice(0, 19).replace('T', ' ')
+    : String(validTokenRecord.created_at)
+
+  const [datePart, timePart] = createdAtString.split(/[ T]/)
   if (!datePart || !timePart) {
-    console.log(`[Nuxt Users] Invalid timestamp format for token: ${validTokenRecord.created_at}`)
+    console.log(`[Nuxt Users] Invalid timestamp format for token: ${createdAtString}`)
     return false
   }
 
@@ -211,8 +216,8 @@ export const deleteExpiredPasswordResetTokens = async (
   const expirationDate = new Date()
   expirationDate.setHours(expirationDate.getHours() - TOKEN_EXPIRATION_HOURS)
 
-  // Use ISO format for database comparison since that's how timestamps are stored
-  const expirationDateString = expirationDate.toISOString()
+  // Match MySQL DATETIME format for reliable comparison across drivers
+  const expirationDateString = expirationDate.toISOString().slice(0, 19).replace('T', ' ')
 
   await db.sql`
     DELETE FROM {${passwordResetTokensTable}}
