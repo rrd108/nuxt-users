@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import bcrypt from 'bcrypt'
-import type { ModuleOptions, UserWithoutPassword } from '../../src/types'
+import type { ModuleOptions, User } from '../../src/types'
 import { defaultOptions } from '../../src/module'
 
 const mockSendMail = vi.fn()
@@ -28,10 +28,11 @@ const {
 } = await import('../../src/runtime/server/services/password')
 const { useDb, updateUserPassword, findUserByEmail } = await import('../../src/runtime/server/utils')
 
-const testUser: UserWithoutPassword = {
+const testUser: User = {
   id: 1,
   email: 'test@example.com',
   name: 'Test User',
+  password: 'hashed-password',
   role: 'user',
   active: true,
   created_at: '2024-01-01T00:00:00.000Z',

@@ -74,6 +74,7 @@ describe('Registration Service', () => {
         id: 1,
         email: registrationData.email,
         name: 'Existing User',
+        password: 'hashed-password',
         role: 'user',
         active: true,
         created_at: '2024-01-01T00:00:00.000Z',

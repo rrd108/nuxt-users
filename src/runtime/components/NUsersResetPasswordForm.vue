@@ -230,7 +230,7 @@ const handleSubmit = () => {
         <NUsersPasswordInput
           id="newPassword"
           v-model="passwordForm.newPassword"
-          :input-class="['n-users-form-input', { error: passwordValidation.errors.value.length > 0 && passwordForm.newPassword }]"
+          :input-class="['n-users-form-input', { error: passwordValidation.errors.value.length > 0 && !!passwordForm.newPassword }]"
           required
           :minlength="moduleOptions.passwordValidation?.minLength || 8"
           :disabled="isPasswordLoading"
