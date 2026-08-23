@@ -19,7 +19,9 @@ export const en: LocaleMessages = {
     edit: 'Edit',
     delete: 'Delete',
     loading: 'Loading...',
-    error: 'Error'
+    error: 'Error',
+    showPassword: 'Show password',
+    hidePassword: 'Hide password'
   },
   login: {
     title: 'Welcome Back',

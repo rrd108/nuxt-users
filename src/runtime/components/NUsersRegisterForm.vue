@@ -193,15 +193,14 @@ const handleSubmit = async () => {
       <slot name="password-field">
         <div class="n-users-form-group">
           <label for="password">{{ props.passwordLabel || t('register.passwordLabel') }}</label>
-          <input
+          <NUsersPasswordInput
             id="password"
             v-model="formData.password"
-            type="password"
             name="password"
             :placeholder="props.passwordPlaceholder || t('register.passwordPlaceholder')"
             required
             :minlength="passwordValidation?.minLength || 8"
-          >
+          />
         </div>
       </slot>
 
@@ -220,15 +219,14 @@ const handleSubmit = async () => {
       <slot name="confirm-password-field">
         <div class="n-users-form-group">
           <label for="confirmPassword">{{ props.confirmPasswordLabel || t('register.confirmPasswordLabel') }}</label>
-          <input
+          <NUsersPasswordInput
             id="confirmPassword"
             v-model="formData.confirmPassword"
-            type="password"
             name="confirmPassword"
             :placeholder="props.confirmPasswordPlaceholder || t('register.confirmPasswordPlaceholder')"
             required
-            :class="{ 'n-users-input-error': !passwordsMatch }"
-          >
+            :input-class="{ 'n-users-input-error': !passwordsMatch }"
+          />
           <small
             v-if="!passwordsMatch && formData.confirmPassword"
             class="n-users-error-text"

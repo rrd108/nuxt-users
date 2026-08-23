@@ -212,14 +212,14 @@ const handleSubmit = () => {
           for="currentPassword"
           class="n-users-form-label"
         >{{ props.currentPasswordLabel || t('resetPassword.currentPasswordLabel') }}</label>
-        <input
+        <NUsersPasswordInput
           id="currentPassword"
           v-model="passwordForm.currentPassword"
-          type="password"
-          class="n-users-form-input"
+          input-class="n-users-form-input"
           required
           :disabled="isPasswordLoading"
-        >
+          autocomplete="current-password"
+        />
       </div>
 
       <div class="n-users-form-group">
@@ -227,16 +227,15 @@ const handleSubmit = () => {
           for="newPassword"
           class="n-users-form-label"
         >{{ props.newPasswordLabel || t('resetPassword.newPasswordLabel') }}</label>
-        <input
+        <NUsersPasswordInput
           id="newPassword"
           v-model="passwordForm.newPassword"
-          type="password"
-          class="n-users-form-input"
+          :input-class="['n-users-form-input', { error: passwordValidation.errors.value.length > 0 && passwordForm.newPassword }]"
           required
           :minlength="moduleOptions.passwordValidation?.minLength || 8"
-          :class="{ error: passwordValidation.errors.value.length > 0 && passwordForm.newPassword }"
           :disabled="isPasswordLoading"
-        >
+          autocomplete="new-password"
+        />
 
         <NUsersPasswordStrengthIndicator
           :password="passwordForm.newPassword"
@@ -257,14 +256,14 @@ const handleSubmit = () => {
           for="newPasswordConfirmation"
           class="n-users-form-label"
         >{{ props.confirmPasswordLabel || t('resetPassword.confirmPasswordLabel') }}</label>
-        <input
+        <NUsersPasswordInput
           id="newPasswordConfirmation"
           v-model="passwordForm.newPasswordConfirmation"
-          type="password"
-          class="n-users-form-input"
+          input-class="n-users-form-input"
           required
           :disabled="isPasswordLoading"
-        >
+          autocomplete="new-password"
+        />
       </div>
 
       <div

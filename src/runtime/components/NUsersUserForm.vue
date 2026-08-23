@@ -147,11 +147,13 @@ const handleSubmit = async () => {
         <label for="password">
           {{ isEditMode ? 'Password (leave blank to keep current)' : 'Password:' }}
         </label>
-        <input
+        <NUsersPasswordInput
+          id="password"
           v-model="formData.password"
-          type="password"
+          name="password"
           :required="!isEditMode"
-        >
+          autocomplete="new-password"
+        />
 
         <NUsersPasswordStrengthIndicator
           :password="formData.password"

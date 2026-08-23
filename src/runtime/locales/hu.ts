@@ -21,7 +21,9 @@ const huBase: LocaleMessages = {
     edit: 'Szerkesztés',
     delete: 'Törlés',
     loading: 'Betöltés...',
-    error: 'Hiba'
+    error: 'Hiba',
+    showPassword: 'Jelszó megjelenítése',
+    hidePassword: 'Jelszó elrejtése'
   },
   login: {
     passwordLabel: 'Jelszó',
