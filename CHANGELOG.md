@@ -1,6 +1,35 @@
 # Changelog
 
 
+## v1.48.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.48.1...v1.48.2)
+
+### 🩹 Fixes
+
+- **password:** Handle MySQL Date objects in reset token expiry checks ([b311c68](https://github.com/rrd108/nuxt-users/commit/b311c68))
+- Resolve TypeScript errors in reset form and unit tests ([982e530](https://github.com/rrd108/nuxt-users/commit/982e530))
+
+### 💅 Refactors
+
+- **mysql-connector:** Enhance type safety for raw statements ([be1ff2c](https://github.com/rrd108/nuxt-users/commit/be1ff2c))
+- **components:** Extract shared password input with visibility toggle ([cbcab09](https://github.com/rrd108/nuxt-users/commit/cbcab09))
+
+### 🏡 Chore
+
+- Updtae dependecies ([4740eca](https://github.com/rrd108/nuxt-users/commit/4740eca))
+- **release:** V1.48.1 ([7195d94](https://github.com/rrd108/nuxt-users/commit/7195d94))
+
+### ✅ Tests
+
+- **password:** Cover reset and forgot-password service edge cases ([46dd38a](https://github.com/rrd108/nuxt-users/commit/46dd38a))
+- **registration:** Cover register and email confirmation service flows ([b72c0e3](https://github.com/rrd108/nuxt-users/commit/b72c0e3))
+- Skip npm test ([f865ff1](https://github.com/rrd108/nuxt-users/commit/f865ff1))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.48.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.48.0...v1.48.1)
