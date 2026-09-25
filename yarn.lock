@@ -5433,9 +5433,9 @@ fzf@^0.5.2:
   integrity sha512-Tt4kuxLXFKHy8KT40zwsUPUkg1CrsgY25FxA2U/j/0WgEDCk3ddc/zLTCCcbSHX9FcKtLuVaDGtGE/STWC+j3Q==
 
 gaxios@^7.0.0, gaxios@^7.1.4:
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/gaxios/-/gaxios-7.1.4.tgz#33a5b78e2c5c01cf5a5d17f58dd188839867fc9c"
-  integrity sha512-bTIgTsM2bWn3XklZISBTQX7ZSddGW+IO3bMdGaemHZ3tbqExMENHLx6kKZ/KlejgrMtj8q7wBItt51yegqalrA==
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/gaxios/-/gaxios-7.3.1.tgz#b26223db05856dfa5e2393ea376abad00e479c62"
+  integrity sha512-kB3rzJV7d9juLZh8/56QTXCwQfxyhdOMdyYk1HdQKFtF8TJTDTZQJtixWIwXdE9Jji91mC41DUNpjleo4L4eAQ==
   dependencies:
     extend "^3.0.2"
     https-proxy-agent "^7.0.1"
@@ -5583,9 +5583,9 @@ globby@^16.2.0:
     unicorn-magic "^0.4.0"
 
 google-auth-library@^10.4.0:
-  version "10.6.2"
-  resolved "https://registry.yarnpkg.com/google-auth-library/-/google-auth-library-10.6.2.tgz#44557c536aec626b7cda48a85b5d026e2c9b74c4"
-  integrity sha512-e27Z6EThmVNNvtYASwQxose/G57rkRuaRbQyxM2bvYLLX/GqWZ5chWq2EBoUchJbCc57eC9ArzO5wMsEmWftCw==
+  version "10.9.1"
+  resolved "https://registry.yarnpkg.com/google-auth-library/-/google-auth-library-10.9.1.tgz#af9852a328a6077e8ffbe776681b4ca9420a1714"
+  integrity sha512-i1ydyHrqcIxXkWh/uBmVkzCvIuq5yiK2ATndIe5XxKholrG/MTYP9xGYka4sQhrbIAgGjL2B6NOE7rFaiF3fXw==
   dependencies:
     base64-js "^1.3.0"
     ecdsa-sig-formatter "^1.0.11"
@@ -5594,10 +5594,15 @@ google-auth-library@^10.4.0:
     google-logging-utils "1.1.3"
     jws "^4.0.0"
 
-google-logging-utils@1.1.3, google-logging-utils@^1.0.0:
+google-logging-utils@1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/google-logging-utils/-/google-logging-utils-1.1.3.tgz#17b71f1f95d266d2ddd356b8f00178433f041b17"
   integrity sha512-eAmLkjDjAFCVXg7A1unxHsLf961m6y17QFqXqAXGj/gVkKFrEICfStRfwUlGNfeCEjNRa32JEWOUTlYXPyyKvA==
+
+google-logging-utils@^1.0.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/google-logging-utils/-/google-logging-utils-1.2.0.tgz#89dd643f986c765e61bfa2d01cada2292fe5bfd7"
+  integrity sha512-WE9av4wKDZgRjBwgVUabocx8T6/7o3Ca1Fat46FXDhXVAFibzNadedcOXrdgd1Kzmk8tsk/9ZH89Wyf/SqeZ3A==
 
 graceful-fs@^4.2.0, graceful-fs@^4.2.4, graceful-fs@^4.2.9:
   version "4.2.11"
