@@ -1,9 +1,5 @@
 # Installation
 
-## Nuxt Version Support
-
-This module is compatible with both **Nuxt 3** and **Nuxt 4**. The installation and configuration process is the same for both versions.
-
 ## Install the Module
 
 ```bash

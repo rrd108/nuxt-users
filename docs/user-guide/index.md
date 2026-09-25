@@ -18,7 +18,7 @@ Nuxt Users is a comprehensive authentication module that provides everything you
 ✅ **Production Ready** - Built with security best practices and battle-tested  
 ✅ **Flexible** - Customize everything from UI components to database schema  
 ✅ **TypeScript First** - Full type safety throughout your authentication flow  
-✅ **Modern Stack** - Designed specifically for Nuxt 3 and Nuxt 4  
+✅ **Modern Stack** - Designed specifically for Nuxt  
 
 ## Get Started in 3 Steps
 

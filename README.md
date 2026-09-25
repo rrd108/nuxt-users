@@ -4,11 +4,10 @@
 [![npm downloads](https://img.shields.io/npm/dm/nuxt-users.svg)](https://www.npmjs.com/package/nuxt-users)
 [![License](https://img.shields.io/npm/l/nuxt-users.svg)](https://github.com/rrd108/nuxt-users/blob/main/LICENSE)
 [![ci](https://github.com/rrd108/nuxt-users/actions/workflows/ci.yml/badge.svg)](https://github.com/rrd108/nuxt-users/actions/workflows/ci.yml)
-[![Nuxt 3](https://img.shields.io/badge/Nuxt-3-00DC82.svg?logo=nuxt.js&logoColor=white)](https://nuxt.com)
-[![Nuxt 4](https://img.shields.io/badge/Nuxt-4-00DC82.svg?logo=nuxt.js&logoColor=white)](https://nuxt.com)
+[![Nuxt](https://img.shields.io/badge/Nuxt-00DC82.svg?logo=nuxt.js&logoColor=white)](https://nuxt.com)
 
 
-A user authentication module for Nuxt 3 and Nuxt 4 with database support for SQLite, MySQL, and PostgreSQL.
+A user authentication module for Nuxt with database support for SQLite, MySQL, and PostgreSQL.
 
 ## Features
 
@@ -36,7 +35,7 @@ A user authentication module for Nuxt 3 and Nuxt 4 with database support for SQL
 - ⚡ **Developer Experience**
   - Zero-config setup with sensible defaults
   - TypeScript support throughout
-  - Nuxt 3 & 4 compatibility
+  - Nuxt compatibility
   - Easy customization and extension
 
 ## Agent Skill

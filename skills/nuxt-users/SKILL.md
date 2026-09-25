@@ -1,6 +1,6 @@
 ---
 name: nuxt-users
-description: Configure and use the nuxt-users module for Nuxt 3 and Nuxt 4. Use when adding authentication, user management, roles, password reset, database setup (SQLite/MySQL/PostgreSQL), or CLI commands (migrate, create-user). Covers nuxt.config (nuxtUsers), composables (useAuthentication, useUsers, usePublicPaths, usePasswordValidation, useNuxtUsersLocale), components (NUsersLoginForm, NUsersLogoutLink, etc.), and authorization (whitelist, permissions).
+description: Configure and use the nuxt-users module for Nuxt. Use when adding authentication, user management, roles, password reset, database setup (SQLite/MySQL/PostgreSQL), or CLI commands (migrate, create-user). Covers nuxt.config (nuxtUsers), composables (useAuthentication, useUsers, usePublicPaths, usePasswordValidation, useNuxtUsersLocale), components (NUsersLoginForm, NUsersLogoutLink, etc.), and authorization (whitelist, permissions).
 license: MIT
 metadata:
   author: rrd108
