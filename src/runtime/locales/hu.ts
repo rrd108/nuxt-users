@@ -133,6 +133,9 @@ const huBase: LocaleMessages = {
     users: 'felhasználó',
     previous: 'Előző',
     next: 'Következő'
+  },
+  userForm: {
+    customRoleOption: 'Egyedi…'
   }
 }
 
@@ -172,6 +175,9 @@ const huInformalOverrides: LocaleMessages = {
     processingMessage: 'Kérjük, várj, amíg feldolgozzuk az e-mail megerősítését.',
     successMessage: 'Az e-mail címed megerősítésre került és a fiókod aktív.',
     errorMessage: 'A megerősítő link érvénytelen vagy lejárt. Kérjük, próbáld újra regisztrálni vagy lépj kapcsolatba az ügyfélszolgálattal.'
+  },
+  userForm: {
+    customRolePlaceholder: 'Add meg az egyedi szerepkört'
   }
 }
 
@@ -211,6 +217,9 @@ const huFormalOverrides: LocaleMessages = {
     processingMessage: 'Kérjük, várjon, amíg feldolgozzuk az e-mail megerősítését.',
     successMessage: 'Az e-mail címe megerősítésre került és a fiókja aktív.',
     errorMessage: 'A megerősítő link érvénytelen vagy lejárt. Kérjük, próbáljon meg újra regisztrálni vagy lépjen kapcsolatba az ügyfélszolgálattal.'
+  },
+  userForm: {
+    customRolePlaceholder: 'Adja meg az egyedi szerepkört'
   }
 }
 

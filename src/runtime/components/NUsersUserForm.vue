@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import type { RuntimeModuleOptions, User } from 'nuxt-users/utils'
 import { getAvailableRoles, MAX_ROLE_LENGTH } from 'nuxt-users/utils'
 import { usePasswordValidation } from '../composables/usePasswordValidation'
+import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
 import { useRuntimeConfig } from '#imports'
 
 const CUSTOM_ROLE_OPTION = '__custom__'
@@ -32,6 +33,7 @@ const formData = ref(props.user ?? { ...emptyFormData })
 const { public: { nuxtUsers } } = useRuntimeConfig()
 const moduleOptions = nuxtUsers as RuntimeModuleOptions
 const passwordValidation = usePasswordValidation(moduleOptions)
+const { t } = useNuxtUsersLocale()
 const nameError = ref('')
 const roleError = ref('')
 const roleSelectValue = ref('')
@@ -256,7 +258,7 @@ const handleSubmit = async () => {
               v-if="allowCustomRoles"
               :value="CUSTOM_ROLE_OPTION"
             >
-              Custom…
+              {{ t('userForm.customRoleOption') }}
             </option>
           </select>
 
@@ -268,7 +270,7 @@ const handleSubmit = async () => {
             name="custom-role"
             :maxlength="MAX_ROLE_LENGTH"
             required
-            placeholder="Enter custom role"
+            :placeholder="t('userForm.customRolePlaceholder')"
             :class="{ error: roleError }"
           >
         </template>

@@ -150,5 +150,9 @@ export const en: LocaleMessages = {
     users: 'users',
     previous: 'Previous',
     next: 'Next'
+  },
+  userForm: {
+    customRoleOption: 'Custom…',
+    customRolePlaceholder: 'Enter custom role'
   }
 }
