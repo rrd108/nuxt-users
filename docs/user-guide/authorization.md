@@ -201,7 +201,7 @@ npx nuxt-users create-user -e editor@example.com -n "Editor User" -p editorpass1
 npx nuxt-users create-user -e moderator@example.com -n "Moderator User" -p modpass123 -r moderator
 ```
 
-The default role is `user` if not specified.
+The default role is `user` if not specified. Role values should match keys in `auth.permissions` unless `auth.allowCustomRoles` is `true` (or permissions are not configured yet).
 
 ## Best Practices
 

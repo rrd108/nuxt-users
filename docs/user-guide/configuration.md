@@ -79,6 +79,7 @@ export default defineNuxtConfig({
       whitelist: [], // Routes accessible without authentication
       tokenExpiration: 1440, // Token lifetime in minutes
       permissions: {} // Role-based access control
+      allowCustomRoles: false // Restrict roles to permissions keys
     },
     
     // Token cleanup schedule (cron expression)
@@ -634,10 +635,14 @@ nuxtUsers: {
       editor: [
         { path: '/api/content/*', methods: ['GET', 'POST', 'PATCH'] }
       ]
-    }
+    },
+    // Optional: allow roles not listed in permissions (default: false)
+    // allowCustomRoles: true
   }
 }
 ```
+
+The keys of `permissions` are the **predefined roles**. `NUsersUserForm` offers them in a select; create/update APIs reject unknown roles unless `allowCustomRoles` is `true`. If `permissions` is still empty (bootstrap), any role is accepted.
 
 Permission formats:
 - `'*'` - Access to everything
@@ -980,7 +985,8 @@ const defaults = {
   auth: {
     whitelist: [],
     tokenExpiration: 1440,
-    permissions: {}
+    permissions: {},
+    allowCustomRoles: false
   },
   passwordValidation: {
     minLength: 8,

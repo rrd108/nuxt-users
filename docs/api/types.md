@@ -138,6 +138,7 @@ interface RuntimeModuleOptions {
     tokenExpiration?: number
     rememberMeExpiration?: number
     permissions?: Record<string, (string | Permission)[]>
+    allowCustomRoles?: boolean
     google?: GoogleOAuthOptions
   }
   passwordValidation?: {
@@ -250,7 +251,10 @@ interface ModuleOptions {
   auth: {
     whitelist: string[]
     tokenExpiration: number
+    rememberMeExpiration: number
     permissions: Record<string, (string | Permission)[]>
+    allowCustomRoles: boolean
+    google?: GoogleOAuthOptions
   }
   passwordValidation: {
     minLength: number

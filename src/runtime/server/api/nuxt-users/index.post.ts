@@ -22,21 +22,28 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Create the new user - role is always set to default 'user' on registration
-    // Client should never be able to set their own role
+    // Create the new user (admin-only endpoint; role is validated against permissions)
     const newUser = await createUser({
       email: body.email,
       name: body.name,
-      password: body.password
+      password: body.password,
+      role: body.role
     }, options)
 
     return { user: newUser }
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   catch (error: any) {
+    const message = error?.message || 'Unknown error'
+    const isClientError = typeof message === 'string' && (
+      message.startsWith('Invalid role')
+      || message.startsWith('Role ')
+      || message.startsWith('Password validation')
+    )
+
     throw createError({
-      statusCode: 500,
-      statusMessage: `Error creating user: ${error.message}`
+      statusCode: isClientError ? 400 : 500,
+      statusMessage: `Error creating user: ${message}`
     })
   }
 })

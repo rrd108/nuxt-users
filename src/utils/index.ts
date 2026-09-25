@@ -1,4 +1,5 @@
 export { validatePassword, getPasswordValidationOptions, getPasswordStrengthColor, getPasswordStrengthText, type PasswordValidationResult, type PasswordValidationOptions } from './password-validation'
+export { getAvailableRoles, isValidRole, assertValidRole, MAX_ROLE_LENGTH, type RoleValidationOptions } from './role-validation'
 
 // Export locale utilities
 export { defaultLocaleMessages, en, hu, huFormal } from '../runtime/locales'

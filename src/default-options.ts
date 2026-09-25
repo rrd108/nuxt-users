@@ -33,6 +33,7 @@ export const defaultOptions: ModuleOptions = {
     tokenExpiration: 24 * 60,
     rememberMeExpiration: 30,
     permissions: {},
+    allowCustomRoles: false,
   },
   passwordValidation: {
     minLength: 8,

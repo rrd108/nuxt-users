@@ -40,6 +40,7 @@ export default defineNuxtModule<ModuleOptions>({
         tokenExpiration: runtimeConfigOptions.auth.tokenExpiration,
         rememberMeExpiration: runtimeConfigOptions.auth.rememberMeExpiration,
         permissions: runtimeConfigOptions.auth.permissions,
+        allowCustomRoles: runtimeConfigOptions.auth.allowCustomRoles ?? defaultOptions.auth.allowCustomRoles,
         ...(runtimeConfigOptions.auth.google && { google: runtimeConfigOptions.auth.google }),
         whitelist: (() => {
           const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]
@@ -121,7 +122,8 @@ export default defineNuxtModule<ModuleOptions>({
 
           return combinedWhitelist
         })(),
-        permissions: runtimeConfigOptions.auth?.permissions || defaultOptions.auth.permissions
+        permissions: runtimeConfigOptions.auth?.permissions || defaultOptions.auth.permissions,
+        allowCustomRoles: runtimeConfigOptions.auth?.allowCustomRoles ?? defaultOptions.auth.allowCustomRoles
       },
       apiBasePath: runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
     } as unknown as typeof nuxt.options.runtimeConfig.public.nuxtUsers

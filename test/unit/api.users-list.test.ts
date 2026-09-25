@@ -60,6 +60,7 @@ const testOptions: ModuleOptions = {
     tokenExpiration: 1440,
     rememberMeExpiration: 30,
     permissions: {}
+    allowCustomRoles: false
   },
   passwordValidation: {
     minLength: 8,

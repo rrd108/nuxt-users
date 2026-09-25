@@ -106,6 +106,27 @@ describe('User Utilities (src/utils/user.ts)', () => {
       expect(user.role).toBe('admin')
       expect(user).not.toHaveProperty('password')
     })
+
+    it('should reject roles not defined in permissions', async () => {
+      const userData = { email: 'mod@webmania.cc', name: 'Mod User', password: 'password123', role: 'moderator' }
+
+      await expect(createUser(userData, testOptions)).rejects.toThrow(/Invalid role/)
+    })
+
+    it('should allow custom roles when allowCustomRoles is true', async () => {
+      const optionsWithCustom = {
+        ...testOptions,
+        auth: {
+          ...testOptions.auth,
+          allowCustomRoles: true
+        }
+      }
+      const userData = { email: 'mod@webmania.cc', name: 'Mod User', password: 'password123', role: 'moderator' }
+
+      const user = await createUser(userData, optionsWithCustom)
+
+      expect(user.role).toBe('moderator')
+    })
   })
 
   describe('findUserByEmail', () => {
@@ -177,6 +198,13 @@ describe('User Utilities (src/utils/user.ts)', () => {
       // 4. Assert that the details are updated
       expect(dbUser.name).toBe(updates.name)
       expect(dbUser.role).toBe(updates.role)
+    })
+
+    it('should reject invalid roles on update', async () => {
+      const userData = { email: 'update-role@example.com', name: 'Original Name', password: 'password123' }
+      const createdUser = await createUser(userData, testOptions)
+
+      await expect(updateUser(createdUser.id, { role: 'moderator' }, testOptions)).rejects.toThrow(/Invalid role/)
     })
   })
 

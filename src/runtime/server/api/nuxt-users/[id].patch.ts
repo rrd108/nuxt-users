@@ -40,9 +40,16 @@ export default defineEventHandler(async (event) => {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   catch (error: any) {
+    const message = error?.message || 'Unknown error'
+    const isClientError = typeof message === 'string' && (
+      message.startsWith('Invalid role')
+      || message.startsWith('Role ')
+      || message === 'User not found.'
+    )
+
     throw createError({
-      statusCode: 500,
-      statusMessage: `Error updating user: ${error.message}`
+      statusCode: isClientError ? (message === 'User not found.' ? 404 : 400) : 500,
+      statusMessage: `Error updating user: ${message}`
     })
   }
 })

@@ -1,6 +1,6 @@
 import { useDb } from './db'
 import bcrypt from 'bcrypt'
-import { validatePassword, getPasswordValidationOptions } from 'nuxt-users/utils'
+import { validatePassword, getPasswordValidationOptions, assertValidRole } from 'nuxt-users/utils'
 import type { ModuleOptions, User, UserWithoutPassword } from 'nuxt-users/utils'
 
 interface CreateUserParams {
@@ -29,8 +29,11 @@ export const createUser = async (userData: CreateUserParams, options: ModuleOpti
   // Hash the password
   const hashedPassword = await bcrypt.hash(userData.password, 10)
 
-  // Set default role if not provided
-  const role = userData.role || 'user'
+  // Set default role if not provided, then validate against permissions
+  const role = assertValidRole(userData.role || 'user', {
+    permissions: options.auth.permissions,
+    allowCustomRoles: options.auth.allowCustomRoles
+  })
 
   // Insert the new user
   await db.sql`
@@ -146,6 +149,13 @@ export const updateUser = async (id: number, userData: Partial<User>, options: M
       throw new Error('User not found.')
     }
     return currentUser
+  }
+
+  if (userData.role !== undefined) {
+    userData.role = assertValidRole(userData.role, {
+      permissions: options.auth.permissions,
+      allowCustomRoles: options.auth.allowCustomRoles
+    })
   }
 
   // If the user is being deactivated, revoke their tokens

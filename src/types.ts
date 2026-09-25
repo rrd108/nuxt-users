@@ -148,6 +148,13 @@ export interface RuntimeModuleOptions {
      */
     permissions?: Record<string, (string | Permission)[]>
     /**
+     * Allow assigning roles that are not defined in auth.permissions
+     * When false (default), create/update user role must be a key of permissions
+     * (or any role if permissions is empty / not yet configured)
+     * @default false
+     */
+    allowCustomRoles?: boolean
+    /**
      * Google OAuth configuration
      * Enable Google OAuth login/registration
      */
@@ -234,6 +241,11 @@ export interface ModuleOptions {
     tokenExpiration: number
     rememberMeExpiration: number
     permissions: Record<string, (string | Permission)[]>
+    /**
+     * Allow assigning roles that are not defined in auth.permissions
+     * @default false
+     */
+    allowCustomRoles: boolean
     google?: GoogleOAuthOptions
   }
   passwordValidation: {

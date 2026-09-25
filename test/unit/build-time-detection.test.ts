@@ -63,7 +63,7 @@ describe('Build-time Detection', () => {
         apiBasePath: '/api/nuxt-users',
         passwordResetUrl: '/reset',
         emailConfirmationUrl: '/confirm',
-        auth: { whitelist: [], tokenExpiration: 1440, rememberMeExpiration: 30, permissions: {} },
+        auth: { whitelist: [], tokenExpiration: 1440, rememberMeExpiration: 30, permissions: {}, allowCustomRoles: false },
         passwordValidation: {
           minLength: 8,
           requireUppercase: true,

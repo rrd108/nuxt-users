@@ -1420,12 +1420,18 @@ const handleUserUpdated = (userData) => {
 |------|------|---------|-------------|
 | `user` | `User \| null` | `null` | User to edit (null for create mode) |
 
+Role field behavior:
+- When `auth.permissions` has keys, the form shows a **select** of those roles
+- Set `auth.allowCustomRoles: true` to also allow a custom free-text role
+- If permissions are empty, a text input is shown (bootstrap)
+
 **Events**
 
 | Event | Payload | Description |
 |-------|---------|-------------|
 | `submit` | `Partial<User>` | Fired after successful create/update |
 | `cancel` | - | Fired when cancel action is triggered |
+| `error` | `unknown` | Fired when create/update fails |
 
 ## Styling and Theming
 

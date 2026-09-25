@@ -64,7 +64,8 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
     whitelist: [],
     tokenExpiration: 1440,
     rememberMeExpiration: 30,
-    permissions: { admin: ['*'] }
+    permissions: { admin: ['*'], user: ['/profile'] },
+    allowCustomRoles: false
   },
   passwordValidation: {
     minLength: 0,
