@@ -59,7 +59,7 @@ const testOptions: ModuleOptions = {
     whitelist: [],
     tokenExpiration: 1440,
     rememberMeExpiration: 30,
-    permissions: {}
+    permissions: {},
     allowCustomRoles: false
   },
   passwordValidation: {
