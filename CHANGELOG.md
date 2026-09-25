@@ -1,6 +1,40 @@
 # Changelog
 
 
+## v1.49.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.48.2...v1.49.0)
+
+### 🚀 Enhancements
+
+- Add support for custom roles in user management ([d861b04](https://github.com/rrd108/nuxt-users/commit/d861b04))
+- Enhance user form localization for custom roles ([9fa7fe2](https://github.com/rrd108/nuxt-users/commit/9fa7fe2))
+
+### 🩹 Fixes
+
+- **deps:** Update dependency db0 to ^0.4.0 ([68214c9](https://github.com/rrd108/nuxt-users/commit/68214c9))
+
+### 📖 Documentation
+
+- Remove reference for nuxt 3/4 ([bc14668](https://github.com/rrd108/nuxt-users/commit/bc14668))
+
+### 🏡 Chore
+
+- **release:** V1.48.2 ([ac0b122](https://github.com/rrd108/nuxt-users/commit/ac0b122))
+
+### ✅ Tests
+
+- Fix filing tests ([fb51f54](https://github.com/rrd108/nuxt-users/commit/fb51f54))
+- Fixes ([5d37a9e](https://github.com/rrd108/nuxt-users/commit/5d37a9e))
+
+### 🤖 CI
+
+- Run Nuxt 4 tests by default, keep Nuxt 3 manual-only ([b64dd54](https://github.com/rrd108/nuxt-users/commit/b64dd54))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.48.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.48.1...v1.48.2)
