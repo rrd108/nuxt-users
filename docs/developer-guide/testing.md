@@ -44,8 +44,11 @@ This command runs `vue-tsc` against a dedicated `tsconfig.vitest.json` configura
 ## Quick Start
 
 ```bash
-# Run all tests (SQLite + MySQL + PostgreSQL + Unit tests)
+# Run default tests (Nuxt 4: lint + types + unit + all databases)
 yarn test
+
+# Run Nuxt 3 compatibility suite manually
+yarn test:nuxt3
 
 # Run tests in watch mode
 yarn test:watch
@@ -454,12 +457,12 @@ yarn test:sqlite -- --coverage
 
 ## Continuous Integration
 
-The project includes CI configuration that:
+CI runs Nuxt 4 by default on push/PR to `main`. The Nuxt 3 workflow is kept and can be triggered manually via `workflow_dispatch` in GitHub Actions.
 
-1. **Runs tests against all databases**:
+1. **Runs tests against all databases** (Nuxt 4):
    - SQLite (no additional setup required)
-   - MySQL (with MariaDB 10.5 service and health checks)
-   - PostgreSQL (with PostgreSQL 13 service and health checks)
+   - MySQL (with MariaDB 10.11 service and health checks)
+   - PostgreSQL (with PostgreSQL 17 service and health checks)
 
 2. **Database setup in CI**:
    - Installs database clients (`mariadb-client`, `postgresql-client`)
