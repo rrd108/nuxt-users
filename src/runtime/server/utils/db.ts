@@ -33,7 +33,7 @@ export const getConnector = async (name: string) => {
       throw new Error(`Database connector "${name}" not found. Please install the required peer dependency:\n`
         + '- For sqlite: yarn add better-sqlite3\n'
         + '- For mysql: yarn add mysql2\n'
-        + '- For postgresql: yarn add pg')
+        + '- For postgresql: yarn add pg', { cause: error })
     }
     throw error
   }

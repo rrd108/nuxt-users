@@ -71,7 +71,8 @@ All options live under `nuxtUsers` in `nuxt.config.ts`.
 | Auth | `auth.whitelist` | Public routes (e.g. `['/register']`); `/login` is always public |
 | Auth | `auth.tokenExpiration` | Minutes (default 1440) |
 | Auth | `auth.rememberMeExpiration` | Days (default 30) |
-| Auth | `auth.permissions` | Role → paths (e.g. `admin: ['*']`, `user: ['/profile']`) |
+| Auth | `auth.permissions` | Role → paths (e.g. `admin: ['*']`, `user: ['/profile']`). Keys are the predefined roles. |
+| Auth | `auth.allowCustomRoles` | Default `false`. When `true`, create/update APIs and `NUsersUserForm` accept roles not listed in `permissions`. Empty `permissions` (bootstrap) already accepts any role. |
 | Auth | `auth.google` | Google OAuth: `clientId`, `clientSecret`, `callbackUrl`, etc. |
 | Password | `passwordValidation` | `minLength`, `requireUppercase`, `requireLowercase`, `requireNumbers`, `requireSpecialChars`, `preventCommonPasswords` |
 | Data | `hardDelete` | `true` = hard delete, `false` = soft delete (default) |
@@ -92,6 +93,7 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
   ```bash
   npx nuxt-users create-user -e <email> -n "<name>" -p <password> [-r <role>]
   ```
+  Role should match a `auth.permissions` key unless `auth.allowCustomRoles` is `true` (or permissions are empty).
 
 - **Legacy/table creation**
   ```bash
@@ -118,7 +120,7 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
 - `NUsersProfileInfo` — Display profile
 - `NUsersResetPasswordForm` — Password reset form
 - `NUsersList` — List users (admin)
-- `NUsersUserForm` — Create/edit user form
+- `NUsersUserForm` — Create/edit user form; role select from `auth.permissions` keys; set `auth.allowCustomRoles: true` for a custom free-text role option
 
 ## Troubleshooting
 

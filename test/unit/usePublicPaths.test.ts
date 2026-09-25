@@ -47,7 +47,8 @@ describe('usePublicPaths', () => {
           admin: ['*'],
           user: ['/profile', '/dashboard'],
           moderator: ['/admin/*']
-        }
+        },
+        allowCustomRoles: false
       },
       passwordValidation: {
         minLength: 8,

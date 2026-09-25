@@ -1,11 +1,11 @@
 import { defineNuxtModule, createResolver, addServerHandler, addComponentsDir, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir, addServerScanDir, addServerPlugin } from '@nuxt/kit'
 import { defu } from 'defu'
-import type { ModuleOptions } from './types'
+import type { ModuleOptions, RuntimeModuleOptions } from './types'
 import { defaultOptions } from './default-options'
 
 export { defaultOptions } from './default-options'
 
-export default defineNuxtModule<ModuleOptions>({
+export default defineNuxtModule<RuntimeModuleOptions>({
   meta: {
     name: 'nuxt-users',
     configKey: 'nuxtUsers',
@@ -16,7 +16,7 @@ export default defineNuxtModule<ModuleOptions>({
   // Default configuration options of the Nuxt module
   defaults: defaultOptions,
 
-  async setup(options: ModuleOptions, nuxt) {
+  async setup(options: RuntimeModuleOptions, nuxt) {
     const resolver = createResolver(import.meta.url)
 
     // Add runtime config (server-side)
@@ -34,13 +34,17 @@ export default defineNuxtModule<ModuleOptions>({
     const configuredConnector = (nuxt.options.runtimeConfig.nuxtUsers as unknown as ModuleOptions)?.connector || options.connector
     runtimeConfigOptions.connector = configuredConnector || defaultOptions.connector
 
+    // Ensure allowCustomRoles is always set after merge
+    runtimeConfigOptions.auth.allowCustomRoles
+      = runtimeConfigOptions.auth.allowCustomRoles ?? defaultOptions.auth.allowCustomRoles
+
     nuxt.options.runtimeConfig.nuxtUsers = {
       ...runtimeConfigOptions,
       auth: {
         tokenExpiration: runtimeConfigOptions.auth.tokenExpiration,
         rememberMeExpiration: runtimeConfigOptions.auth.rememberMeExpiration,
         permissions: runtimeConfigOptions.auth.permissions,
-        allowCustomRoles: runtimeConfigOptions.auth.allowCustomRoles ?? defaultOptions.auth.allowCustomRoles,
+        allowCustomRoles: runtimeConfigOptions.auth.allowCustomRoles,
         ...(runtimeConfigOptions.auth.google && { google: runtimeConfigOptions.auth.google }),
         whitelist: (() => {
           const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]
@@ -123,7 +127,7 @@ export default defineNuxtModule<ModuleOptions>({
           return combinedWhitelist
         })(),
         permissions: runtimeConfigOptions.auth?.permissions || defaultOptions.auth.permissions,
-        allowCustomRoles: runtimeConfigOptions.auth?.allowCustomRoles ?? defaultOptions.auth.allowCustomRoles
+        allowCustomRoles: runtimeConfigOptions.auth.allowCustomRoles
       },
       apiBasePath: runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
     } as unknown as typeof nuxt.options.runtimeConfig.public.nuxtUsers
