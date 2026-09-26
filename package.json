@@ -143,5 +143,8 @@
     "vitepress": "^1.6.3",
     "vitest": "^4.0.0",
     "vue-tsc": "^3.0.1"
+  },
+  "resolutions": {
+    "entities": "^7.0.0"
   }
 }
