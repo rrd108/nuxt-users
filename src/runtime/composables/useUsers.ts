@@ -15,11 +15,10 @@ interface UsersResponse {
   pagination: Pagination
 }
 
-const usersState = useState<User[]>('users', () => [])
-const paginationState = useState<Pagination | null>('users-pagination', () => null)
-
 export const useUsers = () => {
   const { public: { nuxtUsers } } = useRuntimeConfig()
+  const usersState = useState<User[]>('users', () => [])
+  const paginationState = useState<Pagination | null>('users-pagination', () => null)
   const loading = useState<boolean>('users-loading', () => false)
   const error = useState<string | null>('users-error', () => null)
 
