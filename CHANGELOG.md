@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v1.49.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.49.0...v1.49.1)
+
+### 🩹 Fixes
+
+- Move useUsers state init inside composable ([ee10de5](https://github.com/rrd108/nuxt-users/commit/ee10de5))
+
+### 📖 Documentation
+
+- Release ([01dca12](https://github.com/rrd108/nuxt-users/commit/01dca12))
+
+### 🏡 Chore
+
+- **release:** V1.49.0 ([65f59b0](https://github.com/rrd108/nuxt-users/commit/65f59b0))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.49.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.48.2...v1.49.0)
