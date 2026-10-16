@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v1.49.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.49.1...v1.49.2)
+
+### 🩹 Fixes
+
+- Move useUsers state init inside composable ([ee10de5](https://github.com/rrd108/nuxt-users/commit/ee10de5))
+- Return 409 when creating a user with an existing email ([1eb2bc6](https://github.com/rrd108/nuxt-users/commit/1eb2bc6))
+
+### 🏡 Chore
+
+- **release:** V1.49.1 ([2a21be1](https://github.com/rrd108/nuxt-users/commit/2a21be1))
+
+### ❤️ Contributors
+
+- Rrd108 <rrd@webmania.cc>
+
 ## v1.49.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.49.0...v1.49.1)
