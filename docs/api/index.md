@@ -189,6 +189,7 @@ Create a new user.
 - `400 Bad Request`: Missing required fields (email, name, password)
 - `401 Unauthorized`: No authentication token or invalid token
 - `403 Forbidden`: User doesn't have permission to create users
+- `409 Conflict`: A user with this email already exists
 
 ### Get User
 

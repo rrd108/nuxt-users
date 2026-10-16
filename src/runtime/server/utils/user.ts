@@ -11,6 +11,8 @@ interface CreateUserParams {
   active?: boolean
 }
 
+export const USER_EMAIL_ALREADY_EXISTS_MESSAGE = 'A user with this email already exists'
+
 /**
  * Creates a new user in the database.
  * Hashes the password before storing.
@@ -18,6 +20,11 @@ interface CreateUserParams {
 export const createUser = async (userData: CreateUserParams, options: ModuleOptions): Promise<Omit<User, 'password'>> => {
   const db = await useDb(options)
   const usersTable = options.tables.users
+
+  const existingUser = await findUserByEmail(userData.email, options)
+  if (existingUser) {
+    throw new Error(USER_EMAIL_ALREADY_EXISTS_MESSAGE)
+  }
 
   // Validate password strength
   const passwordOptions = getPasswordValidationOptions(options)

@@ -152,7 +152,7 @@ describe('CLI: Create User', () => {
     await createUser(userData, testOptions)
 
     // Try to create second user with same email
-    await expect(createUser(userData, testOptions)).rejects.toThrow()
+    await expect(createUser(userData, testOptions)).rejects.toThrow('A user with this email already exists')
   })
 
   it('should create user with default role', async () => {

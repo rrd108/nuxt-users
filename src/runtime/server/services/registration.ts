@@ -1,7 +1,7 @@
 import { createTransport } from 'nodemailer'
 import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
-import { findUserByEmail, useDb } from '../utils'
+import { findUserByEmail, useDb, USER_EMAIL_ALREADY_EXISTS_MESSAGE } from '../utils'
 import { validatePassword, getPasswordValidationOptions } from 'nuxt-users/utils'
 import type { ModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
 
@@ -24,7 +24,7 @@ export const registerUser = async (
   // Check if user already exists
   const existingUser = await findUserByEmail(userData.email, options)
   if (existingUser) {
-    throw new Error('A user with this email already exists')
+    throw new Error(USER_EMAIL_ALREADY_EXISTS_MESSAGE)
   }
 
   // Validate password strength

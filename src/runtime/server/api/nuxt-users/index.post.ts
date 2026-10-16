@@ -1,7 +1,7 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { createUser } from '../../utils'
+import { createUser, USER_EMAIL_ALREADY_EXISTS_MESSAGE } from '../../utils'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
@@ -35,6 +35,14 @@ export default defineEventHandler(async (event) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   catch (error: any) {
     const message = error?.message || 'Unknown error'
+
+    if (message === USER_EMAIL_ALREADY_EXISTS_MESSAGE) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: message
+      })
+    }
+
     const isClientError = typeof message === 'string' && (
       message.startsWith('Invalid role')
       || message.startsWith('Role ')

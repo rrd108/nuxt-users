@@ -18,7 +18,8 @@ vi.mock('../../src/runtime/server/utils/user', () => ({
   createUser: vi.fn(),
   findUserById: vi.fn(),
   updateUser: vi.fn(),
-  deleteUser: vi.fn()
+  deleteUser: vi.fn(),
+  USER_EMAIL_ALREADY_EXISTS_MESSAGE: 'A user with this email already exists'
 }))
 
 // Import the api endpoints after mocking
@@ -94,6 +95,20 @@ describe('User API Routes', () => {
       await expect(userCreateApiEndpoint.default(mockEvent)).rejects.toEqual({
         statusCode: 400,
         statusMessage: 'Missing required fields: email, name, password'
+      })
+    })
+
+    it('should return 409 when email is already taken', async () => {
+      const newUser = { email: 'existing@example.com', name: 'User', password: 'password123' }
+      mockReadBody.mockResolvedValue(newUser)
+      mockCreateUser.mockRejectedValue(new Error('A user with this email already exists'))
+      mockCreateError.mockImplementation((e) => {
+        throw e
+      })
+
+      await expect(userCreateApiEndpoint.default(mockEvent)).rejects.toEqual({
+        statusCode: 409,
+        statusMessage: 'A user with this email already exists'
       })
     })
   })
