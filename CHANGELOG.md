@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v1.49.3
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.49.2...v1.49.3)
+
+### 🩹 Fixes
+
+- Return 409 when creating a user with an existing email ([1eb2bc6](https://github.com/rrd108/nuxt-users/commit/1eb2bc6))
+- Match auth middleware checks against the request pathname ([bbd1b85](https://github.com/rrd108/nuxt-users/commit/bbd1b85))
+
+### 📖 Documentation
+
+- Add CLAUDE.md with commands and architecture notes ([c60e2a8](https://github.com/rrd108/nuxt-users/commit/c60e2a8))
+
+### 🏡 Chore
+
+- **release:** V1.49.2 ([6a17ae5](https://github.com/rrd108/nuxt-users/commit/6a17ae5))
+- Update docs deploy target ([dec0490](https://github.com/rrd108/nuxt-users/commit/dec0490))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.49.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.49.1...v1.49.2)
