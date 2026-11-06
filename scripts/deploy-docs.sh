@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Configuration
-SERVER_HOST="sravanam"
-REMOTE_DOCS_PATH="/var/www/nuxt-users.webmania.cc"
+SERVER_HOST="root_balarama"
+REMOTE_DOCS_PATH="/var/www/nuxt-users.webmania.cc/web/"
 LOCAL_BUILD_PATH="docs/.vitepress/dist"
 
 # Colors for output
