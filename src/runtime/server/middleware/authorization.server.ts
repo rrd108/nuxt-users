@@ -9,20 +9,22 @@ export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
   const options = nuxtUsers as ModuleOptions
   const base = options.apiBasePath || '/api/nuxt-users'
-  const isApiRoute = event.path.startsWith('/api/')
-  const isMeEndpoint = event.path === `${base}/me`
+  // event.path includes the query string, but routing ignores it: every check must use the pathname only,
+  // otherwise e.g. `/api/nuxt-users?x=.` would look like a static file and skip authentication
+  const path = event.path.split('?')[0]!
+  // the module's own endpoints count as API routes even when apiBasePath is outside /api/
+  const isApiRoute = path.startsWith('/api/') || path === base || path.startsWith(`${base}/`)
+  const isMeEndpoint = path === `${base}/me`
 
   // ============================================
   // Early exits: Skip non-applicable routes
   // ============================================
 
-  // Only apply authentication to pages and API routes
-  const isPageOrApiRoute = !event.path.includes('.')
-    && (event.path === '/'
-      || isApiRoute
-      || !event.path.startsWith('/_')) // nuxt internals
+  // Static files (a dot in the pathname) and nuxt internals are skipped; API routes are never skipped
+  const isStaticFile = !isApiRoute && path.includes('.')
+  const isNuxtInternal = !isApiRoute && path.startsWith('/_')
 
-  if (!isPageOrApiRoute) {
+  if (isStaticFile || isNuxtInternal) {
     return
   }
 
@@ -36,22 +38,22 @@ export default defineEventHandler(async (event) => {
     publicAuthPaths.push(options.passwordResetUrl)
   }
 
-  if (publicAuthPaths.includes(event.path)) {
-    console.debug(`[Nuxt Users] authorization: NO_AUTH_PATH: ${event.path}`)
+  if (publicAuthPaths.includes(path)) {
+    console.debug(`[Nuxt Users] authorization: NO_AUTH_PATH: ${path}`)
     return
   }
 
   // Public API endpoints (no authentication required)
   for (const endpoint of PUBLIC_API_ENDPOINTS) {
-    if (event.path === `${base}${endpoint.path}` && endpoint.methods.includes(event.method)) {
-      console.debug(`[Nuxt Users] authorization: Public API endpoint ${event.path} (${event.method})`)
+    if (path === `${base}${endpoint.path}` && endpoint.methods.includes(event.method)) {
+      console.debug(`[Nuxt Users] authorization: Public API endpoint ${path} (${event.method})`)
       return
     }
   }
 
   // Whitelisted paths are allowed to access without authentication
-  if (isWhitelisted(event.path, options.auth.whitelist)) {
-    console.debug(`[Nuxt Users] authorization: whitelisted: ${event.path}`)
+  if (isWhitelisted(path, options.auth.whitelist)) {
+    console.debug(`[Nuxt Users] authorization: whitelisted: ${path}`)
     return
   }
 
@@ -85,8 +87,8 @@ export default defineEventHandler(async (event) => {
   // ============================================
 
   for (const endpoint of AUTHENTICATED_AUTO_ACCESS_ENDPOINTS) {
-    if (event.path === `${base}${endpoint.path}` && endpoint.methods.includes(event.method)) {
-      console.debug(`[Nuxt Users] authorization: Auto-whitelisted endpoint ${event.path} for authenticated user ${user.id}`)
+    if (path === `${base}${endpoint.path}` && endpoint.methods.includes(event.method)) {
+      console.debug(`[Nuxt Users] authorization: Auto-whitelisted endpoint ${path} for authenticated user ${user.id}`)
       return
     }
   }
@@ -95,7 +97,7 @@ export default defineEventHandler(async (event) => {
   // Permission checks
   // ============================================
 
-  if (!hasPermission(user.role, event.path, event.method, options.auth.permissions)) {
+  if (!hasPermission(user.role, path, event.method, options.auth.permissions)) {
     return handleUnauthorizedRequest(event, user, isApiRoute)
   }
 
@@ -103,6 +105,6 @@ export default defineEventHandler(async (event) => {
   // Request authorized
   // ============================================
 
-  console.debug(`[Nuxt Users] authorization: Authenticated request to ${event.path} for ${user.id} with role ${user.role}`)
+  console.debug(`[Nuxt Users] authorization: Authenticated request to ${path} for ${user.id} with role ${user.role}`)
   return
 })

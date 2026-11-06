@@ -84,6 +84,17 @@ else
     exit 1
 fi
 
+# Test 1b: A dot in the query string must not skip authentication
+print_status $YELLOW "🔐 Testing user creation with a dot in the query string requires authentication..."
+response=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/nuxt-users?x=a.b" -X POST -H "Content-Type: application/json" -d '{"email":"bypass@example.com","name":"Bypass","password":"Bypass-123456","role":"admin"}' || echo "000")
+
+if [ "$response" = "401" ]; then
+    print_status $GREEN "✅ Query string with a dot does not bypass authentication (401)"
+else
+    print_status $RED "❌ POST /api/nuxt-users?x=a.b should return 401, got $response - authentication bypass!"
+    exit 1
+fi
+
 # Test 2: Session endpoint should be accessible (not 401)
 print_status $YELLOW "📝 Testing session endpoint /api/nuxt-users/session..."
 response=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/nuxt-users/session" -X POST || echo "000")

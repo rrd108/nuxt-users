@@ -542,4 +542,115 @@ describe('Auth Server Middleware', () => {
       expect(result).toBeUndefined()
     })
   })
+
+  describe('Query strings and dots in the path', () => {
+    const regularUser = {
+      id: 2,
+      email: 'user@example.com',
+      name: 'Regular User',
+      role: 'user',
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z',
+      active: true
+    }
+
+    beforeEach(async () => {
+      const { handleUnauthenticatedRequest } = await import('../../src/runtime/server/utils')
+      vi.mocked(handleUnauthenticatedRequest).mockImplementation((_event, isApiRoute) => {
+        if (isApiRoute) {
+          throw new Error('Unauthorized')
+        }
+      })
+    })
+
+    it.each([
+      ['POST', '/api/nuxt-users?x=a.b'],
+      ['POST', '/api/nuxt-users?.'],
+      ['PATCH', '/api/nuxt-users/1?x=.'],
+      ['DELETE', '/api/nuxt-users/1?x=.'],
+      ['GET', '/api/nuxt-users/1?file=a.json'],
+      ['GET', '/api/admin/customers?x=.'],
+    ])('should require authentication for %s %s (dot in query string)', async (method, path) => {
+      const event = { path, method } as H3Event
+      mockGetCookie.mockReturnValue(undefined)
+
+      await expect(serverAuthMiddleware.default(event)).rejects.toThrow('Unauthorized')
+
+      const { handleUnauthenticatedRequest } = await import('../../src/runtime/server/utils')
+      expect(handleUnauthenticatedRequest).toHaveBeenCalledWith(event, true, false)
+    })
+
+    it('should require authentication for API paths with a dot in the pathname', async () => {
+      const event = { path: '/api/admin/files/report.pdf', method: 'GET' } as H3Event
+      mockGetCookie.mockReturnValue(undefined)
+
+      await expect(serverAuthMiddleware.default(event)).rejects.toThrow('Unauthorized')
+    })
+
+    it('should require authentication for page routes with a dot only in the query string', async () => {
+      const event = { path: '/admin/users?x=a.b', method: 'GET' } as H3Event
+      mockGetCookie.mockReturnValue(undefined)
+
+      await serverAuthMiddleware.default(event)
+
+      expect(mockGetCookie).toHaveBeenCalledWith(event, 'auth_token')
+      const { handleUnauthenticatedRequest } = await import('../../src/runtime/server/utils')
+      expect(handleUnauthenticatedRequest).toHaveBeenCalledWith(event, false, false)
+    })
+
+    it('should still skip static files outside /api', async () => {
+      const event = { path: '/images/logo.png?v=2', method: 'GET' } as H3Event
+
+      const result = await serverAuthMiddleware.default(event)
+
+      expect(result).toBeUndefined()
+      expect(mockGetCookie).not.toHaveBeenCalled()
+    })
+
+    it('should treat /me with a query string as the /me endpoint', async () => {
+      const event = { path: '/api/nuxt-users/me?x=1', method: 'GET' } as H3Event
+      mockGetCookie.mockReturnValue(undefined)
+
+      await expect(serverAuthMiddleware.default(event)).rejects.toThrow('Unauthorized')
+
+      const { handleUnauthenticatedRequest } = await import('../../src/runtime/server/utils')
+      expect(handleUnauthenticatedRequest).toHaveBeenCalledWith(event, true, true)
+    })
+
+    it('should allow public API endpoints with a query string', async () => {
+      const event = { path: '/api/nuxt-users/session?redirect=/home', method: 'POST' } as H3Event
+
+      const result = await serverAuthMiddleware.default(event)
+
+      expect(result).toBeUndefined()
+      expect(mockGetCookie).not.toHaveBeenCalled()
+    })
+
+    it('should match permissions against the path without the query string', async () => {
+      const event = { path: '/api/nuxt-users/me?x=1', method: 'PATCH', context: {} } as H3Event
+      mockGetCookie.mockReturnValue('valid-token')
+      const { getCurrentUserFromToken, handleUnauthorizedRequest } = await import('../../src/runtime/server/utils')
+      vi.mocked(getCurrentUserFromToken).mockResolvedValue(regularUser)
+
+      const result = await serverAuthMiddleware.default(event)
+
+      expect(result).toBeUndefined()
+      expect(handleUnauthorizedRequest).not.toHaveBeenCalled()
+    })
+
+    it('should require authentication for module endpoints under a custom apiBasePath outside /api', async () => {
+      mockUseRuntimeConfig.mockReturnValue({ nuxtUsers: { ...mockOptions, apiBasePath: '/auth-api' } })
+      const event = { path: '/auth-api?x=.', method: 'POST' } as H3Event
+      mockGetCookie.mockReturnValue(undefined)
+
+      await expect(serverAuthMiddleware.default(event)).rejects.toThrow('Unauthorized')
+    })
+
+    it('should not let a query string satisfy a whitelist entry', async () => {
+      const event = { path: '/api/nuxt-users?/register', method: 'POST' } as H3Event
+      mockGetCookie.mockReturnValue(undefined)
+
+      await expect(serverAuthMiddleware.default(event)).rejects.toThrow('Unauthorized')
+    })
+  })
 })
