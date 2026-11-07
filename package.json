@@ -68,7 +68,7 @@
     "release:publish:dry": "npm pack --dry-run --ignore-scripts",
     "release:preflight": "yarn prerelease && yarn check:npm_token && yarn check:npm_auth && sh scripts/release-preflight.sh",
     "prerelease": "node -v | grep -qE '^v(22|24)\\.' || (echo 'Please use Node.js v22 or v24 for deployment' && exit 1)",
-    "release": "yarn release:preflight && yarn lint && yarn check:translations && yarn check:locale-consistency && yarn test && yarn prepack && yarn release:publish:dry && dotenv -- changelogen --release && dotenv -- sh -c 'npm publish --//registry.npmjs.org/:_authToken=$NPM_TOKEN --registry https://registry.npmjs.org/' && git push --follow-tags",
+    "release": "yarn release:preflight && yarn lint && yarn check:translations && yarn check:locale-consistency && yarn test && yarn prepack && yarn release:publish:dry && dotenv -- changelogen --release --no-github && dotenv -- sh -c 'npm publish --//registry.npmjs.org/:_authToken=$NPM_TOKEN --registry https://registry.npmjs.org/' && git push --follow-tags && dotenv -- changelogen gh release",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "pretest": "node -v | grep -qE '^v(22|24)\\.' || (echo 'Please use Node.js v22 or v24 for testing' && exit 1)",
