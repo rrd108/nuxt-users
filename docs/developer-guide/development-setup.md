@@ -4,7 +4,7 @@ Get your development environment ready for contributing to Nuxt Users.
 
 ## Prerequisites
 
-- Node.js v22 (required)
+- Node.js v22 or v24 (required; CI tests both)
 - Yarn package manager
 - Git
 

@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Node.js v22 is required: `dev`, `test` and `release` scripts abort on other versions. Package manager is yarn.
+Node.js v22 or v24 is required: `dev`, `test` and `release` scripts abort on other versions, and CI tests both. `better-sqlite3` is a native module: after switching Node versions, run `npm rebuild better-sqlite3` (or reinstall) or SQLite tests fail to load it. Package manager is yarn.
 
 ```bash
 yarn dev                 # stub-build module + run playground/ dev server
