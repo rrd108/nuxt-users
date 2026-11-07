@@ -1,4 +1,5 @@
-import { defineEventHandler, sendRedirect, getQuery, setCookie } from 'h3'
+import crypto from 'node:crypto'
+import { defineEventHandler, sendRedirect, getQuery, setCookie, getCookie, deleteCookie } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import type { H3Event } from 'h3'
@@ -8,6 +9,7 @@ import {
   findOrCreateGoogleUser,
   createAuthTokenForUser
 } from '../../../../utils'
+import { OAUTH_STATE_COOKIE } from '../../../../../constants'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
@@ -17,6 +19,15 @@ export default defineEventHandler(async (event) => {
   // Check if Google OAuth is configured
   if (!options.auth.google) {
     return sendRedirect(event, '/login?error=oauth_not_configured')
+  }
+
+  // Verify the state against the cookie set by the redirect endpoint (prevents login CSRF)
+  const expectedState = getCookie(event, OAUTH_STATE_COOKIE)
+  deleteCookie(event, OAUTH_STATE_COOKIE, { path: '/' })
+  if (!isValidState(expectedState, query.state)) {
+    console.error('[Nuxt Users] Invalid or missing OAuth state in callback')
+    const errorRedirect = options.auth.google.errorRedirect || '/login?error=oauth_failed'
+    return sendRedirect(event, errorRedirect)
   }
 
   // Handle OAuth errors
@@ -91,6 +102,15 @@ export default defineEventHandler(async (event) => {
     return sendRedirect(event, errorRedirect)
   }
 })
+
+const isValidState = (expected: string | undefined, received: unknown): boolean => {
+  if (!expected || typeof received !== 'string') {
+    return false
+  }
+  const expectedBuffer = Buffer.from(expected)
+  const receivedBuffer = Buffer.from(received)
+  return expectedBuffer.length === receivedBuffer.length && crypto.timingSafeEqual(expectedBuffer, receivedBuffer)
+}
 
 // Helper function to get request URL
 const getRequestURL = (event: H3Event) => {

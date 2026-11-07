@@ -1,3 +1,6 @@
+// Cookie holding the OAuth `state` value between the Google redirect and callback (login CSRF protection)
+export const OAUTH_STATE_COOKIE = 'nuxt_users_oauth_state'
+
 // *Page routes* that don't require authentication
 export const PUBLIC_PAGES = ['/login', '/reset-password']
 

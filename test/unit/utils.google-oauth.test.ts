@@ -118,6 +118,16 @@ describe('Google OAuth Utilities', () => {
       expect(url).toBe('https://accounts.google.com/o/oauth2/v2/auth?...')
     })
 
+    it('should include the state parameter when provided', () => {
+      const mockClient = {
+        generateAuthUrl: vi.fn().mockReturnValue('https://accounts.google.com/o/oauth2/v2/auth?...')
+      }
+
+      getGoogleAuthUrl(mockClient as unknown as OAuth2Client, { clientId: 'id', clientSecret: 'secret' }, 'random-state')
+
+      expect(mockClient.generateAuthUrl).toHaveBeenCalledWith(expect.objectContaining({ state: 'random-state' }))
+    })
+
     it('should use custom scopes when provided', () => {
       const mockClient = {
         generateAuthUrl: vi.fn().mockReturnValue('https://accounts.google.com/o/oauth2/v2/auth?...')

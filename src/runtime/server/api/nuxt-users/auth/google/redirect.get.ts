@@ -1,7 +1,9 @@
-import { defineEventHandler, sendRedirect, createError, type H3Event } from 'h3'
+import crypto from 'node:crypto'
+import { defineEventHandler, sendRedirect, createError, setCookie, type H3Event } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import { createGoogleOAuth2Client, getGoogleAuthUrl } from '../../../../utils'
+import { OAUTH_STATE_COOKIE } from '../../../../../constants'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
@@ -30,7 +32,16 @@ export default defineEventHandler(async (event) => {
 
     // Create OAuth2 client and generate auth URL
     const oauth2Client = createGoogleOAuth2Client(options.auth.google, callbackUrl)
-    const authUrl = getGoogleAuthUrl(oauth2Client, options.auth.google)
+    // Bind the flow to this browser: the callback only accepts a code that comes back with this state
+    const state = crypto.randomBytes(32).toString('hex')
+    setCookie(event, OAUTH_STATE_COOKIE, state, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 10 * 60
+    })
+    const authUrl = getGoogleAuthUrl(oauth2Client, options.auth.google, state)
 
     // Redirect to Google OAuth
     return sendRedirect(event, authUrl)

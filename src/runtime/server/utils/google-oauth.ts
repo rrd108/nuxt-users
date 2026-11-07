@@ -26,13 +26,14 @@ export function createGoogleOAuth2Client(options: GoogleOAuthOptions, callbackUr
 /**
  * Generate authorization URL for Google OAuth
  */
-export function getGoogleAuthUrl(oauth2Client: OAuth2Client, options: GoogleOAuthOptions): string {
+export function getGoogleAuthUrl(oauth2Client: OAuth2Client, options: GoogleOAuthOptions, state?: string): string {
   const scopes = options.scopes || ['openid', 'profile', 'email']
 
   return oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: scopes,
     include_granted_scopes: true,
+    ...(state && { state }),
   })
 }
 

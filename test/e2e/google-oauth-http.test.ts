@@ -5,6 +5,8 @@ import callbackHandler from '../../src/runtime/server/api/nuxt-users/auth/google
 const {
   mockSendRedirect,
   mockSetCookie,
+  mockGetCookie,
+  mockDeleteCookie,
   mockGetQuery,
   mockCreateGoogleOAuth2Client,
   mockGetGoogleUserFromCode,
@@ -13,6 +15,8 @@ const {
 } = vi.hoisted(() => ({
   mockSendRedirect: vi.fn(),
   mockSetCookie: vi.fn(),
+  mockGetCookie: vi.fn(),
+  mockDeleteCookie: vi.fn(),
   mockGetQuery: vi.fn(),
   mockGetRequestURL: vi.fn(),
   mockCreateGoogleOAuth2Client: vi.fn(),
@@ -28,6 +32,8 @@ vi.mock('h3', async (importOriginal) => {
     ...actual,
     sendRedirect: mockSendRedirect,
     setCookie: mockSetCookie,
+    getCookie: mockGetCookie,
+    deleteCookie: mockDeleteCookie,
     getQuery: mockGetQuery,
     defineEventHandler: (handler: unknown) => handler, // Unwrap for testing
   }
@@ -81,6 +87,7 @@ describe('Google OAuth HTTP Callback Handler', () => {
     }
 
     // Default mock behaviors
+    mockGetCookie.mockReturnValue('valid-state')
     mockCreateGoogleOAuth2Client.mockReturnValue({})
     mockGetGoogleUserFromCode.mockResolvedValue({
       email: 'test@example.com',
@@ -96,7 +103,7 @@ describe('Google OAuth HTTP Callback Handler', () => {
 
   it('should redirect to success URL with oauth_success flag on successful login', async () => {
     // Arrange
-    mockGetQuery.mockReturnValue({ code: 'valid-code' })
+    mockGetQuery.mockReturnValue({ code: 'valid-code', state: 'valid-state' })
 
     // Act
     await (callbackHandler as unknown as Handler)(mockEvent)
@@ -128,7 +135,7 @@ describe('Google OAuth HTTP Callback Handler', () => {
 
   it('should handle missing authorization code', async () => {
     // Arrange
-    mockGetQuery.mockReturnValue({}) // No code
+    mockGetQuery.mockReturnValue({ state: 'valid-state' }) // No code
 
     // Act
     await (callbackHandler as unknown as Handler)(mockEvent)
@@ -140,7 +147,7 @@ describe('Google OAuth HTTP Callback Handler', () => {
 
   it('should handle OAuth error query param', async () => {
     // Arrange
-    mockGetQuery.mockReturnValue({ error: 'access_denied' })
+    mockGetQuery.mockReturnValue({ error: 'access_denied', state: 'valid-state' })
 
     // Act
     await (callbackHandler as unknown as Handler)(mockEvent)
@@ -151,7 +158,7 @@ describe('Google OAuth HTTP Callback Handler', () => {
 
   it('should handle user not found (auto-registration disabled)', async () => {
     // Arrange
-    mockGetQuery.mockReturnValue({ code: 'valid-code' })
+    mockGetQuery.mockReturnValue({ code: 'valid-code', state: 'valid-state' })
     mockFindOrCreateGoogleUser.mockResolvedValue(null) // User not found
 
     // Act
@@ -164,7 +171,7 @@ describe('Google OAuth HTTP Callback Handler', () => {
 
   it('should handle inactive user', async () => {
     // Arrange
-    mockGetQuery.mockReturnValue({ code: 'valid-code' })
+    mockGetQuery.mockReturnValue({ code: 'valid-code', state: 'valid-state' })
     mockFindOrCreateGoogleUser.mockResolvedValue({
       id: 1,
       email: 'test@example.com',
@@ -181,13 +188,33 @@ describe('Google OAuth HTTP Callback Handler', () => {
 
   it('should handle internal errors during processing', async () => {
     // Arrange
-    mockGetQuery.mockReturnValue({ code: 'valid-code' })
+    mockGetQuery.mockReturnValue({ code: 'valid-code', state: 'valid-state' })
     mockGetGoogleUserFromCode.mockRejectedValue(new Error('Google API Error'))
 
     // Act
     await (callbackHandler as unknown as Handler)(mockEvent)
 
     // Assert
+    expect(mockSendRedirect).toHaveBeenCalledWith(mockEvent, '/login?error=oauth_failed')
+  })
+
+  it('should reject a callback whose state does not match the cookie (login CSRF)', async () => {
+    mockGetQuery.mockReturnValue({ code: 'attacker-code', state: 'attacker-state' })
+
+    await (callbackHandler as unknown as Handler)(mockEvent)
+
+    expect(mockGetGoogleUserFromCode).not.toHaveBeenCalled()
+    expect(mockSetCookie).not.toHaveBeenCalled()
+    expect(mockSendRedirect).toHaveBeenCalledWith(mockEvent, '/login?error=oauth_failed')
+  })
+
+  it('should reject a callback without a state cookie', async () => {
+    mockGetCookie.mockReturnValue(undefined)
+    mockGetQuery.mockReturnValue({ code: 'attacker-code' })
+
+    await (callbackHandler as unknown as Handler)(mockEvent)
+
+    expect(mockGetGoogleUserFromCode).not.toHaveBeenCalled()
     expect(mockSendRedirect).toHaveBeenCalledWith(mockEvent, '/login?error=oauth_failed')
   })
 })
