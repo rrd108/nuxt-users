@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v1.50.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.49.3...v1.50.0)
+
+### 🚀 Enhancements
+
+- Add siteUrl option, required in production for password reset and confirmation emails ([14c783e](https://github.com/rrd108/nuxt-users/commit/14c783e))
+
+### 🩹 Fixes
+
+- Verify OAuth state in Google callback to prevent login CSRF ([80e2173](https://github.com/rrd108/nuxt-users/commit/80e2173))
+- Escape user-supplied values in email HTML ([c3a2e31](https://github.com/rrd108/nuxt-users/commit/c3a2e31))
+- Read authenticated user from event.context.nuxtUsers in patch endpoints ([1547347](https://github.com/rrd108/nuxt-users/commit/1547347))
+- Revoke sessions after password reset and password change ([0f78d41](https://github.com/rrd108/nuxt-users/commit/0f78d41))
+- Anchor wildcard permission and whitelist patterns at the end ([240f569](https://github.com/rrd108/nuxt-users/commit/240f569))
+- Add empty siteUrl default so NUXT_NUXT_USERS_SITE_URL is applied ([84a0e18](https://github.com/rrd108/nuxt-users/commit/84a0e18))
+
+### 📖 Documentation
+
+- Document NUXT_NUXT_USERS_SITE_URL and fix env var placeholder guidance ([3906c92](https://github.com/rrd108/nuxt-users/commit/3906c92))
+
+### 🏡 Chore
+
+- Support Node.js 22 and 24 ([e88caba](https://github.com/rrd108/nuxt-users/commit/e88caba))
+- Validate package with npm pack in release dry run ([d275e14](https://github.com/rrd108/nuxt-users/commit/d275e14))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.49.3
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.49.2...v1.49.3)
