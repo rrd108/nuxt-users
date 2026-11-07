@@ -26,6 +26,9 @@ export const defaultOptions: ModuleOptions = {
       from: '"Nuxt Users Module" <noreply@example.com>',
     },
   },
+  // Empty by default so NUXT_NUXT_USERS_SITE_URL can override it (Nuxt only applies env vars to existing keys);
+  // empty falls back to the request host in development and is rejected in production
+  siteUrl: '',
   passwordResetUrl: '/reset-password',
   emailConfirmationUrl: '/email-confirmation',
   auth: {

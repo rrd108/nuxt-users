@@ -26,6 +26,11 @@ describe('getSiteUrl', () => {
     expect(() => getSiteUrl(event, defaultOptions)).toThrow(SITE_URL_REQUIRED_MESSAGE)
   })
 
+  it('has a siteUrl key in the defaults so NUXT_NUXT_USERS_SITE_URL can override it', () => {
+    // Nuxt only applies NUXT_* env vars to runtimeConfig keys that already exist
+    expect(defaultOptions).toHaveProperty('siteUrl', '')
+  })
+
   it('falls back to the request host outside production', () => {
     vi.stubEnv('NODE_ENV', 'development')
     const event = eventWithHeaders({ host: 'localhost:3000' })
