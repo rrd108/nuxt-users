@@ -185,6 +185,20 @@ describe('User API Routes', () => {
         statusMessage: 'Invalid user ID'
       })
     })
+
+    it('should not let the authenticated user change their own active status', async () => {
+      mockEvent.context.nuxtUsers = { user: regularUser }
+      mockReadBody.mockResolvedValue({ active: false })
+      mockCreateError.mockImplementation((e) => {
+        throw e
+      })
+
+      await expect(userUpdateApiEndpoint.default(mockEvent)).rejects.toEqual({
+        statusCode: 403,
+        statusMessage: 'You cannot change your own active status.'
+      })
+      expect(mockUpdateUser).not.toHaveBeenCalled()
+    })
   })
 
   describe('DELETE /api/nuxt-users/:id', () => {

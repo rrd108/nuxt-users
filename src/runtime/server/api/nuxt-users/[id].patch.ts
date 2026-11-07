@@ -1,5 +1,5 @@
 import { createError, defineEventHandler, readBody } from 'h3'
-import type { ModuleOptions } from 'nuxt-users/utils'
+import type { ModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import { updateUser } from '../../utils'
 
@@ -23,8 +23,8 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
   // Prevent users from changing their own active status
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const currentUser = event.context.user as any
+  // The authorization middleware stores the authenticated user in event.context.nuxtUsers.user
+  const currentUser = event.context.nuxtUsers?.user as UserWithoutPassword | undefined
   if (currentUser && currentUser.id === userId && typeof body.active !== 'undefined') {
     throw createError({
       statusCode: 403,

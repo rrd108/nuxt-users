@@ -1,5 +1,5 @@
 import { createError, defineEventHandler, readBody } from 'h3'
-import type { ModuleOptions } from 'nuxt-users/utils'
+import type { ModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import { updateUser } from '../../utils'
 
@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   const options = nuxtUsers as ModuleOptions
 
   // The user is authenticated by the server middleware and available in the event context.
-  const user = event.context.user
+  const user = event.context.nuxtUsers?.user as UserWithoutPassword | undefined
 
   if (!user) {
     throw createError({
@@ -19,15 +19,9 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event)
 
-  // Users should not be able to change their role via this endpoint.
-  if (body.role) {
-    delete body.role
-  }
-
-  // Users should not be able to change their active status via this endpoint.
-  if (body.active) {
-    delete body.active
-  }
+  // Users must not change their own role or active status via this endpoint (any value, including falsy ones)
+  delete body.role
+  delete body.active
 
   try {
     const updatedUser = await updateUser(user.id, body, options)
