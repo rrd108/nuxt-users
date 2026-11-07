@@ -1,6 +1,7 @@
-import { createError, defineEventHandler, readBody, getHeader } from 'h3'
+import { createError, defineEventHandler, readBody } from 'h3'
 import { useRuntimeConfig } from '#imports'
 import { registerUser } from '../../services/registration'
+import { getSiteUrl } from '../../utils/site-url'
 import type { ModuleOptions } from 'nuxt-users/utils'
 
 export default defineEventHandler(async (event) => {
@@ -34,10 +35,8 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Get the base URL for email links
-    const host = getHeader(event, 'host') || 'localhost:3000'
-    const protocol = getHeader(event, 'x-forwarded-proto') || 'http'
-    const baseUrl = `${protocol}://${host}`
+    // Base URL for email links; never taken from the Host header in production
+    const baseUrl = getSiteUrl(event, options)
 
     const result = await registerUser(
       {

@@ -41,6 +41,9 @@ const plugin: NitroAppPlugin = () => {
     return
   }
   validateMailerConfig(options)
+  if (process.env.NODE_ENV === 'production' && !options.siteUrl) {
+    console.warn('[Nuxt Users] siteUrl is not configured: password reset and email confirmation requests will fail. Set nuxtUsers.siteUrl (or NUXT_NUXT_USERS_SITE_URL) to your public app URL.')
+  }
 }
 
 export default plugin

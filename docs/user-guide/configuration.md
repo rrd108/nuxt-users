@@ -71,6 +71,9 @@ export default defineNuxtConfig({
       }
     },
     
+    // Public app URL used for links in emails (required in production)
+    siteUrl: 'https://example.com',
+
     // Password reset URL path
     passwordResetUrl: '/reset-password',
     

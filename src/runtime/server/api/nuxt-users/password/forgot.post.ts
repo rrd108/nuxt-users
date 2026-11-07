@@ -1,5 +1,6 @@
-import { defineEventHandler, readBody, createError, getHeader } from 'h3'
+import { defineEventHandler, readBody, createError } from 'h3'
 import { sendPasswordResetLink } from '../../../services/password'
+import { getSiteUrl } from '../../../utils/site-url'
 import { useRuntimeConfig } from '#imports'
 import type { ModuleOptions } from 'nuxt-users/utils'
 
@@ -18,10 +19,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Try to determine the base URL from the request
-    const host = getHeader(event, 'host')
-    const protocol = getHeader(event, 'x-forwarded-proto') || 'http'
-    const baseUrl = host ? `${protocol}://${host}` : undefined
+    // Never trust the Host header in production: it would let an attacker point reset links to their own domain
+    const baseUrl = getSiteUrl(event, options)
 
     await sendPasswordResetLink(email, options, baseUrl)
     // Always return a success-like message to prevent email enumeration

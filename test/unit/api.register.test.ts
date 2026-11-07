@@ -27,7 +27,9 @@ async function setupDatabaseTables() {
 
 describe('API: Registration', async () => {
   await setup({
-    rootDir: './playground'
+    rootDir: './playground',
+    // The test server runs a production build, where siteUrl is required for email links
+    nuxtConfig: { nuxtUsers: { siteUrl: 'http://localhost:3000' } }
   })
 
   beforeEach(async () => {

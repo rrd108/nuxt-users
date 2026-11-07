@@ -58,23 +58,19 @@ This will generate reset links like:
 https://yourapp.com/auth/reset-password?token=abc123...&email=user@example.com
 ```
 
-### Zero Configuration
+### Site URL (required in production)
 
-The module automatically detects your application's base URL from the incoming request, so you don't need to configure a full base URL. The system intelligently combines:
+Reset links are built from `siteUrl` + `passwordResetUrl`:
 
-- **Request host**: Automatically detected from headers
-- **Protocol**: Detected from `x-forwarded-proto` header or defaults to `http`
-- **Reset path**: Your configured `passwordResetUrl` (default: `/reset-password`)
+```ts
+nuxtUsers: {
+  siteUrl: 'https://myapp.com', // or NUXT_NUXT_USERS_SITE_URL
+}
+```
 
-### Development vs Production
+The request's `Host` header is never used in production: an attacker could set it to their own domain and receive a valid reset token when the victim clicks the link. If `siteUrl` is missing in production, forgot-password and registration requests fail with an error.
 
-**Development** (automatic detection):
-- Request to `http://localhost:3000` → Reset URL: `http://localhost:3000/reset-password`
-
-**Production** (automatic detection):
-- Request to `https://myapp.com` → Reset URL: `https://myapp.com/reset-password`
-
-No manual configuration of base URLs required!
+In development (`NODE_ENV !== 'production'`) the module falls back to the request host and `x-forwarded-proto` header, so `http://localhost:3000` works without configuration.
 
 ## Configuration
 

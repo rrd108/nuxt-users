@@ -47,6 +47,7 @@ export interface RuntimeModuleOptions {
   }
 
   // URLs
+  siteUrl?: string                // Public app URL for email links, e.g. 'https://example.com' (required in production)
   passwordResetUrl?: string       // default: '/reset-password'
   emailConfirmationUrl?: string   // default: '/login'
 

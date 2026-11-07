@@ -106,6 +106,12 @@ export interface RuntimeModuleOptions {
   mailer?: MailerOptions
 
   /**
+   * Public base URL of the app (e.g. 'https://example.com'), used to build links in emails
+   * (password reset, email confirmation). Required in production: the request Host header
+   * is attacker-controlled and is only used as a fallback in development.
+   */
+  siteUrl?: string
+  /**
    * URL path for password reset page
    * @default '/reset-password'
    */
@@ -234,6 +240,7 @@ export interface ModuleOptions {
     passwordResetTokens: string
   }
   mailer?: MailerOptions
+  siteUrl?: string
   passwordResetUrl: string
   emailConfirmationUrl: string
   auth: {

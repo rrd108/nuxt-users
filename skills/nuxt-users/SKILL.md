@@ -67,6 +67,7 @@ All options live under `nuxtUsers` in `nuxt.config.ts`.
 | API | `apiBasePath` | Default `'/api/nuxt-users'` |
 | Tables | `tables.users`, `tables.personalAccessTokens`, `tables.passwordResetTokens`, `tables.migrations` | Custom table names |
 | Mailer | `mailer` | Nodemailer config for password reset emails |
+| URLs | `siteUrl` | Public app URL for links in emails (e.g. `'https://example.com'`). Required in production; the Host header is only trusted in development |
 | URLs | `passwordResetUrl`, `emailConfirmationUrl` | Paths for redirects |
 | Auth | `auth.whitelist` | Public routes (e.g. `['/register']`); `/login` is always public |
 | Auth | `auth.tokenExpiration` | Minutes (default 1440) |

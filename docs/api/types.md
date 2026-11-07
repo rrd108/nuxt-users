@@ -132,6 +132,7 @@ interface RuntimeModuleOptions {
     passwordResetTokens?: string
   }
   mailer?: MailerOptions
+  siteUrl?: string
   passwordResetUrl?: string
   auth?: {
     whitelist?: string[]
@@ -247,6 +248,7 @@ interface ModuleOptions {
     passwordResetTokens: string
   }
   mailer?: MailerOptions
+  siteUrl?: string
   passwordResetUrl: string
   auth: {
     whitelist: string[]
