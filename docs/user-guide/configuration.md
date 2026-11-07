@@ -162,8 +162,9 @@ For `runtimeConfig.nuxtUsers.*` configuration, environment variables follow the 
 Examples:
 - `runtimeConfig.nuxtUsers.connector.options.host` → `NUXT_NUXT_USERS_CONNECTOR_OPTIONS_HOST`
 - `runtimeConfig.nuxtUsers.mailer.auth.user` → `NUXT_NUXT_USERS_MAILER_AUTH_USER`
+- `runtimeConfig.nuxtUsers.siteUrl` → `NUXT_NUXT_USERS_SITE_URL`
 
-**Important:** Environment variables only override `undefined` values in `runtimeConfig`. If you want environment variables to provide values, set those properties to `undefined` in your config:
+**Important:** At runtime Nuxt only applies an environment variable to a key that already exists in `runtimeConfig` at build time; a variable for a key that is not declared is silently ignored. Declare every value you want to set from the environment, using an empty string as a placeholder. `siteUrl` already has an empty default in nuxt-users, so `NUXT_NUXT_USERS_SITE_URL` works without any config.
 
 ```ts
 // nuxt.config.ts - Using env vars for sensitive data
@@ -176,9 +177,9 @@ export default defineNuxtConfig({
         options: {
           host: 'localhost',
           port: 3306,
-          database: undefined,  // Will use NUXT_NUXT_USERS_CONNECTOR_OPTIONS_DATABASE
-          user: undefined,      // Will use NUXT_NUXT_USERS_CONNECTOR_OPTIONS_USER
-          password: undefined   // Will use NUXT_NUXT_USERS_CONNECTOR_OPTIONS_PASSWORD
+          database: '',  // Set by NUXT_NUXT_USERS_CONNECTOR_OPTIONS_DATABASE
+          user: '',      // Set by NUXT_NUXT_USERS_CONNECTOR_OPTIONS_USER
+          password: ''   // Set by NUXT_NUXT_USERS_CONNECTOR_OPTIONS_PASSWORD
         }
       }
     }
@@ -186,9 +187,12 @@ export default defineNuxtConfig({
 })
 ```
 
-**Why `undefined`?** Nuxt's environment variable system only replaces undefined values. Setting empty strings (`''`) or other values will prevent environment variables from being used.
+The placeholder can be any value: the environment variable replaces it at runtime, so a real default (like `host: 'localhost'` above) also works and is used when the variable is not set.
 
 ```bash
+# Public app URL for links in emails (required in production)
+NUXT_NUXT_USERS_SITE_URL=https://myapp.com
+
 # Database (follows runtimeConfig.nuxtUsers.connector.options.* pattern)
 NUXT_NUXT_USERS_CONNECTOR_OPTIONS_HOST=localhost
 NUXT_NUXT_USERS_CONNECTOR_OPTIONS_USER=myapp_user
