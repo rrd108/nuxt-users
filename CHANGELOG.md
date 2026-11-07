@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v1.50.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.50.0...v1.50.1)
+
+### 🩹 Fixes
+
+- Judge reset and confirmation token expiry on the database clock ([363218d](https://github.com/rrd108/nuxt-users/commit/363218d))
+
+### 🏡 Chore
+
+- **release-script:** Create the GitHub release after pushing the tag ([e99f94a](https://github.com/rrd108/nuxt-users/commit/e99f94a))
+- **release:** Update last release timestamp ([e716490](https://github.com/rrd108/nuxt-users/commit/e716490))
+- Remove unused deleteExpiredPasswordResetTokens ([d96fe9f](https://github.com/rrd108/nuxt-users/commit/d96fe9f))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.50.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.49.3...v1.50.0)
