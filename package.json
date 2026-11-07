@@ -21,7 +21,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/rrd108/nuxt-users.git"
+    "url": "git+https://github.com/rrd108/nuxt-users.git"
   },
   "bugs": {
     "url": "https://github.com/rrd108/nuxt-users/issues"
@@ -50,7 +50,7 @@
     "scripts"
   ],
   "bin": {
-    "nuxt-users": "./dist/cli.mjs"
+    "nuxt-users": "dist/cli.mjs"
   },
   "scripts": {
     "prepack": "nuxt-module-build build && node scripts/post-build.js",
