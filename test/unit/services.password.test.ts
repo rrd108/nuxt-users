@@ -25,7 +25,6 @@ vi.mock('../../src/runtime/server/utils', async (importOriginal) => {
 const {
   resetPassword,
   sendPasswordResetLink,
-  deleteExpiredPasswordResetTokens,
 } = await import('../../src/runtime/server/services/password')
 const { useDb, updateUserPassword, findUserByEmail, revokeUserTokens } = await import('../../src/runtime/server/utils')
 
@@ -342,26 +341,6 @@ describe('Password Service', () => {
 
       expect(mockSql).toHaveBeenCalledTimes(1)
       expect(mockSendMail).toHaveBeenCalledTimes(1)
-    })
-  })
-
-  describe('deleteExpiredPasswordResetTokens', () => {
-    it('should delete only tokens that are expired by the database clock', async () => {
-      mockSql
-        .mockResolvedValueOnce({
-          rows: [
-            { id: 1, created_at: '2026-01-31 22:00:00', db_now: '2026-02-01 00:10:00' }, // 2h10m old
-            { id: 2, created_at: '2026-01-31 23:30:00', db_now: '2026-02-01 00:10:00' }, // 40m old
-          ],
-        })
-        .mockResolvedValue({ rows: [] })
-
-      await deleteExpiredPasswordResetTokens(testOptions)
-
-      const deletedIds = mockSql.mock.calls
-        .filter(call => (call[0] as string[]).join('?').includes('DELETE'))
-        .map(call => call[2])
-      expect(deletedIds).toEqual([1])
     })
   })
 })

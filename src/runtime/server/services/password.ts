@@ -3,7 +3,7 @@ import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
 import { findUserByEmail, updateUserPassword, revokeUserTokens, useDb } from '../utils'
 import { escapeHtml } from '../utils/escape-html'
-import { isTokenExpired, findTokenRecordsByEmail, type DbTimestamp } from '../utils/token-expiry'
+import { isTokenExpired, findTokenRecordsByEmail } from '../utils/token-expiry'
 import type { ModuleOptions } from 'nuxt-users/utils'
 
 const TOKEN_EXPIRATION_HOURS = 1
@@ -165,28 +165,4 @@ export const resetPassword = async (
 
   console.log(`[Nuxt Users] Password reset successful for email: ${email}`)
   return true
-}
-
-/**
- * Deletes expired password reset tokens from the database.
- * Expiry is judged on the database's own clock, like in resetPassword (issue #220).
- */
-export const deleteExpiredPasswordResetTokens = async (
-  options: ModuleOptions): Promise<void> => {
-  const db = await useDb(options)
-  const passwordResetTokensTable = options.tables.passwordResetTokens
-
-  const tokens = await db.sql`
-    SELECT id, created_at, CURRENT_TIMESTAMP AS db_now FROM {${passwordResetTokensTable}}
-  ` as { rows: { id: number, created_at: DbTimestamp, db_now: DbTimestamp }[] }
-
-  const expiredIds = tokens.rows
-    .filter(token => isTokenExpired(token.created_at, token.db_now, TOKEN_EXPIRATION_HOURS))
-    .map(token => token.id)
-
-  for (const id of expiredIds) {
-    await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE id = ${id}`
-  }
-
-  console.log(`[Nuxt Users] ${expiredIds.length} expired password reset tokens deleted.`)
 }
