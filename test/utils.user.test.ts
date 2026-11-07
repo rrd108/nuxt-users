@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
 import type { DatabaseType, DatabaseConfig, ModuleOptions } from '../src/types'
 import { cleanupTestSetup, createTestSetup } from './test-setup'
-import { createUsersTable, createPersonalAccessTokensTable, createUser, findUserByEmail, findUserById, deleteUser, updateUser, updateUserPassword, getLastLoginTime, getCurrentUserFromToken } from '../src/runtime/server/utils'
+import { createUsersTable, createPersonalAccessTokensTable, createUser, findUserByEmail, findUserById, deleteUser, updateUser, updateUserPassword, getLastLoginTime, getCurrentUserFromToken, revokeUserTokens } from '../src/runtime/server/utils'
 import { addActiveToUsers } from '../src/runtime/server/utils/add-active-to-users'
 
 describe('User Utilities (src/utils/user.ts)', () => {
@@ -273,6 +273,25 @@ describe('User Utilities (src/utils/user.ts)', () => {
       // Verify tokens are revoked
       tokenResult = await db.sql`SELECT * FROM {${testOptions.tables.personalAccessTokens}} WHERE tokenable_id = ${user.id}`
       expect(tokenResult.rows?.length).toBe(0)
+    })
+  })
+
+  describe('revokeUserTokens', () => {
+    it('should keep only the excepted token when exceptToken is given', async () => {
+      const user = await createUser({ email: 'revoke-except@example.com', name: 'Revoke', password: 'password123' }, testOptions)
+
+      for (const token of ['current-token', 'other-token-1', 'other-token-2']) {
+        await db.sql`
+          INSERT INTO {${testOptions.tables.personalAccessTokens}}
+          (tokenable_type, tokenable_id, name, token, created_at, updated_at)
+          VALUES ('user', ${user.id}, 'test-token', ${token}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        `
+      }
+
+      await revokeUserTokens(user.id, testOptions, 'current-token')
+
+      const tokenResult = await db.sql`SELECT token FROM {${testOptions.tables.personalAccessTokens}} WHERE tokenable_id = ${user.id}` as { rows: Array<{ token: string }> }
+      expect(tokenResult.rows.map(row => row.token)).toEqual(['current-token'])
     })
   })
 

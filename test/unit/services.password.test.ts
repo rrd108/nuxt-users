@@ -18,6 +18,7 @@ vi.mock('../../src/runtime/server/utils', async (importOriginal) => {
     useDb: vi.fn(),
     updateUserPassword: vi.fn(),
     findUserByEmail: vi.fn(),
+    revokeUserTokens: vi.fn(),
   }
 })
 
@@ -26,7 +27,7 @@ const {
   sendPasswordResetLink,
   deleteExpiredPasswordResetTokens,
 } = await import('../../src/runtime/server/services/password')
-const { useDb, updateUserPassword, findUserByEmail } = await import('../../src/runtime/server/utils')
+const { useDb, updateUserPassword, findUserByEmail, revokeUserTokens } = await import('../../src/runtime/server/utils')
 
 const testUser: User = {
   id: 1,
@@ -90,6 +91,7 @@ describe('Password Service', () => {
         'NewPassword123!',
         testOptions,
       )
+      expect(revokeUserTokens).toHaveBeenCalledWith(testUser.id, testOptions)
     })
 
     it('should accept created_at as a string (SQLite driver behavior)', async () => {

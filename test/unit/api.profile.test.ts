@@ -18,7 +18,8 @@ vi.mock('#imports', () => ({
 
 vi.mock('../../src/runtime/server/utils', () => ({
   getCurrentUserFromToken: vi.fn(),
-  updateUserPassword: vi.fn()
+  updateUserPassword: vi.fn(),
+  revokeUserTokens: vi.fn()
 }))
 
 vi.mock('bcrypt', () => ({
@@ -420,6 +421,10 @@ describe('Password Change API Route', () => {
       newPassword,
       testOptions
     )
+
+    // Verify other sessions are revoked, keeping the current one
+    const { revokeUserTokens } = await import('../../src/runtime/server/utils')
+    expect(revokeUserTokens).toHaveBeenCalledWith(testUserWithPassword.id, testOptions, mockToken)
 
     // Verify response structure
     expect(response).toBeDefined()

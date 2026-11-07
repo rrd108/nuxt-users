@@ -1,7 +1,7 @@
 import { createTransport } from 'nodemailer'
 import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
-import { findUserByEmail, updateUserPassword, useDb } from '../utils'
+import { findUserByEmail, updateUserPassword, revokeUserTokens, useDb } from '../utils'
 import { escapeHtml } from '../utils/escape-html'
 import type { ModuleOptions } from 'nuxt-users/utils'
 
@@ -199,6 +199,12 @@ export const resetPassword = async (
 
   // Update user's password
   await updateUserPassword(email, newPassword, options)
+
+  // Log out every existing session: whoever had access before the reset must not keep it
+  const user = await findUserByEmail(email, options)
+  if (user) {
+    await revokeUserTokens(user.id, options)
+  }
 
   // Delete the used token (and any other tokens for this email to be safe)
   await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE email = ${email}`

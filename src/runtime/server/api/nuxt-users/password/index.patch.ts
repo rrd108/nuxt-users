@@ -2,7 +2,7 @@ import { createError, defineEventHandler, getCookie, readBody } from 'h3'
 import bcrypt from 'bcrypt'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { getCurrentUserFromToken, updateUserPassword } from '../../../utils'
+import { getCurrentUserFromToken, updateUserPassword, revokeUserTokens } from '../../../utils'
 import { validatePassword, getPasswordValidationOptions } from '../../../../../utils'
 
 export default defineEventHandler(async (event) => {
@@ -75,6 +75,9 @@ export default defineEventHandler(async (event) => {
 
   // Update the password
   await updateUserPassword(user.email, newPassword, options)
+
+  // Log out all other sessions, keep the current one
+  await revokeUserTokens(user.id, options, token)
 
   return { message: 'Password updated successfully' }
 })

@@ -372,10 +372,20 @@ export const cleanupPersonalAccessTokens = async (
 
 /**
  * Revokes all tokens for a specific user.
+ * Pass `exceptToken` to keep one session (e.g. the one that just changed the password).
  */
-export const revokeUserTokens = async (userId: number, options: ModuleOptions): Promise<void> => {
+export const revokeUserTokens = async (userId: number, options: ModuleOptions, exceptToken?: string): Promise<void> => {
   const db = await useDb(options)
   const personalAccessTokensTable = options.tables.personalAccessTokens
+
+  if (exceptToken) {
+    await db.sql`
+      DELETE FROM {${personalAccessTokensTable}}
+      WHERE tokenable_type = 'user' AND tokenable_id = ${userId} AND token <> ${exceptToken}
+    `
+    console.log(`[Nuxt Users] Other tokens revoked for user ID: ${userId}`)
+    return
+  }
 
   await db.sql`
     DELETE FROM {${personalAccessTokensTable}}
