@@ -47,6 +47,8 @@ const createValidTokenRows = async (plainToken: string, createdAt: Date | string
     email: 'test@example.com',
     token: hashedToken,
     created_at: createdAt,
+    // The database's CURRENT_TIMESTAMP, in the same form the driver returns created_at
+    db_now: createdAt instanceof Date ? new Date() : new Date().toISOString().slice(0, 19).replace('T', ' '),
   }]
 }
 
@@ -344,21 +346,22 @@ describe('Password Service', () => {
   })
 
   describe('deleteExpiredPasswordResetTokens', () => {
-    it('should delete tokens using MySQL-compatible datetime format', async () => {
-      mockSql.mockResolvedValue({ rows: [] })
+    it('should delete only tokens that are expired by the database clock', async () => {
+      mockSql
+        .mockResolvedValueOnce({
+          rows: [
+            { id: 1, created_at: '2026-01-31 22:00:00', db_now: '2026-02-01 00:10:00' }, // 2h10m old
+            { id: 2, created_at: '2026-01-31 23:30:00', db_now: '2026-02-01 00:10:00' }, // 40m old
+          ],
+        })
+        .mockResolvedValue({ rows: [] })
 
       await deleteExpiredPasswordResetTokens(testOptions)
 
-      expect(mockSql).toHaveBeenCalledTimes(1)
-
-      const callArgs = mockSql.mock.calls[0]?.flat() ?? []
-      const expirationArg = callArgs.find(
-        (arg): arg is string => typeof arg === 'string' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(arg),
-      )
-
-      expect(expirationArg).toBeDefined()
-      expect(expirationArg).not.toContain('T')
-      expect(expirationArg).not.toContain('Z')
+      const deletedIds = mockSql.mock.calls
+        .filter(call => (call[0] as string[]).join('?').includes('DELETE'))
+        .map(call => call[2])
+      expect(deletedIds).toEqual([1])
     })
   })
 })

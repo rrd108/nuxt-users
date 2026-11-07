@@ -3,6 +3,7 @@ import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
 import { findUserByEmail, updateUserPassword, revokeUserTokens, useDb } from '../utils'
 import { escapeHtml } from '../utils/escape-html'
+import { isTokenExpired, findTokenRecordsByEmail, type DbTimestamp } from '../utils/token-expiry'
 import type { ModuleOptions } from 'nuxt-users/utils'
 
 const TOKEN_EXPIRATION_HOURS = 1
@@ -122,19 +123,15 @@ export const resetPassword = async (
   const passwordResetTokensTable = options.tables.passwordResetTokens
 
   // Find potential tokens for the email (could be multiple if user requested several times)
-  const tokenRecords = await db.sql`
-    SELECT * FROM {${passwordResetTokensTable}}
-    WHERE email = ${email}
-    ORDER BY created_at DESC
-  ` as { rows: { id: number, email: string, token: string, created_at: Date | string }[] }
+  const tokenRecords = await findTokenRecordsByEmail(db, passwordResetTokensTable, email)
 
-  if (tokenRecords.rows.length === 0) {
+  if (tokenRecords.length === 0) {
     console.log(`[Nuxt Users] No password reset tokens found for email: ${email}`)
     return false
   }
 
   let validTokenRecord = null
-  for (const record of tokenRecords.rows) {
+  for (const record of tokenRecords) {
     const tokenMatch = await bcrypt.compare(token, record.token)
     if (tokenMatch) {
       validTokenRecord = record
@@ -147,50 +144,7 @@ export const resetPassword = async (
     return false
   }
 
-  // Verify token expiration
-  // Work with the database timestamp directly to avoid timezone issues
-  // The database stores timestamps as 'YYYY-MM-DD HH:MM:SS' in local time
-
-  // Get current time in the same format as the database
-  const now = new Date()
-  const currentTimeString = now.toISOString().slice(0, 19).replace('T', ' ')
-
-  // Parse the original timestamp and add expiration hours
-  // Handle both Date objects and string timestamps from different databases
-  const createdAtString = validTokenRecord.created_at instanceof Date
-    ? validTokenRecord.created_at.toISOString().slice(0, 19).replace('T', ' ')
-    : String(validTokenRecord.created_at)
-
-  const [datePart, timePart] = createdAtString.split(/[ T]/)
-  if (!datePart || !timePart) {
-    console.log(`[Nuxt Users] Invalid timestamp format for token: ${createdAtString}`)
-    return false
-  }
-
-  const [year, month, day] = datePart.split('-').map(Number)
-  const [hour, minute, second] = timePart.split(':').map(Number)
-
-  if (!year || !month || !day || hour === undefined || minute === undefined || second === undefined) {
-    console.log('[Nuxt Users] Invalid timestamp components')
-    return false
-  }
-
-  // Calculate expiration time by adding hours
-  let expirationHour = hour + TOKEN_EXPIRATION_HOURS
-  let expirationDay = day
-  const expirationMonth = month
-  const expirationYear = year
-
-  // Handle day/month/year overflow when adding hours
-  if (expirationHour >= 24) {
-    expirationHour -= 24
-    expirationDay++
-    // Simple overflow handling - in production you might want more sophisticated date math
-  }
-
-  const expirationTimeString = `${expirationYear.toString().padStart(4, '0')}-${expirationMonth.toString().padStart(2, '0')}-${expirationDay.toString().padStart(2, '0')} ${expirationHour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')}`
-
-  if (currentTimeString > expirationTimeString) {
+  if (isTokenExpired(validTokenRecord.created_at, validTokenRecord.db_now, TOKEN_EXPIRATION_HOURS)) {
     console.log(`[Nuxt Users] Expired password reset token for email: ${email}`)
     // Clean up this specific expired token
     await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE id = ${validTokenRecord.id}`
@@ -215,22 +169,24 @@ export const resetPassword = async (
 
 /**
  * Deletes expired password reset tokens from the database.
+ * Expiry is judged on the database's own clock, like in resetPassword (issue #220).
  */
 export const deleteExpiredPasswordResetTokens = async (
   options: ModuleOptions): Promise<void> => {
   const db = await useDb(options)
   const passwordResetTokensTable = options.tables.passwordResetTokens
 
-  const expirationDate = new Date()
-  expirationDate.setHours(expirationDate.getHours() - TOKEN_EXPIRATION_HOURS)
+  const tokens = await db.sql`
+    SELECT id, created_at, CURRENT_TIMESTAMP AS db_now FROM {${passwordResetTokensTable}}
+  ` as { rows: { id: number, created_at: DbTimestamp, db_now: DbTimestamp }[] }
 
-  // Match MySQL DATETIME format for reliable comparison across drivers
-  const expirationDateString = expirationDate.toISOString().slice(0, 19).replace('T', ' ')
+  const expiredIds = tokens.rows
+    .filter(token => isTokenExpired(token.created_at, token.db_now, TOKEN_EXPIRATION_HOURS))
+    .map(token => token.id)
 
-  await db.sql`
-    DELETE FROM {${passwordResetTokensTable}}
-    WHERE created_at < ${expirationDateString}
-  `
+  for (const id of expiredIds) {
+    await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE id = ${id}`
+  }
 
-  console.log(`[Nuxt Users] Expired password reset tokens older than ${expirationDateString} deleted.`)
+  console.log(`[Nuxt Users] ${expiredIds.length} expired password reset tokens deleted.`)
 }

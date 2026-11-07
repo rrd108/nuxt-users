@@ -40,6 +40,8 @@ const createValidTokenRows = async (plainToken: string, createdAt: Date | string
     email: 'new@example.com',
     token: hashedToken,
     created_at: createdAt,
+    // The database's CURRENT_TIMESTAMP, in the same form the driver returns created_at
+    db_now: createdAt instanceof Date ? new Date() : new Date().toISOString().slice(0, 19).replace('T', ' '),
   }]
 }
 
