@@ -1,6 +1,19 @@
 import type { Permission } from './imports'
 
 /**
+ * Converts a permission pattern to a regex source: `**` matches any number of segments,
+ * `*` matches within one segment, everything else is matched literally.
+ */
+const patternToRegexSource = (pattern: string): string => pattern
+  .split(/(\*\*|\*)/)
+  .map((part) => {
+    if (part === '**') return '.*'
+    if (part === '*') return '[^/]*'
+    return part.replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+  })
+  .join('')
+
+/**
  * Checks if a path matches a pattern (supports wildcards)
  * @param path - The path to check
  * @param pattern - The pattern to match against (supports * wildcard)
@@ -17,29 +30,17 @@ export const pathMatchesPattern = (path: string, pattern: string): boolean => {
     return true
   }
 
-  // Pattern with multiple wildcards (use regex)
-  if ((pattern.match(/\*/g) || []).length > 1) {
-    const regexPattern = pattern
-      .replace(/\*/g, '[^/]*')
-    const regex = new RegExp(`^${regexPattern}`)
-    return regex.test(path)
+  if (!pattern.includes('*')) {
+    return false
   }
 
-  // Pattern with wildcard at the end (simple case)
-  if (pattern.endsWith('/*')) {
-    const basePattern = pattern.slice(0, -2)
-    return path === basePattern || path.startsWith(basePattern + '/')
+  // A trailing `/*` matches the base path and everything below it
+  if (pattern.endsWith('/*') && !pattern.endsWith('/**')) {
+    return new RegExp(`^${patternToRegexSource(pattern.slice(0, -2))}(?:/.*)?$`).test(path)
   }
 
-  // Pattern with single wildcard in the middle
-  if (pattern.includes('*')) {
-    const regexPattern = pattern
-      .replace(/\*/g, '[^/]*')
-    const regex = new RegExp(`^${regexPattern}`)
-    return regex.test(path)
-  }
-
-  return false
+  // Anchored at both ends: `/api/*/users` must not match `/api/x/users-secret` or `/api/x/users/1`
+  return new RegExp(`^${patternToRegexSource(pattern)}$`).test(path)
 }
 
 /**

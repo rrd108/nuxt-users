@@ -37,6 +37,20 @@ describe('Permissions Utils', () => {
       expect(pathMatchesPattern('/api/admin/users/1', '/api/*/users/*')).toBe(true)
       expect(pathMatchesPattern('/api/nuxt-users/me/edit', '/api/*/profile/*')).toBe(false)
     })
+
+    it('should anchor wildcard patterns at the end', () => {
+      expect(pathMatchesPattern('/api/admin/users-secret', '/api/*/users')).toBe(false)
+      expect(pathMatchesPattern('/api/admin/users/1', '/api/*/users')).toBe(false)
+      expect(pathMatchesPattern('/api/x/public-admin/delete', '/api/*/public')).toBe(false)
+      expect(pathMatchesPattern('/api/admin/users', '/api/*/users/*')).toBe(true)
+      expect(pathMatchesPattern('/adminx', '/admin/*')).toBe(false)
+    })
+
+    it('should support ** across segments and treat other characters literally', () => {
+      expect(pathMatchesPattern('/docs/a/b/c', '/docs/**')).toBe(true)
+      expect(pathMatchesPattern('/files/a/b.pdf', '/files/**.pdf')).toBe(true)
+      expect(pathMatchesPattern('/files/a/bxpdf', '/files/**.pdf')).toBe(false)
+    })
   })
 
   describe('hasPermission', () => {

@@ -167,9 +167,10 @@ nuxtUsers: {
 
 ### Wildcard Support
 - `*` - Matches any path (full access)
-- `/*` - Matches all sub-paths under a base path
+- `/*` at the end - Matches the base path and all sub-paths under it (`/admin/*` matches `/admin` and `/admin/users/1`)
+- `*` inside a pattern - Matches exactly one path segment (`/api/*/users` matches `/api/admin/users`)
 - `**` - Matches any number of path segments
-- Complex patterns like `/api/*/users/*` for flexible matching
+- Patterns are matched against the whole path: `/api/*/users` does not match `/api/admin/users/1` or `/api/admin/users-export`. Use `/api/*/users/*` to include sub-paths
 
 ### Role Hierarchy
 You can implement role hierarchies by giving higher-level roles access to lower-level paths:
