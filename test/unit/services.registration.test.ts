@@ -202,6 +202,20 @@ describe('Registration Service', () => {
       expect(mailOptions.html).toContain('token=confirmation-token')
       expect(mailOptions.html).toContain('email=new%40example.com')
     })
+
+    it('should escape HTML in the user-supplied name', async () => {
+      await sendConfirmationEmail(
+        registrationData.email,
+        '</h2><a href="https://evil.example">Verify</a>',
+        'confirmation-token',
+        testOptions,
+        'https://app.example.com',
+      )
+
+      const mailOptions = mockSendMail.mock.calls[0]?.[0]
+      expect(mailOptions.html).not.toContain('<a href="https://evil.example">')
+      expect(mailOptions.html).toContain('&lt;/h2&gt;&lt;a href=&quot;https://evil.example&quot;&gt;Verify&lt;/a&gt;')
+    })
   })
 
   describe('confirmUserEmail', () => {

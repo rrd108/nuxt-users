@@ -2,6 +2,7 @@ import { createTransport } from 'nodemailer'
 import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
 import { findUserByEmail, useDb, USER_EMAIL_ALREADY_EXISTS_MESSAGE } from '../utils'
+import { escapeHtml } from '../utils/escape-html'
 import { validatePassword, getPasswordValidationOptions } from 'nuxt-users/utils'
 import type { ModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
 
@@ -129,6 +130,9 @@ export const sendConfirmationEmail = async (
   confirmationUrl.searchParams.set('email', email)
 
   const confirmationLink = confirmationUrl.toString()
+  // name is user-supplied: escape everything interpolated into the HTML body
+  const safeName = escapeHtml(name)
+  const safeLink = escapeHtml(confirmationLink)
 
   try {
     await transporter.sendMail({
@@ -146,11 +150,11 @@ This link will expire in ${TOKEN_EXPIRATION_HOURS} hours.
 If you did not create an account, please ignore this email.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>Welcome, ${name}!</h2>
+          <h2>Welcome, ${safeName}!</h2>
           <p>Thank you for registering! Please click the button below to confirm your email address and activate your account:</p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${confirmationLink}" 
+            <a href="${safeLink}" 
                style="background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
               Confirm Email Address
             </a>
@@ -158,7 +162,7 @@ If you did not create an account, please ignore this email.`,
           
           <p>Or copy and paste the following link into your browser:</p>
           <p style="word-break: break-all; background-color: #f8f9fa; padding: 10px; border-radius: 3px;">
-            <a href="${confirmationLink}">${confirmationLink}</a>
+            <a href="${safeLink}">${safeLink}</a>
           </p>
           
           <p style="color: #6c757d; font-size: 14px;">

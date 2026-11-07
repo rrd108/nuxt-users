@@ -2,6 +2,7 @@ import { createTransport } from 'nodemailer'
 import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
 import { findUserByEmail, updateUserPassword, useDb } from '../utils'
+import { escapeHtml } from '../utils/escape-html'
 import type { ModuleOptions } from 'nuxt-users/utils'
 
 const TOKEN_EXPIRATION_HOURS = 1
@@ -62,6 +63,7 @@ export const sendPasswordResetLink = async (
   resetUrl.searchParams.set('email', email)
 
   const resetLink = resetUrl.toString()
+  const safeLink = escapeHtml(resetLink)
 
   try {
     await transporter.sendMail({
@@ -79,7 +81,7 @@ If you did not request this password reset, please ignore this email.`,
           <p>You have requested to reset your password. Please click the button below to set a new password:</p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${resetLink}" 
+            <a href="${safeLink}" 
                style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
               Reset Password
             </a>
@@ -87,7 +89,7 @@ If you did not request this password reset, please ignore this email.`,
           
           <p>Or copy and paste the following link into your browser:</p>
           <p style="word-break: break-all; background-color: #f8f9fa; padding: 10px; border-radius: 3px;">
-            <a href="${resetLink}">${resetLink}</a>
+            <a href="${safeLink}">${safeLink}</a>
           </p>
           
           <p style="color: #6c757d; font-size: 14px;">
