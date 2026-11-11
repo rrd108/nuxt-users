@@ -77,7 +77,7 @@ jobs:
         node: [22, 24]
     services:
       postgres:
-        image: postgres:17
+        image: postgres:18
         env:
           POSTGRES_PASSWORD: 123
           POSTGRES_DB: test_db
