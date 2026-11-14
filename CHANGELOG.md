@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v1.51.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.50.1...v1.51.0)
+
+### 🚀 Enhancements
+
+- Add list-routes CLI command to show public and protected routes ([c22a2a5](https://github.com/rrd108/nuxt-users/commit/c22a2a5))
+
+### 🩹 Fixes
+
+- Record migrations only when their schema change is in place ([658d63e](https://github.com/rrd108/nuxt-users/commit/658d63e))
+
+### 🏡 Chore
+
+- Normalize bin and repository fields in package.json ([92428bb](https://github.com/rrd108/nuxt-users/commit/92428bb))
+- Set up agent skills config ([56d3d1e](https://github.com/rrd108/nuxt-users/commit/56d3d1e))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.50.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.50.0...v1.50.1)
