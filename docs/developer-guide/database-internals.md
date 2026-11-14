@@ -118,11 +118,18 @@ import { runMigrations } from '#nuxt-users/server'
 await runMigrations(options)
 ```
 
+It returns the names of the migrations applied by this run, and throws on the first failure.
+
 **Migration Process:**
 1. Ensures migrations table exists
 2. Checks which migrations have been applied
-3. Runs pending migrations in order
-4. Marks each migration as applied after successful execution
+3. Runs pending migrations in order. For each one, the DDL, a check that the resulting table, column or index really exists, and the row in the migrations table form one unit: the migration is recorded only if its schema change is in place
+4. Stops at the first failure. The failed migration is not recorded, so it runs again next time
+
+**Atomicity per database:**
+- **SQLite**: each migration runs in a `BEGIN IMMEDIATE` transaction, so a locked database fails before any DDL runs. While another connection holds the write lock, the migration waits with async retries (up to 30 seconds) instead of better-sqlite3's synchronous busy wait, which would block the event loop. If a transaction is already open on the module's own connection (for example an app migration run through `useNuxtUsersDatabase()`), it waits for that transaction to end instead of running inside it
+- **PostgreSQL**: each migration runs in a transaction, with an advisory lock that serializes concurrent runs from several instances
+- **MySQL**: DDL commits implicitly, so there is no transaction. The existence check still keeps a failed migration from being recorded
 
 **Built-in Migrations:**
 - `create_migrations_table`: Creates the migrations tracking table
@@ -130,6 +137,9 @@ await runMigrations(options)
 - `create_personal_access_tokens_table`: Creates the tokens table
 - `create_password_reset_tokens_table`: Creates the password reset tokens table
 - `add_active_to_users`: Adds the active column to users table
+- `add_google_oauth_fields`: Adds the `google_id` and `profile_picture` columns, if missing
+- `add_active_index_to_users`: Adds an index on `users.active`
+- `add_tokenable_index_to_personal_access_tokens`: Adds an index on the token owner columns
 
 ### `getAppliedMigrations(options)`
 
@@ -154,25 +164,45 @@ The module automatically runs database migrations on server startup via a Nitro 
 - Only new migrations are executed
 
 **Behavior:**
-- Migrations run silently - no output on successful run
 - If migrations fail, an error is logged to the console
-- The server continues running even if migrations fail (for development convenience)
+- The server continues running even if migrations fail (for development convenience). Nothing is recorded for the failed migration, so it runs again on the next start
+- When the run finishes, the Nitro runtime hook `nuxt-users:migrated` is called
+
+**Running app migrations after nuxt-users' migrations:**
+
+Nitro does not wait for async plugins, so an app plugin that migrates the same database at startup runs at the same time as nuxt-users' migrations. Wait for the `nuxt-users:migrated` hook instead:
+
+```ts
+// server/plugins/migrate.ts
+export default defineNitroPlugin((nitroApp) => {
+  nitroApp.hooks.hook('nuxt-users:migrated', async ({ applied, error }) => {
+    if (error) {
+      console.error('nuxt-users migrations failed, skipping app migrations')
+      return
+    }
+    console.log('nuxt-users applied:', applied)
+    await runMyAppMigrations()
+  })
+})
+```
+
+The payload is `{ applied: string[], error?: unknown }` (type `NuxtUsersMigratedContext` from `nuxt-users/utils`). The hook is called on every start, also when there was nothing to migrate.
 
 **Disabling Auto-Migration:**
 
-If you need to disable auto-migration, you can override the plugin:
+Set `autoMigrate: false` to run the migrations yourself, for example with `npx nuxt-users migrate` before the app starts. The `nuxt-users:migrated` hook is then not called.
 
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
   modules: ['nuxt-users'],
-  nitro: {
-    plugins: ['~/my-custom-migrate-plugin.ts']
+  nuxtUsers: {
+    autoMigrate: false
   }
 })
 ```
 
-Then create your custom plugin that manually controls when migrations run.
+It can also be set at runtime with `NUXT_NUXT_USERS_AUTO_MIGRATE=false`.
 
 **Manual Migration Control:**
 

@@ -47,6 +47,7 @@ export const defaultOptions: ModuleOptions = {
     preventCommonPasswords: true,
   },
   hardDelete: false,
+  autoMigrate: true,
   locale: {
     default: 'en',
     fallbackLocale: 'en',

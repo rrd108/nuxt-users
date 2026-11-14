@@ -23,7 +23,8 @@ export type {
   DatabaseConfig,
   GoogleOAuthOptions,
   LocaleOptions,
-  LocaleMessages
+  LocaleMessages,
+  NuxtUsersMigratedContext
 } from '../types'
 
 export { defaultDisplayFields, defaultFieldLabels } from '../types'

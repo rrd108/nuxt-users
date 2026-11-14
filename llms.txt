@@ -85,6 +85,7 @@ export interface RuntimeModuleOptions {
 
   // Data Management
   hardDelete?: boolean            // true = delete row, false = soft delete (active=false)
+  autoMigrate?: boolean           // default: true; run migrations on server start, then call the Nitro hook 'nuxt-users:migrated' ({ applied, error? })
 
   // Localization
   locale?: {

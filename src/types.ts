@@ -209,6 +209,13 @@ export interface RuntimeModuleOptions {
    */
   hardDelete?: boolean
   /**
+   * Run the module's database migrations automatically when the server starts.
+   * Set to false to run them yourself, with `npx nuxt-users migrate` or `runMigrations()`.
+   * When true, the Nitro runtime hook `nuxt-users:migrated` fires once the run finishes.
+   * @default true
+   */
+  autoMigrate?: boolean
+  /**
    * Locale configuration for component labels and messages
    */
   locale?: LocaleOptions
@@ -264,6 +271,11 @@ export interface ModuleOptions {
     preventCommonPasswords: boolean
   }
   hardDelete: boolean
+  /**
+   * Run the module's database migrations automatically when the server starts
+   * @default true
+   */
+  autoMigrate?: boolean
   locale?: {
     default: string
     fallbackLocale?: string
@@ -380,4 +392,14 @@ export const defaultFieldLabels = {
   created_at: 'Created',
   updated_at: 'Updated',
   last_login_at: 'Last Login'
+}
+
+/**
+ * Payload of the `nuxt-users:migrated` Nitro runtime hook, called when the startup migration run finishes
+ */
+export interface NuxtUsersMigratedContext {
+  /** Names of the migrations applied by this run (empty if none were pending, or on failure) */
+  applied: string[]
+  /** Set when the run failed. The failed migration was not recorded and runs again on the next start. */
+  error?: unknown
 }

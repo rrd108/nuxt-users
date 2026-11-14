@@ -29,6 +29,9 @@ The module automatically runs database migrations on server startup. This ensure
 - Migrations run automatically when the server starts
 - Only pending migrations are executed
 - Migration progress is tracked in the database
+- A migration is recorded only if its table, column or index really exists afterwards; a failed migration runs again on the next start
+- Set `autoMigrate: false` to run them yourself (e.g. `npx nuxt-users migrate` during deploy)
+- If your app runs its own migrations on the same database at startup, run them from the `nuxt-users:migrated` Nitro hook so the two never overlap
 
 For manual migration control, see the [Database Internals](/developer-guide/database-internals#auto-migration-on-startup) documentation.
 
@@ -101,7 +104,10 @@ export default defineNuxtConfig({
     },
     
     // User deletion behavior
-    hardDelete: false // true = permanent deletion, false = soft delete (default)
+    hardDelete: false, // true = permanent deletion, false = soft delete (default)
+
+    // Run database migrations on server start (default: true)
+    autoMigrate: true
   }
 })
 ```

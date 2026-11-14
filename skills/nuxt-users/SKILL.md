@@ -77,6 +77,7 @@ All options live under `nuxtUsers` in `nuxt.config.ts`.
 | Auth | `auth.google` | Google OAuth: `clientId`, `clientSecret`, `callbackUrl`, etc. |
 | Password | `passwordValidation` | `minLength`, `requireUppercase`, `requireLowercase`, `requireNumbers`, `requireSpecialChars`, `preventCommonPasswords` |
 | Data | `hardDelete` | `true` = hard delete, `false` = soft delete (default) |
+| Data | `autoMigrate` | Default `true`: migrations run on server start, then the Nitro runtime hook `nuxt-users:migrated` (`{ applied, error? }`) fires. Run app migrations that share the database from that hook. `false` = run `npx nuxt-users migrate` yourself |
 | Locale | `locale.default`, `locale.texts`, `locale.fallbackLocale` | Localization |
 
 Runtime config is also supported: use `runtimeConfig.nuxtUsers` for env-based or server-only settings.

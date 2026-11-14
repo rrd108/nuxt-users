@@ -1,6 +1,6 @@
 import { defineNuxtModule, createResolver, addServerHandler, addComponentsDir, addPlugin, addImportsDir, addRouteMiddleware, addServerImportsDir, addServerScanDir, addServerPlugin } from '@nuxt/kit'
 import { defu } from 'defu'
-import type { ModuleOptions, RuntimeModuleOptions } from './types'
+import type { ModuleOptions, RuntimeModuleOptions, NuxtUsersMigratedContext } from './types'
 import { defaultOptions } from './default-options'
 
 export { defaultOptions } from './default-options'
@@ -335,3 +335,13 @@ export default defineNuxtModule<RuntimeModuleOptions>({
 })
 // Export runtime server utils for CLI access
 export * from './runtime/server/internal/index'
+
+declare module 'nitropack' {
+  interface NitroRuntimeHooks {
+    /**
+     * Called when the nuxt-users startup migration run finishes (only when `autoMigrate` is enabled).
+     * Run app migrations that share the nuxt-users database from here, so the two never overlap.
+     */
+    'nuxt-users:migrated': (context: NuxtUsersMigratedContext) => void | Promise<void>
+  }
+}

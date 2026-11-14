@@ -3,7 +3,14 @@ import type { Database } from 'db0'
 import { runMigrations, getAppliedMigrations, markMigrationAsApplied, migrations } from '../../src/runtime/server/utils/migrate'
 import type { DatabaseConfig, DatabaseType, ModuleOptions } from '../../src/types'
 import { cleanupTestSetup, createTestSetup } from '../test-setup'
-import { closeAllDbConnections } from '../../src/runtime/server/utils'
+import { closeAllDbConnections, useDb } from '../../src/runtime/server/utils'
+import { assertTableExists, columnExists, indexExists, tableExists } from '../../src/runtime/server/utils/schema'
+
+interface RawSqlite {
+  exec: (sql: string) => void
+}
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 describe('CLI: Migrate', () => {
   let db: Database
@@ -255,5 +262,127 @@ describe('CLI: Migrate', () => {
     expect(appliedMigrations).toContain('add_active_to_users')
     expect(appliedMigrations).toContain('add_google_oauth_fields')
     expect(appliedMigrations).toHaveLength(migrations.length)
+  })
+  describe('a migration is recorded only if its schema change is in place (#221)', () => {
+    const extraMigrationName = 'test_extra_migration'
+
+    afterEach(async () => {
+      const index = migrations.findIndex(m => m.name === extraMigrationName)
+      if (index !== -1) {
+        migrations.splice(index, 1)
+      }
+      if (dbType !== 'sqlite') {
+        await db.sql`DROP TABLE IF EXISTS test_extra_table`
+      }
+    })
+
+    it('does not record a migration whose verification fails, and stops the run', async () => {
+      migrations.push({
+        name: extraMigrationName,
+        run: async () => {},
+        verify: options => assertTableExists(options, 'test_extra_table')
+      })
+
+      await expect(runMigrations(testOptions)).rejects.toThrow('test_extra_table')
+
+      const applied = await getAppliedMigrations(testOptions)
+      expect(applied).not.toContain(extraMigrationName)
+      expect(applied).toHaveLength(migrations.length - 1)
+    })
+
+    it('runs a failed migration again on the next run', async () => {
+      let attempts = 0
+      migrations.push({
+        name: extraMigrationName,
+        run: async (options) => {
+          attempts++
+          if (attempts === 1) {
+            throw new Error('database is locked')
+          }
+          const migrationDb = await useDb(options)
+          await migrationDb.sql`CREATE TABLE IF NOT EXISTS test_extra_table (id INT)`
+        },
+        verify: options => assertTableExists(options, 'test_extra_table')
+      })
+
+      await expect(runMigrations(testOptions)).rejects.toThrow('database is locked')
+      expect(await getAppliedMigrations(testOptions)).not.toContain(extraMigrationName)
+
+      await expect(runMigrations(testOptions)).resolves.toEqual([extraMigrationName])
+      expect(await getAppliedMigrations(testOptions)).toContain(extraMigrationName)
+    })
+
+    it('rolls back the DDL together with the record when the migration fails', async () => {
+      // MySQL commits DDL implicitly, so only SQLite and PostgreSQL can roll it back
+      if (dbType === 'mysql') {
+        return
+      }
+
+      migrations.push({
+        name: extraMigrationName,
+        run: async (options) => {
+          const migrationDb = await useDb(options)
+          await migrationDb.sql`CREATE TABLE test_extra_table (id INT)`
+        },
+        verify: async () => {
+          throw new Error('verification failed')
+        }
+      })
+
+      await expect(runMigrations(testOptions)).rejects.toThrow('verification failed')
+
+      expect(await tableExists(testOptions, 'test_extra_table')).toBe(false)
+      expect(await getAppliedMigrations(testOptions)).not.toContain(extraMigrationName)
+    })
+  })
+
+  it('creates every table, column and index the migrations verify', async () => {
+    await runMigrations(testOptions)
+
+    expect(await tableExists(testOptions, testOptions.tables.users)).toBe(true)
+    expect(await columnExists(testOptions, testOptions.tables.users, 'active')).toBe(true)
+    expect(await columnExists(testOptions, testOptions.tables.users, 'google_id')).toBe(true)
+    expect(await columnExists(testOptions, testOptions.tables.users, 'no_such_column')).toBe(false)
+    expect(await indexExists(testOptions, testOptions.tables.users, 'idx_users_active')).toBe(true)
+    expect(await tableExists(testOptions, 'no_such_table')).toBe(false)
+  })
+
+  it('does not lose tables to a transaction the app opened on the shared connection (#221)', async () => {
+    if (dbType !== 'sqlite') {
+      return
+    }
+
+    // The app's own migration runner, using the same connection (useNuxtUsersDatabase), opens a
+    // transaction and later rolls it back. nuxt-users must not run its DDL inside it.
+    const shared = await useDb(testOptions)
+    const raw = await shared.getInstance() as RawSqlite
+    raw.exec('BEGIN')
+
+    const run = runMigrations(testOptions)
+    await sleep(100)
+    raw.exec('ROLLBACK')
+    await run
+
+    expect(await tableExists(testOptions, testOptions.tables.users)).toBe(true)
+    expect(await tableExists(testOptions, testOptions.tables.personalAccessTokens)).toBe(true)
+    expect(await tableExists(testOptions, testOptions.tables.passwordResetTokens)).toBe(true)
+    expect(await getAppliedMigrations(testOptions)).toHaveLength(migrations.length)
+  })
+
+  it('waits without blocking the event loop while another connection holds the write lock', async () => {
+    if (dbType !== 'sqlite') {
+      return
+    }
+
+    // `db` is a separate connection to the same file
+    const other = await db.getInstance() as RawSqlite
+    other.exec('BEGIN IMMEDIATE')
+    // Released by a timer, which can only fire if runMigrations waits asynchronously
+    setTimeout(() => other.exec('COMMIT'), 200)
+
+    await runMigrations(testOptions)
+
+    expect(await tableExists(testOptions, testOptions.tables.users)).toBe(true)
+    expect(await getAppliedMigrations(testOptions)).toHaveLength(migrations.length)
   })
 })
