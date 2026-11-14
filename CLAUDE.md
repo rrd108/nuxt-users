@@ -51,3 +51,17 @@ Type-level tests (`test/unit/types.test-d.ts`) guard the public types: if one fa
 - Files kebab-case, components `NUsers*` PascalCase. Log prefix `[Nuxt Users]`.
 - Commits follow Conventional Commits (`fix:`, `feat:`, `docs:`, `chore(release):`); `changelogen` generates CHANGELOG.md from them during `yarn release`.
 - When behaviour or options change, update the relevant page in `docs/user-guide/` or `docs/developer-guide/`.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues for `rrd108/nuxt-users`, managed with the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root, created lazily. See `docs/agents/domain.md`.
