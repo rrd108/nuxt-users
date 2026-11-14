@@ -204,6 +204,65 @@ npx nuxt-users create-user -e moderator@example.com -n "Moderator User" -p modpa
 
 The default role is `user` if not specified. Role values should match keys in `auth.permissions` unless `auth.allowCustomRoles` is `true` (or permissions are not configured yet).
 
+## Listing Public and Protected Routes
+
+To check your `whitelist` and `permissions` against what your app actually serves, run from the project root:
+
+```bash
+npx nuxt-users list-routes
+```
+
+The command loads your Nuxt project and lists every page and API endpoint with who can reach it:
+
+```
+[Nuxt Users] Pages (4)
+[Nuxt Users]    protected  /               roles: admin, user
+[Nuxt Users]    public     /about          whitelist: /about
+[Nuxt Users]    public     /login          built-in public page
+[Nuxt Users]    protected  /reports        ⚠️  no role has access
+
+[Nuxt Users] API endpoints (3)
+[Nuxt Users]    protected  GET   /api/nuxt-users          roles: admin
+[Nuxt Users]    signed-in  GET   /api/nuxt-users/me       any signed-in user
+[Nuxt Users]    public     POST  /api/nuxt-users/session  built-in public endpoint
+```
+
+Each route gets one of these access levels:
+
+| Level | Meaning |
+|-------|---------|
+| `public` | No sign-in needed. The reason says why: a built-in public page or endpoint (login, logout, password reset), or the `whitelist` entry that matches it (including the endpoints whitelisted automatically for `/register` and Google OAuth) |
+| `signed-in` | Any signed-in user, whatever the role (`/me` and changing your own password) |
+| `protected` | Only the listed roles from `auth.permissions`. **no role has access** means nobody can reach it, so add it to `whitelist` or `permissions` if it should be reachable |
+
+The command checks routes in the same order as the server authorization middleware, and per HTTP method, so a `{ path, methods }` permission only counts for its methods. A server handler without a method in its file name (`server/api/posts.ts`) is shown as `ANY` when every method gets the same access, otherwise as one row per method.
+
+Where the routes come from:
+
+- **Pages**: files in the `pages/` directory of your app and its layers. Dynamic segments are shown as `:id` (`[id].vue`), `:id?` (`[[id]].vue`) and `:slug*` (`[...slug].vue`), and are matched against your patterns as written, so `/users/*` covers `/users/:id` but `/users/1` does not.
+- **Endpoints**: the nuxt-users API, handlers registered by other modules or `nitro.handlers`, and the files in `server/api/` and `server/routes/`.
+
+Pages added only at runtime or through the `pages:extend` hook are not listed.
+
+For scripts or CI checks, print the result as JSON (loading logs go to stderr, so stdout stays valid JSON):
+
+```bash
+npx nuxt-users list-routes --json
+```
+
+```json
+{
+  "pages": [
+    { "method": "GET", "path": "/about", "source": "pages/about.vue", "access": { "level": "public", "reason": "whitelist: /about", "roles": [] } }
+  ],
+  "endpoints": [
+    { "method": "GET", "path": "/api/nuxt-users", "source": "module", "access": { "level": "protected", "roles": ["admin"] } }
+  ]
+}
+```
+
+`access.level` is `public`, `authenticated` or `protected`, and `source` is the file relative to the project root, or `module` for handlers registered by a module.
+
 ## Best Practices
 
 1. **Start with Whitelist**: Begin by whitelisting public routes that don't need authentication

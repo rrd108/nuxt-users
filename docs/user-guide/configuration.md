@@ -279,7 +279,12 @@ npx --yes nuxt-users project-info
 # Standard commands
 npx nuxt-users migrate
 npx nuxt-users create-user -e admin@example.com -n "Admin" -p secure123
+
+# List pages and API endpoints with who can access them (add --json for JSON output)
+npx nuxt-users list-routes
 ```
+
+See [Listing Public and Protected Routes](./authorization.md#listing-public-and-protected-routes) for the `list-routes` output.
 
 ### Using nuxt-users CLI in Production
 

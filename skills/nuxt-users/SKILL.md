@@ -1,6 +1,6 @@
 ---
 name: nuxt-users
-description: Configure and use the nuxt-users module for Nuxt. Use when adding authentication, user management, roles, password reset, database setup (SQLite/MySQL/PostgreSQL), or CLI commands (migrate, create-user). Covers nuxt.config (nuxtUsers), composables (useAuthentication, useUsers, usePublicPaths, usePasswordValidation, useNuxtUsersLocale), components (NUsersLoginForm, NUsersLogoutLink, etc.), and authorization (whitelist, permissions).
+description: Configure and use the nuxt-users module for Nuxt. Use when adding authentication, user management, roles, password reset, database setup (SQLite/MySQL/PostgreSQL), or CLI commands (migrate, create-user, list-routes). Covers nuxt.config (nuxtUsers), composables (useAuthentication, useUsers, usePublicPaths, usePasswordValidation, useNuxtUsersLocale), components (NUsersLoginForm, NUsersLogoutLink, etc.), and authorization (whitelist, permissions).
 license: MIT
 metadata:
   author: rrd108
@@ -96,6 +96,12 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
   npx nuxt-users create-user -e <email> -n "<name>" -p <password> [-r <role>]
   ```
   Role should match a `auth.permissions` key unless `auth.allowCustomRoles` is `true` (or permissions are empty).
+
+- **List routes and their access** (audit `whitelist` / `permissions`)
+  ```bash
+  npx nuxt-users list-routes [--json]
+  ```
+  Lists pages (`pages/` of the app and layers) and endpoints (module handlers, `server/api`, `server/routes`) as `public` (with the reason or matching whitelist entry), `signed-in` (any user) or `protected` (with the roles that have access; "no role has access" means unreachable). `--json` prints `{ pages, endpoints }` with `access.level` `public` | `authenticated` | `protected` on stdout.
 
 - **Legacy/table creation**
   ```bash

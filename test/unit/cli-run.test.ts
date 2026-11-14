@@ -206,6 +206,26 @@ describe('CLI: Package Imports', () => {
     }
   }, 90000) // 90 second timeout for packed install + CLI smoke test
 
+  it('should list the playground routes with nuxt-users list-routes --json', () => {
+    // stderr carries the loading logs, stdout must be valid JSON only
+    const result = execSync('node ../dist/cli.mjs list-routes --json', {
+      encoding: 'utf8',
+      cwd: join(process.cwd(), 'playground'),
+      stdio: ['ignore', 'pipe', 'ignore'],
+      timeout: 25000
+    })
+    const listing = JSON.parse(result)
+    const page = (path: string) => listing.pages.find((entry: { path: string }) => entry.path === path)
+    const endpoint = (method: string, path: string) => listing.endpoints.find((entry: { method: string, path: string }) => entry.method === method && entry.path === path)
+
+    expect(page('/login').access.level).toBe('public')
+    expect(page('/noauth').access).toEqual({ level: 'public', reason: 'whitelist: /noauth', roles: [] })
+    expect(page('/users').access).toEqual({ level: 'protected', roles: ['admin'] })
+    expect(endpoint('POST', '/api/nuxt-users/session').access.level).toBe('public')
+    expect(endpoint('GET', '/api/nuxt-users/me').access.level).toBe('authenticated')
+    expect(endpoint('GET', '/api/nuxt-users').access.roles).toEqual(['admin'])
+  }, 30000)
+
   it('should have correct exports in package.json', () => {
     const packageJson = JSON.parse(readFileSync('./package.json', 'utf8'))
 
