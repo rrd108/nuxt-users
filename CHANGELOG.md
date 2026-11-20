@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v1.53.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.52.0...v1.53.0)
+
+### 🚀 Enhancements
+
+- Derive passkey rpId from siteUrl when not set ([d7ff407](https://github.com/rrd108/nuxt-users/commit/d7ff407))
+
+### 🩹 Fixes
+
+- Accept string or comma-separated passkey origins and derive them from siteUrl ([fd8fc12](https://github.com/rrd108/nuxt-users/commit/fd8fc12))
+
+### 🏡 Chore
+
+- Log the received credential id when no passkey matches ([4f34317](https://github.com/rrd108/nuxt-users/commit/4f34317))
+- Update last release timestamp ([5ad7e7b](https://github.com/rrd108/nuxt-users/commit/5ad7e7b))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.52.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.51.0...v1.52.0)
