@@ -26,8 +26,11 @@ export default defineTask({
 
     try {
       const result = await cleanupPersonalAccessTokens(options, includeNoExpiration)
-      // Expired passkey challenges are only stored when passkeys are used; the table may not exist yet
-      await deleteExpiredPasskeyChallenges(options).catch(() => 0)
+      // Expired passkey challenges are only stored when passkeys are used. A failure here must not
+      // fail the token cleanup, but it is logged so a broken challenge table does not go unnoticed.
+      await deleteExpiredPasskeyChallenges(options).catch((error) => {
+        console.warn('[Nuxt Users] Passkey challenge cleanup failed:', error)
+      })
 
       return {
         result: 'success',

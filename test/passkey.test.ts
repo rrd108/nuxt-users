@@ -122,6 +122,22 @@ describe('Passkey store', () => {
       expect(updated?.last_used_at).not.toBeNull()
     })
 
+    it('only moves the counter forward', async () => {
+      const passkey = await addPasskey(options, newPasskey({ counter: 5 }))
+
+      expect(await updatePasskeyCounter(options, passkey.id, 5)).toBe(false)
+      expect(await updatePasskeyCounter(options, passkey.id, 3)).toBe(false)
+      expect(await updatePasskeyCounter(options, passkey.id, 8)).toBe(true)
+      expect((await findPasskeyByCredentialId(options, 'cred-1'))?.counter).toBe(8)
+    })
+
+    it('accepts a counter of 0 from authenticators that do not count', async () => {
+      const passkey = await addPasskey(options, newPasskey({ counter: 0 }))
+
+      expect(await updatePasskeyCounter(options, passkey.id, 0)).toBe(true)
+      expect((await findPasskeyByCredentialId(options, 'cred-1'))?.last_used_at).not.toBeNull()
+    })
+
     it('deletes a passkey only for its owner', async () => {
       const passkey = await addPasskey(options, newPasskey())
 

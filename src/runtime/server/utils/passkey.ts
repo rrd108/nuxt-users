@@ -178,9 +178,20 @@ export const addPasskey = async (options: ModuleOptions, passkey: NewPasskey): P
   return created
 }
 
-export const updatePasskeyCounter = async (options: ModuleOptions, id: number, counter: number): Promise<void> => {
+/**
+ * Records a successful use. A counting authenticator's counter only moves forward: returns false when it
+ * did not (a concurrent login already took that value). An authenticator that always reports 0 is always accepted.
+ */
+export const updatePasskeyCounter = async (options: ModuleOptions, id: number, counter: number): Promise<boolean> => {
   const db = await useDb(options)
-  await db.sql`UPDATE {${options.tables.passkeys}} SET counter = ${counter}, last_used_at = CURRENT_TIMESTAMP WHERE id = ${id}`
+  const table = options.tables.passkeys
+
+  if (counter === 0) {
+    await db.sql`UPDATE {${table}} SET last_used_at = CURRENT_TIMESTAMP WHERE id = ${id}`
+    return true
+  }
+  const updated = await db.sql`UPDATE {${table}} SET counter = ${counter}, last_used_at = CURRENT_TIMESTAMP WHERE id = ${id} AND counter < ${counter}`
+  return affectedRows(updated) > 0
 }
 
 /** Deletes a passkey if it belongs to the user. Returns whether one was deleted. */

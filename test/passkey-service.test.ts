@@ -300,6 +300,21 @@ describe('Passkey service', () => {
       warn.mockRestore()
     })
 
+    it('lets only one of two concurrent logins with the same counter through', async () => {
+      await storePasskeyFor(user.id, 5)
+      const first = await beginPasskeyLogin(options)
+      const second = await beginPasskeyLogin(options)
+      verifiedLogin(6)
+
+      const results = await Promise.allSettled([
+        finishPasskeyLogin(options, authenticationResponse(first.challenge)),
+        finishPasskeyLogin(options, authenticationResponse(second.challenge)),
+      ])
+
+      expect(results.filter(r => r.status === 'fulfilled')).toHaveLength(1)
+      expect((await findPasskeyByCredentialId(options, 'cred-1'))?.counter).toBe(6)
+    })
+
     it('accepts authenticators that always report a counter of 0', async () => {
       await storePasskeyFor(user.id, 0)
       const { challenge } = await beginPasskeyLogin(options)

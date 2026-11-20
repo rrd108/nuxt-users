@@ -208,8 +208,10 @@ export const deleteUser = async (id: number, options: ModuleOptions): Promise<vo
   if (options.hardDelete) {
     // Hard delete - permanently remove from database
     await db.sql`DELETE FROM {${usersTable}} WHERE id = ${id}`
-    // The passkey tables may not exist (e.g. migrations disabled), which must not block the delete
-    await deletePasskeysForUser(options, id).catch(() => {})
+    // A failure here must not block the delete, but is logged: it would leave orphaned passkeys behind
+    await deletePasskeysForUser(options, id).catch((error) => {
+      console.warn(`[Nuxt Users] Could not delete the passkeys of user ${id}:`, error)
+    })
     return
   }
 

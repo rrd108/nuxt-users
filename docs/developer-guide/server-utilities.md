@@ -317,6 +317,25 @@ import { revokeUserTokens } from '#nuxt-users/server/utils'
 await revokeUserTokens(userId, options)
 ```
 
+### Passkey Functions
+
+Only relevant when [passkeys](/user-guide/authentication#passkey-authentication) are enabled with `auth.passkey`. The ceremonies themselves are handled by the API endpoints; these utilities give direct access to the stored data.
+
+```typescript
+import { listPasskeys, deletePasskey, deletePasskeysForUser } from '#nuxt-users/server/utils'
+
+// All passkeys of a user (includes the public key and credential id: never send these to the client)
+const passkeys = await listPasskeys(options, userId)
+
+// Deletes a passkey only if it belongs to the user, returns whether one was deleted
+const deleted = await deletePasskey(options, userId, passkeyId)
+
+// Removes every passkey of a user (done automatically on a hard delete)
+await deletePasskeysForUser(options, userId)
+```
+
+Other helpers: `addPasskey`, `findPasskeyByCredentialId`, `getOrCreateUserHandle`, `updatePasskeyCounter` (only moves a counter forward, returns `false` when it did not), and the single-use challenge store `saveChallenge`, `consumeChallenge` and `deleteExpiredPasskeyChallenges`.
+
 ### Database Utilities
 
 #### useDb()

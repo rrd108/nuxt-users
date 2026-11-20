@@ -235,6 +235,10 @@ export const finishPasskeyLogin = async (
     throw new PasskeyError('User account is inactive', 403)
   }
 
-  await updatePasskeyCounter(options, passkey.id, newCounter)
+  // Compare-and-set: a concurrent login that already used this counter value loses
+  if (!await updatePasskeyCounter(options, passkey.id, newCounter)) {
+    console.warn('[Nuxt Users] Passkey counter was already used by a concurrent login. Login rejected:', { passkeyId: passkey.id, userId: passkey.user_id })
+    throw invalid()
+  }
   return user
 }
