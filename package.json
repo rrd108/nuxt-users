@@ -47,6 +47,8 @@
   "types": "./dist/types.d.mts",
   "files": [
     "dist",
+    "skills",
+    "llms.txt",
     "scripts"
   ],
   "bin": {
