@@ -83,6 +83,29 @@ export interface GoogleOAuthOptions {
   allowAutoRegistration?: boolean
 }
 
+export interface PasskeyOptions {
+  /**
+   * Relying party ID: the domain passkeys are bound to (e.g. 'example.com', no scheme or port).
+   * Required in production; defaults to 'localhost' in development.
+   */
+  rpId?: string
+  /**
+   * Relying party display name shown by the authenticator
+   * @default 'Nuxt Users'
+   */
+  rpName?: string
+  /**
+   * Allowed origins for WebAuthn ceremonies (e.g. ['https://example.com']).
+   * Required in production; defaults to ['http://localhost:3000'] in development.
+   */
+  origins?: string[]
+  /**
+   * User verification requirement for passkey ceremonies
+   * @default 'preferred'
+   */
+  userVerification?: 'required' | 'preferred' | 'discouraged'
+}
+
 export interface RuntimeModuleOptions {
   connector?: {
     name: DatabaseType
@@ -98,6 +121,10 @@ export interface RuntimeModuleOptions {
     users?: string
     personalAccessTokens?: string
     passwordResetTokens?: string
+    /** Passkey (WebAuthn) credentials table, used when auth.passkey is enabled */
+    passkeys?: string
+    /** Short-lived passkey ceremony challenges table, used when auth.passkey is enabled */
+    passkeyChallenges?: string
   }
   /**
    * Mailer configuration options for sending emails (e.g., password resets)
@@ -165,6 +192,10 @@ export interface RuntimeModuleOptions {
      * Enable Google OAuth login/registration
      */
     google?: GoogleOAuthOptions
+    /**
+     * Passkey (WebAuthn) login configuration. Passkeys are off unless this is set.
+     */
+    passkey?: PasskeyOptions
   }
   /**
    * Password validation configuration
@@ -245,6 +276,8 @@ export interface ModuleOptions {
     users: string
     personalAccessTokens: string
     passwordResetTokens: string
+    passkeys: string
+    passkeyChallenges: string
   }
   mailer?: MailerOptions
   siteUrl?: string
@@ -261,6 +294,7 @@ export interface ModuleOptions {
      */
     allowCustomRoles: boolean
     google?: GoogleOAuthOptions
+    passkey?: PasskeyOptions
   }
   passwordValidation: {
     minLength: number

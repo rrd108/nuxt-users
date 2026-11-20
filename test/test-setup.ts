@@ -47,7 +47,9 @@ export const getTestOptions = (dbType: DatabaseType, dbConfig: DatabaseConfig) =
     migrations: 'migrations',
     users: 'users',
     personalAccessTokens: 'personal_access_tokens',
-    passwordResetTokens: 'password_reset_tokens'
+    passwordResetTokens: 'password_reset_tokens',
+    passkeys: 'passkeys',
+    passkeyChallenges: 'passkey_challenges'
   },
   mailer: {
     host: process.env.MAILER_HOST || 'localhost',

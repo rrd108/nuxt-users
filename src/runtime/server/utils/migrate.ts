@@ -6,6 +6,7 @@ import { createPasswordResetTokensTable } from './create-password-reset-tokens-t
 import { createMigrationsTable } from './create-migrations-table'
 import { addActiveToUsers } from './add-active-to-users'
 import { addGoogleOauthFields } from './add-google-oauth-fields'
+import { createPasskeyTables } from './create-passkey-tables'
 import { addActiveIndexToUsers, addTokenableIndexToPersonalAccessTokens } from './add-indexes'
 import { assertColumnsExist, assertIndexExists, assertTableExists, tableExists } from './schema'
 
@@ -56,6 +57,14 @@ export const migrations: Migration[] = [
     name: 'add_tokenable_index_to_personal_access_tokens',
     run: addTokenableIndexToPersonalAccessTokens,
     verify: options => assertIndexExists(options, options.tables.personalAccessTokens, 'idx_personal_access_tokens_tokenable')
+  },
+  {
+    name: 'create_passkey_tables',
+    run: createPasskeyTables,
+    verify: async (options) => {
+      await assertTableExists(options, options.tables.passkeys)
+      await assertTableExists(options, options.tables.passkeyChallenges)
+    }
   }
 ]
 

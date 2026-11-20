@@ -97,6 +97,8 @@
     "docs:release": "date +%Y%m%d%H%M%S > docs/.lastRelease && yarn docs:build && ./scripts/deploy-docs.sh"
   },
   "dependencies": {
+    "@simplewebauthn/browser": "^14.0.0",
+    "@simplewebauthn/server": "^14.1.0",
     "bcrypt": "^6.0.0",
     "citty": "^0.2.0",
     "db0": "^0.4.0",

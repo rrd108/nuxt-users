@@ -13,6 +13,8 @@ export const defaultOptions: ModuleOptions = {
     users: 'users',
     personalAccessTokens: 'personal_access_tokens',
     passwordResetTokens: 'password_reset_tokens',
+    passkeys: 'passkeys',
+    passkeyChallenges: 'passkey_challenges',
   },
   mailer: {
     host: 'smtp.ethereal.email',

@@ -1,5 +1,6 @@
 import { useDb } from './db'
 import bcrypt from 'bcrypt'
+import { deletePasskeysForUser } from './passkey'
 import { validatePassword, getPasswordValidationOptions, assertValidRole } from 'nuxt-users/utils'
 import type { ModuleOptions, User, UserWithoutPassword } from 'nuxt-users/utils'
 
@@ -207,6 +208,8 @@ export const deleteUser = async (id: number, options: ModuleOptions): Promise<vo
   if (options.hardDelete) {
     // Hard delete - permanently remove from database
     await db.sql`DELETE FROM {${usersTable}} WHERE id = ${id}`
+    // The passkey tables may not exist (e.g. migrations disabled), which must not block the delete
+    await deletePasskeysForUser(options, id).catch(() => {})
     return
   }
 

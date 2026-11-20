@@ -50,6 +50,7 @@ export default defineCommand({
         console.log('[Nuxt Users]    Users:', nuxtUsersConfig.tables?.users)
         console.log('[Nuxt Users]    Tokens:', nuxtUsersConfig.tables?.personalAccessTokens)
         console.log('[Nuxt Users]    Password resets:', nuxtUsersConfig.tables?.passwordResetTokens)
+        console.log('[Nuxt Users]    Passkeys:', nuxtUsersConfig.tables?.passkeys)
         console.log('[Nuxt Users]    Migrations:', nuxtUsersConfig.tables?.migrations)
         console.log()
 

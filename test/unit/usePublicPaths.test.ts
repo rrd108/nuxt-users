@@ -35,7 +35,9 @@ describe('usePublicPaths', () => {
         migrations: 'migrations',
         users: 'users',
         personalAccessTokens: 'personal_access_tokens',
-        passwordResetTokens: 'password_reset_tokens'
+        passwordResetTokens: 'password_reset_tokens',
+        passkeys: 'passkeys',
+        passkeyChallenges: 'passkey_challenges'
       },
       passwordResetUrl: '/reset-password',
       emailConfirmationUrl: '/email-confirmation',

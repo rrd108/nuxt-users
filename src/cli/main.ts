@@ -6,6 +6,7 @@ import createUser from './create-user'
 import createUsersTable from './create-users-table'
 import createPersonalAccessTokensTable from './create-personal-access-tokens-table'
 import createPasswordResetTokensTable from './create-password-reset-tokens-table'
+import createPasskeyTables from './create-passkey-tables'
 import createMigrationsTable from './create-migrations-table'
 import addActiveToUsers from './add-active-to-users'
 import addGoogleOauthFields from './add-google-oauth-fields'
@@ -37,6 +38,7 @@ const main = defineCommand({
     'create-users-table': createUsersTable,
     'create-personal-access-tokens-table': createPersonalAccessTokensTable,
     'create-password-reset-tokens-table': createPasswordResetTokensTable,
+    'create-passkey-tables': createPasskeyTables,
     'create-migrations-table': createMigrationsTable,
     'add-active-to-users': addActiveToUsers,
     'add-google-oauth-fields': addGoogleOauthFields,

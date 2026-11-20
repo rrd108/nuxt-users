@@ -59,7 +59,7 @@ describe('Build-time Detection', () => {
 
       const mockOptions = {
         connector: { name: 'sqlite' as const, options: { path: './test.db' } },
-        tables: { migrations: 'migrations', users: 'users', personalAccessTokens: 'tokens', passwordResetTokens: 'reset_tokens' },
+        tables: { migrations: 'migrations', users: 'users', personalAccessTokens: 'tokens', passwordResetTokens: 'reset_tokens', passkeys: 'passkeys', passkeyChallenges: 'passkey_challenges' },
         apiBasePath: '/api/nuxt-users',
         passwordResetUrl: '/reset',
         emailConfirmationUrl: '/confirm',

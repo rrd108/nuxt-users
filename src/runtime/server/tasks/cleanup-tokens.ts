@@ -12,7 +12,7 @@ export default defineTask({
   },
   async run({ payload }: { payload?: CleanupTokensPayload }) {
     const { useRuntimeConfig } = await import('#imports')
-    const { cleanupPersonalAccessTokens } = await import('../utils')
+    const { cleanupPersonalAccessTokens, deleteExpiredPasskeyChallenges } = await import('../utils')
 
     const { nuxtUsers } = useRuntimeConfig()
     const options = nuxtUsers as ModuleOptions
@@ -26,6 +26,8 @@ export default defineTask({
 
     try {
       const result = await cleanupPersonalAccessTokens(options, includeNoExpiration)
+      // Expired passkey challenges are only stored when passkeys are used; the table may not exist yet
+      await deleteExpiredPasskeyChallenges(options).catch(() => 0)
 
       return {
         result: 'success',
