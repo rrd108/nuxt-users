@@ -124,7 +124,7 @@ The `useAuthentication` composable returns the following reactive properties and
 | `user` | `Ref<UserWithoutPassword \| null>` | A reactive object containing the current user's data (excluding password), or `null` if not authenticated. |
 | `isAuthenticated` | `Ref<boolean>` | A reactive boolean indicating if the user is currently authenticated. |
 | `login(email: string, password: string)` | `Function` | Authenticates a user with the provided credentials. |
-| `logout()` | `Function` | Logs out the current user, clearing their session. |
+| `logout(redirectTo?)` | `Function` | Logs out the current user, clearing their session, then redirects to `redirectTo` (default `/login`). Pass `false` to skip the redirect. |
 | `fetchUser()` | `Function` | Fetches the current user's data from the API and updates the `user` state. |
 | `initializeUser()` | `Function` | Initializes the user state, typically by checking local storage and then validating with the server. **Note:** User initialization happens automatically on app startup via a client plugin. Manual calls are optional and can be used if you need to re-initialize the user state. |
 

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { navigateTo } from '#app'
 import { useAuthentication } from '../composables/useAuthentication'
 import { useNuxtUsersLocale } from '../composables/useNuxtUsersLocale'
 
@@ -59,13 +58,8 @@ const handleLogout = async (event: Event) => {
 
   try {
     emit('click')
-    await authComposable.logout()
+    await authComposable.logout(props.redirectTo || false)
     emit('success')
-
-    // Redirect if specified
-    if (props.redirectTo) {
-      await navigateTo(props.redirectTo)
-    }
   }
   catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : 'Logout failed'

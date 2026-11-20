@@ -1,4 +1,4 @@
-import { useState, useRuntimeConfig, useFetch, useRequestHeaders } from '#app'
+import { useState, useRuntimeConfig, useFetch, useRequestHeaders, navigateTo } from '#app'
 import { computed, readonly } from 'vue'
 import type { User, UserWithoutPassword } from 'nuxt-users/utils'
 
@@ -33,24 +33,26 @@ export const useAuthentication = () => {
     }
   }
 
-  const logout = async () => {
+  /**
+   * Logs the user out and redirects to `redirectTo` (default `/login`).
+   * Pass `false` or an empty string to skip the redirect.
+   */
+  const logout = async (redirectTo: string | false = '/login') => {
     try {
       await $fetch(`${apiBasePath}/session`, { method: 'DELETE' })
-      user.value = null
-      if (import.meta.client) {
-        // Clear user data from both storages
-        localStorage.removeItem('user')
-        sessionStorage.removeItem('user')
-      }
     }
     catch (error) {
       console.error('Logout failed:', error)
       // Even if the API call fails, clear the user state
-      user.value = null
-      if (import.meta.client) {
-        localStorage.removeItem('user')
-        sessionStorage.removeItem('user')
-      }
+    }
+    user.value = null
+    if (import.meta.client) {
+      // Clear user data from both storages
+      localStorage.removeItem('user')
+      sessionStorage.removeItem('user')
+    }
+    if (redirectTo) {
+      await navigateTo(redirectTo)
     }
   }
 
