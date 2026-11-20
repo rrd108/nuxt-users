@@ -218,7 +218,7 @@ export const finishPasskeyLogin = async (
 
   const passkey = await findPasskeyByCredentialId(options, response.id)
   if (!passkey) {
-    throw invalid('no stored passkey matches the credential id')
+    throw invalid(`no stored passkey matches the credential id "${response.id}"`)
   }
 
   // A discoverable credential reports whose it is: it must be the account the credential is stored for
