@@ -75,7 +75,7 @@ export interface RuntimeModuleOptions {
     }
 
     // Passkeys (WebAuthn). Off unless set; `{}` enables the dev defaults. Additive: password login keeps working.
-    // In production rpId and origins are required, or the server refuses to start.
+    // In production rpId and origins are required (both default from siteUrl), or the server refuses to start.
     passkey?: {
       rpId?: string               // domain, no scheme/port (default 'localhost' in dev)
       rpName?: string             // default 'Nuxt Users'

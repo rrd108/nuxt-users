@@ -62,24 +62,38 @@ const resolveOrigins = (options: ModuleOptions): string[] => {
   }
 }
 
+/** The explicit rpId, else the host of the configured siteUrl (never of the request) */
+const resolveRpId = (options: ModuleOptions): string => {
+  if (options.auth.passkey?.rpId) {
+    return options.auth.passkey.rpId
+  }
+  try {
+    return options.siteUrl ? new URL(options.siteUrl).hostname : ''
+  }
+  catch {
+    return ''
+  }
+}
+
 export const resolvePasskeyConfig = (options: ModuleOptions): ResolvedPasskeyConfig => {
   const passkey = options.auth.passkey
   if (!passkey) {
     throw new PasskeyError('Passkeys are not enabled', 404)
   }
   const origins = resolveOrigins(options)
+  const rpId = resolveRpId(options)
 
   const isProduction = process.env.NODE_ENV === 'production'
   // The relying party is never guessed from the request: the Host header can be spoofed or rewritten by a proxy
-  if (isProduction && !passkey.rpId) {
-    throw new PasskeyError('[Nuxt Users] auth.passkey.rpId is required in production', 500)
+  if (isProduction && !rpId) {
+    throw new PasskeyError('[Nuxt Users] auth.passkey.rpId (or siteUrl) is required in production', 500)
   }
   if (isProduction && !origins.length) {
     throw new PasskeyError('[Nuxt Users] auth.passkey.origins (or siteUrl) is required in production', 500)
   }
 
   return {
-    rpID: passkey.rpId || 'localhost',
+    rpID: rpId || 'localhost',
     rpName: passkey.rpName || 'Nuxt Users',
     origins: origins.length ? origins : ['http://localhost:3000'],
     userVerification: passkey.userVerification || 'preferred',

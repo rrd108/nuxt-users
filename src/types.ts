@@ -86,7 +86,7 @@ export interface GoogleOAuthOptions {
 export interface PasskeyOptions {
   /**
    * Relying party ID: the domain passkeys are bound to (e.g. 'example.com', no scheme or port).
-   * Required in production; defaults to 'localhost' in development.
+   * Defaults to the host of `siteUrl`; required in production (directly or via siteUrl), 'localhost' in development.
    */
   rpId?: string
   /**

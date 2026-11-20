@@ -75,7 +75,7 @@ All options live under `nuxtUsers` in `nuxt.config.ts`.
 | Auth | `auth.permissions` | Role → paths (e.g. `admin: ['*']`, `user: ['/profile']`). Keys are the predefined roles. |
 | Auth | `auth.allowCustomRoles` | Default `false`. When `true`, create/update APIs and `NUsersUserForm` accept roles not listed in `permissions`. Empty `permissions` (bootstrap) already accepts any role. |
 | Auth | `auth.google` | Google OAuth: `clientId`, `clientSecret`, `callbackUrl`, etc. |
-| Auth | `auth.passkey` | Passkey (WebAuthn) login, additive and off unless set (`{}` = dev defaults). `rpId`, `origins` (required in production, the server refuses to start without them), `rpName`, `userVerification`. Users add passkeys from a signed-in session; no passkey-only signup |
+| Auth | `auth.passkey` | Passkey (WebAuthn) login, additive and off unless set (`{}` = dev defaults). `rpId`, `origins` (default from `siteUrl`; required in production, the server refuses to start without them or siteUrl), `rpName`, `userVerification`. Users add passkeys from a signed-in session; no passkey-only signup |
 | Password | `passwordValidation` | `minLength`, `requireUppercase`, `requireLowercase`, `requireNumbers`, `requireSpecialChars`, `preventCommonPasswords` |
 | Data | `hardDelete` | `true` = hard delete, `false` = soft delete (default) |
 | Data | `autoMigrate` | Default `true`: migrations run on server start, then the Nitro runtime hook `nuxt-users:migrated` (`{ applied, error? }`) fires. Run app migrations that share the database from that hook. `false` = run `npx nuxt-users migrate` yourself |

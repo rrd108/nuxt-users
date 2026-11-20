@@ -33,4 +33,15 @@ describe('passkey origins', () => {
   it('prefers explicit origins over siteUrl', () => {
     expect(resolvePasskeyConfig(withPasskey('https://a.com', 'https://example.com')).origins).toEqual(['https://a.com'])
   })
+
+  it('derives rpId from the siteUrl host when it is not set', () => {
+    const options = { siteUrl: 'https://parikrama.example.com', auth: { passkey: {} } } as unknown as ModuleOptions
+    const config = resolvePasskeyConfig(options)
+    expect(config.rpID).toBe('parikrama.example.com')
+    expect(config.origins).toEqual(['https://parikrama.example.com'])
+  })
+
+  it('prefers an explicit rpId over siteUrl', () => {
+    expect(resolvePasskeyConfig(withPasskey([], 'https://app.example.com')).rpID).toBe('example.com')
+  })
 })
