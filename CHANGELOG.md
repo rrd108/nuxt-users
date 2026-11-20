@@ -1,6 +1,33 @@
 # Changelog
 
 
+## v1.52.0
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.51.0...v1.52.0)
+
+### 🚀 Enhancements
+
+- Add passkey tables, store utils and create-passkey-tables CLI command ([50bdf08](https://github.com/rrd108/nuxt-users/commit/50bdf08))
+- Add passkey login and management endpoints ([714c9d7](https://github.com/rrd108/nuxt-users/commit/714c9d7))
+- Add passkey login button, passkey manager and usePasskeys composable ([9dc1bdf](https://github.com/rrd108/nuxt-users/commit/9dc1bdf))
+
+### 🩹 Fixes
+
+- Harden passkey ceremonies against races and duplicates ([9dea2e2](https://github.com/rrd108/nuxt-users/commit/9dea2e2))
+- Make passkey counter update compare-and-set and log swallowed cleanup errors ([b8ba9d3](https://github.com/rrd108/nuxt-users/commit/b8ba9d3))
+
+### 📖 Documentation
+
+- Mention passkeys in README and docs, enable them in the playground ([0e9b006](https://github.com/rrd108/nuxt-users/commit/0e9b006))
+
+### 🏡 Chore
+
+- **release:** Update last release timestamp ([4156207](https://github.com/rrd108/nuxt-users/commit/4156207))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.51.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.50.1...v1.51.0)
