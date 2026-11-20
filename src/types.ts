@@ -96,9 +96,12 @@ export interface PasskeyOptions {
   rpName?: string
   /**
    * Allowed origins for WebAuthn ceremonies (e.g. ['https://example.com']).
-   * Required in production; defaults to ['http://localhost:3000'] in development.
+   * Also accepts a single string or a comma-separated list, so an environment variable can set it
+   * (NUXT_NUXT_USERS_AUTH_PASSKEY_ORIGINS=https://example.com).
+   * Defaults to the origin of `siteUrl` when empty; required in production (directly or via siteUrl),
+   * and ['http://localhost:3000'] in development.
    */
-  origins?: string[]
+  origins?: string[] | string
   /**
    * User verification requirement for passkey ceremonies
    * @default 'preferred'

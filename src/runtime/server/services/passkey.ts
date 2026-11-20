@@ -36,25 +36,52 @@ export interface ResolvedPasskeyConfig {
   userVerification: 'required' | 'preferred' | 'discouraged'
 }
 
+/**
+ * Origins as configured: an array, or a string (what an environment variable gives, as Nitro cannot
+ * fill array items): a comma-separated list or a JSON array. Trailing slashes are dropped.
+ */
+export const normalizeOrigins = (origins: unknown): string[] => {
+  const list: unknown[] = Array.isArray(origins) ? origins : typeof origins === 'string' ? origins.split(',') : []
+  return list
+    .filter((origin): origin is string => typeof origin === 'string')
+    .map(origin => origin.trim().replace(/^\[?["']?|["']?\]?$/g, '').replace(/\/+$/, ''))
+    .filter(Boolean)
+}
+
+/** The explicit origins, else the origin of the configured siteUrl (never of the request) */
+const resolveOrigins = (options: ModuleOptions): string[] => {
+  const origins = normalizeOrigins(options.auth.passkey?.origins)
+  if (origins.length || !options.siteUrl) {
+    return origins
+  }
+  try {
+    return [new URL(options.siteUrl).origin]
+  }
+  catch {
+    return []
+  }
+}
+
 export const resolvePasskeyConfig = (options: ModuleOptions): ResolvedPasskeyConfig => {
   const passkey = options.auth.passkey
   if (!passkey) {
     throw new PasskeyError('Passkeys are not enabled', 404)
   }
+  const origins = resolveOrigins(options)
 
   const isProduction = process.env.NODE_ENV === 'production'
   // The relying party is never guessed from the request: the Host header can be spoofed or rewritten by a proxy
   if (isProduction && !passkey.rpId) {
     throw new PasskeyError('[Nuxt Users] auth.passkey.rpId is required in production', 500)
   }
-  if (isProduction && !passkey.origins?.length) {
-    throw new PasskeyError('[Nuxt Users] auth.passkey.origins is required in production', 500)
+  if (isProduction && !origins.length) {
+    throw new PasskeyError('[Nuxt Users] auth.passkey.origins (or siteUrl) is required in production', 500)
   }
 
   return {
     rpID: passkey.rpId || 'localhost',
     rpName: passkey.rpName || 'Nuxt Users',
-    origins: passkey.origins?.length ? passkey.origins : ['http://localhost:3000'],
+    origins: origins.length ? origins : ['http://localhost:3000'],
     userVerification: passkey.userVerification || 'preferred',
   }
 }
@@ -177,22 +204,27 @@ export const finishPasskeyLogin = async (
   response: AuthenticationResponseJSON
 ): Promise<UserWithoutPassword> => {
   const config = resolvePasskeyConfig(options)
-  const invalid = () => new PasskeyError('Invalid passkey', 401)
+  const invalid = (reason?: string) => {
+    if (reason) {
+      console.warn(`[Nuxt Users] Passkey login rejected: ${reason}`)
+    }
+    return new PasskeyError('Invalid passkey', 401)
+  }
 
   const challenge = readChallenge(response.response.clientDataJSON)
   if (!await consumeChallenge(options, challenge, 'authentication')) {
-    throw invalid()
+    throw invalid('the challenge is unknown, expired or already used')
   }
 
   const passkey = await findPasskeyByCredentialId(options, response.id)
   if (!passkey) {
-    throw invalid()
+    throw invalid('no stored passkey matches the credential id')
   }
 
   // A discoverable credential reports whose it is: it must be the account the credential is stored for
   const { userHandle } = response.response
   if (userHandle && userHandle !== passkey.user_handle) {
-    throw invalid()
+    throw invalid('the user handle of the response does not match the stored passkey')
   }
 
   let verification
@@ -216,7 +248,7 @@ export const finishPasskeyLogin = async (
     throw invalid()
   }
   if (!verification.verified) {
-    throw invalid()
+    throw invalid('the signature was not verified')
   }
 
   // A counter that does not increase hints at a cloned authenticator. Synced passkeys always report 0, which is fine.
@@ -228,7 +260,7 @@ export const finishPasskeyLogin = async (
 
   const user = await findUserById(passkey.user_id, options)
   if (!user) {
-    throw invalid()
+    throw invalid('the passkey belongs to a user that no longer exists')
   }
   // Soft-deleted and not yet email-confirmed users are both inactive, as for password login
   if (!user.active) {

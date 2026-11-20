@@ -1079,11 +1079,11 @@ export default defineNuxtConfig({
 | Option | Default | Notes |
 |---|---|---|
 | `rpId` | `'localhost'` in development | **Required in production** |
-| `origins` | `['http://localhost:3000']` in development | **Required in production** |
+| `origins` | origin of `siteUrl`, else `['http://localhost:3000']` in development | **Required in production** (or set `siteUrl`). Array, single string or comma-separated string |
 | `rpName` | `'Nuxt Users'` | |
 | `userVerification` | `'preferred'` | `'required'` makes the authenticator ask for a PIN or biometric |
 
-The relying party is never guessed from the request's Host header (it can be spoofed or rewritten by a proxy). In production the server **refuses to start** when `rpId` or `origins` is missing. To set them from environment variables, declare the keys in your config (even empty, for example `rpId: ''`) so Nuxt applies `NUXT_NUXT_USERS_AUTH_PASSKEY_RP_ID` and `NUXT_NUXT_USERS_AUTH_PASSKEY_ORIGINS`.
+The relying party is never guessed from the request's Host header (it can be spoofed or rewritten by a proxy). In production the server **refuses to start** when `rpId` or `origins` is missing. To set them from environment variables, declare the keys in your config (even empty, for example `rpId: ''`) so Nuxt applies `NUXT_NUXT_USERS_AUTH_PASSKEY_RP_ID` and `NUXT_NUXT_USERS_AUTH_PASSKEY_ORIGINS`. Nuxt cannot fill array items, so indexed variables such as `..._ORIGINS_0` are ignored: use `NUXT_NUXT_USERS_AUTH_PASSKEY_ORIGINS=https://example.com`, a comma-separated list (`https://a.com,https://b.com`) or a JSON array (`'["https://example.com"]'`).
 
 WebAuthn needs a secure context: HTTPS, or `localhost` during development.
 
