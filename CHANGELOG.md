@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.53.1
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.53.0...v1.53.1)
+
+### 🩹 Fixes
+
+- Redirect to /login after logout ([5d9ed72](https://github.com/rrd108/nuxt-users/commit/5d9ed72))
+
+### 🏡 Chore
+
+- Add AGENTS.md and ship agent docs in the npm package ([4a742bc](https://github.com/rrd108/nuxt-users/commit/4a742bc))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.53.0
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.52.0...v1.53.0)
