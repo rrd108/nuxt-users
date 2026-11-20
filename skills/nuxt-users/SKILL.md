@@ -65,7 +65,7 @@ All options live under `nuxtUsers` in `nuxt.config.ts`.
 | Database | `connector.name` | `'sqlite' \| 'mysql' \| 'postgresql'` |
 | Database | `connector.options` | `path` (SQLite), or `host`, `port`, `user`, `password`, `database` (MySQL/PostgreSQL) |
 | API | `apiBasePath` | Default `'/api/nuxt-users'` |
-| Tables | `tables.users`, `tables.personalAccessTokens`, `tables.passwordResetTokens`, `tables.migrations` | Custom table names |
+| Tables | `tables.users`, `tables.personalAccessTokens`, `tables.passwordResetTokens`, `tables.passkeys`, `tables.passkeyChallenges`, `tables.migrations` | Custom table names |
 | Mailer | `mailer` | Nodemailer config for password reset emails |
 | URLs | `siteUrl` | Public app URL for links in emails (e.g. `'https://example.com'`). Required in production; the Host header is only trusted in development |
 | URLs | `passwordResetUrl`, `emailConfirmationUrl` | Paths for redirects |
@@ -75,6 +75,7 @@ All options live under `nuxtUsers` in `nuxt.config.ts`.
 | Auth | `auth.permissions` | Role → paths (e.g. `admin: ['*']`, `user: ['/profile']`). Keys are the predefined roles. |
 | Auth | `auth.allowCustomRoles` | Default `false`. When `true`, create/update APIs and `NUsersUserForm` accept roles not listed in `permissions`. Empty `permissions` (bootstrap) already accepts any role. |
 | Auth | `auth.google` | Google OAuth: `clientId`, `clientSecret`, `callbackUrl`, etc. |
+| Auth | `auth.passkey` | Passkey (WebAuthn) login, additive and off unless set (`{}` = dev defaults). `rpId`, `origins` (required in production, the server refuses to start without them), `rpName`, `userVerification`. Users add passkeys from a signed-in session; no passkey-only signup |
 | Password | `passwordValidation` | `minLength`, `requireUppercase`, `requireLowercase`, `requireNumbers`, `requireSpecialChars`, `preventCommonPasswords` |
 | Data | `hardDelete` | `true` = hard delete, `false` = soft delete (default) |
 | Data | `autoMigrate` | Default `true`: migrations run on server start, then the Nitro runtime hook `nuxt-users:migrated` (`{ applied, error? }`) fires. Run app migrations that share the database from that hook. `false` = run `npx nuxt-users migrate` yourself |
@@ -108,6 +109,7 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
   npx nuxt-users create-users-table
   npx nuxt-users create-personal-access-tokens-table
   npx nuxt-users create-password-reset-tokens-table
+  npx nuxt-users create-passkey-tables
   npx nuxt-users create-migrations-table
   ```
 
@@ -119,11 +121,14 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
 - **useUsers()** — Admin: `users`, `pagination`, `loading`, `error`, `fetchUsers(page?, limit?)`, `updateUser`, `addUser`, `removeUser(userId)`
 - **usePublicPaths()** — `getPublicPaths()`, `getAccessiblePaths()`, `isPublicPath(path)`, `isAccessiblePath(path, method?)`
 - **usePasswordValidation(moduleOptions?, options?)** — `validate(password)`, `isValid`, `errors`, `strength`, `score`, `clearValidation()`
+- **usePasskeys()** — `enabled`, `supported`, `login(rememberMe?)` (returns the user or `null` if dismissed), `register(name?)`, `list()`, `remove(id)`
 - **useNuxtUsersLocale()** — `t(key, params?)`, `currentLocale`, `fallbackLocale`
 
 ## Components
 
 - `NUsersLoginForm` — Login form; use `@success` to call `login(user)` from `useAuthentication()`
+- `NUsersPasskeyLoginButton` — Passkey sign-in button (already inside `NUsersLoginForm`; its `success` event also fires for passkey logins)
+- `NUsersPasskeyManager` — List, add and remove the signed-in user's passkeys
 - `NUsersLogoutLink` — Logout link/button
 - `NUsersProfileInfo` — Display profile
 - `NUsersResetPasswordForm` — Password reset form

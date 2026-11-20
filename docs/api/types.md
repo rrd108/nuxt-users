@@ -130,6 +130,8 @@ interface RuntimeModuleOptions {
     users?: string
     personalAccessTokens?: string
     passwordResetTokens?: string
+    passkeys?: string
+    passkeyChallenges?: string
   }
   mailer?: MailerOptions
   siteUrl?: string
@@ -141,6 +143,7 @@ interface RuntimeModuleOptions {
     permissions?: Record<string, (string | Permission)[]>
     allowCustomRoles?: boolean
     google?: GoogleOAuthOptions
+    passkey?: PasskeyOptions // { rpId?, rpName?, origins?, userVerification? }
   }
   passwordValidation?: {
     minLength?: number

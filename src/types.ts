@@ -390,6 +390,17 @@ export interface LoginFormData {
   rememberMe?: boolean
 }
 
+/** A passkey as the API shows it: no key material, credential id or user handle */
+export interface PasskeySummary {
+  id: number
+  name: string
+  device_type: string
+  backed_up: boolean
+  transports: string[]
+  created_at: string
+  last_used_at: string | null
+}
+
 export interface LoginFormProps {
   apiEndpoint?: string
   redirectTo?: string

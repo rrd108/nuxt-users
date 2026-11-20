@@ -99,6 +99,19 @@ const handleSubmit = async () => {
   }
 }
 
+const handlePasskeySuccess = async (user: UserWithoutPassword, rememberMe: boolean) => {
+  emit('success', user, rememberMe)
+
+  if (props.redirectTo) {
+    await navigateTo(props.redirectTo)
+  }
+}
+
+const handlePasskeyError = (message: string) => {
+  error.value = message
+  emit('error', message)
+}
+
 const handleForgotPassword = async () => {
   if (!formData.value.email) {
     error.value = t('login.emailRequiredForForgotPassword')
@@ -203,6 +216,18 @@ const handleForgotPassword = async () => {
           />
           {{ isLoading ? (props.submittingLabel || t('login.submitting')) : (props.submitLabel || t('login.submit')) }}
         </button>
+      </slot>
+
+      <!-- Passkey button: shown only when passkeys are enabled and the browser supports them -->
+      <slot
+        name="passkey-button"
+        :remember-me="formData.rememberMe"
+      >
+        <NUsersPasskeyLoginButton
+          :remember-me="formData.rememberMe"
+          @success="handlePasskeySuccess"
+          @error="handlePasskeyError"
+        />
       </slot>
 
       <!-- Footer slot -->

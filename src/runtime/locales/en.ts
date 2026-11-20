@@ -139,6 +139,33 @@ export const en: LocaleMessages = {
     buttonText: 'Continue with Google',
     redirecting: 'Redirecting...'
   },
+  passkey: {
+    loginButton: 'Sign in with a passkey',
+    loggingIn: 'Waiting for your device...',
+    loginFailed: 'Passkey sign-in failed',
+    cancelled: 'The passkey request was cancelled or timed out',
+    manager: {
+      title: 'Passkeys',
+      description: 'Sign in without a password, using your fingerprint, face, screen lock or a security key.',
+      loading: 'Loading passkeys...',
+      empty: 'No passkeys yet',
+      nameLabel: 'Passkey name',
+      namePlaceholder: 'e.g. My laptop',
+      add: 'Add a passkey',
+      adding: 'Waiting for your device...',
+      created: 'Added',
+      lastUsed: 'Last used',
+      neverUsed: 'Never',
+      synced: 'Synced',
+      remove: 'Remove',
+      removeConfirm: 'Remove the passkey {0}? You will no longer be able to sign in with it.',
+      unsupported: 'This browser does not support passkeys',
+      loadFailed: 'Could not load your passkeys',
+      alreadyRegistered: 'This device already has a passkey for your account',
+      addFailed: 'Could not add the passkey',
+      removeFailed: 'Could not remove the passkey'
+    }
+  },
   usersList: {
     title: 'Users List',
     loading: 'Loading users...',

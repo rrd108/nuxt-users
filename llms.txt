@@ -30,6 +30,8 @@ export interface RuntimeModuleOptions {
     users?: string
     personalAccessTokens?: string
     passwordResetTokens?: string
+    passkeys?: string             // default 'passkeys'
+    passkeyChallenges?: string    // default 'passkey_challenges'
   }
 
   // Mailer configuration (nodemailer)
@@ -70,6 +72,15 @@ export interface RuntimeModuleOptions {
       errorRedirect?: string
       scopes?: string[]
       allowAutoRegistration?: boolean
+    }
+
+    // Passkeys (WebAuthn). Off unless set; `{}` enables the dev defaults. Additive: password login keeps working.
+    // In production rpId and origins are required, or the server refuses to start.
+    passkey?: {
+      rpId?: string               // domain, no scheme/port (default 'localhost' in dev)
+      rpName?: string             // default 'Nuxt Users'
+      origins?: string[]          // e.g. ['https://example.com'] (default http://localhost:3000 in dev)
+      userVerification?: 'required' | 'preferred' | 'discouraged' // default 'preferred'
     }
   }
 
@@ -134,6 +145,16 @@ Utilities for checking route accessibility and handling public/protected paths.
 - **getAccessiblePaths()**: Returns paths accessible to the current user (public + role-based).
 - **isPublicPath(path: string)**: `boolean` - Checks if a path is public.
 - **isAccessiblePath(path: string, method?: string)**: `boolean` - Checks if user can access a path.
+
+### `usePasskeys()`
+Passkey (WebAuthn) login and management. Requires `auth.passkey`.
+
+- **enabled**: `ComputedRef<boolean>` - `auth.passkey` is set.
+- **supported**: `Ref<boolean>` - Browser supports WebAuthn (known after mount).
+- **login(rememberMe?: boolean)**: `Promise<UserWithoutPassword | null>` - Returns the user (call `useAuthentication().login` with it); `null` if the prompt was dismissed.
+- **register(name?: string)**: `Promise<PasskeySummary | null>` - Adds a passkey to the signed-in user.
+- **list()**: `Promise<PasskeySummary[]>`
+- **remove(id: number)**: `Promise<void>`
 
 ### `useUsers()`
 Admin utility for managing users.

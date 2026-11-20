@@ -17,6 +17,8 @@ export type {
   RuntimeModuleOptions,
   DisplayFieldsProps,
   LoginFormProps,
+  PasskeySummary,
+  PasskeyOptions,
   ResetPasswordFormProps,
   Permission,
   DatabaseType,

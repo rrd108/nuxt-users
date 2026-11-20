@@ -44,14 +44,22 @@ describe('Passkey store', () => {
     const settings = await createTestSetup({ dbType, dbConfig })
     db = settings.db
     options = settings.testOptions as ModuleOptions
+    // Start from a clean slate: other test files share the MySQL/PostgreSQL database and may leave tables behind
+    if (dbType !== 'sqlite') {
+      await dropAllTables()
+    }
     await runMigrations(options)
   })
 
-  afterEach(async () => {
-    for (const table of [options.tables.passkeys, options.tables.passkeyChallenges, options.tables.users, options.tables.personalAccessTokens, options.tables.passwordResetTokens, options.tables.migrations]) {
+  const allTables = () => [options.tables.passkeys, options.tables.passkeyChallenges, options.tables.users, options.tables.personalAccessTokens, options.tables.passwordResetTokens, options.tables.migrations]
+
+  const dropAllTables = async () => {
+    for (const table of allTables()) {
       await cleanupTestSetup(dbType, db, [options.connector.options.path!], table)
     }
-  })
+  }
+
+  afterEach(dropAllTables)
 
   describe('migration', () => {
     it('creates both passkey tables and records the migration', async () => {

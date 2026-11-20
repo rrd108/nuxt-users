@@ -9,6 +9,8 @@ The Nuxt Users module provides several Vue components to help you quickly implem
 | `NUsersLoginForm` | Complete login form with validation and forgot password functionality |
 | `NUsersRegisterForm` | User registration form with email confirmation and password validation |
 | `NUsersEmailConfirmation` | User-friendly email confirmation page with success/error states |
+| `NUsersPasskeyLoginButton` | "Sign in with a passkey" button (already included in `NUsersLoginForm`) |
+| `NUsersPasskeyManager` | Lets a signed-in user list, add and remove their passkeys |
 | `NUsersLogoutLink` | Simple logout link with confirmation |
 | `NUsersResetPasswordForm` | Password reset form for users with reset tokens |
 | `NUsersList` | Paginated list of users with management actions |
@@ -496,6 +498,42 @@ The component automatically reads these query parameters:
 3. **User clicks link** - API processes the confirmation
 4. **API redirects** to `/email-confirmation?status=success&message=...`
 5. **User sees friendly page** instead of raw JSON
+
+### NUsersPasskeyLoginButton
+
+A "Sign in with a passkey" button. `NUsersLoginForm` already includes it, so you only need this component to place the button yourself. It renders nothing unless `auth.passkey` is set and the browser supports passkeys.
+
+```vue
+<NUsersPasskeyLoginButton
+  :remember-me="false"
+  @success="(user, rememberMe) => login(user, rememberMe)"
+  @error="message => console.warn(message)"
+/>
+```
+
+| Prop | Type | Description |
+|---|---|---|
+| `buttonText` | `string` | Button label |
+| `loadingText` | `string` | Label while waiting for the device |
+| `rememberMe` | `boolean` | Long-lived session cookie (default `false`) |
+| `class` | `string` | Extra CSS class |
+
+Events: `success(user, rememberMe)`, `error(message)`. Dismissing the browser prompt emits `error` with a "cancelled" message.
+
+### NUsersPasskeyManager
+
+Lets the signed-in user list, add and remove their passkeys. Place it on any page, for example next to `NUsersProfileInfo`. It renders nothing unless `auth.passkey` is set.
+
+```vue
+<NUsersPasskeyManager @registered="onAdded" @removed="onRemoved" @error="onError" />
+```
+
+| Prop | Type | Description |
+|---|---|---|
+| `title` | `string` | Heading |
+| `description` | `string` | Text under the heading |
+
+Events: `registered(passkey)`, `removed(id)`, `error(message)`. A `header` slot replaces the heading and description. Each passkey shows its name (the user can name it when adding; a dated default is used otherwise), whether it is synced, and when it was added and last used. Removing asks for confirmation.
 
 ### NUsersLogoutLink
 

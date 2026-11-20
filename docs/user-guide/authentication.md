@@ -1039,6 +1039,103 @@ export default defineNuxtConfig({
 | `scopes` | `string[]` | `['openid', 'profile', 'email']` | Google OAuth scopes to request |
 | `callbackUrl` | `string` | `'/api/nuxt-users/auth/google/callback'` | OAuth callback URL (must match Google Console) |
 
+## Passkey Authentication
+
+Passkeys (WebAuthn) let users sign in with their fingerprint, face, screen lock or a security key instead of a password. Passkeys are an **additional** login method: they are off unless you set `auth.passkey`, and password (and Google) login keep working.
+
+### How it works
+
+- A signed-in user adds a passkey to their account (`NUsersPasskeyManager`). Passkey-only signup is not supported: every account keeps a password or a Google login.
+- On the login page, a "Sign in with a passkey" button runs a *usernameless* flow: the browser offers the user's passkeys for your site, so no email is typed and the server never reveals whether an account exists.
+- A successful passkey login is a complete login. It issues the same session token and cookie as a password login, so permissions, middleware and logout behave identically. There is no separate second factor.
+- Inactive users (soft-deleted, or email not yet confirmed) cannot sign in with a passkey, just like with a password.
+- A user who loses their passkey recovers through the normal [password reset](/user-guide/password-reset).
+
+### Configuration
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-users'],
+  nuxtUsers: {
+    auth: {
+      passkey: {
+        // The domain passkeys are bound to: no scheme, no port. Passkeys only work on this
+        // domain and its subdomains, and changing it later invalidates every saved passkey.
+        rpId: 'example.com',
+        // Name shown by the authenticator (default: 'Nuxt Users')
+        rpName: 'Example',
+        // Origins allowed to run the ceremony (scheme + host + port)
+        origins: ['https://example.com'],
+        // 'required' | 'preferred' | 'discouraged' (default: 'preferred')
+        userVerification: 'preferred'
+      }
+    }
+  }
+})
+```
+
+`auth.passkey: {}` enables passkeys with the development defaults.
+
+| Option | Default | Notes |
+|---|---|---|
+| `rpId` | `'localhost'` in development | **Required in production** |
+| `origins` | `['http://localhost:3000']` in development | **Required in production** |
+| `rpName` | `'Nuxt Users'` | |
+| `userVerification` | `'preferred'` | `'required'` makes the authenticator ask for a PIN or biometric |
+
+The relying party is never guessed from the request's Host header (it can be spoofed or rewritten by a proxy). In production the server **refuses to start** when `rpId` or `origins` is missing. To set them from environment variables, declare the keys in your config (even empty, for example `rpId: ''`) so Nuxt applies `NUXT_NUXT_USERS_AUTH_PASSKEY_RP_ID` and `NUXT_NUXT_USERS_AUTH_PASSKEY_ORIGINS`.
+
+WebAuthn needs a secure context: HTTPS, or `localhost` during development.
+
+### Database
+
+Passkeys use two tables, `passkeys` and `passkey_challenges` (names configurable under `tables.passkeys` and `tables.passkeyChallenges`). They are created by the `create_passkey_tables` migration, which runs automatically on server start. To create them by hand:
+
+```bash
+npx nuxt-users create-passkey-tables
+```
+
+- `passkeys` holds the public key, signature counter, transports and a random per-user WebAuthn user handle (never derived from the user id). A user can have several passkeys. Deleting a user with `hardDelete` also deletes their passkeys.
+- `passkey_challenges` holds short-lived, single-use challenges (5 minute TTL). The scheduled `nuxt-users:cleanup-tokens` task removes expired ones.
+
+### Components
+
+Add the login button inside `NUsersLoginForm`: it appears automatically when `auth.passkey` is set and the browser supports passkeys.
+
+```vue
+<NUsersLoginForm redirect-to="/profile" @success="(user, rememberMe) => login(user, rememberMe)" />
+```
+
+The form's `success` event fires for password and passkey logins alike. To place the button yourself, use the `passkey-button` slot or the standalone `NUsersPasskeyLoginButton`.
+
+Let users manage their passkeys on any page, for example a profile or settings page:
+
+```vue
+<NUsersPasskeyManager @registered="onAdded" @removed="onRemoved" />
+```
+
+See [Components](/user-guide/components#nuserspasskeyloginbutton) and the [`usePasskeys()`](/user-guide/composables#usepasskeys) composable for a custom UI.
+
+### API endpoints
+
+| Method | Endpoint | Access | Purpose |
+|---|---|---|---|
+| `POST` | `/api/nuxt-users/passkey/login/options` | public | Start a login (usernameless) |
+| `POST` | `/api/nuxt-users/passkey/login/verify` | public | Finish a login, sets the session cookie |
+| `POST` | `/api/nuxt-users/passkey/register/options` | signed-in | Start adding a passkey |
+| `POST` | `/api/nuxt-users/passkey/register/verify` | signed-in | Finish adding a passkey |
+| `GET` | `/api/nuxt-users/passkeys` | signed-in | List the current user's passkeys |
+| `DELETE` | `/api/nuxt-users/passkeys/:id` | signed-in | Remove one of the current user's passkeys |
+
+The login endpoints are whitelisted automatically when `auth.passkey` is set. The other endpoints are open to every signed-in user whatever their role, because they only ever touch the user's own passkeys. All endpoints answer `404` when passkeys are not enabled. The API never returns key material.
+
+### Security notes
+
+- **Rate limiting**: the module has no built-in rate limiter. Put one in front of `/api/nuxt-users/passkey/login/*`, as described in [Rate Limiting](#rate-limiting-recommended).
+- **Adding a passkey needs only a valid session**: there is no password re-entry step, so a stolen session could add a passkey. Re-authentication for sensitive actions is not part of this feature.
+- **Cloned authenticators**: if a passkey's signature counter does not increase, the login is rejected and a warning is logged. Synced passkeys (iCloud Keychain, Google Password Manager) always report a counter of 0 and are accepted.
+- **Attestation is not requested**: any authenticator can register, which is the right default for passkeys.
+
 ## Security Best Practices
 
 1. **Use HTTPS**: Always use HTTPS in production to protect credentials in transit

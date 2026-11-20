@@ -57,7 +57,9 @@ export default defineNuxtConfig({
     tables: {
       users: 'users',
       personalAccessTokens: 'personal_access_tokens',
-      passwordResetTokens: 'password_reset_tokens'
+      passwordResetTokens: 'password_reset_tokens',
+      passkeys: 'passkeys',
+      passkeyChallenges: 'passkey_challenges'
     },
     
     // Email configuration for password resets

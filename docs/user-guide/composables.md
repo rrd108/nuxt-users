@@ -128,6 +128,34 @@ The `useAuthentication` composable returns the following reactive properties and
 | `fetchUser()` | `Function` | Fetches the current user's data from the API and updates the `user` state. |
 | `initializeUser()` | `Function` | Initializes the user state, typically by checking local storage and then validating with the server. **Note:** User initialization happens automatically on app startup via a client plugin. Manual calls are optional and can be used if you need to re-initialize the user state. |
 
+## `usePasskeys()`
+
+Passkey (WebAuthn) login and management. Use it to build a custom UI; the [passkey components](/user-guide/components#nuserspasskeyloginbutton) are built on it. See [Passkey Authentication](/user-guide/authentication#passkey-authentication) for setup.
+
+```vue
+<script setup lang="ts">
+const { enabled, supported, login, register, list, remove } = usePasskeys()
+const { login: setUser } = useAuthentication()
+
+const signIn = async () => {
+  const user = await login(true) // rememberMe
+  if (user) {
+    setUser(user, true)
+    await navigateTo('/profile')
+  }
+}
+</script>
+```
+
+| Name | Type | Description |
+|---|---|---|
+| `enabled` | `ComputedRef<boolean>` | `auth.passkey` is set in the module config. |
+| `supported` | `Ref<boolean>` | The browser supports WebAuthn. Known after mount, so server and client render the same markup. |
+| `login(rememberMe?)` | `Promise<UserWithoutPassword \| null>` | Signs in with a passkey and returns the user, like the password form (call `useAuthentication().login` with it). `null` when the user dismissed the browser prompt. |
+| `register(name?)` | `Promise<PasskeySummary \| null>` | Adds a passkey to the signed-in user. `null` when the user dismissed the prompt. Throws an `InvalidStateError` when the authenticator already holds a passkey for the account. |
+| `list()` | `Promise<PasskeySummary[]>` | The signed-in user's passkeys (`id`, `name`, `device_type`, `backed_up`, `transports`, `created_at`, `last_used_at`). |
+| `remove(id)` | `Promise<void>` | Removes one of the signed-in user's passkeys. |
+
 ## `usePublicPaths()`
 
 The `usePublicPaths` composable allows you to programmatically determine which paths are accessible to users. This is useful for building dynamic navigation menus, API endpoint lists, or conditional UI elements.

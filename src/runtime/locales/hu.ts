@@ -122,6 +122,33 @@ const huBase: LocaleMessages = {
     buttonText: 'Folytatás Google-lel',
     redirecting: 'Átirányítás...'
   },
+  passkey: {
+    loginButton: 'Bejelentkezés passkey-jel',
+    loggingIn: 'Várakozás az eszközre...',
+    loginFailed: 'A passkey-es bejelentkezés sikertelen',
+    cancelled: 'A passkey kérés megszakadt vagy lejárt',
+    manager: {
+      title: 'Passkey-k',
+      description: 'Jelszó nélküli bejelentkezés ujjlenyomattal, arcfelismeréssel, képernyőzárral vagy biztonsági kulccsal.',
+      loading: 'Passkey-k betöltése...',
+      empty: 'Még nincs passkey',
+      nameLabel: 'Passkey neve',
+      namePlaceholder: 'pl. Laptopom',
+      add: 'Passkey hozzáadása',
+      adding: 'Várakozás az eszközre...',
+      created: 'Hozzáadva',
+      lastUsed: 'Utoljára használva',
+      neverUsed: 'Soha',
+      synced: 'Szinkronizált',
+      remove: 'Eltávolítás',
+      removeConfirm: 'Eltávolítja a(z) {0} passkey-t? Ezzel többé nem lehet bejelentkezni.',
+      unsupported: 'Ez a böngésző nem támogatja a passkey-ket',
+      loadFailed: 'A passkey-k betöltése sikertelen',
+      alreadyRegistered: 'Ezen az eszközön már van passkey ehhez a fiókhoz',
+      addFailed: 'A passkey hozzáadása sikertelen',
+      removeFailed: 'A passkey eltávolítása sikertelen'
+    }
+  },
   usersList: {
     title: 'Felhasználók listája',
     loading: 'Felhasználók betöltése...',
