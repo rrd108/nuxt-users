@@ -14,8 +14,14 @@ export const PUBLIC_API_ENDPOINTS = [
 
 // *API endpoints* auto accessible for *authenticated users* (relative to apiBasePath)
 // register, confirm-email are handled automatically when /register is whitelisted
-// Google OAuth endpoints are handled automatically when Google OAuth is configured
+// Google OAuth and passkey login endpoints are handled automatically when they are configured
+// A `:id` segment matches a numeric id (see isAuthenticatedAutoAccess)
 export const AUTHENTICATED_AUTO_ACCESS_ENDPOINTS = [
   { path: '/me', methods: ['GET', 'PATCH'] },
   { path: '/password', methods: ['PATCH'] },
+  // Passkey self-service: a user manages their own passkeys (login endpoints are whitelisted separately)
+  { path: '/passkey/register/options', methods: ['POST'] },
+  { path: '/passkey/register/verify', methods: ['POST'] },
+  { path: '/passkeys', methods: ['GET'] },
+  { path: '/passkeys/:id', methods: ['DELETE'] },
 ]

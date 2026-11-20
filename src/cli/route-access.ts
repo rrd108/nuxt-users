@@ -1,7 +1,8 @@
 import { existsSync, readdirSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
 import type { ModuleOptions } from 'nuxt-users/utils'
-import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS, AUTHENTICATED_AUTO_ACCESS_ENDPOINTS } from '../runtime/constants'
+import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS } from '../runtime/constants'
+import { isAuthenticatedAutoAccess } from '../runtime/utils/auto-access'
 import { hasPermission, pathMatchesPattern } from '../runtime/utils/permissions'
 
 /**
@@ -75,7 +76,7 @@ export const getRouteAccess = (path: string, method: string, options: AccessOpti
     return { level: 'public', reason: `whitelist: ${whitelistEntry}`, roles: [] }
   }
 
-  if (AUTHENTICATED_AUTO_ACCESS_ENDPOINTS.some(endpoint => path === `${base}${endpoint.path}` && endpoint.methods.includes(method))) {
+  if (isAuthenticatedAutoAccess(path, method, base)) {
     return { level: 'authenticated', reason: 'any signed-in user', roles: [] }
   }
 

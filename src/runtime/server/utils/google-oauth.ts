@@ -176,18 +176,19 @@ export async function findOrCreateGoogleUser(
 }
 
 /**
- * Create authentication token for user (reusing existing logic)
+ * Creates and stores an authentication token for a user. Used by every login method
+ * (password, Google, passkey); `tokenName` records which one issued it.
  */
 export async function createAuthTokenForUser(
-  user: User,
+  user: Pick<User, 'id'>,
   moduleOptions: ModuleOptions,
-  rememberMe = false
+  rememberMe = false,
+  tokenName = 'oauth_auth_token'
 ): Promise<string> {
   const db = await useDb(moduleOptions)
   const personalAccessTokensTable = moduleOptions.tables.personalAccessTokens
 
   const token = crypto.randomBytes(64).toString('hex')
-  const tokenName = 'oauth_auth_token'
 
   // Calculate expiration time
   const expiresAt = new Date()

@@ -3,7 +3,8 @@ import { useRuntimeConfig } from '#imports'
 import { getCurrentUserFromToken, handleUnauthenticatedRequest, handleInvalidToken, handleUnauthorizedRequest } from '../utils'
 import { hasPermission, isWhitelisted } from '../../utils/permissions'
 import type { ModuleOptions } from 'nuxt-users/utils'
-import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS, AUTHENTICATED_AUTO_ACCESS_ENDPOINTS } from '../../constants'
+import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS } from '../../constants'
+import { isAuthenticatedAutoAccess } from '../../utils/auto-access'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
@@ -86,11 +87,9 @@ export default defineEventHandler(async (event) => {
   // Auto-whitelisted endpoints for authenticated users
   // ============================================
 
-  for (const endpoint of AUTHENTICATED_AUTO_ACCESS_ENDPOINTS) {
-    if (path === `${base}${endpoint.path}` && endpoint.methods.includes(event.method)) {
-      console.debug(`[Nuxt Users] authorization: Auto-whitelisted endpoint ${path} for authenticated user ${user.id}`)
-      return
-    }
+  if (isAuthenticatedAutoAccess(path, event.method, base)) {
+    console.debug(`[Nuxt Users] authorization: Auto-whitelisted endpoint ${path} for authenticated user ${user.id}`)
+    return
   }
 
   // ============================================

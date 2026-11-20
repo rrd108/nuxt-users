@@ -543,6 +543,47 @@ describe('Auth Server Middleware', () => {
     })
   })
 
+  describe('Passkey self-service endpoints', () => {
+    const limitedUser = {
+      id: 5,
+      email: 'limited@example.com',
+      name: 'Limited',
+      role: 'user',
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z',
+      active: true
+    }
+
+    const request = async (method: string, path: string) => {
+      const event = { path, method, context: {} } as H3Event
+      mockGetCookie.mockReturnValue('valid-token')
+      const { getCurrentUserFromToken, handleUnauthorizedRequest } = await import('../../src/runtime/server/utils')
+      vi.mocked(getCurrentUserFromToken).mockResolvedValue(limitedUser)
+      // Earlier tests leave this mock throwing: here it only has to record whether access was refused
+      vi.mocked(handleUnauthorizedRequest).mockReset()
+      await serverAuthMiddleware.default(event)
+      return vi.mocked(handleUnauthorizedRequest).mock.calls.length === 0
+    }
+
+    it.each([
+      ['POST', '/api/nuxt-users/passkey/register/options'],
+      ['POST', '/api/nuxt-users/passkey/register/verify'],
+      ['GET', '/api/nuxt-users/passkeys'],
+      ['DELETE', '/api/nuxt-users/passkeys/12'],
+    ])('lets any authenticated user call %s %s', async (method, path) => {
+      expect(await request(method, path)).toBe(true)
+    })
+
+    it.each([
+      ['DELETE', '/api/nuxt-users/passkeys'],
+      ['POST', '/api/nuxt-users/passkeys/12'],
+      ['GET', '/api/nuxt-users/passkeys/12/extra'],
+      ['GET', '/api/nuxt-users/passkey/register/options'],
+    ])('does not open %s %s', async (method, path) => {
+      expect(await request(method, path)).toBe(false)
+    })
+  })
+
   describe('Query strings and dots in the path', () => {
     const regularUser = {
       id: 2,

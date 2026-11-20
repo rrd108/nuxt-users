@@ -2,6 +2,7 @@ import { defineNuxtModule, createResolver, addServerHandler, addComponentsDir, a
 import { defu } from 'defu'
 import type { ModuleOptions, RuntimeModuleOptions, NuxtUsersMigratedContext } from './types'
 import { defaultOptions } from './default-options'
+import { computeAuthWhitelist } from './auth-whitelist'
 
 export { defaultOptions } from './default-options'
 
@@ -46,41 +47,13 @@ export default defineNuxtModule<RuntimeModuleOptions>({
         permissions: runtimeConfigOptions.auth.permissions,
         allowCustomRoles: runtimeConfigOptions.auth.allowCustomRoles,
         ...(runtimeConfigOptions.auth.google && { google: runtimeConfigOptions.auth.google }),
-        whitelist: (() => {
-          const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]
-          const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
-
-          // Auto-whitelist related endpoints if /register is whitelisted
-          if (combinedWhitelist.includes('/register')) {
-            const registrationEndpoints = [
-              '/confirm-email', // Page route for email confirmation
-              `${apiBasePath}/register`, // API endpoint for registration
-              `${apiBasePath}/confirm-email` // API endpoint for email confirmation
-            ]
-
-            registrationEndpoints.forEach((endpoint) => {
-              if (!combinedWhitelist.includes(endpoint)) {
-                combinedWhitelist.push(endpoint)
-              }
-            })
-          }
-
-          // Auto-whitelist Google OAuth endpoints if Google OAuth is configured
-          if (runtimeConfigOptions.auth?.google) {
-            const googleOAuthEndpoints = [
-              `${apiBasePath}/auth/google/redirect`,
-              `${apiBasePath}/auth/google/callback`
-            ]
-
-            googleOAuthEndpoints.forEach((endpoint) => {
-              if (!combinedWhitelist.includes(endpoint)) {
-                combinedWhitelist.push(endpoint)
-              }
-            })
-          }
-
-          return combinedWhitelist
-        })()
+        ...(runtimeConfigOptions.auth.passkey && { passkey: runtimeConfigOptions.auth.passkey }),
+        whitelist: computeAuthWhitelist({
+          whitelist: [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])],
+          apiBasePath: runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath,
+          google: Boolean(runtimeConfigOptions.auth?.google),
+          passkey: Boolean(runtimeConfigOptions.auth?.passkey)
+        })
       },
     } as unknown as typeof nuxt.options.runtimeConfig.nuxtUsers
 
@@ -91,41 +64,14 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       locale: runtimeConfigOptions.locale,
       theme: runtimeConfigOptions.theme,
       auth: {
-        whitelist: (() => {
-          const combinedWhitelist = [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])]
-          const apiBasePath = runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath
-
-          // Auto-whitelist related endpoints if /register is whitelisted
-          if (combinedWhitelist.includes('/register')) {
-            const registrationEndpoints = [
-              '/confirm-email', // Page route for email confirmation
-              `${apiBasePath}/register`, // API endpoint for registration
-              `${apiBasePath}/confirm-email` // API endpoint for email confirmation
-            ]
-
-            registrationEndpoints.forEach((endpoint) => {
-              if (!combinedWhitelist.includes(endpoint)) {
-                combinedWhitelist.push(endpoint)
-              }
-            })
-          }
-
-          // Auto-whitelist Google OAuth endpoints if Google OAuth is configured
-          if (runtimeConfigOptions.auth?.google) {
-            const googleOAuthEndpoints = [
-              `${apiBasePath}/auth/google/redirect`,
-              `${apiBasePath}/auth/google/callback`
-            ]
-
-            googleOAuthEndpoints.forEach((endpoint) => {
-              if (!combinedWhitelist.includes(endpoint)) {
-                combinedWhitelist.push(endpoint)
-              }
-            })
-          }
-
-          return combinedWhitelist
-        })(),
+        // Only a flag: the client needs to know whether to offer passkeys, not the relying party config
+        ...(runtimeConfigOptions.auth.passkey && { passkey: {} }),
+        whitelist: computeAuthWhitelist({
+          whitelist: [...(defaultOptions.auth?.whitelist || []), ...(runtimeConfigOptions.auth?.whitelist || [])],
+          apiBasePath: runtimeConfigOptions.apiBasePath || defaultOptions.apiBasePath,
+          google: Boolean(runtimeConfigOptions.auth?.google),
+          passkey: Boolean(runtimeConfigOptions.auth?.passkey)
+        }),
         permissions: runtimeConfigOptions.auth?.permissions || defaultOptions.auth.permissions,
         allowCustomRoles: runtimeConfigOptions.auth.allowCustomRoles
       },
@@ -166,6 +112,7 @@ export default defineNuxtModule<RuntimeModuleOptions>({
     // Auto-run migrations on server startup
     addServerPlugin(resolver.resolve('./runtime/server/plugins/auto-migrate'))
     addServerPlugin(resolver.resolve('./runtime/server/plugins/validate-mailer-config'))
+    addServerPlugin(resolver.resolve('./runtime/server/plugins/validate-passkey-config'))
 
     addRouteMiddleware({
       name: 'authorization.client',
@@ -247,6 +194,23 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       method: 'get',
       handler: resolver.resolve('./runtime/server/api/nuxt-users/auth/google/callback.get')
     })
+
+    // Passkeys (the handlers answer 404 unless auth.passkey is configured)
+    const passkeyHandlers = [
+      { route: '/passkey/register/options', method: 'post', file: 'passkey/register/options.post' },
+      { route: '/passkey/register/verify', method: 'post', file: 'passkey/register/verify.post' },
+      { route: '/passkey/login/options', method: 'post', file: 'passkey/login/options.post' },
+      { route: '/passkey/login/verify', method: 'post', file: 'passkey/login/verify.post' },
+      { route: '/passkeys', method: 'get', file: 'passkeys/index.get' },
+      { route: '/passkeys/:id', method: 'delete', file: 'passkeys/[id].delete' },
+    ] as const
+    for (const { route, method, file } of passkeyHandlers) {
+      addServerHandler({
+        route: `${base}${route}`,
+        method,
+        handler: resolver.resolve(`./runtime/server/api/nuxt-users/${file}`)
+      })
+    }
 
     // User management
     addServerHandler({
