@@ -15,6 +15,7 @@ A user authentication module for Nuxt with database support for SQLite, MySQL, a
   - User registration, login, and logout
   - Secure password hashing with bcrypt
   - Password reset functionality
+  - Optional Google login and passkeys (WebAuthn), both off by default
   - Session management
 
 - 🗄️ **Database Support**

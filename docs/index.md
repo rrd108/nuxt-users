@@ -16,7 +16,7 @@ hero:
 
 features:
   - title: 🔐 Authentication & Security
-    details: Complete user authentication system with secure password hashing, password reset, and session management
+    details: Complete user authentication system with secure password hashing, password reset, optional Google login and passkeys, and session management
   - title: 🗄️ Multi-Database Support
     details: Built-in support for SQLite, MySQL, and PostgreSQL with automatic migrations and CLI tools
   - title: 🛡️ Role-Based Access Control

@@ -14,6 +14,13 @@ export default defineNuxtConfig({
       permissions: {
         admin: ['*'],
       },
+      // Passkeys work on localhost over plain http. rpId and origins are only required for production builds
+      // (the integration test serves one), so they are set explicitly here.
+      passkey: {
+        rpName: 'Nuxt Users Playground',
+        rpId: 'localhost',
+        origins: ['http://localhost:3000'],
+      },
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID || 'google-client-id',
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'google-client-secret',

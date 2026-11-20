@@ -28,6 +28,8 @@ const handlePasswordError = (error: string) => {
 
       <NUsersProfileInfo />
 
+      <NUsersPasskeyManager />
+
       <NUsersResetPasswordForm
         @success="handleProfileSuccess"
         @error="handleProfileError"

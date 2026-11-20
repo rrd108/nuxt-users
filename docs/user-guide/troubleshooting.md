@@ -262,6 +262,18 @@ export default defineNuxtConfig({
 })
 ```
 
+### Passkeys Do Not Work
+
+**Problem:** The passkey button is missing, or registering or signing in with a passkey fails.
+
+**Solutions:**
+
+1. **Enable them:** passkeys are off until `auth.passkey` is set (an empty object `{}` is enough in development). Without it the button and manager render nothing and the endpoints answer 404.
+2. **Use a secure context:** WebAuthn only works over HTTPS, or on `localhost`. Open the dev server as `http://localhost:3000`, not by IP address or a `.local` hostname.
+3. **Production fails at startup:** set `auth.passkey.rpId` (your domain, e.g. `example.com`) and `auth.passkey.origins` (e.g. `['https://example.com']`). They are never guessed from the request.
+4. **`Passkey registration could not be verified`:** the page origin is not listed in `origins`, or `rpId` is not the page's domain or a parent of it. Passkeys saved for another `rpId` will not show up.
+5. **Tables missing:** if you disabled auto migrations, run `npx nuxt-users create-passkey-tables`.
+
 ## Component Issues
 
 ### Components Not Found

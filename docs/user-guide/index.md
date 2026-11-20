@@ -40,7 +40,7 @@ With Nuxt Users, you can easily create:
 ## Core Features
 
 ### 🔐 Authentication
-- [Authentication Guide](./authentication.md) - Complete user authentication flow
+- [Authentication Guide](./authentication.md) - Complete user authentication flow, including Google login and passkeys
 - [Password Reset](./password-reset.md) - Help users recover their accounts
 
 ### 🛡️ Access Control  
