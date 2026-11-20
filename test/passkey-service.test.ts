@@ -168,6 +168,23 @@ describe('Passkey service', () => {
       expect(await listPasskeys(options, user.id)).toHaveLength(1)
     })
 
+    it('answers 409 when the credential is already registered, even on another account', async () => {
+      const other = await createUser({ email: 'other@example.com', name: 'Other', password: 'Password123!' }, options) as User
+      await storePasskeyFor(other.id, 0, 'new-cred')
+      const { challenge } = await beginPasskeyRegistration(options, user)
+      vi.mocked(webauthn.verifyRegistrationResponse).mockResolvedValue({
+        verified: true,
+        registrationInfo: {
+          credential: { id: 'new-cred', publicKey: new Uint8Array([1]), counter: 0 },
+          credentialDeviceType: 'multiDevice',
+          credentialBackedUp: true,
+        },
+      } as never)
+
+      await expect(finishPasskeyRegistration(options, user, registrationResponse(challenge))).rejects.toMatchObject({ statusCode: 409 })
+      expect(await listPasskeys(options, user.id)).toHaveLength(0)
+    })
+
     it('rejects a challenge that was issued to another user', async () => {
       await saveChallenge(options, { challenge: 'other-users', type: 'registration', userId: user.id + 1 })
 
@@ -217,6 +234,24 @@ describe('Passkey service', () => {
       const { challenge } = await beginPasskeyLogin(options)
 
       await expect(finishPasskeyLogin(options, authenticationResponse(challenge, 'nope'))).rejects.toMatchObject({ statusCode: 401 })
+    })
+
+    it('rejects a response whose user handle does not match the passkey owner', async () => {
+      await storePasskeyFor(user.id)
+      const { challenge } = await beginPasskeyLogin(options)
+      verifiedLogin(1)
+      const response = authenticationResponse(challenge)
+
+      await expect(finishPasskeyLogin(options, { ...response, response: { ...response.response, userHandle: 'someone-else' } })).rejects.toMatchObject({ statusCode: 401 })
+    })
+
+    it('accepts a response carrying the matching user handle', async () => {
+      await storePasskeyFor(user.id)
+      const { challenge } = await beginPasskeyLogin(options)
+      verifiedLogin(1)
+      const response = authenticationResponse(challenge)
+
+      await expect(finishPasskeyLogin(options, { ...response, response: { ...response.response, userHandle: 'handle-1' } })).resolves.toMatchObject({ id: user.id })
     })
 
     it('rejects an inactive user', async () => {

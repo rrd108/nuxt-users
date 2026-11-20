@@ -131,7 +131,11 @@ export const finishPasskeyRegistration = async (
   const { credential, credentialDeviceType, credentialBackedUp } = verification.registrationInfo
   const userHandle = await getOrCreateUserHandle(options, user.id)
 
-  return addPasskey(options, {
+  if (await findPasskeyByCredentialId(options, credential.id)) {
+    throw new PasskeyError('This passkey is already registered', 409)
+  }
+
+  const newPasskey = {
     userId: user.id,
     credentialId: credential.id,
     publicKey: Buffer.from(credential.publicKey).toString('base64url'),
@@ -141,7 +145,18 @@ export const finishPasskeyRegistration = async (
     backedUp: credentialBackedUp,
     name: name?.trim() || `Passkey, ${new Date().toISOString().slice(0, 10)}`,
     userHandle,
-  })
+  }
+
+  try {
+    return await addPasskey(options, newPasskey)
+  }
+  catch (error) {
+    // Lost a race with a concurrent registration of the same credential (unique credential_id)
+    if (await findPasskeyByCredentialId(options, credential.id)) {
+      throw new PasskeyError('This passkey is already registered', 409)
+    }
+    throw error
+  }
 }
 
 /** Usernameless: no credentials are allow-listed, so the response never reveals whether an account exists */
@@ -171,6 +186,12 @@ export const finishPasskeyLogin = async (
 
   const passkey = await findPasskeyByCredentialId(options, response.id)
   if (!passkey) {
+    throw invalid()
+  }
+
+  // A discoverable credential reports whose it is: it must be the account the credential is stored for
+  const { userHandle } = response.response
+  if (userHandle && userHandle !== passkey.user_handle) {
     throw invalid()
   }
 

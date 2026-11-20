@@ -152,6 +152,17 @@ describe('Passkey store', () => {
       expect(other).not.toBe(first)
     })
 
+    it('keeps one handle when a user adds their first passkeys concurrently', async () => {
+      await Promise.all([
+        addPasskey(options, newPasskey({ credentialId: 'race-a', userHandle: 'handle-a' })),
+        addPasskey(options, newPasskey({ credentialId: 'race-b', userHandle: 'handle-b' })),
+        addPasskey(options, newPasskey({ credentialId: 'race-c', userHandle: 'handle-c' })),
+      ])
+
+      const handles = new Set((await listPasskeys(options, 1)).map(p => p.user_handle))
+      expect(handles.size).toBe(1)
+    })
+
     it('reuses the handle of the user existing passkeys', async () => {
       await addPasskey(options, newPasskey({ userHandle: 'stored-handle' }))
       expect(await getOrCreateUserHandle(options, 1)).toBe('stored-handle')
@@ -164,6 +175,14 @@ describe('Passkey store', () => {
 
       expect(await consumeChallenge(options, 'chal-1', 'registration')).toEqual({ userId: 1 })
       expect(await consumeChallenge(options, 'chal-1', 'registration')).toBeNull()
+    })
+
+    it('can be consumed by only one of several concurrent attempts', async () => {
+      await saveChallenge(options, { challenge: 'chal-race', type: 'authentication' })
+
+      const results = await Promise.all(Array.from({ length: 5 }, () => consumeChallenge(options, 'chal-race', 'authentication')))
+
+      expect(results.filter(result => result !== null)).toHaveLength(1)
     })
 
     it('is bound to its ceremony type', async () => {

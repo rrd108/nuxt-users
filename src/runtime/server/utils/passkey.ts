@@ -51,6 +51,12 @@ export interface NewPasskey {
 /** How long a registration or login challenge can be answered */
 export const PASSKEY_CHALLENGE_TTL_SECONDS = 5 * 60
 
+/** Rows touched by a write: db0 passes the driver result through, and every driver names the count differently */
+const affectedRows = (result: unknown): number => {
+  const { changes, affectedRows, rowCount } = result as { changes?: number, affectedRows?: number, rowCount?: number }
+  return Number(changes ?? affectedRows ?? rowCount ?? 0)
+}
+
 const toPasskey = (row: PasskeyRow): Passkey => ({
   id: Number(row.id),
   user_id: Number(row.user_id),
@@ -99,8 +105,12 @@ export const consumeChallenge = async (
     return null
   }
 
-  // Delete first, whatever the outcome: a challenge is never usable twice
-  await db.sql`DELETE FROM {${table}} WHERE id = ${row.id}`
+  // Delete first, whatever the outcome: a challenge is never usable twice. Only the attempt whose DELETE
+  // actually removed the row wins, so concurrent attempts cannot both succeed.
+  const deleted = await db.sql`DELETE FROM {${table}} WHERE id = ${row.id}`
+  if (affectedRows(deleted) !== 1) {
+    return null
+  }
 
   if (row.type !== type || Number(row.expires_at) <= Date.now()) {
     return null
@@ -157,6 +167,14 @@ export const addPasskey = async (options: ModuleOptions, passkey: NewPasskey): P
   if (!created) {
     throw new Error('[Nuxt Users] Passkey was not saved')
   }
+
+  // Concurrent first registrations may each have generated a handle: the oldest passkey's one wins
+  const canonical = await db.sql`SELECT user_handle FROM {${table}} WHERE user_id = ${passkey.userId} ORDER BY id LIMIT 1` as { rows: Array<{ user_handle: string }> }
+  const handle = canonical.rows[0]?.user_handle
+  if (handle && handle !== created.user_handle) {
+    await db.sql`UPDATE {${table}} SET user_handle = ${handle} WHERE id = ${created.id}`
+    created.user_handle = handle
+  }
   return created
 }
 
@@ -170,12 +188,8 @@ export const deletePasskey = async (options: ModuleOptions, userId: number, id: 
   const db = await useDb(options)
   const table = options.tables.passkeys
 
-  const existing = await db.sql`SELECT id FROM {${table}} WHERE id = ${id} AND user_id = ${userId}` as { rows: unknown[] }
-  if (existing.rows.length === 0) {
-    return false
-  }
-  await db.sql`DELETE FROM {${table}} WHERE id = ${id} AND user_id = ${userId}`
-  return true
+  const deleted = await db.sql`DELETE FROM {${table}} WHERE id = ${id} AND user_id = ${userId}`
+  return affectedRows(deleted) > 0
 }
 
 export const deletePasskeysForUser = async (options: ModuleOptions, userId: number): Promise<void> => {

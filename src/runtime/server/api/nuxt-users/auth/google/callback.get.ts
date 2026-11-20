@@ -1,5 +1,5 @@
 import crypto from 'node:crypto'
-import { defineEventHandler, sendRedirect, getQuery, setCookie, getCookie, deleteCookie } from 'h3'
+import { defineEventHandler, sendRedirect, getQuery, getCookie, deleteCookie } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import type { H3Event } from 'h3'
@@ -9,6 +9,7 @@ import {
   findOrCreateGoogleUser,
   createAuthTokenForUser
 } from '../../../../utils'
+import { setAuthCookie } from '../../../../utils/auth-session'
 import { OAUTH_STATE_COOKIE } from '../../../../../constants'
 
 export default defineEventHandler(async (event) => {
@@ -76,16 +77,7 @@ export default defineEventHandler(async (event) => {
     // Create authentication token - default to remember me for OAuth users
     const token = await createAuthTokenForUser(user, options, true)
 
-    // Set authentication cookie
-    const cookieOptions = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax' as const,
-      path: '/',
-      maxAge: 60 * 60 * 24 * (options.auth.rememberMeExpiration || 30) // 30 days default
-    }
-
-    setCookie(event, 'auth_token', token, cookieOptions)
+    setAuthCookie(event, token, options, true)
 
     console.log(`[Nuxt Users] Google OAuth login successful for user: ${user.email}`)
 
