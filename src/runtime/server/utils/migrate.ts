@@ -7,6 +7,7 @@ import { createMigrationsTable } from './create-migrations-table'
 import { addActiveToUsers } from './add-active-to-users'
 import { addGoogleOauthFields } from './add-google-oauth-fields'
 import { createPasskeyTables } from './create-passkey-tables'
+import { addUserHandleToPasskeyChallenges } from './add-user-handle-to-passkey-challenges'
 import { addActiveIndexToUsers, addTokenableIndexToPersonalAccessTokens } from './add-indexes'
 import { assertColumnsExist, assertIndexExists, assertTableExists, tableExists } from './schema'
 
@@ -65,6 +66,11 @@ export const migrations: Migration[] = [
       await assertTableExists(options, options.tables.passkeys)
       await assertTableExists(options, options.tables.passkeyChallenges)
     }
+  },
+  {
+    name: 'add_user_handle_to_passkey_challenges',
+    run: addUserHandleToPasskeyChallenges,
+    verify: options => assertColumnsExist(options, options.tables.passkeyChallenges, ['user_handle'])
   }
 ]
 

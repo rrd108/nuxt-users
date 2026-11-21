@@ -12,6 +12,7 @@ import {
   findPasskeyByCredentialId,
   getOrCreateUserHandle,
   listPasskeys,
+  PasskeyUserHandleConflictError,
   saveChallenge,
   updatePasskeyCounter,
 } from '../utils/passkey'
@@ -133,7 +134,8 @@ export const beginPasskeyRegistration = async (
     authenticatorSelection: { residentKey: 'required', userVerification: config.userVerification },
   })
 
-  await saveChallenge(options, { challenge: registrationOptions.challenge, type: 'registration', userId: user.id })
+  // The authenticator keeps this handle, so the passkey must be saved with exactly this one
+  await saveChallenge(options, { challenge: registrationOptions.challenge, type: 'registration', userId: user.id, userHandle })
   return registrationOptions
 }
 
@@ -147,7 +149,7 @@ export const finishPasskeyRegistration = async (
   const challenge = readChallenge(response.response.clientDataJSON)
 
   const stored = await consumeChallenge(options, challenge, 'registration')
-  if (!stored || stored.userId !== user.id) {
+  if (!stored || stored.userId !== user.id || !stored.userHandle) {
     throw new PasskeyError('Passkey registration expired or was not requested', 400)
   }
 
@@ -170,7 +172,8 @@ export const finishPasskeyRegistration = async (
   }
 
   const { credential, credentialDeviceType, credentialBackedUp } = verification.registrationInfo
-  const userHandle = await getOrCreateUserHandle(options, user.id)
+  // The handle sent to the authenticator at the start, not a newly generated one (issue #224)
+  const userHandle = stored.userHandle
 
   if (await findPasskeyByCredentialId(options, credential.id)) {
     throw new PasskeyError('This passkey is already registered', 409)
@@ -192,6 +195,10 @@ export const finishPasskeyRegistration = async (
     return await addPasskey(options, newPasskey)
   }
   catch (error) {
+    // A concurrent first registration of this user saved its passkey first, with another handle
+    if (error instanceof PasskeyUserHandleConflictError) {
+      throw new PasskeyError('Another passkey was registered at the same time, please try again', 409)
+    }
     // Lost a race with a concurrent registration of the same credential (unique credential_id)
     if (await findPasskeyByCredentialId(options, credential.id)) {
       throw new PasskeyError('This passkey is already registered', 409)

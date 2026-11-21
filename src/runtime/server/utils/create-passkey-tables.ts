@@ -33,6 +33,7 @@ export const createPasskeyTables = async (options: ModuleOptions) => {
         challenge TEXT NOT NULL UNIQUE,
         type TEXT NOT NULL,
         user_id INTEGER,
+        user_handle TEXT,
         expires_at BIGINT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
@@ -61,6 +62,7 @@ export const createPasskeyTables = async (options: ModuleOptions) => {
         challenge VARCHAR(512) NOT NULL UNIQUE,
         type VARCHAR(32) NOT NULL,
         user_id INT NULL,
+        user_handle VARCHAR(255) NULL,
         expires_at BIGINT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
@@ -89,6 +91,7 @@ export const createPasskeyTables = async (options: ModuleOptions) => {
         challenge VARCHAR(512) NOT NULL UNIQUE,
         type VARCHAR(32) NOT NULL,
         user_id INTEGER,
+        user_handle VARCHAR(255),
         expires_at BIGINT NOT NULL,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       )

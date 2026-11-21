@@ -56,6 +56,17 @@ describe('Passkey service', () => {
     })
   }
 
+  const verifiedRegistration = (credentialId: string) => {
+    vi.mocked(webauthn.verifyRegistrationResponse).mockResolvedValue({
+      verified: true,
+      registrationInfo: {
+        credential: { id: credentialId, publicKey: new Uint8Array([1, 2, 3]), counter: 0, transports: ['internal'] },
+        credentialDeviceType: 'multiDevice',
+        credentialBackedUp: true,
+      },
+    } as never)
+  }
+
   const storePasskeyFor = (userId: number, counter = 0, credentialId = 'cred-1') => addPasskey(options, {
     userId,
     credentialId,
@@ -166,6 +177,53 @@ describe('Passkey service', () => {
       expect(passkey).toMatchObject({ user_id: user.id, credential_id: 'new-cred', name: 'Work phone', device_type: 'multiDevice' })
       expect(passkey.public_key).toBe(Buffer.from([1, 2, 3]).toString('base64url'))
       expect(await listPasskeys(options, user.id)).toHaveLength(1)
+    })
+
+    // Issue #224: the first passkey was saved with a handle other than the one the authenticator got
+    it('saves a user first passkey with the handle sent to the authenticator, so it can log in', async () => {
+      const { challenge } = await beginPasskeyRegistration(options, user)
+      const sentHandle = Buffer.from(vi.mocked(webauthn.generateRegistrationOptions).mock.calls[0]![0].userID!).toString('base64url')
+      verifiedRegistration('first-cred')
+
+      const passkey = await finishPasskeyRegistration(options, user, registrationResponse(challenge, 'first-cred'))
+      expect(passkey.user_handle).toBe(sentHandle)
+
+      const login = await beginPasskeyLogin(options)
+      verifiedLogin(1)
+      const response = authenticationResponse(login.challenge, 'first-cred')
+      await expect(finishPasskeyLogin(options, { ...response, response: { ...response.response, userHandle: sentHandle } })).resolves.toMatchObject({ id: user.id })
+    })
+
+    it('gives a user later passkeys the handle of their first one', async () => {
+      const first = await beginPasskeyRegistration(options, user)
+      verifiedRegistration('first-cred')
+      const firstPasskey = await finishPasskeyRegistration(options, user, registrationResponse(first.challenge, 'first-cred'))
+
+      const second = await beginPasskeyRegistration(options, user)
+      const sentHandle = Buffer.from(vi.mocked(webauthn.generateRegistrationOptions).mock.calls[1]![0].userID!).toString('base64url')
+      verifiedRegistration('second-cred')
+      const secondPasskey = await finishPasskeyRegistration(options, user, registrationResponse(second.challenge, 'second-cred'))
+
+      expect(sentHandle).toBe(firstPasskey.user_handle)
+      expect(secondPasskey.user_handle).toBe(firstPasskey.user_handle)
+    })
+
+    it('answers 409 to the later of two concurrent first registrations and keeps the earlier one', async () => {
+      const a = await beginPasskeyRegistration(options, user)
+      const b = await beginPasskeyRegistration(options, user)
+      verifiedRegistration('cred-a')
+      await finishPasskeyRegistration(options, user, registrationResponse(a.challenge, 'cred-a'))
+      verifiedRegistration('cred-b')
+
+      await expect(finishPasskeyRegistration(options, user, registrationResponse(b.challenge, 'cred-b'))).rejects.toMatchObject({ statusCode: 409 })
+      expect((await listPasskeys(options, user.id)).map(p => p.credential_id)).toEqual(['cred-a'])
+    })
+
+    it('rejects a registration challenge stored without a user handle', async () => {
+      await saveChallenge(options, { challenge: 'no-handle', type: 'registration', userId: user.id })
+
+      await expect(finishPasskeyRegistration(options, user, registrationResponse('no-handle'))).rejects.toMatchObject({ statusCode: 400 })
+      expect(webauthn.verifyRegistrationResponse).not.toHaveBeenCalled()
     })
 
     it('answers 409 when the credential is already registered, even on another account', async () => {

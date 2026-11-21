@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { Database } from 'db0'
 import { runMigrations, getAppliedMigrations } from '../src/runtime/server/utils/migrate'
-import { tableExists } from '../src/runtime/server/utils/schema'
+import { columnExists, tableExists } from '../src/runtime/server/utils/schema'
 import {
   saveChallenge,
   consumeChallenge,
@@ -13,6 +13,7 @@ import {
   updatePasskeyCounter,
   deleteExpiredPasskeyChallenges,
   deletePasskeysForUser,
+  PasskeyUserHandleConflictError,
 } from '../src/runtime/server/utils/passkey'
 import { cleanupTestSetup, createTestSetup, getDatabaseConfig } from './test-setup'
 import type { DatabaseType, ModuleOptions } from '../src/types'
@@ -70,6 +71,15 @@ describe('Passkey store', () => {
 
     it('is a no-op when run again', async () => {
       expect(await runMigrations(options)).toEqual([])
+    })
+
+    it('adds user_handle to a challenges table created before it existed', async () => {
+      await db.sql`DROP TABLE {${options.tables.passkeyChallenges}}`
+      await db.sql`CREATE TABLE {${options.tables.passkeyChallenges}} (id INTEGER PRIMARY KEY, challenge VARCHAR(512) NOT NULL UNIQUE, type VARCHAR(32) NOT NULL, user_id INTEGER, expires_at BIGINT NOT NULL)`
+      await db.sql`DELETE FROM {${options.tables.migrations}} WHERE name = 'add_user_handle_to_passkey_challenges'`
+
+      expect(await runMigrations(options)).toEqual(['add_user_handle_to_passkey_challenges'])
+      expect(await columnExists(options, options.tables.passkeyChallenges, 'user_handle')).toBe(true)
     })
   })
 
@@ -169,14 +179,23 @@ describe('Passkey store', () => {
     })
 
     it('keeps one handle when a user adds their first passkeys concurrently', async () => {
-      await Promise.all([
+      const results = await Promise.allSettled([
         addPasskey(options, newPasskey({ credentialId: 'race-a', userHandle: 'handle-a' })),
         addPasskey(options, newPasskey({ credentialId: 'race-b', userHandle: 'handle-b' })),
         addPasskey(options, newPasskey({ credentialId: 'race-c', userHandle: 'handle-c' })),
       ])
 
-      const handles = new Set((await listPasskeys(options, 1)).map(p => p.user_handle))
-      expect(handles.size).toBe(1)
+      const passkeys = await listPasskeys(options, 1)
+      expect(new Set(passkeys.map(p => p.user_handle)).size).toBe(1)
+      // A passkey with another handle is never rewritten, as its authenticator keeps the original one
+      expect(passkeys.length).toBe(results.filter(r => r.status === 'fulfilled').length)
+    })
+
+    it('refuses a passkey whose handle differs from the user existing passkeys', async () => {
+      await addPasskey(options, newPasskey({ credentialId: 'first', userHandle: 'handle-a' }))
+
+      await expect(addPasskey(options, newPasskey({ credentialId: 'second', userHandle: 'handle-b' }))).rejects.toBeInstanceOf(PasskeyUserHandleConflictError)
+      expect((await listPasskeys(options, 1)).map(p => p.credential_id)).toEqual(['first'])
     })
 
     it('reuses the handle of the user existing passkeys', async () => {
@@ -189,7 +208,7 @@ describe('Passkey store', () => {
     it('can be consumed once', async () => {
       await saveChallenge(options, { challenge: 'chal-1', type: 'registration', userId: 1 })
 
-      expect(await consumeChallenge(options, 'chal-1', 'registration')).toEqual({ userId: 1 })
+      expect(await consumeChallenge(options, 'chal-1', 'registration')).toEqual({ userId: 1, userHandle: null })
       expect(await consumeChallenge(options, 'chal-1', 'registration')).toBeNull()
     })
 
@@ -201,6 +220,12 @@ describe('Passkey store', () => {
       expect(results.filter(result => result !== null)).toHaveLength(1)
     })
 
+    it('keeps the user handle of a registration challenge', async () => {
+      await saveChallenge(options, { challenge: 'chal-h', type: 'registration', userId: 1, userHandle: 'handle-x' })
+
+      expect(await consumeChallenge(options, 'chal-h', 'registration')).toEqual({ userId: 1, userHandle: 'handle-x' })
+    })
+
     it('is bound to its ceremony type', async () => {
       await saveChallenge(options, { challenge: 'chal-2', type: 'authentication' })
 
@@ -210,7 +235,7 @@ describe('Passkey store', () => {
     it('stores authentication challenges without a user', async () => {
       await saveChallenge(options, { challenge: 'chal-3', type: 'authentication' })
 
-      expect(await consumeChallenge(options, 'chal-3', 'authentication')).toEqual({ userId: null })
+      expect(await consumeChallenge(options, 'chal-3', 'authentication')).toEqual({ userId: null, userHandle: null })
     })
 
     it('cannot be consumed after it expired', async () => {
@@ -224,7 +249,7 @@ describe('Passkey store', () => {
       await saveChallenge(options, { challenge: 'fresh', type: 'authentication' })
 
       expect(await deleteExpiredPasskeyChallenges(options)).toBe(1)
-      expect(await consumeChallenge(options, 'fresh', 'authentication')).toEqual({ userId: null })
+      expect(await consumeChallenge(options, 'fresh', 'authentication')).toEqual({ userId: null, userHandle: null })
     })
   })
 })

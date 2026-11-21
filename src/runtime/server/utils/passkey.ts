@@ -74,14 +74,14 @@ const toPasskey = (row: PasskeyRow): Passkey => ({
 
 export const saveChallenge = async (
   options: ModuleOptions,
-  { challenge, type, userId = null, ttlSeconds = PASSKEY_CHALLENGE_TTL_SECONDS }: { challenge: string, type: PasskeyChallengeType, userId?: number | null, ttlSeconds?: number }
+  { challenge, type, userId = null, userHandle = null, ttlSeconds = PASSKEY_CHALLENGE_TTL_SECONDS }: { challenge: string, type: PasskeyChallengeType, userId?: number | null, userHandle?: string | null, ttlSeconds?: number }
 ): Promise<void> => {
   const db = await useDb(options)
   const expiresAt = Date.now() + ttlSeconds * 1000
 
   await db.sql`
-    INSERT INTO {${options.tables.passkeyChallenges}} (challenge, type, user_id, expires_at)
-    VALUES (${challenge}, ${type}, ${userId}, ${expiresAt})
+    INSERT INTO {${options.tables.passkeyChallenges}} (challenge, type, user_id, user_handle, expires_at)
+    VALUES (${challenge}, ${type}, ${userId}, ${userHandle}, ${expiresAt})
   `
 }
 
@@ -93,12 +93,12 @@ export const consumeChallenge = async (
   options: ModuleOptions,
   challenge: string,
   type: PasskeyChallengeType
-): Promise<{ userId: number | null } | null> => {
+): Promise<{ userId: number | null, userHandle: string | null } | null> => {
   const db = await useDb(options)
   const table = options.tables.passkeyChallenges
 
-  const result = await db.sql`SELECT id, type, user_id, expires_at FROM {${table}} WHERE challenge = ${challenge}` as {
-    rows: Array<{ id: number, type: string, user_id: number | null, expires_at: number | string }>
+  const result = await db.sql`SELECT id, type, user_id, user_handle, expires_at FROM {${table}} WHERE challenge = ${challenge}` as {
+    rows: Array<{ id: number, type: string, user_id: number | null, user_handle: string | null, expires_at: number | string }>
   }
   const row = result.rows[0]
   if (!row) {
@@ -115,7 +115,7 @@ export const consumeChallenge = async (
   if (row.type !== type || Number(row.expires_at) <= Date.now()) {
     return null
   }
-  return { userId: row.user_id === null ? null : Number(row.user_id) }
+  return { userId: row.user_id === null ? null : Number(row.user_id), userHandle: row.user_handle ?? null }
 }
 
 export const deleteExpiredPasskeyChallenges = async (options: ModuleOptions): Promise<number> => {
@@ -144,7 +144,8 @@ export const findPasskeyByCredentialId = async (options: ModuleOptions, credenti
 
 /**
  * The WebAuthn user handle of a user: the one their existing passkeys carry, or a new random one.
- * It is only persisted with the user's first passkey, and is deliberately not derived from the user id.
+ * A new one is not persisted here: registration stores it with the challenge and saves the passkey with it.
+ * It is deliberately not derived from the user id.
  */
 export const getOrCreateUserHandle = async (options: ModuleOptions, userId: number): Promise<string> => {
   const db = await useDb(options)
@@ -168,14 +169,23 @@ export const addPasskey = async (options: ModuleOptions, passkey: NewPasskey): P
     throw new Error('[Nuxt Users] Passkey was not saved')
   }
 
-  // Concurrent first registrations may each have generated a handle: the oldest passkey's one wins
+  // Concurrent first registrations may each have generated a handle: the oldest passkey's one wins. A passkey
+  // with another handle could never log in (the authenticator keeps its own), so it is removed, not rewritten.
   const canonical = await db.sql`SELECT user_handle FROM {${table}} WHERE user_id = ${passkey.userId} ORDER BY id LIMIT 1` as { rows: Array<{ user_handle: string }> }
   const handle = canonical.rows[0]?.user_handle
   if (handle && handle !== created.user_handle) {
-    await db.sql`UPDATE {${table}} SET user_handle = ${handle} WHERE id = ${created.id}`
-    created.user_handle = handle
+    await db.sql`DELETE FROM {${table}} WHERE id = ${created.id}`
+    throw new PasskeyUserHandleConflictError()
   }
   return created
+}
+
+/** The passkey was registered with a user handle other than the one the user's existing passkeys carry */
+export class PasskeyUserHandleConflictError extends Error {
+  constructor() {
+    super('[Nuxt Users] The passkey was registered with a user handle that differs from the user\'s other passkeys')
+    this.name = 'PasskeyUserHandleConflictError'
+  }
 }
 
 /**

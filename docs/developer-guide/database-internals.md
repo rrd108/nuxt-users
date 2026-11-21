@@ -141,6 +141,7 @@ It returns the names of the migrations applied by this run, and throws on the fi
 - `add_active_index_to_users`: Adds an index on `users.active`
 - `add_tokenable_index_to_personal_access_tokens`: Adds an index on the token owner columns
 - `create_passkey_tables`: Creates the `passkeys` and `passkey_challenges` tables used by [passkey login](/user-guide/authentication#passkey-authentication)
+- `add_user_handle_to_passkey_challenges`: Adds `user_handle` to `passkey_challenges`, so a passkey is saved with the WebAuthn user handle its registration sent to the authenticator
 
 ### `getAppliedMigrations(options)`
 
