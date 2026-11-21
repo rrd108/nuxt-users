@@ -418,11 +418,6 @@
     "@babel/helper-string-parser" "^8.1.3"
     "@babel/helper-validator-identifier" "^8.0.6"
 
-"@bomb.sh/tab@^0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@bomb.sh/tab/-/tab-0.0.19.tgz#c22f3b75c8a391a38cd956b7391b45551587d76a"
-  integrity sha512-dTRfo9Q9B+lbLG3JCu8a/AGQSfD2XXcFcnakQzVjSOX+VvR/s9zpsH8TlqV3iHqazniRn1Ypwd1hcRlXcu/4BA==
-
 "@cacheable/memory@^2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@cacheable/memory/-/memory-2.2.0.tgz#72aeb8b051f6d597d10ac8595b94ad8302bd2239"
@@ -1195,41 +1190,7 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@nuxt/cli@^3.26.4":
-  version "3.37.0"
-  resolved "https://registry.yarnpkg.com/@nuxt/cli/-/cli-3.37.0.tgz#03078372574de0deb4e9df8d2ab009603fcf77ca"
-  integrity sha512-Zj9NwHjEBzVrgezsgMFjpMhNqwNgROk9DzNi/dyfk1mCbXIRigV11br2xOl0Satek30bmv7oZAfMtCnDe6Ip0Q==
-  dependencies:
-    "@bomb.sh/tab" "^0.0.19"
-    "@clack/prompts" "^1.7.0"
-    c12 "^3.3.4"
-    citty "^0.2.2"
-    confbox "^0.2.4"
-    consola "^3.4.2"
-    debug "^4.4.3"
-    defu "^6.1.7"
-    exsolve "^1.1.0"
-    fuse.js "^7.4.2"
-    fzf "^0.5.2"
-    giget "^3.3.0"
-    jiti "^2.7.0"
-    listhen "^1.10.0"
-    nypm "^0.6.8"
-    ofetch "^1.5.1"
-    ohash "^2.0.11"
-    pathe "^2.0.3"
-    perfect-debounce "^2.1.0"
-    pkg-types "^2.3.1"
-    scule "^1.3.0"
-    semver "^7.8.5"
-    srvx "^0.11.22"
-    std-env "^4.2.0"
-    tinyclip "^0.1.15"
-    tinyexec "^1.2.4"
-    ufo "^1.6.4"
-    youch "^4.1.1"
-
-"@nuxt/cli@^4.0.1":
+"@nuxt/cli@^4.0.0", "@nuxt/cli@^4.0.1":
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/@nuxt/cli/-/cli-4.0.3.tgz#ee75b78d940674e5343add356107a38bde61cbad"
   integrity sha512-ca3G9E8G3QT/uUoRUfiwxmu7ER8jEa3rc1SiSJ5EkfB2NRUhPFZpGENiUEBDwuUZsQWgYvh644pnkN80rPlvXA==
@@ -4321,7 +4282,7 @@ expect-type@^1.3.0:
   resolved "https://registry.yarnpkg.com/expect-type/-/expect-type-1.4.0.tgz#24edf7f0cc69a44d008567ba4594ab96f3c3a3d6"
   integrity sha512-KfYbmpRm0VbLjEvVa9yGwCi9GI34xvi7A/HXYWQO65CSD2u3MczUJSuwXKFIxlGsgBQizV9q5J9NHj4VG0n+pA==
 
-exsolve@^1.0.8, exsolve@^1.1.0, exsolve@^1.1.1, exsolve@^1.1.3, exsolve@^1.2.0:
+exsolve@^1.0.8, exsolve@^1.1.1, exsolve@^1.1.3, exsolve@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/exsolve/-/exsolve-1.2.0.tgz#b04645ff58c203984e2f06fd19d2551c914c78ca"
   integrity sha512-h1pQPR9XoeSMdntRNCjyTznaume4UpfXrULBnlkZ2CUM/G5eSa+pBByGldO5uR8dxbPC+OuJXsPPNf+JZ81ADg==
@@ -4527,20 +4488,10 @@ function-timeout@^1.0.1:
   resolved "https://registry.yarnpkg.com/function-timeout/-/function-timeout-1.0.2.tgz#e5a7b6ffa523756ff20e1231bbe37b5f373aadd5"
   integrity sha512-939eZS4gJ3htTHAldmyyuzlrD58P03fHG49v2JfFXbV6OhvZKRC9j2yAtdHw/zrp2zXHuv05zMIy40F0ge7spA==
 
-fuse.js@^7.4.2:
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-7.5.0.tgz#c591b7bddad0135b9d28d190daa9415dd754c4c7"
-  integrity sha512-sQtrEfA+ez/3G0cCZecF70oqpCRttCexYUG4mUrtWL49ULUzUyxokt5kyqwtKzj1270RaKih+hcP3qLcumccow==
-
 fuzzysort@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/fuzzysort/-/fuzzysort-4.0.2.tgz#5a1cc4eb6fe2071536872f8a527a2986a6dff0fb"
   integrity sha512-3c7yD6rK1EXIsqpcu1ZVzXJugODWNMzvUij6yTiziaAHrpNS8kzFOI9mJLE8pmG4K9JOaVgzQRgklfOEk8f4Tg==
-
-fzf@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/fzf/-/fzf-0.5.2.tgz#a0561b12082c3401b4240cfb7d76085d7aeb68ff"
-  integrity sha512-Tt4kuxLXFKHy8KT40zwsUPUkg1CrsgY25FxA2U/j/0WgEDCk3ddc/zLTCCcbSHX9FcKtLuVaDGtGE/STWC+j3Q==
 
 gaxios@^7.0.0, gaxios@^7.1.4:
   version "7.3.1"
@@ -4606,7 +4557,7 @@ get-tsconfig@^4.10.1, get-tsconfig@^4.14.3:
   dependencies:
     resolve-pkg-maps "^1.0.0"
 
-giget@^3.2.0, giget@^3.3.0:
+giget@^3.2.0:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/giget/-/giget-3.3.1.tgz#4a4e610cd112e5dc478c6035986fdc19c76dad73"
   integrity sha512-r+mvuDjrjMpsdw46Kmeydb8bdHm7wOKw8wNBtTndkjbPjgAp5oUJUxRE76wZFknxIPokfWvep2qSXK37aXE6zg==
@@ -5228,7 +5179,7 @@ lilconfig@^3.1.3:
   resolved "https://registry.yarnpkg.com/lilconfig/-/lilconfig-3.1.5.tgz#7c9342a74d602bb15c0a1ca67f2c99be056c4656"
   integrity sha512-aRAOI9Ia43ygL4o1EOmC/sc/0OFxrm7qcQngiIyWaqVnSnz932ybJ07zyCcgMNGSDP8Yxaf88Xj1zHEXmvQ4SA==
 
-listhen@^1.10.0, listhen@^1.10.1:
+listhen@^1.10.1:
   version "1.10.1"
   resolved "https://registry.yarnpkg.com/listhen/-/listhen-1.10.1.tgz#cf4c9c1b396f906b81866f5c786405ee042ea08e"
   integrity sha512-6nt/86SkqUQSLW1ofz8MxC6RhRMqOl3ONISe6qqvJ3xj09aJWQx6DhgSZpugs3PX4PXdOas/WD6A9jx6J2N19A==
@@ -5887,15 +5838,6 @@ nuxt@^4.6.4:
     vue-bundle-renderer "^2.4.0"
     vue-component-type-helpers "^3.3.14"
     vue-router "^5.4.0"
-
-nypm@^0.6.8:
-  version "0.6.12"
-  resolved "https://registry.yarnpkg.com/nypm/-/nypm-0.6.12.tgz#129efa71956148d0b04c3eb80d5450ae81c89d46"
-  integrity sha512-4AhWntz+ds/P5kz1rN25yGegTPYsO5ffOy+8S0TeuXKZrgjlmgcEBLA1xubzcP/dWX4zYfNybv4TQERlL9Z0LQ==
-  dependencies:
-    citty "^0.2.2"
-    pathe "^2.0.3"
-    tinyexec "^1.3.1"
 
 object-deep-merge@^2.0.1:
   version "2.0.1"
@@ -7102,11 +7044,6 @@ srvx@1.0.5:
   resolved "https://registry.yarnpkg.com/srvx/-/srvx-1.0.5.tgz#f22ac137e4aa74948836a2292d560e18ed8a3a2e"
   integrity sha512-KvSKRpgPG/oaq3cyT614OQ2bAa7DynuGamivCZeoZzIUULOdbQz6wUtnnVuC4+DCx2Zglzo8v5gBYmWIWYhDxA==
 
-srvx@^0.11.22:
-  version "0.11.22"
-  resolved "https://registry.yarnpkg.com/srvx/-/srvx-0.11.22.tgz#f83413628014eb37416ba4609e10b4bb38472295"
-  integrity sha512-LqZxxBDMKuMAZzFzJnDCkFOrs9MZQZr0LvHiO/SuSZVdQaXD7xQ5UWTUxheJrQPve1qk9MG2B/yttUvJxw8egQ==
-
 srvx@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/srvx/-/srvx-1.0.8.tgz#ebb17823f9e2ef535e48f42824384cabb2bd121e"
@@ -7374,7 +7311,7 @@ tinyclip@^1.0.3:
   resolved "https://registry.yarnpkg.com/tinyclip/-/tinyclip-1.0.3.tgz#828333bd904eca37e60363ce21d888e21d6351c3"
   integrity sha512-nTv2raKFMzGG6JJp0lpNDsRPdfFE6UHlu2rVEjXo8vkx1ZS3LW2CVXqIaLu8xZlu+6tbFs9V58Qc/Jmk/Ii7wA==
 
-tinyexec@^1.0.2, tinyexec@^1.2.4, tinyexec@^1.3.1:
+tinyexec@^1.0.2, tinyexec@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/tinyexec/-/tinyexec-1.3.1.tgz#16a2e3c6e23fafce72640e678e651db36145b9c6"
   integrity sha512-GCvB3aoys96IuDFBMcTB46JOR6mdMtAToqwiW8JlWhsoh1mhHi/xn9ss/Dg7N555GiJyEt2qzoG/NHCwM6h1EA==
