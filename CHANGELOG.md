@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v1.53.2
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.53.1...v1.53.2)
+
+### 🩹 Fixes
+
+- Guard public API surface with export snapshot test ([1208f8c](https://github.com/rrd108/nuxt-users/commit/1208f8c))
+- Save a user's first passkey with the handle sent to the authenticator ([8ee26a6](https://github.com/rrd108/nuxt-users/commit/8ee26a6))
+- **deps:** Restore Nuxt 4 dev dependency and upgrade to ESLint 10 ([839b121](https://github.com/rrd108/nuxt-users/commit/839b121))
+
+### 🏡 Chore
+
+- Update timestamp ([14cc724](https://github.com/rrd108/nuxt-users/commit/14cc724))
+- Update dodc timestamp ([bfe3dc7](https://github.com/rrd108/nuxt-users/commit/bfe3dc7))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.53.1
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.53.0...v1.53.1)
