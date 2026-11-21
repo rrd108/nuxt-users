@@ -154,7 +154,7 @@ onMounted(() => {
         </div>
         <button
           type="button"
-          class="n-users-passkey-remove-btn"
+          class="n-users-btn n-users-delete-btn n-users-passkey-remove-btn"
           :disabled="removingId === passkey.id"
           @click="handleRemove(passkey)"
         >
@@ -172,7 +172,7 @@ onMounted(() => {
 
     <form
       v-if="supported"
-      class="n-users-passkey-add"
+      class="n-users-form n-users-passkey-add"
       @submit.prevent="handleAdd"
     >
       <div class="n-users-form-group">
