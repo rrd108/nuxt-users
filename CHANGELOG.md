@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.53.3
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.53.2...v1.53.3)
+
+### 🎨 Styles
+
+- **passkey:** Apply common button and form classes ([b3621bf](https://github.com/rrd108/nuxt-users/commit/b3621bf))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.53.2
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.53.1...v1.53.2)
