@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v1.53.4
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.53.3...v1.53.4)
+
+### 🩹 Fixes
+
+- Bind email tokens to a purpose so a reset link cannot confirm an email ([ac9b78e](https://github.com/rrd108/nuxt-users/commit/ac9b78e))
+
+### 💅 Refactors
+
+- Deepen the auth session module ([4fcf024](https://github.com/rrd108/nuxt-users/commit/4fcf024))
+- One route access resolver for server, client and CLI ([d61320e](https://github.com/rrd108/nuxt-users/commit/d61320e))
+
+### 📖 Documentation
+
+- Add domain glossary ([c31fb73](https://github.com/rrd108/nuxt-users/commit/c31fb73))
+
+### 🏡 Chore
+
+- **test:** Exclude agent worktrees under .claude from vitest ([8ee1db1](https://github.com/rrd108/nuxt-users/commit/8ee1db1))
+- Update docs timestamp ([ec95464](https://github.com/rrd108/nuxt-users/commit/ec95464))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.53.3
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.53.2...v1.53.3)
