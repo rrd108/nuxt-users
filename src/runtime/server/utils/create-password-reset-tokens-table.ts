@@ -15,6 +15,7 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT NOT NULL,
       token TEXT NOT NULL UNIQUE,
+      purpose TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `
@@ -25,6 +26,7 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
         id INT AUTO_INCREMENT PRIMARY KEY,
         email VARCHAR(255) NOT NULL,
         token VARCHAR(255) NOT NULL UNIQUE,
+        purpose VARCHAR(32) NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `
@@ -35,6 +37,7 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
         id SERIAL PRIMARY KEY,
         email VARCHAR(255) NOT NULL,
         token VARCHAR(255) NOT NULL UNIQUE,
+        purpose VARCHAR(32) NULL,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       )
     `
@@ -44,5 +47,5 @@ export const createPasswordResetTokensTable = async (options: ModuleOptions) => 
   // Creating an index on token for faster lookups
   await db.sql`CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON {${tableName}} (token)`
 
-  console.log(`[Nuxt Users] DB:Create Password Reset Tokens ${connectorName} Table Fields: id, email, token, created_at ✅`)
+  console.log(`[Nuxt Users] DB:Create Password Reset Tokens ${connectorName} Table Fields: id, email, token, purpose, created_at ✅`)
 }

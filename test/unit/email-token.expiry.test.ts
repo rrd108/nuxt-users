@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { isTokenExpired } from '../../src/runtime/server/utils/token-expiry'
+import { isTokenExpired } from '../../src/runtime/server/utils/email-token'
 
 describe('isTokenExpired', () => {
   it('keeps a token valid across a month-end midnight', () => {

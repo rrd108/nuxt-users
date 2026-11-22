@@ -79,6 +79,10 @@ _Avoid_: base URL, host
 **Password reset**:
 The flow in which a user who forgot their password receives an emailed link and chooses a new one.
 
+**Email token**:
+A single-use, time-limited secret sent in an email link to prove the recipient controls that address. Every email token has one purpose: it is either a password reset token or a confirmation token, never both.
+_Avoid_: reset token (for the umbrella), verification code
+
 **Password reset token**:
 The single-use secret in a password reset link.
 _Avoid_: reset link (for the secret itself)

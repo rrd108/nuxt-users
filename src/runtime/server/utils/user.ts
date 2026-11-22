@@ -1,6 +1,7 @@
 import { useDb } from './db'
 import bcrypt from 'bcrypt'
 import { deletePasskeysForUser } from './passkey'
+import { revokeEmailTokens } from './email-token'
 import { validatePassword, getPasswordValidationOptions, assertValidRole } from 'nuxt-users/utils'
 import type { ModuleOptions, User, UserWithoutPassword } from 'nuxt-users/utils'
 
@@ -166,9 +167,14 @@ export const updateUser = async (id: number, userData: Partial<User>, options: M
     })
   }
 
-  // If the user is being deactivated, revoke their tokens
+  // If the user is being deactivated, revoke their sessions and email tokens:
+  // an old confirmation link must not reactivate them
   if (userData.active === false) {
     await revokeUserTokens(id, options)
+    const current = await findUserById(id, options)
+    if (current) {
+      await revokeEmailTokens(current.email, options)
+    }
   }
 
   for (const field of fieldsToUpdate) {
@@ -187,23 +193,25 @@ export const updateUser = async (id: number, userData: Partial<User>, options: M
 
 /**
  * Deletes a user by their ID.
- * By default performs soft delete (sets active to false).
- * If hardDelete option is true, performs hard delete (removes from database).
- * In both cases, user tokens are revoked.
+ * By default deactivates the user (sets active to false).
+ * If hardDelete option is true, deletes them permanently.
+ * In both cases, their sessions and email tokens are revoked.
  */
 export const deleteUser = async (id: number, options: ModuleOptions): Promise<void> => {
   const db = await useDb(options)
   const usersTable = options.tables.users
 
   // Check if user exists first
-  const userExists = await db.sql`SELECT id FROM {${usersTable}} WHERE id = ${id}` as { rows: Array<{ id: number }> }
+  const userExists = await db.sql`SELECT id, email FROM {${usersTable}} WHERE id = ${id}` as { rows: Array<{ id: number, email: string }> }
 
-  if (userExists.rows.length === 0) {
+  const existing = userExists.rows[0]
+  if (!existing) {
     throw new Error('User not found.')
   }
 
-  // Always revoke user tokens first
+  // Always revoke the user's sessions and email tokens first
   await revokeUserTokens(id, options)
+  await revokeEmailTokens(existing.email, options)
 
   if (options.hardDelete) {
     // Hard delete - permanently remove from database

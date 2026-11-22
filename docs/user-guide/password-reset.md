@@ -333,8 +333,10 @@ The password reset system includes several security measures:
 
 - **Secure tokens**: Cryptographically secure random tokens
 - **Time-limited**: Tokens expire after 1 hour
-- **Single-use**: Tokens are deleted after successful use
-- **No user enumeration**: Same response for existing and non-existing emails
+- **Single-use**: Tokens are deleted after successful use, and only the newest link sent to an email works
+- **Purpose-bound**: A password reset token can only reset a password; it never confirms an email address
+- **Inactive users get no link**: Deactivated users and users who have not confirmed their email receive no reset email, so a reset cannot reopen their account
+- **No user enumeration**: Same response for existing, non-existing and inactive emails
 - **Professional email templates**: Clear instructions and security warnings
 
 ## Email Template

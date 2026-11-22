@@ -1,12 +1,10 @@
 import { createTransport } from 'nodemailer'
-import crypto from 'node:crypto'
-import bcrypt from 'bcrypt'
-import { findUserByEmail, updateUserPassword, revokeUserTokens, useDb } from '../utils'
+import { findUserByEmail, updateUserPassword, revokeUserTokens } from '../utils'
 import { escapeHtml } from '../utils/escape-html'
-import { isTokenExpired, findTokenRecordsByEmail } from '../utils/token-expiry'
+import { issueEmailToken, consumeEmailToken, EMAIL_TOKEN_TTL_HOURS } from '../utils/email-token'
 import type { ModuleOptions } from 'nuxt-users/utils'
 
-const TOKEN_EXPIRATION_HOURS = 1
+const TOKEN_EXPIRATION_HOURS = EMAIL_TOKEN_TTL_HOURS.password_reset
 
 /**
  * Generates a password reset link and sends it to the user's email.
@@ -24,20 +22,14 @@ export const sendPasswordResetLink = async (
     return
   }
 
-  const db = await useDb(options)
+  // A deactivated or unconfirmed user cannot log in, so a reset would only reopen their account.
+  // They get the same silent response as an unknown email.
+  if (!user.active) {
+    console.log(`[Nuxt Users] Password reset requested for inactive user: ${email}`)
+    return
+  }
 
-  // Generate a secure token
-  const token = crypto.randomBytes(32).toString('hex')
-  const hashedToken = await bcrypt.hash(token, 10) // Hash the token before storing
-
-  const passwordResetTokensTable = options.tables.passwordResetTokens
-
-  // Store the hashed token, user's email, and creation date
-  // Consider adding an expiry directly to the table if preferred
-  await db.sql`
-    INSERT INTO {${passwordResetTokensTable}} (email, token, created_at)
-    VALUES (${email}, ${hashedToken}, CURRENT_TIMESTAMP)
-  `
+  const token = await issueEmailToken(email, 'password_reset', options)
 
   // Send email
   if (!options.mailer) {
@@ -119,35 +111,7 @@ export const resetPassword = async (
   email: string, // Added email to quickly find the token
   newPassword: string,
   options: ModuleOptions): Promise<boolean> => {
-  const db = await useDb(options)
-  const passwordResetTokensTable = options.tables.passwordResetTokens
-
-  // Find potential tokens for the email (could be multiple if user requested several times)
-  const tokenRecords = await findTokenRecordsByEmail(db, passwordResetTokensTable, email)
-
-  if (tokenRecords.length === 0) {
-    console.log(`[Nuxt Users] No password reset tokens found for email: ${email}`)
-    return false
-  }
-
-  let validTokenRecord = null
-  for (const record of tokenRecords) {
-    const tokenMatch = await bcrypt.compare(token, record.token)
-    if (tokenMatch) {
-      validTokenRecord = record
-      break
-    }
-  }
-
-  if (!validTokenRecord || !validTokenRecord.created_at) {
-    console.log(`[Nuxt Users] Invalid password reset token provided for email: ${email}`)
-    return false
-  }
-
-  if (isTokenExpired(validTokenRecord.created_at, validTokenRecord.db_now, TOKEN_EXPIRATION_HOURS)) {
-    console.log(`[Nuxt Users] Expired password reset token for email: ${email}`)
-    // Clean up this specific expired token
-    await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE id = ${validTokenRecord.id}`
+  if (!await consumeEmailToken(email, token, 'password_reset', options)) {
     return false
   }
 
@@ -159,9 +123,6 @@ export const resetPassword = async (
   if (user) {
     await revokeUserTokens(user.id, options)
   }
-
-  // Delete the used token (and any other tokens for this email to be safe)
-  await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE email = ${email}`
 
   console.log(`[Nuxt Users] Password reset successful for email: ${email}`)
   return true

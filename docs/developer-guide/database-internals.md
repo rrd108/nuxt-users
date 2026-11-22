@@ -142,6 +142,7 @@ It returns the names of the migrations applied by this run, and throws on the fi
 - `add_tokenable_index_to_personal_access_tokens`: Adds an index on the token owner columns
 - `create_passkey_tables`: Creates the `passkeys` and `passkey_challenges` tables used by [passkey login](/user-guide/authentication#passkey-authentication)
 - `add_user_handle_to_passkey_challenges`: Adds `user_handle` to `passkey_challenges`, so a passkey is saved with the WebAuthn user handle its registration sent to the authenticator
+- `add_purpose_to_password_reset_tokens`: Adds `purpose` to `password_reset_tokens`, so a password reset token can never confirm an email. Existing tokens of inactive users become confirmation tokens, the rest password reset tokens
 
 ### `getAppliedMigrations(options)`
 
@@ -283,7 +284,7 @@ await createPersonalAccessTokensTable(options)
 
 ### `createPasswordResetTokensTable(options)`
 
-Creates the password reset tokens table for password reset functionality.
+Creates the table for email tokens: password reset tokens and email confirmation tokens. Each row has a `purpose` (`password_reset` or `email_confirmation`), and a token is only accepted for its own purpose. Tokens are stored as SHA-256 hashes; see [ADR 0001](https://github.com/rrd108/nuxt-users/blob/main/docs/adr/0001-email-token-storage.md) for why.
 
 ```typescript
 import { createPasswordResetTokensTable } from '#nuxt-users/server'

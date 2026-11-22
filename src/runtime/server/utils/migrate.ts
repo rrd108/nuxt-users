@@ -8,6 +8,7 @@ import { addActiveToUsers } from './add-active-to-users'
 import { addGoogleOauthFields } from './add-google-oauth-fields'
 import { createPasskeyTables } from './create-passkey-tables'
 import { addUserHandleToPasskeyChallenges } from './add-user-handle-to-passkey-challenges'
+import { addPurposeToPasswordResetTokens } from './add-purpose-to-password-reset-tokens'
 import { addActiveIndexToUsers, addTokenableIndexToPersonalAccessTokens } from './add-indexes'
 import { assertColumnsExist, assertIndexExists, assertTableExists, tableExists } from './schema'
 
@@ -71,6 +72,11 @@ export const migrations: Migration[] = [
     name: 'add_user_handle_to_passkey_challenges',
     run: addUserHandleToPasskeyChallenges,
     verify: options => assertColumnsExist(options, options.tables.passkeyChallenges, ['user_handle'])
+  },
+  {
+    name: 'add_purpose_to_password_reset_tokens',
+    run: addPurposeToPasswordResetTokens,
+    verify: options => assertColumnsExist(options, options.tables.passwordResetTokens, ['purpose'])
   }
 ]
 

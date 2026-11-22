@@ -8,11 +8,12 @@ interface CleanupTokensPayload {
 export default defineTask({
   meta: {
     name: 'nuxt-users:cleanup-tokens',
-    description: 'Clean up expired personal access tokens and tokens without expiration'
+    description: 'Clean up expired personal access tokens, tokens without expiration and expired email tokens'
   },
   async run({ payload }: { payload?: CleanupTokensPayload }) {
     const { useRuntimeConfig } = await import('#imports')
     const { cleanupPersonalAccessTokens, deleteExpiredPasskeyChallenges } = await import('../utils')
+    const { purgeExpiredEmailTokens } = await import('../utils/email-token')
 
     const { nuxtUsers } = useRuntimeConfig()
     const options = nuxtUsers as ModuleOptions
@@ -31,12 +32,17 @@ export default defineTask({
       await deleteExpiredPasskeyChallenges(options).catch((error) => {
         console.warn('[Nuxt Users] Passkey challenge cleanup failed:', error)
       })
+      const emailTokensRemoved = await purgeExpiredEmailTokens(options).catch((error) => {
+        console.warn('[Nuxt Users] Email token cleanup failed:', error)
+        return 0
+      })
 
       return {
         result: 'success',
         expiredTokensRemoved: result.expiredCount,
         noExpirationTokensRemoved: result.noExpirationCount,
         totalTokensCleaned: result.totalCount,
+        emailTokensRemoved,
         includeNoExpiration
       }
     }

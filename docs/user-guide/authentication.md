@@ -284,7 +284,8 @@ GET /api/nuxt-users/confirm-email?token=abc123def456&email=user@example.com
 
 - **Email verification required**: Prevents fake email registrations
 - **Inactive accounts**: New accounts remain inactive until email confirmation
-- **Secure tokens**: Confirmation tokens are hashed and expire after 24 hours
+- **Secure tokens**: Confirmation tokens are hashed, single-use, and expire after 24 hours. They only confirm an email address and cannot be swapped with a password reset token
+- **Deactivation voids the link**: Deactivating or deleting a user cancels their outstanding confirmation and password reset links
 - **Password strength validation**: Enforces strong password requirements
 - **Duplicate prevention**: Prevents registration with existing email addresses
 
@@ -393,7 +394,7 @@ The module automatically handles:
 
 ### Token Cleanup Task
 
-The module automatically schedules token cleanup to run daily at 2 AM. The cleanup task removes expired tokens and optionally tokens without expiration dates.
+The module automatically schedules token cleanup to run daily at 2 AM. The cleanup task removes expired tokens and optionally tokens without expiration dates. It also removes expired password reset and email confirmation tokens, and expired passkey challenges.
 
 #### Listing Available Tasks
 
@@ -426,6 +427,7 @@ curl -X POST http://localhost:3000/_nitro/tasks/nuxt-users:cleanup-tokens \
   "expiredTokensRemoved": 15,
   "noExpirationTokensRemoved": 3,
   "totalTokensCleaned": 18,
+  "emailTokensRemoved": 2,
   "includeNoExpiration": true
 }
 ```

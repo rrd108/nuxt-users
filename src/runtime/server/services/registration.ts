@@ -1,13 +1,12 @@
 import { createTransport } from 'nodemailer'
-import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
 import { findUserByEmail, useDb, USER_EMAIL_ALREADY_EXISTS_MESSAGE } from '../utils'
 import { escapeHtml } from '../utils/escape-html'
-import { isTokenExpired, findTokenRecordsByEmail } from '../utils/token-expiry'
+import { issueEmailToken, consumeEmailToken, EMAIL_TOKEN_TTL_HOURS } from '../utils/email-token'
 import { validatePassword, getPasswordValidationOptions } from 'nuxt-users/utils'
 import type { ModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
 
-const TOKEN_EXPIRATION_HOURS = 24
+const TOKEN_EXPIRATION_HOURS = EMAIL_TOKEN_TTL_HOURS.email_confirmation
 
 interface RegistrationData {
   email: string
@@ -42,10 +41,6 @@ export const registerUser = async (
   // Hash the password
   const hashedPassword = await bcrypt.hash(userData.password, 10)
 
-  // Generate confirmation token
-  const confirmationToken = crypto.randomBytes(32).toString('hex')
-  const hashedToken = await bcrypt.hash(confirmationToken, 10)
-
   // Create user as inactive
   await db.sql`
     INSERT INTO {${usersTable}} (email, name, password, role, active, created_at, updated_at)
@@ -68,12 +63,7 @@ export const registerUser = async (
     throw new Error('Failed to retrieve created user.')
   }
 
-  // Store confirmation token (reuse the password_reset_tokens table structure for confirmation tokens)
-  const passwordResetTokensTable = options.tables.passwordResetTokens
-  await db.sql`
-    INSERT INTO {${passwordResetTokensTable}} (email, token, created_at)
-    VALUES (${userData.email}, ${hashedToken}, CURRENT_TIMESTAMP)
-  `
+  const confirmationToken = await issueEmailToken(userData.email, 'email_confirmation', options)
 
   // Send confirmation email
   try {
@@ -192,39 +182,12 @@ export const confirmUserEmail = async (
   email: string,
   options: ModuleOptions
 ): Promise<boolean> => {
+  if (!await consumeEmailToken(email, token, 'email_confirmation', options)) {
+    return false
+  }
+
   const db = await useDb(options)
-  const passwordResetTokensTable = options.tables.passwordResetTokens
   const usersTable = options.tables.users
-
-  // Find potential tokens for the email
-  const tokenRecords = await findTokenRecordsByEmail(db, passwordResetTokensTable, email)
-
-  if (tokenRecords.length === 0) {
-    console.log(`[Nuxt Users] No confirmation tokens found for email: ${email}`)
-    return false
-  }
-
-  // Find matching token
-  let validTokenRecord = null
-  for (const record of tokenRecords) {
-    const tokenMatch = await bcrypt.compare(token, record.token)
-    if (tokenMatch) {
-      validTokenRecord = record
-      break
-    }
-  }
-
-  if (!validTokenRecord || !validTokenRecord.created_at) {
-    console.log(`[Nuxt Users] Invalid confirmation token provided for email: ${email}`)
-    return false
-  }
-
-  if (isTokenExpired(validTokenRecord.created_at, validTokenRecord.db_now, TOKEN_EXPIRATION_HOURS)) {
-    console.log(`[Nuxt Users] Expired confirmation token for email: ${email}`)
-    // Clean up expired token
-    await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE id = ${validTokenRecord.id}`
-    return false
-  }
 
   // Activate the user
   await db.sql`
@@ -232,9 +195,6 @@ export const confirmUserEmail = async (
     SET active = true, updated_at = CURRENT_TIMESTAMP
     WHERE email = ${email}
   `
-
-  // Clean up used token
-  await db.sql`DELETE FROM {${passwordResetTokensTable}} WHERE id = ${validTokenRecord.id}`
 
   console.log(`[Nuxt Users] Email confirmed and user activated for: ${email}`)
   return true

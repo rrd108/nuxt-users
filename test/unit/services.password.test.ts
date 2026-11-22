@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import bcrypt from 'bcrypt'
 import type { ModuleOptions, User } from '../../src/types'
 import { defaultOptions } from '../../src/module'
 
@@ -15,18 +14,23 @@ vi.mock('../../src/runtime/server/utils', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../src/runtime/server/utils')>()
   return {
     ...actual,
-    useDb: vi.fn(),
-    updateUserPassword: vi.fn(),
     findUserByEmail: vi.fn(),
-    revokeUserTokens: vi.fn(),
   }
 })
 
-const {
-  resetPassword,
-  sendPasswordResetLink,
-} = await import('../../src/runtime/server/services/password')
-const { useDb, updateUserPassword, findUserByEmail, revokeUserTokens } = await import('../../src/runtime/server/utils')
+// The email token module and the reset itself are tested against a real database
+// (test/email-token.test.ts, test/email-token.flows.test.ts); these tests cover the email
+vi.mock('../../src/runtime/server/utils/email-token', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/runtime/server/utils/email-token')>()
+  return {
+    ...actual,
+    issueEmailToken: vi.fn(),
+  }
+})
+
+const { sendPasswordResetLink } = await import('../../src/runtime/server/services/password')
+const { findUserByEmail } = await import('../../src/runtime/server/utils')
+const { issueEmailToken } = await import('../../src/runtime/server/utils/email-token')
 
 const testUser: User = {
   id: 1,
@@ -39,21 +43,8 @@ const testUser: User = {
   updated_at: '2024-01-01T00:00:00.000Z',
 }
 
-const createValidTokenRows = async (plainToken: string, createdAt: Date | string, id = 1) => {
-  const hashedToken = await bcrypt.hash(plainToken, 10)
-  return [{
-    id,
-    email: 'test@example.com',
-    token: hashedToken,
-    created_at: createdAt,
-    // The database's CURRENT_TIMESTAMP, in the same form the driver returns created_at
-    db_now: createdAt instanceof Date ? new Date() : new Date().toISOString().slice(0, 19).replace('T', ' '),
-  }]
-}
-
 describe('Password Service', () => {
   let testOptions: ModuleOptions
-  let mockSql: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -62,224 +53,9 @@ describe('Password Service', () => {
       ...defaultOptions,
     }
 
-    mockSql = vi.fn()
-    vi.mocked(useDb).mockResolvedValue({ sql: mockSql } as never)
-    vi.mocked(updateUserPassword).mockResolvedValue(undefined)
     vi.mocked(findUserByEmail).mockResolvedValue(testUser)
+    vi.mocked(issueEmailToken).mockResolvedValue('plain-token')
     mockSendMail.mockResolvedValue({ messageId: 'test-message-id' })
-  })
-
-  describe('resetPassword', () => {
-    it('should accept created_at as a Date object (MySQL driver behavior)', async () => {
-      const plainToken = 'valid-reset-token'
-
-      mockSql
-        .mockResolvedValueOnce({
-          rows: await createValidTokenRows(plainToken, new Date()),
-        })
-        .mockResolvedValue({ rows: [] })
-
-      const result = await resetPassword(
-        plainToken,
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-
-      expect(result).toBe(true)
-      expect(updateUserPassword).toHaveBeenCalledWith(
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-      expect(revokeUserTokens).toHaveBeenCalledWith(testUser.id, testOptions)
-    })
-
-    it('should accept created_at as a string (SQLite driver behavior)', async () => {
-      const plainToken = 'valid-reset-token'
-      const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
-
-      mockSql
-        .mockResolvedValueOnce({
-          rows: await createValidTokenRows(plainToken, createdAt),
-        })
-        .mockResolvedValue({ rows: [] })
-
-      const result = await resetPassword(
-        plainToken,
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-
-      expect(result).toBe(true)
-      expect(updateUserPassword).toHaveBeenCalledWith(
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-    })
-
-    it('should return false when no tokens exist for the email', async () => {
-      mockSql.mockResolvedValueOnce({ rows: [] })
-
-      const result = await resetPassword(
-        'any-token',
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-
-      expect(result).toBe(false)
-      expect(updateUserPassword).not.toHaveBeenCalled()
-      expect(mockSql).toHaveBeenCalledTimes(1)
-    })
-
-    it('should return false when the token does not match any stored hash', async () => {
-      const hashedToken = await bcrypt.hash('stored-token', 10)
-
-      mockSql.mockResolvedValueOnce({
-        rows: [{
-          id: 1,
-          email: 'test@example.com',
-          token: hashedToken,
-          created_at: new Date(),
-        }],
-      })
-
-      const result = await resetPassword(
-        'wrong-token',
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-
-      expect(result).toBe(false)
-      expect(updateUserPassword).not.toHaveBeenCalled()
-    })
-
-    it('should return false for malformed created_at values', async () => {
-      const plainToken = 'valid-reset-token'
-
-      mockSql.mockResolvedValueOnce({
-        rows: await createValidTokenRows(plainToken, 'not-a-timestamp'),
-      })
-
-      const result = await resetPassword(
-        plainToken,
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-
-      expect(result).toBe(false)
-      expect(updateUserPassword).not.toHaveBeenCalled()
-    })
-
-    it('should reject expired tokens when created_at is a Date object', async () => {
-      const plainToken = 'expired-reset-token'
-      const createdAt = new Date()
-      createdAt.setHours(createdAt.getHours() - 2)
-
-      mockSql
-        .mockResolvedValueOnce({
-          rows: await createValidTokenRows(plainToken, createdAt, 42),
-        })
-        .mockResolvedValue({ rows: [] })
-
-      const result = await resetPassword(
-        plainToken,
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-
-      expect(result).toBe(false)
-      expect(updateUserPassword).not.toHaveBeenCalled()
-      expect(mockSql).toHaveBeenCalledTimes(2)
-
-      const deleteCallArgs = mockSql.mock.calls[1]?.flat() ?? []
-      expect(deleteCallArgs).toContain(42)
-    })
-
-    it('should reject expired tokens when created_at is a string', async () => {
-      const plainToken = 'expired-reset-token'
-      const createdAt = new Date()
-      createdAt.setHours(createdAt.getHours() - 2)
-      const createdAtString = createdAt.toISOString().slice(0, 19).replace('T', ' ')
-
-      mockSql
-        .mockResolvedValueOnce({
-          rows: await createValidTokenRows(plainToken, createdAtString),
-        })
-        .mockResolvedValue({ rows: [] })
-
-      const result = await resetPassword(
-        plainToken,
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-
-      expect(result).toBe(false)
-      expect(updateUserPassword).not.toHaveBeenCalled()
-    })
-
-    it('should match the correct token when multiple tokens exist for the email', async () => {
-      const validToken = 'newest-valid-token'
-      const olderTokenHash = await bcrypt.hash('older-token', 10)
-      const validTokenRows = await createValidTokenRows(validToken, new Date(), 2)
-
-      mockSql
-        .mockResolvedValueOnce({
-          rows: [
-            {
-              id: 1,
-              email: 'test@example.com',
-              token: olderTokenHash,
-              created_at: new Date(),
-            },
-            validTokenRows[0],
-          ],
-        })
-        .mockResolvedValue({ rows: [] })
-
-      const result = await resetPassword(
-        validToken,
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-
-      expect(result).toBe(true)
-      expect(updateUserPassword).toHaveBeenCalledWith(
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-    })
-
-    it('should delete all tokens for the email after a successful reset', async () => {
-      const plainToken = 'valid-reset-token'
-
-      mockSql
-        .mockResolvedValueOnce({
-          rows: await createValidTokenRows(plainToken, new Date()),
-        })
-        .mockResolvedValue({ rows: [] })
-
-      await resetPassword(
-        plainToken,
-        'test@example.com',
-        'NewPassword123!',
-        testOptions,
-      )
-
-      expect(mockSql).toHaveBeenCalledTimes(2)
-
-      const deleteCallArgs = mockSql.mock.calls[1]?.flat() ?? []
-      expect(deleteCallArgs).toContain('test@example.com')
-    })
   })
 
   describe('sendPasswordResetLink', () => {
@@ -290,56 +66,51 @@ describe('Password Service', () => {
         sendPasswordResetLink('missing@example.com', testOptions, 'https://app.example.com'),
       ).resolves.toBeUndefined()
 
-      expect(useDb).not.toHaveBeenCalled()
+      expect(issueEmailToken).not.toHaveBeenCalled()
       expect(mockSendMail).not.toHaveBeenCalled()
     })
 
-    it('should store a hashed token and send a reset email for existing users', async () => {
-      mockSql.mockResolvedValue({ rows: [] })
+    it('should return silently for a user who is not active', async () => {
+      vi.mocked(findUserByEmail).mockResolvedValue({ ...testUser, active: false })
 
+      await expect(
+        sendPasswordResetLink('test@example.com', testOptions, 'https://app.example.com'),
+      ).resolves.toBeUndefined()
+
+      expect(issueEmailToken).not.toHaveBeenCalled()
+      expect(mockSendMail).not.toHaveBeenCalled()
+    })
+
+    it('should issue a password reset token and email the link to existing users', async () => {
       await sendPasswordResetLink('test@example.com', testOptions, 'https://app.example.com')
 
-      expect(useDb).toHaveBeenCalledWith(testOptions)
-      expect(mockSql).toHaveBeenCalledTimes(1)
-
-      const insertCallArgs = mockSql.mock.calls[0]?.flat() ?? []
-      expect(insertCallArgs).toContain('test@example.com')
-
-      const storedToken = insertCallArgs.find(
-        (arg): arg is string => typeof arg === 'string' && arg.startsWith('$2'),
-      )
-      expect(storedToken).toBeDefined()
-
+      expect(issueEmailToken).toHaveBeenCalledWith('test@example.com', 'password_reset', testOptions)
       expect(mockSendMail).toHaveBeenCalledTimes(1)
 
       const mailOptions = mockSendMail.mock.calls[0]?.[0]
       expect(mailOptions.to).toBe('test@example.com')
       expect(mailOptions.html).toContain('https://app.example.com/reset-password?')
       expect(mailOptions.html).toContain('email=test%40example.com')
-      expect(mailOptions.html).toContain('token=')
+      expect(mailOptions.html).toContain('token=plain-token')
     })
 
-    it('should still store the token when mailer configuration is missing', async () => {
-      mockSql.mockResolvedValue({ rows: [] })
-
+    it('should still issue the token when mailer configuration is missing', async () => {
       await sendPasswordResetLink('test@example.com', {
         ...testOptions,
         mailer: undefined,
       })
 
-      expect(mockSql).toHaveBeenCalledTimes(1)
+      expect(issueEmailToken).toHaveBeenCalledTimes(1)
       expect(mockSendMail).not.toHaveBeenCalled()
     })
 
     it('should not throw when sending the reset email fails', async () => {
-      mockSql.mockResolvedValue({ rows: [] })
       mockSendMail.mockRejectedValue(new Error('SMTP unavailable'))
 
       await expect(
         sendPasswordResetLink('test@example.com', testOptions, 'https://app.example.com'),
       ).resolves.toBeUndefined()
 
-      expect(mockSql).toHaveBeenCalledTimes(1)
       expect(mockSendMail).toHaveBeenCalledTimes(1)
     })
   })
