@@ -24,28 +24,12 @@ vi.mock('../../src/runtime/composables/useAuthentication', () => ({
   useAuthentication: vi.fn()
 }))
 
-vi.mock('../../src/runtime/utils/permissions', () => ({
-  hasPermission: vi.fn(),
-  isWhitelisted: vi.fn()
-}))
-
-vi.mock('../../src/runtime/constants', () => ({
-  PUBLIC_PAGES: ['/login', '/reset-password'],
-  AUTHENTICATED_AUTO_ACCESS_ENDPOINTS: [
-    { path: '/password/forgot', methods: ['POST'] },
-    { path: '/password/reset', methods: ['POST'] },
-    { path: '/session', methods: ['POST', 'DELETE'] }
-  ]
-}))
-
 const authorizationMiddleware = await import('../../src/runtime/middleware/authorization.client')
 
 describe('Google OAuth Client Middleware', () => {
   let mockNavigateTo: ReturnType<typeof vi.fn>
   let mockUseRuntimeConfig: ReturnType<typeof vi.fn>
   let mockUseAuthentication: ReturnType<typeof vi.fn>
-  let mockIsWhitelisted: ReturnType<typeof vi.fn>
-  let mockHasPermission: ReturnType<typeof vi.fn>
   let testOptions: ModuleOptions
 
   beforeEach(async () => {
@@ -53,18 +37,18 @@ describe('Google OAuth Client Middleware', () => {
 
     const app = await import('#app')
     const auth = await import('../../src/runtime/composables/useAuthentication')
-    const permissions = await import('../../src/runtime/utils/permissions')
 
     mockNavigateTo = app.navigateTo as ReturnType<typeof vi.fn>
     mockUseRuntimeConfig = app.useRuntimeConfig as ReturnType<typeof vi.fn>
     mockUseAuthentication = auth.useAuthentication as ReturnType<typeof vi.fn>
-    mockIsWhitelisted = permissions.isWhitelisted as ReturnType<typeof vi.fn>
-    mockHasPermission = permissions.hasPermission as ReturnType<typeof vi.fn>
 
     testOptions = {
       ...defaultOptions,
       auth: {
         ...defaultOptions.auth,
+        // Real access rules: users may open the home page, admins anything
+        whitelist: ['/public-page'],
+        permissions: { admin: ['*'], user: ['/'] },
         google: {
           clientId: 'test',
           clientSecret: 'test',
@@ -76,9 +60,6 @@ describe('Google OAuth Client Middleware', () => {
     mockUseRuntimeConfig.mockReturnValue({
       public: { nuxtUsers: testOptions }
     })
-
-    mockIsWhitelisted.mockReturnValue(false)
-    mockHasPermission.mockReturnValue(true)
   })
 
   describe('OAuth Success Flow', () => {
@@ -261,7 +242,6 @@ describe('Google OAuth Client Middleware', () => {
       }
 
       const mockFetchUser = vi.fn()
-      mockHasPermission.mockReturnValue(true)
 
       const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({
@@ -281,7 +261,6 @@ describe('Google OAuth Client Middleware', () => {
 
       expect(result).toBeUndefined() // Middleware allows passage
       expect(mockNavigateTo).not.toHaveBeenCalled()
-      expect(mockHasPermission).toHaveBeenCalledWith('admin', '/dashboard', 'GET', testOptions.auth.permissions)
     })
 
     it('should block access to protected routes without permission after OAuth', async () => {
@@ -293,7 +272,6 @@ describe('Google OAuth Client Middleware', () => {
       }
 
       const mockFetchUser = vi.fn()
-      mockHasPermission.mockReturnValue(false)
 
       const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({
@@ -317,8 +295,6 @@ describe('Google OAuth Client Middleware', () => {
 
   describe('Whitelisted Paths', () => {
     it('should allow access to whitelisted paths even during OAuth flow', async () => {
-      mockIsWhitelisted.mockReturnValue(true)
-
       const mockFetchUser = vi.fn()
       const mockInitializeUser = vi.fn().mockResolvedValue(undefined)
       mockUseAuthentication.mockReturnValue({

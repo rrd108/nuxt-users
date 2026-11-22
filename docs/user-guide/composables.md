@@ -218,6 +218,7 @@ Check if specific paths are accessible:
 console.log(isPublicPath('/login'))     // true
 console.log(isPublicPath('/profile'))   // false
 console.log(isPublicPath('/about'))     // true (if whitelisted)
+console.log(isPublicPath('/api/nuxt-users/session', 'POST')) // true: public API endpoints are public for their methods only
 
 // Check if current user can access a path
 console.log(isAccessiblePath('/profile'))           // true if user role allows
@@ -317,10 +318,10 @@ const canCreateUsers = computed(() =>
 |--------|-------------|----------|
 | `getPublicPaths()` | Get all truly public paths (no auth required) | Object with categorized public paths |
 | `getAccessiblePaths()` | Get all paths accessible to current user | Object with public + role-based paths |
-| `isPublicPath(path)` | Check if a path is public | Boolean |
+| `isPublicPath(path, method?)` | Check if a path is public (method defaults to `GET`) | Boolean |
 | `isAccessiblePath(path, method?)` | Check if current user can access path | Boolean |
 
-**Note:** Static assets (files with dots) and Nuxt internal routes (starting with `/_`) are always considered public and accessible.
+**Note:** `isPublicPath` and `isAccessiblePath` give the same answer as the server authorization middleware, the client route middleware and `npx nuxt-users list-routes`. Static assets (paths with a dot) and Nuxt internal routes (starting with `/_`) are public, except under `/api/` or `apiBasePath`, where a dot does not make a path public. A custom `passwordResetUrl` page is public.
 
 ## `getCurrentUser()`
 

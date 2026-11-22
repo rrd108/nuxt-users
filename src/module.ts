@@ -63,6 +63,8 @@ export default defineNuxtModule<RuntimeModuleOptions>({
       passwordValidation: runtimeConfigOptions.passwordValidation,
       locale: runtimeConfigOptions.locale,
       theme: runtimeConfigOptions.theme,
+      // The client route middleware lets a custom password reset page through without a session
+      passwordResetUrl: runtimeConfigOptions.passwordResetUrl || defaultOptions.passwordResetUrl,
       auth: {
         // Only a flag: the client needs to know whether to offer passkeys, not the relying party config
         ...(runtimeConfigOptions.auth.passkey && { passkey: {} }),

@@ -1,24 +1,8 @@
 import { existsSync, readdirSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
-import type { ModuleOptions } from 'nuxt-users/utils'
-import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS } from '../runtime/constants'
-import { isAuthenticatedAutoAccess } from '../runtime/utils/auto-access'
-import { hasPermission, pathMatchesPattern } from '../runtime/utils/permissions'
+import { getRouteAccess, type RouteAccess, type RouteAccessConfig } from '../runtime/utils/route-access'
 
-/**
- * - `public`: reachable without signing in
- * - `authenticated`: any signed-in user, whatever their role
- * - `protected`: only the roles listed in `roles` (none means nobody can reach it)
- */
-export type AccessLevel = 'public' | 'authenticated' | 'protected'
-
-export interface RouteAccess {
-  level: AccessLevel
-  /** Why the route is public or open to every signed-in user */
-  reason?: string
-  /** Roles from `auth.permissions` that can reach a protected route */
-  roles: string[]
-}
+export { getRouteAccess, type AccessLevel, type RouteAccess } from '../runtime/utils/route-access'
 
 export interface RouteEntry {
   /** HTTP method, or `ANY` when every method gets the same access */
@@ -41,55 +25,11 @@ const NITRO_METHOD_SUFFIX = /\.(get|post|put|patch|delete|head|options|connect|t
 const ENV_SUFFIX = /\.(dev|prod|prerender)$/
 const MODE_SUFFIX = /\.(client|server)$/
 
-type AccessOptions = Pick<ModuleOptions, 'apiBasePath' | 'passwordResetUrl'> & {
-  auth: Pick<ModuleOptions['auth'], 'whitelist' | 'permissions'>
-}
-
-/**
- * Tells who can reach a path, following the same order of checks as the server authorization middleware.
- * Pass the merged runtime config: its whitelist already contains the auto-added registration and OAuth endpoints.
- */
-export const getRouteAccess = (path: string, method: string, options: AccessOptions): RouteAccess => {
-  const base = options.apiBasePath || '/api/nuxt-users'
-  const isApiRoute = path.startsWith('/api/') || path === base || path.startsWith(`${base}/`)
-  const lastSegment = path.split('/').pop() || ''
-
-  // The middleware skips static files and Nuxt internals (only outside API routes)
-  if (!isApiRoute && (lastSegment.includes('.') || path.startsWith('/_'))) {
-    return { level: 'public', reason: 'static file or Nuxt internal', roles: [] }
-  }
-
-  const publicPages = [...PUBLIC_PAGES]
-  if (options.passwordResetUrl && options.passwordResetUrl !== '/reset-password') {
-    publicPages.push(options.passwordResetUrl)
-  }
-  if (publicPages.includes(path)) {
-    return { level: 'public', reason: 'built-in public page', roles: [] }
-  }
-
-  if (PUBLIC_API_ENDPOINTS.some(endpoint => path === `${base}${endpoint.path}` && endpoint.methods.includes(method))) {
-    return { level: 'public', reason: 'built-in public endpoint', roles: [] }
-  }
-
-  const whitelistEntry = (options.auth.whitelist || []).find(pattern => pathMatchesPattern(path, pattern))
-  if (whitelistEntry) {
-    return { level: 'public', reason: `whitelist: ${whitelistEntry}`, roles: [] }
-  }
-
-  if (isAuthenticatedAutoAccess(path, method, base)) {
-    return { level: 'authenticated', reason: 'any signed-in user', roles: [] }
-  }
-
-  const permissions = options.auth.permissions || {}
-  const roles = Object.keys(permissions).filter(role => hasPermission(role, path, method, permissions))
-  return { level: 'protected', roles }
-}
-
 /**
  * Builds the entries for one route. A handler without a method is checked for every method:
  * one `ANY` entry when they all get the same access, otherwise one entry per method.
  */
-export const describeRoute = (path: string, method: string | undefined, source: string, options: AccessOptions): RouteEntry[] => {
+export const describeRoute = (path: string, method: string | undefined, source: string, options: RouteAccessConfig): RouteEntry[] => {
   if (method) {
     const upper = method.toUpperCase()
     return [{ method: upper, path, source, access: getRouteAccess(path, upper, options) }]

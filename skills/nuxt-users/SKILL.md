@@ -119,7 +119,7 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
 
 - **useAuthentication()** — `user`, `isAuthenticated`, `login(user, rememberMe?)`, `logout()`, `fetchUser(useSSR?)`, `initializeUser()`
 - **useUsers()** — Admin: `users`, `pagination`, `loading`, `error`, `fetchUsers(page?, limit?)`, `updateUser`, `addUser`, `removeUser(userId)`
-- **usePublicPaths()** — `getPublicPaths()`, `getAccessiblePaths()`, `isPublicPath(path)`, `isAccessiblePath(path, method?)`
+- **usePublicPaths()** — `getPublicPaths()`, `getAccessiblePaths()`, `isPublicPath(path, method?)`, `isAccessiblePath(path, method?)` (same rules as the server middleware and `list-routes`)
 - **usePasswordValidation(moduleOptions?, options?)** — `validate(password)`, `isValid`, `errors`, `strength`, `score`, `clearValidation()`
 - **usePasskeys()** — `enabled`, `supported`, `login(rememberMe?)` (returns the user or `null` if dismissed), `register(name?)`, `list()`, `remove(id)`
 - **useNuxtUsersLocale()** — `t(key, params?)`, `currentLocale`, `fallbackLocale`

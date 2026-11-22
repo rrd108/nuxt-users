@@ -9,7 +9,7 @@ vi.mock('#app', () => ({
   useState: vi.fn(() => ({ value: null }))
 }))
 
-vi.mock('../src/runtime/composables/useAuthentication', () => ({
+vi.mock('../../src/runtime/composables/useAuthentication', () => ({
   useAuthentication: mockUseAuthentication
 }))
 
@@ -132,6 +132,48 @@ describe('usePublicPaths', () => {
 
       expect(isPublicPath('/profile')).toBe(false)
       expect(isPublicPath('/admin')).toBe(false)
+    })
+  })
+  describe('isPublicPath with methods and custom reset URL', () => {
+    it('treats a dotted API path as protected, like the server does', () => {
+      const { isPublicPath, isAccessiblePath } = usePublicPaths()
+
+      expect(isPublicPath('/api/nuxt-users/me.json')).toBe(false)
+      expect(isAccessiblePath('/api/export.csv')).toBe(false)
+    })
+
+    it('treats public API endpoints as public for their methods only', () => {
+      const { isPublicPath } = usePublicPaths()
+
+      expect(isPublicPath('/api/nuxt-users/session', 'POST')).toBe(true)
+      expect(isPublicPath('/api/nuxt-users/session')).toBe(false)
+    })
+
+    it('treats a custom password reset URL as public', () => {
+      mockConfig.passwordResetUrl = '/account/new-password'
+      const { isPublicPath } = usePublicPaths()
+
+      expect(isPublicPath('/account/new-password')).toBe(true)
+    })
+  })
+
+  describe('isAccessiblePath', () => {
+    it('lets a signed-in user reach auto-access endpoints and their role paths', () => {
+      mockUseAuthentication.mockReturnValue({ user: { value: { id: 1, role: 'user' } } })
+      const { isAccessiblePath } = usePublicPaths()
+
+      expect(isAccessiblePath('/api/nuxt-users/me')).toBe(true)
+      expect(isAccessiblePath('/api/nuxt-users/me', 'PATCH')).toBe(true)
+      expect(isAccessiblePath('/profile')).toBe(true)
+      expect(isAccessiblePath('/admin')).toBe(false)
+    })
+
+    it('only allows public paths for anonymous visitors', () => {
+      const { isAccessiblePath } = usePublicPaths()
+
+      expect(isAccessiblePath('/about')).toBe(true)
+      expect(isAccessiblePath('/api/nuxt-users/me')).toBe(false)
+      expect(isAccessiblePath('/profile')).toBe(false)
     })
   })
 })

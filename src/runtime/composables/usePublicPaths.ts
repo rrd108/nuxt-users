@@ -1,6 +1,6 @@
 import { useRuntimeConfig } from '#app'
-import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS, AUTHENTICATED_AUTO_ACCESS_ENDPOINTS } from '../constants'
-import { hasPermission, isWhitelisted } from '../utils/permissions'
+import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS } from '../constants'
+import { resolveAccess } from '../utils/route-access'
 import { useAuthentication } from './useAuthentication'
 import type { RuntimeModuleOptions } from 'nuxt-users/utils'
 
@@ -100,91 +100,23 @@ export const usePublicPaths = () => {
   }
 
   /**
-   * Check if a specific path is accessible to the current user
+   * Check if a specific path is accessible to the current user, with the same rules as the authorization middleware
    * @param path - The path to check
    * @param method - HTTP method (default: 'GET')
    * @returns boolean indicating if the path is accessible
    */
   const isAccessiblePath = (path: string, method: string = 'GET'): boolean => {
-    // Check if it's a static asset (contains a dot) - always public
-    if (path.includes('.')) {
-      return true
-    }
-
-    // Check if it's a Nuxt internal route - always public
-    if (path.startsWith('/_')) {
-      return true
-    }
-
-    // Check built-in no-auth paths
-    if (PUBLIC_PAGES.includes(path)) {
-      return true
-    }
-
-    // Check built-in public API paths (no auth required)
-    const publicApiEndpoints = PUBLIC_API_ENDPOINTS.map(endpoint => `${endpoint.methods.join(', ')}: ${apiBasePath}${endpoint.path}`)
-    if (publicApiEndpoints.includes(path)) {
-      return true
-    }
-
-    // Check custom password reset path
-    if (config.passwordResetUrl && config.passwordResetUrl !== '/reset-password' && path === config.passwordResetUrl) {
-      return true
-    }
-
-    // Check whitelisted paths (truly public, no auth required)
-    if (isWhitelisted(path, config.auth?.whitelist || [])) {
-      return true
-    }
-
-    // If user is authenticated, check auto-whitelisted endpoints and role-based permissions
-    if (user.value) {
-      // Check auto-whitelisted endpoints for authenticated users
-      const autoWhitelistedApiEndpoints = AUTHENTICATED_AUTO_ACCESS_ENDPOINTS.map(endpoint => `${endpoint.methods.join(', ')}: ${apiBasePath}${endpoint.path}`)
-      if (autoWhitelistedApiEndpoints.includes(path)) {
-        return true
-      }
-      return hasPermission(user.value.role, path, method, config.auth?.permissions || {})
-    }
-
-    // Not public and no authenticated user
-    return false
+    return resolveAccess(path, method, config, user.value).allowed
   }
 
   /**
    * Check if a path is truly public (no authentication required)
    * @param path - The path to check
+   * @param method - HTTP method (default: 'GET'); public API endpoints are only public for their methods
    * @returns boolean indicating if the path is public
    */
-  const isPublicPath = (path: string): boolean => {
-    // Check if it's a static asset (contains a dot)
-    if (path.includes('.')) {
-      return true
-    }
-
-    // Check if it's a Nuxt internal route
-    if (path.startsWith('/_')) {
-      return true
-    }
-
-    // Check built-in no-auth paths
-    if (PUBLIC_PAGES.includes(path)) {
-      return true
-    }
-
-    // Check built-in public API paths (no auth required)
-    const publicApiEndpoints = PUBLIC_API_ENDPOINTS.map(endpoint => `${endpoint.methods.join(', ')}: ${apiBasePath}${endpoint.path}`)
-    if (publicApiEndpoints.includes(path)) {
-      return true
-    }
-
-    // Check custom password reset path
-    if (config.passwordResetUrl && config.passwordResetUrl !== '/reset-password' && path === config.passwordResetUrl) {
-      return true
-    }
-
-    // Check whitelisted paths (truly public)
-    return isWhitelisted(path, config.auth?.whitelist || [])
+  const isPublicPath = (path: string, method: string = 'GET'): boolean => {
+    return resolveAccess(path, method, config).allowed
   }
 
   return {

@@ -143,7 +143,7 @@ Utilities for checking route accessibility and handling public/protected paths.
 
 - **getPublicPaths()**: Returns object with `all`, `builtIn`, `whitelist`.
 - **getAccessiblePaths()**: Returns paths accessible to the current user (public + role-based).
-- **isPublicPath(path: string)**: `boolean` - Checks if a path is public.
+- **isPublicPath(path: string, method?: string)**: `boolean` - Checks if a path is public (method defaults to `GET`). Same rules as the server middleware.
 - **isAccessiblePath(path: string, method?: string)**: `boolean` - Checks if user can access a path.
 
 ### `usePasskeys()`

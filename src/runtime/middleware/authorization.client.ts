@@ -1,29 +1,16 @@
 import { defineNuxtRouteMiddleware, navigateTo, useRuntimeConfig } from '#app'
 import { useAuthentication } from '../composables/useAuthentication'
-import { hasPermission, isWhitelisted } from '../utils/permissions'
-import { PUBLIC_PAGES, AUTHENTICATED_AUTO_ACCESS_ENDPOINTS } from '../constants'
+import { resolveAccess } from '../utils/route-access'
 import type { RuntimeModuleOptions } from 'nuxt-users/utils'
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const { public: { nuxtUsers: publicNuxtUsers } } = useRuntimeConfig()
   const publicOptions = publicNuxtUsers as RuntimeModuleOptions
-  const base = publicOptions.apiBasePath || '/api/nuxt-users'
 
-  // internal no-auth paths (e.g., /login)
-  if (PUBLIC_PAGES.includes(to.path)) {
-    console.log(`[Nuxt Users] client.middleware.auth.global: ${to.path}`)
-    return
-  }
-
-  // Always-allowed API endpoints for auth flows
-  const openApiPaths = AUTHENTICATED_AUTO_ACCESS_ENDPOINTS.map(endpoint => `${endpoint.methods.join(', ')}: ${base}${endpoint.path}`)
-  if (openApiPaths.includes(to.path)) {
-    return
-  }
-
-  // whitelisted paths are allowed to access without authentication
-  if (isWhitelisted(to.path, publicOptions.auth?.whitelist || [])) {
-    console.log(`[Nuxt Users] client.middleware.auth.global: Whitelisted: ${to.path}`)
+  // Pages are navigated with GET; public pages, the custom password reset page and the whitelist need no session
+  const anonymous = resolveAccess(to.path, 'GET', publicOptions)
+  if (anonymous.allowed) {
+    console.log(`[Nuxt Users] client.middleware.auth.global: public (${anonymous.reason}): ${to.path}`)
     return
   }
 
@@ -53,7 +40,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   // Check role-based permissions
-  if (!user.value || !hasPermission(user.value.role, to.path, 'GET', publicOptions.auth?.permissions || {})) {
+  if (!user.value || !resolveAccess(to.path, 'GET', publicOptions, user.value).allowed) {
     console.log(`[Nuxt Users] client.middleware.auth.global: User with role ${user.value?.role} denied access to ${to.path}`)
     return navigateTo('/login')
   }

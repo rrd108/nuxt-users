@@ -22,7 +22,7 @@ const clientAuthMiddleware = await import('../../src/runtime/middleware/authoriz
 describe('Auth Client Middleware', () => {
   let mockTo: RouteLocationNormalizedGeneric
   let mockFrom: RouteLocationNormalizedGeneric
-  let mockOptions: { auth: { whitelist: string[], permissions: Record<string, string[]> } }
+  let mockOptions: { passwordResetUrl?: string, auth: { whitelist: string[], permissions: Record<string, string[]> } }
   let mockUser: { value: { id?: number, role?: string } | null }
 
   beforeEach(() => {
@@ -93,6 +93,33 @@ describe('Auth Client Middleware', () => {
 
       expect(result).toBeUndefined()
       expect(mockuseAuthentication).not.toHaveBeenCalled()
+      expect(mockNavigateTo).not.toHaveBeenCalled()
+    })
+
+    it('should allow a custom password reset page without authentication', async () => {
+      // The public runtime config carries passwordResetUrl, so the link in the reset email opens without a session
+      mockOptions.passwordResetUrl = '/account/new-password'
+      mockTo.path = '/account/new-password'
+
+      const result = await clientAuthMiddleware.default(mockTo, mockFrom)
+
+      expect(result).toBeUndefined()
+      expect(mockuseAuthentication).not.toHaveBeenCalled()
+      expect(mockNavigateTo).not.toHaveBeenCalled()
+    })
+
+    it('should let a signed-in user open the endpoints every user may call', async () => {
+      mockTo.path = '/api/nuxt-users/passkeys'
+      mockUser.value = { id: 1, role: 'viewer' }
+      mockuseAuthentication.mockReturnValue({
+        user: mockUser,
+        isAuthenticated: { value: true },
+        initializeUser: vi.fn()
+      })
+
+      const result = await clientAuthMiddleware.default(mockTo, mockFrom)
+
+      expect(result).toBeUndefined()
       expect(mockNavigateTo).not.toHaveBeenCalled()
     })
 

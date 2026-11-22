@@ -148,6 +148,19 @@ permissions: {
 3. **Permission Check**: Match request path against user permissions
 4. **Access Decision**: Allow/deny based on permissions
 
+#### Route Access Resolver
+
+`src/runtime/utils/route-access.ts` is the one place that decides who may reach a path. `resolveAccess(path, method, config, user?)` returns the access level (`public`, `authenticated` or `protected`), the reason and the roles that can reach it, plus `allowed` for the given user (or for an anonymous visitor when no user is passed). The checks run in this order:
+
+1. Static files (a dot in the path) and Nuxt internals (`/_…`), except API routes (`/api/…` or `apiBasePath`)
+2. Built-in public pages and a custom `passwordResetUrl`
+3. Built-in public API endpoints, for their methods
+4. The whitelist (including auto-added registration, OAuth and passkey login endpoints)
+5. Endpoints every signed-in user may call (`/me`, `/password`, passkey self-service)
+6. Role permissions
+
+The server middleware, the client route middleware, `usePublicPaths` and `nuxt-users list-routes` all ask this module and only act on the answer (respond 401/403, redirect, or print). It is pure, so it is tested with a table of cases in `test/unit/route-access.test.ts`. The public runtime config carries `apiBasePath`, `passwordResetUrl`, `auth.whitelist` and `auth.permissions` for the client side.
+
 #### Middleware Architecture
 
 **Server Middleware** (`authorization.server.ts`):

@@ -1,10 +1,8 @@
 import { defineEventHandler } from 'h3'
 import { useRuntimeConfig } from '#imports'
 import { readSessionToken, getSessionUser, handleUnauthenticatedRequest, handleInvalidToken, handleUnauthorizedRequest } from '../utils'
-import { hasPermission, isWhitelisted } from '../../utils/permissions'
+import { isApiPath, resolveAccess } from '../../utils/route-access'
 import type { ModuleOptions } from 'nuxt-users/utils'
-import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS } from '../../constants'
-import { isAuthenticatedAutoAccess } from '../../utils/auto-access'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
@@ -13,48 +11,13 @@ export default defineEventHandler(async (event) => {
   // event.path includes the query string, but routing ignores it: every check must use the pathname only,
   // otherwise e.g. `/api/nuxt-users?x=.` would look like a static file and skip authentication
   const path = event.path.split('?')[0]!
-  // the module's own endpoints count as API routes even when apiBasePath is outside /api/
-  const isApiRoute = path.startsWith('/api/') || path === base || path.startsWith(`${base}/`)
+  const isApiRoute = isApiPath(path, base)
   const isMeEndpoint = path === `${base}/me`
 
-  // ============================================
-  // Early exits: Skip non-applicable routes
-  // ============================================
-
-  // Static files (a dot in the pathname) and nuxt internals are skipped; API routes are never skipped
-  const isStaticFile = !isApiRoute && path.includes('.')
-  const isNuxtInternal = !isApiRoute && path.startsWith('/_')
-
-  if (isStaticFile || isNuxtInternal) {
-    return
-  }
-
-  // ============================================
-  // Public access checks (no authentication required)
-  // ============================================
-
-  // Internal public paths (e.g., /login, /reset-password) and custom password reset URL
-  const publicAuthPaths = [...PUBLIC_PAGES]
-  if (options.passwordResetUrl && options.passwordResetUrl !== '/reset-password') {
-    publicAuthPaths.push(options.passwordResetUrl)
-  }
-
-  if (publicAuthPaths.includes(path)) {
-    console.debug(`[Nuxt Users] authorization: NO_AUTH_PATH: ${path}`)
-    return
-  }
-
-  // Public API endpoints (no authentication required)
-  for (const endpoint of PUBLIC_API_ENDPOINTS) {
-    if (path === `${base}${endpoint.path}` && endpoint.methods.includes(event.method)) {
-      console.debug(`[Nuxt Users] authorization: Public API endpoint ${path} (${event.method})`)
-      return
-    }
-  }
-
-  // Whitelisted paths are allowed to access without authentication
-  if (isWhitelisted(path, options.auth.whitelist)) {
-    console.debug(`[Nuxt Users] authorization: whitelisted: ${path}`)
+  // Static files, Nuxt internals, public pages and endpoints, and the whitelist need no session
+  const anonymous = resolveAccess(path, event.method, options)
+  if (anonymous.allowed) {
+    console.debug(`[Nuxt Users] authorization: public (${anonymous.reason}): ${path} (${event.method})`)
     return
   }
 
@@ -73,19 +36,10 @@ export default defineEventHandler(async (event) => {
   }
 
   // ============================================
-  // Auto-whitelisted endpoints for authenticated users
+  // Endpoints open to every signed-in user, then role permissions
   // ============================================
 
-  if (isAuthenticatedAutoAccess(path, event.method, base)) {
-    console.debug(`[Nuxt Users] authorization: Auto-whitelisted endpoint ${path} for authenticated user ${user.id}`)
-    return
-  }
-
-  // ============================================
-  // Permission checks
-  // ============================================
-
-  if (!hasPermission(user.role, path, event.method, options.auth.permissions)) {
+  if (!resolveAccess(path, event.method, options, user).allowed) {
     return handleUnauthorizedRequest(event, user, isApiRoute)
   }
 
