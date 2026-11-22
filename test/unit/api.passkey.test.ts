@@ -22,11 +22,15 @@ vi.mock('#imports', () => ({
 vi.mock('../../src/runtime/server/utils', () => ({
   listPasskeys: vi.fn(),
   deletePasskey: vi.fn(),
-  createAuthTokenForUser: vi.fn(),
-}))
-
-vi.mock('../../src/runtime/server/utils/auth-session', () => ({
-  setAuthCookie: vi.fn(),
+  startSession: vi.fn(),
+  // The session is the user the authorization middleware left in the context
+  requireSessionUser: vi.fn(async (event: { context?: { nuxtUsers?: { user?: unknown } } }) => {
+    const user = event.context?.nuxtUsers?.user
+    if (!user) {
+      throw { statusCode: 401 }
+    }
+    return user
+  }),
 }))
 
 vi.mock('../../src/runtime/server/services/passkey', () => {
@@ -67,7 +71,6 @@ describe('Passkey API endpoints', () => {
   let h3: typeof import('h3')
   let utils: typeof import('../../src/runtime/server/utils')
   let service: typeof import('../../src/runtime/server/services/passkey')
-  let authSession: typeof import('../../src/runtime/server/utils/auth-session')
 
   beforeEach(async () => {
     vi.clearAllMocks()
@@ -75,7 +78,6 @@ describe('Passkey API endpoints', () => {
     h3 = await import('h3')
     utils = await import('../../src/runtime/server/utils')
     service = await import('../../src/runtime/server/services/passkey')
-    authSession = await import('../../src/runtime/server/utils/auth-session')
   })
 
   describe('when passkeys are disabled', () => {
@@ -142,16 +144,23 @@ describe('Passkey API endpoints', () => {
       expect(await loginOptions.default(anonymous)).toEqual({ challenge: 'c' })
     })
 
-    it('issues the session token and cookie like a password login', async () => {
+    it('starts a passkey session like a password login', async () => {
       vi.mocked(h3.readBody).mockResolvedValue({ response: { id: 'cred' }, rememberMe: true })
       vi.mocked(service.finishPasskeyLogin).mockResolvedValue(user)
-      vi.mocked(utils.createAuthTokenForUser).mockResolvedValue('the-token')
+      vi.mocked(utils.startSession).mockResolvedValue('the-token')
 
       const result = await loginVerify.default(anonymous)
 
-      expect(utils.createAuthTokenForUser).toHaveBeenCalledWith(user, passkeyOptions, true, 'auth_token')
-      expect(authSession.setAuthCookie).toHaveBeenCalledWith(anonymous, 'the-token', passkeyOptions, true)
+      expect(utils.startSession).toHaveBeenCalledWith(anonymous, user, 'passkey', passkeyOptions, true)
       expect(result).toEqual({ user })
+    })
+
+    it('passes the session refusal of an inactive user through', async () => {
+      vi.mocked(h3.readBody).mockResolvedValue({ response: { id: 'cred' } })
+      vi.mocked(service.finishPasskeyLogin).mockResolvedValue({ ...user, active: false })
+      vi.mocked(utils.startSession).mockRejectedValue({ statusCode: 403, statusMessage: 'User account is inactive' })
+
+      await expect(loginVerify.default(anonymous)).rejects.toMatchObject({ statusCode: 403 })
     })
 
     it('does not issue a token when the passkey is rejected', async () => {
@@ -159,8 +168,7 @@ describe('Passkey API endpoints', () => {
       vi.mocked(service.finishPasskeyLogin).mockRejectedValue(new service.PasskeyError('Invalid passkey', 401))
 
       await expect(loginVerify.default(anonymous)).rejects.toMatchObject({ statusCode: 401 })
-      expect(utils.createAuthTokenForUser).not.toHaveBeenCalled()
-      expect(authSession.setAuthCookie).not.toHaveBeenCalled()
+      expect(utils.startSession).not.toHaveBeenCalled()
     })
   })
 

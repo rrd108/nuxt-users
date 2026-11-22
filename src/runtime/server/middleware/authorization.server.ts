@@ -1,6 +1,6 @@
-import { defineEventHandler, getCookie } from 'h3'
+import { defineEventHandler } from 'h3'
 import { useRuntimeConfig } from '#imports'
-import { getCurrentUserFromToken, handleUnauthenticatedRequest, handleInvalidToken, handleUnauthorizedRequest } from '../utils'
+import { readSessionToken, getSessionUser, handleUnauthenticatedRequest, handleInvalidToken, handleUnauthorizedRequest } from '../utils'
 import { hasPermission, isWhitelisted } from '../../utils/permissions'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { PUBLIC_PAGES, PUBLIC_API_ENDPOINTS } from '../../constants'
@@ -62,26 +62,15 @@ export default defineEventHandler(async (event) => {
   // Authentication checks
   // ============================================
 
-  const token = getCookie(event, 'auth_token')
-
-  // Handle missing token
-  if (!token) {
+  if (!readSessionToken(event)) {
     return handleUnauthenticatedRequest(event, isApiRoute, isMeEndpoint)
   }
 
-  // Validate token and get user
-  const user = await getCurrentUserFromToken(token, options)
+  // Also caches the user in event.context, so handlers do not look the token up again
+  const user = await getSessionUser(event, options)
   if (!user) {
     return handleInvalidToken(event, isApiRoute, isMeEndpoint)
   }
-
-  // Store authenticated user in event context for reuse by handlers
-  // This avoids double validation in endpoints like /me
-  if (!event.context) {
-    event.context = {}
-  }
-  event.context.nuxtUsers = event.context.nuxtUsers || {}
-  event.context.nuxtUsers.user = user
 
   // ============================================
   // Auto-whitelisted endpoints for authenticated users

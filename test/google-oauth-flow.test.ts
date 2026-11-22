@@ -7,6 +7,16 @@ import { createPersonalAccessTokensTable } from '../src/runtime/server/utils/cre
 import { addActiveToUsers } from '../src/runtime/server/utils/add-active-to-users'
 import { addGoogleOauthFields } from '../src/runtime/server/utils/add-google-oauth-fields'
 import bcrypt from 'bcrypt'
+import { IncomingMessage, ServerResponse } from 'node:http'
+import { Socket } from 'node:net'
+import { createEvent } from 'h3'
+import { startSession, getCurrentUserFromToken } from '../src/runtime/server/utils/auth-session'
+
+/** Starts a Google session as the callback does: always remembered */
+const startGoogleSession = (user: Pick<User, 'id' | 'active'>, options: ModuleOptions) => {
+  const req = new IncomingMessage(new Socket())
+  return startSession(createEvent(req, new ServerResponse(req)), user, 'google', options, true)
+}
 
 /**
  * Layer 2: Integration Tests - Google OAuth Complete Flow
@@ -85,7 +95,7 @@ describe('Google OAuth Complete Flow Integration', () => {
   describe('Scenario 1: New User Registration via OAuth', () => {
     it('should create new user, generate token, and prepare for authentication', async () => {
       // Step 1: Simulate OAuth utilities (using real implementations)
-      const { findOrCreateGoogleUser, createAuthTokenForUser } = await import('../src/runtime/server/utils/google-oauth')
+      const { findOrCreateGoogleUser } = await import('../src/runtime/server/utils/google-oauth')
 
       const mockGoogleUser = {
         id: 'google-flow-123',
@@ -106,7 +116,7 @@ describe('Google OAuth Complete Flow Integration', () => {
       expect(user?.active).toBeTruthy()
 
       // Step 3: Create authentication token
-      const token = await createAuthTokenForUser(user!, testOptions, true)
+      const token = await startGoogleSession(user!, testOptions)
 
       expect(token).toBeDefined()
       expect(token.length).toBeGreaterThan(100) // Should be a long hex string
@@ -123,7 +133,6 @@ describe('Google OAuth Complete Flow Integration', () => {
       expect(tokens.rows[0]?.name).toBe('oauth_auth_token')
 
       // Step 5: Simulate /me endpoint (verify token works)
-      const { getCurrentUserFromToken } = await import('../src/runtime/server/utils/user')
       const authenticatedUser = await getCurrentUserFromToken(token, testOptions)
 
       expect(authenticatedUser).toBeDefined()
@@ -145,7 +154,7 @@ describe('Google OAuth Complete Flow Integration', () => {
       const existingUserId = existingUsers.rows[0]?.id
 
       // OAuth flow with same email
-      const { findOrCreateGoogleUser, createAuthTokenForUser } = await import('../src/runtime/server/utils/google-oauth')
+      const { findOrCreateGoogleUser } = await import('../src/runtime/server/utils/google-oauth')
 
       const mockGoogleUser = {
         id: 'google-flow-456',
@@ -166,8 +175,7 @@ describe('Google OAuth Complete Flow Integration', () => {
       expect(user?.profile_picture).toBe('https://example.com/new-pic.jpg') // Picture updated
 
       // Create token and authenticate
-      const token = await createAuthTokenForUser(user!, testOptions, true)
-      const { getCurrentUserFromToken } = await import('../src/runtime/server/utils/user')
+      const token = await startGoogleSession(user!, testOptions)
       const authenticatedUser = await getCurrentUserFromToken(token, testOptions)
 
       expect(authenticatedUser?.email).toBe('existing@example.com')
@@ -245,7 +253,7 @@ describe('Google OAuth Complete Flow Integration', () => {
 
   describe('Scenario 5: Token Expiration and Remember Me', () => {
     it('should create token with correct expiration for remember me', async () => {
-      const { findOrCreateGoogleUser, createAuthTokenForUser } = await import('../src/runtime/server/utils/google-oauth')
+      const { findOrCreateGoogleUser } = await import('../src/runtime/server/utils/google-oauth')
 
       const mockGoogleUser = {
         id: 'google-flow-token',
@@ -256,7 +264,7 @@ describe('Google OAuth Complete Flow Integration', () => {
       }
 
       const user = await findOrCreateGoogleUser(mockGoogleUser, testOptions)
-      const token = await createAuthTokenForUser(user!, testOptions, true) // rememberMe = true
+      const token = await startGoogleSession(user!, testOptions)
 
       // Verify token expiration
       const tokens = await db.sql`SELECT expires_at FROM personal_access_tokens WHERE token = ${token}` as { rows: PersonalAccessToken[] }
@@ -297,7 +305,7 @@ describe('Google OAuth Complete Flow Integration', () => {
 
   describe('Scenario 7: Token Validation and Usage Tracking', () => {
     it('should update last_used_at when token is used', async () => {
-      const { findOrCreateGoogleUser, createAuthTokenForUser } = await import('../src/runtime/server/utils/google-oauth')
+      const { findOrCreateGoogleUser } = await import('../src/runtime/server/utils/google-oauth')
 
       const mockGoogleUser = {
         id: 'google-flow-tracking',
@@ -308,14 +316,13 @@ describe('Google OAuth Complete Flow Integration', () => {
       }
 
       const user = await findOrCreateGoogleUser(mockGoogleUser, testOptions)
-      const token = await createAuthTokenForUser(user!, testOptions, true)
+      const token = await startGoogleSession(user!, testOptions)
 
       // Verify last_used_at is null initially
       let tokens = await db.sql`SELECT last_used_at FROM personal_access_tokens WHERE token = ${token}` as { rows: PersonalAccessToken[] }
       expect(tokens.rows[0]?.last_used_at).toBeNull()
 
       // Use the token (simulating API call)
-      const { getCurrentUserFromToken } = await import('../src/runtime/server/utils/user')
       await getCurrentUserFromToken(token, testOptions)
 
       // Verify last_used_at was updated
@@ -326,7 +333,7 @@ describe('Google OAuth Complete Flow Integration', () => {
 
   describe('Scenario 8: Multiple OAuth Logins Create Multiple Tokens', () => {
     it('should create new token each time user logs in via OAuth', async () => {
-      const { findOrCreateGoogleUser, createAuthTokenForUser } = await import('../src/runtime/server/utils/google-oauth')
+      const { findOrCreateGoogleUser } = await import('../src/runtime/server/utils/google-oauth')
 
       const mockGoogleUser = {
         id: 'google-flow-multi',
@@ -339,10 +346,10 @@ describe('Google OAuth Complete Flow Integration', () => {
       const user = await findOrCreateGoogleUser(mockGoogleUser, testOptions)
 
       // First login
-      const token1 = await createAuthTokenForUser(user!, testOptions, true)
+      const token1 = await startGoogleSession(user!, testOptions)
 
       // Second login (simulating different browser/device)
-      const token2 = await createAuthTokenForUser(user!, testOptions, true)
+      const token2 = await startGoogleSession(user!, testOptions)
 
       // Tokens should be different
       expect(token1).not.toBe(token2)
@@ -352,7 +359,6 @@ describe('Google OAuth Complete Flow Integration', () => {
       expect(tokens.rows).toHaveLength(2)
 
       // Both tokens should be valid
-      const { getCurrentUserFromToken } = await import('../src/runtime/server/utils/user')
       const auth1 = await getCurrentUserFromToken(token1, testOptions)
       const auth2 = await getCurrentUserFromToken(token2, testOptions)
 

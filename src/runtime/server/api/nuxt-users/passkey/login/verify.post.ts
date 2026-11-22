@@ -1,9 +1,8 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server'
-import type { ModuleOptions } from 'nuxt-users/utils'
+import type { ModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { createAuthTokenForUser } from '../../../../utils'
-import { setAuthCookie } from '../../../../utils/auth-session'
+import { startSession } from '../../../../utils'
 import { finishPasskeyLogin } from '../../../../services/passkey'
 import { assertPasskeysEnabled, rethrowPasskeyError } from '../../../../utils/passkey-http'
 
@@ -17,13 +16,14 @@ export default defineEventHandler(async (event) => {
   }
   const rememberMe = Boolean(body.rememberMe)
 
+  let user: UserWithoutPassword
   try {
-    const user = await finishPasskeyLogin(options, body.response)
-    const token = await createAuthTokenForUser(user, options, rememberMe, 'auth_token')
-    setAuthCookie(event, token, options, rememberMe)
-    return { user }
+    user = await finishPasskeyLogin(options, body.response)
   }
   catch (error) {
     return rethrowPasskeyError(error)
   }
+
+  await startSession(event, user, 'passkey', options, rememberMe)
+  return { user }
 })

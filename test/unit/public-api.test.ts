@@ -48,6 +48,7 @@ describe('public API surface', () => {
         "getAppliedMigrations",
         "getCurrentUserFromToken",
         "getLastLoginTime",
+        "getLastLoginTimes",
         "hasAnyUsers",
         "revokeUserTokens",
         "runMigrations",

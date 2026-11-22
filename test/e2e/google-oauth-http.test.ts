@@ -11,7 +11,7 @@ const {
   mockCreateGoogleOAuth2Client,
   mockGetGoogleUserFromCode,
   mockFindOrCreateGoogleUser,
-  mockCreateAuthTokenForUser
+  mockSql
 } = vi.hoisted(() => ({
   mockSendRedirect: vi.fn(),
   mockSetCookie: vi.fn(),
@@ -22,7 +22,7 @@ const {
   mockCreateGoogleOAuth2Client: vi.fn(),
   mockGetGoogleUserFromCode: vi.fn(),
   mockFindOrCreateGoogleUser: vi.fn(),
-  mockCreateAuthTokenForUser: vi.fn()
+  mockSql: vi.fn()
 }))
 
 // Mock h3
@@ -44,7 +44,10 @@ vi.mock('#imports', () => ({
   useRuntimeConfig: () => ({
     nuxtUsers: {
       apiBasePath: '/api/test',
+      connector: { name: 'sqlite', options: {} },
+      tables: { personalAccessTokens: 'personal_access_tokens' },
       auth: {
+        tokenExpiration: 1440,
         rememberMeExpiration: 30,
         google: {
           clientId: 'mock-client-id',
@@ -58,12 +61,16 @@ vi.mock('#imports', () => ({
   })
 }))
 
-// Mock Server Utils
-vi.mock('../../src/runtime/server/utils', () => ({
+vi.mock('../../src/runtime/server/utils/db', () => ({
+  useDb: async () => ({ sql: mockSql })
+}))
+
+// Mock Server Utils, but start sessions with the real auth session module on a mocked database
+vi.mock('../../src/runtime/server/utils', async () => ({
   createGoogleOAuth2Client: mockCreateGoogleOAuth2Client,
   getGoogleUserFromCode: mockGetGoogleUserFromCode,
   findOrCreateGoogleUser: mockFindOrCreateGoogleUser,
-  createAuthTokenForUser: mockCreateAuthTokenForUser
+  startSession: (await import('../../src/runtime/server/utils/auth-session')).startSession
 }))
 
 type Handler = (event: Record<string, unknown>) => Promise<unknown>
@@ -98,7 +105,6 @@ describe('Google OAuth HTTP Callback Handler', () => {
       email: 'test@example.com',
       active: true
     })
-    mockCreateAuthTokenForUser.mockResolvedValue('mock-jwt-token')
   })
 
   it('should redirect to success URL with oauth_success flag on successful login', async () => {
@@ -112,13 +118,13 @@ describe('Google OAuth HTTP Callback Handler', () => {
     expect(mockCreateGoogleOAuth2Client).toHaveBeenCalled()
     expect(mockGetGoogleUserFromCode).toHaveBeenCalledWith(expect.anything(), 'valid-code')
     expect(mockFindOrCreateGoogleUser).toHaveBeenCalled()
-    expect(mockCreateAuthTokenForUser).toHaveBeenCalled()
+    expect(mockSql).toHaveBeenCalledTimes(1)
 
     // Cookie check
     expect(mockSetCookie).toHaveBeenCalledWith(
       mockEvent,
       'auth_token',
-      'mock-jwt-token',
+      expect.stringMatching(/^[0-9a-f]{128}$/),
       expect.objectContaining({
         httpOnly: true,
         path: '/',
@@ -183,6 +189,7 @@ describe('Google OAuth HTTP Callback Handler', () => {
 
     // Assert
     expect(mockSetCookie).not.toHaveBeenCalled()
+    expect(mockSql).not.toHaveBeenCalled()
     expect(mockSendRedirect).toHaveBeenCalledWith(mockEvent, '/login?error=account_inactive')
   })
 

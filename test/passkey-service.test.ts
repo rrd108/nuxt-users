@@ -312,13 +312,14 @@ describe('Passkey service', () => {
       await expect(finishPasskeyLogin(options, { ...response, response: { ...response.response, userHandle: 'handle-1' } })).resolves.toMatchObject({ id: user.id })
     })
 
-    it('rejects an inactive user', async () => {
+    // Whether an inactive user may log in is decided by startSession, as for every login method
+    it('reports an inactive user as inactive', async () => {
       await storePasskeyFor(user.id)
       await db.sql`UPDATE {${options.tables.users}} SET active = ${dbType === 'sqlite' ? 0 : false} WHERE id = ${user.id}`
       const { challenge } = await beginPasskeyLogin(options)
       verifiedLogin(1)
 
-      await expect(finishPasskeyLogin(options, authenticationResponse(challenge))).rejects.toMatchObject({ statusCode: 403 })
+      await expect(finishPasskeyLogin(options, authenticationResponse(challenge))).resolves.toMatchObject({ id: user.id, active: expect.toBeOneOf([false, 0]) })
     })
 
     it('rejects a replayed challenge', async () => {

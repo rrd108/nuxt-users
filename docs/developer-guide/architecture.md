@@ -88,7 +88,7 @@ interface PersonalAccessToken {
   id: number
   tokenable_type: string  // 'user'
   tokenable_id: number    // user ID
-  name: string           // 'auth_token'
+  name: string           // the login method: 'auth_token' (password), 'passkey_auth_token', 'oauth_auth_token' (Google)
   token: string          // hashed token
   expires_at?: string    // optional expiration
   last_used_at?: string  // tracking usage
@@ -100,6 +100,13 @@ interface PersonalAccessToken {
 2. **Validation**: Checked on each authenticated request
 3. **Usage Tracking**: `last_used_at` updated on access
 4. **Cleanup**: Expired tokens automatically removed
+
+**Auth session module** (`server/utils/auth-session.ts`): the only code that starts, reads and ends a session.
+
+- `startSession(event, user, loginMethod, options, rememberMe)` is the single call every login method (password, passkey, Google) makes once the user's identity is proven. It refuses inactive users with a 403, stores the token named after the login method, and sets the cookie. The expiry (`tokenExpiration` minutes, or `rememberMeExpiration` days with remember me) is computed by the database from its own `CURRENT_TIMESTAMP`, the clock every token check compares against, so it is right whatever time zone the database session uses.
+- `getSessionUser(event, options)` returns the session's user or null. The first lookup in a request is cached in `event.context.nuxtUsers.user`, so the authorization middleware, `/me`, `useServerAuth` and the other handlers hit the database once. `requireSessionUser` answers 401 instead of null.
+- `endSession(event, options)` (logout) deletes the token and clears the cookie with the same cookie options it was set with; `endOtherSessions` keeps only the current session, e.g. after a password change.
+- `getLastLoginTimes(userIds, options)` reads the last login of a whole page of users in one query.
 
 #### Password Security
 

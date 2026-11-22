@@ -21,12 +21,21 @@ vi.mock('#imports', () => ({
 // Import middleware after mocking
 const serverAuthMiddleware = await import('../../src/runtime/server/middleware/authorization.server')
 
-vi.mock('../../src/runtime/server/utils', () => ({
-  getCurrentUserFromToken: vi.fn(),
-  handleUnauthenticatedRequest: vi.fn(),
-  handleUnauthorizedRequest: vi.fn(),
-  handleInvalidToken: vi.fn()
-}))
+// The session readers stand on the mocked cookie and token lookup, so the tests drive both
+vi.mock('../../src/runtime/server/utils', () => {
+  const getCurrentUserFromToken = vi.fn()
+  return {
+    getCurrentUserFromToken,
+    readSessionToken: (event: H3Event) => mockGetCookie(event, 'auth_token'),
+    getSessionUser: async (event: H3Event, options: unknown) => {
+      const token = mockGetCookie(event, 'auth_token')
+      return token ? getCurrentUserFromToken(token, options) : null
+    },
+    handleUnauthenticatedRequest: vi.fn(),
+    handleUnauthorizedRequest: vi.fn(),
+    handleInvalidToken: vi.fn()
+  }
+})
 
 describe('Auth Server Middleware', () => {
   let mockOptions: { auth: { whitelist: string[], permissions: Record<string, string[]> } }

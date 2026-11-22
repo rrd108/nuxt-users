@@ -148,7 +148,7 @@ export default defineEventHandler(async (event) => {
 ```
 
 **Methods:**
-- `getCurrentUser(event)`: Returns the authenticated user or null
+- `getCurrentUser(event)`: Returns the authenticated user or null. Reuses the user the authorization middleware already resolved for the request, so it costs no extra database query
 
 #### Resource Ownership Checks
 
@@ -370,8 +370,7 @@ The module includes server middleware that handles authentication and authorizat
 - Provides different behavior for API routes vs. page routes
 
 **Internal implementation details:**
-- Uses `getCookie()` to read authentication tokens
-- Calls `getCurrentUserFromToken()` to validate tokens
+- Reads the session through the auth session module (`getSessionUser()`), which caches the user in `event.context` for the handlers after it
 - Uses permission utilities to check role-based access
 - Throws HTTP errors for unauthorized API requests
 - Allows client-side handling for unauthorized page requests

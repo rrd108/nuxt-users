@@ -1,26 +1,17 @@
-import { createError, defineEventHandler, getCookie, readBody } from 'h3'
+import { createError, defineEventHandler, readBody } from 'h3'
 import bcrypt from 'bcrypt'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { getCurrentUserFromToken, updateUserPassword, revokeUserTokens } from '../../../utils'
+import { requireSessionUser, findUserById, updateUserPassword, endOtherSessions } from '../../../utils'
 import { validatePassword, getPasswordValidationOptions } from '../../../../../utils'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
   const options = nuxtUsers as ModuleOptions
 
-  // Get the auth token from the cookie
-  const token = getCookie(event, 'auth_token')
-
-  if (!token) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized - No authentication token found'
-    })
-  }
-
-  // Get the current user from the token
-  const user = await getCurrentUserFromToken(token, options, true)
+  const sessionUser = await requireSessionUser(event, options)
+  // The password hash is never kept in the session, so it is read here
+  const user = await findUserById(sessionUser.id, options, true)
 
   if (!user) {
     throw createError({
@@ -77,7 +68,7 @@ export default defineEventHandler(async (event) => {
   await updateUserPassword(user.email, newPassword, options)
 
   // Log out all other sessions, keep the current one
-  await revokeUserTokens(user.id, options, token)
+  await endOtherSessions(event, user.id, options)
 
   return { message: 'Password updated successfully' }
 })

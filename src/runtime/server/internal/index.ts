@@ -12,6 +12,7 @@ export {
   cleanupPersonalAccessTokens,
   revokeUserTokens,
   getLastLoginTime,
+  getLastLoginTimes,
   findUserById,
   updateUser,
   deleteUser,

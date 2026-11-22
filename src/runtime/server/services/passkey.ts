@@ -283,11 +283,6 @@ export const finishPasskeyLogin = async (
   if (!user) {
     throw invalid('the passkey belongs to a user that no longer exists')
   }
-  // Soft-deleted and not yet email-confirmed users are both inactive, as for password login
-  if (!user.active) {
-    throw new PasskeyError('User account is inactive', 403)
-  }
-
   // Compare-and-set: a concurrent login that already used this counter value loses
   if (!await updatePasskeyCounter(options, passkey.id, newCounter)) {
     console.warn('[Nuxt Users] Passkey counter was already used by a concurrent login. Login rejected:', { passkeyId: passkey.id, userId: passkey.user_id })

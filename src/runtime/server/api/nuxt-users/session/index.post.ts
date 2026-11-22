@@ -2,8 +2,7 @@ import { createError, defineEventHandler, readBody } from 'h3'
 import bcrypt from 'bcrypt'
 import type { ModuleOptions, User } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { useDb, createAuthTokenForUser } from '../../../utils'
-import { setAuthCookie } from '../../../utils/auth-session'
+import { useDb, startSession } from '../../../utils'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -38,13 +37,6 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (!user.active) {
-    throw createError({
-      statusCode: 403,
-      statusMessage: 'User account is inactive',
-    })
-  }
-
   const storedPassword = user.password
   const passwordMatch = await bcrypt.compare(password, storedPassword)
 
@@ -55,8 +47,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const token = await createAuthTokenForUser(user, options, Boolean(rememberMe), 'auth_token')
-  setAuthCookie(event, token, options, Boolean(rememberMe))
+  await startSession(event, user, 'password', options, Boolean(rememberMe))
 
   // Return user without password for security
   const { password: _, ...userWithoutPassword } = user

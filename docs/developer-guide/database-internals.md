@@ -441,7 +441,7 @@ await revokeUserTokens(1, options)
 
 ### `getLastLoginTime(userId, options)`
 
-Gets the last login time for a user based on their most recent token creation.
+Gets the last login time for a user based on their most recent token creation. For many users at once, `getLastLoginTimes(userIds, options)` returns a `Map` of user id to last login (or `null`) in a single query.
 
 ```typescript
 import { getLastLoginTime } from '#nuxt-users/server'

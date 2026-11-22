@@ -1,7 +1,7 @@
 import { createError, defineEventHandler, getQuery } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
-import { useDb, getLastLoginTime } from '../../utils'
+import { useDb, getLastLoginTimes } from '../../utils'
 
 export default defineEventHandler(async (event) => {
   const { nuxtUsers } = useRuntimeConfig()
@@ -37,9 +37,8 @@ export default defineEventHandler(async (event) => {
       LIMIT ${limit} OFFSET ${offset}
     ` as { rows: Array<{ id: number, email: string, name: string, role: string, created_at: string | Date, updated_at: string | Date }> }
 
-    const users = await Promise.all(usersResult.rows.map(async (user) => {
-      const lastLoginTime = await getLastLoginTime(user.id, options)
-
+    const lastLogins = await getLastLoginTimes(usersResult.rows.map(user => user.id), options)
+    const users = usersResult.rows.map((user) => {
       return {
         id: user.id,
         email: user.email,
@@ -47,9 +46,9 @@ export default defineEventHandler(async (event) => {
         role: user.role,
         created_at: user.created_at instanceof Date ? user.created_at.toISOString() : user.created_at,
         updated_at: user.updated_at instanceof Date ? user.updated_at.toISOString() : user.updated_at,
-        last_login_at: lastLoginTime
+        last_login_at: lastLogins.get(user.id) ?? null
       }
-    }))
+    })
 
     return {
       users,

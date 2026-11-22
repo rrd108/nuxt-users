@@ -270,70 +270,6 @@ export const hasAnyUsers = async (options: ModuleOptions) => {
 }
 
 /**
- * Gets the current user from an authentication token.
- */
-export const getCurrentUserFromToken = async <T extends boolean = false>(
-  token: string,
-  options: ModuleOptions,
-  withPass: T = false as T
-): Promise<T extends true ? User | null : UserWithoutPassword | null> => {
-  const db = await useDb(options)
-  const personalAccessTokensTable = options.tables.personalAccessTokens
-  const usersTable = options.tables.users
-
-  // Find the token in the database and check if it's not expired
-  const tokenResult = await db.sql`
-    SELECT tokenable_id, expires_at FROM {${personalAccessTokensTable}}
-    WHERE token = ${token}
-    AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
-  ` as { rows: Array<{ tokenable_id: number, expires_at: string | null }> }
-
-  if (tokenResult.rows.length === 0) {
-    return null
-  }
-
-  const tokenRow = tokenResult.rows[0]
-  if (!tokenRow) {
-    return null
-  }
-
-  const userId = tokenRow.tokenable_id
-
-  // Update last_used_at timestamp for the token
-  await db.sql`
-    UPDATE {${personalAccessTokensTable}}
-    SET last_used_at = CURRENT_TIMESTAMP
-    WHERE token = ${token}
-  `
-
-  // Get the user data
-  const userResult = await db.sql`
-    SELECT * FROM {${usersTable}}
-    WHERE id = ${userId}
-  ` as { rows: User[] }
-
-  if (userResult.rows.length === 0) {
-    return null
-  }
-
-  const user = userResult.rows[0]
-  if (!user) {
-    return null
-  }
-
-  if (!user.active) {
-    return null
-  }
-
-  if (withPass === true) {
-    return user as T extends true ? User | null : UserWithoutPassword | null
-  }
-
-  const { password: _, ...userWithoutPassword } = user
-  return userWithoutPassword as T extends true ? User | null : UserWithoutPassword | null
-}
-
-/**
  * Deletes expired personal access tokens from the database.
  */
 export const deleteExpiredPersonalAccessTokens = async (options: ModuleOptions): Promise<number> => {
@@ -406,35 +342,4 @@ export const revokeUserTokens = async (userId: number, options: ModuleOptions, e
   `
 
   console.log(`[Nuxt Users] All tokens revoked for user ID: ${userId}`)
-}
-
-/**
- * Gets the last login time for a user based on their most recent personal access token creation.
- * This represents when the user last successfully logged in.
- */
-export const getLastLoginTime = async (userId: number, options: ModuleOptions): Promise<string | null> => {
-  const db = await useDb(options)
-  const personalAccessTokensTable = options.tables.personalAccessTokens
-
-  const result = await db.sql`
-    SELECT created_at 
-    FROM {${personalAccessTokensTable}} 
-    WHERE tokenable_id = ${userId} AND tokenable_type = 'user'
-    ORDER BY created_at DESC 
-    LIMIT 1
-  ` as { rows: Array<{ created_at: Date | string }> }
-
-  if (result.rows.length === 0) {
-    return null
-  }
-
-  const resultRow = result.rows[0]
-  if (!resultRow) {
-    return null
-  }
-
-  const lastLogin = resultRow.created_at
-
-  // Convert Date objects to ISO strings if needed
-  return lastLogin instanceof Date ? lastLogin.toISOString() : lastLogin
 }

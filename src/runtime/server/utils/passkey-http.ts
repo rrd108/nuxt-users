@@ -1,5 +1,5 @@
 import { createError } from 'h3'
-import type { ModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
+import type { ModuleOptions } from 'nuxt-users/utils'
 import { PasskeyError } from '../services/passkey'
 import type { Passkey } from './passkey'
 
@@ -8,15 +8,6 @@ export const assertPasskeysEnabled = (options: ModuleOptions) => {
   if (!options.auth.passkey) {
     throw createError({ statusCode: 404, statusMessage: 'Passkeys are not enabled' })
   }
-}
-
-/** The user the authorization middleware stored in the event context */
-export const requireAuthenticatedUser = (context: object | undefined): UserWithoutPassword => {
-  const user = (context as { nuxtUsers?: { user?: UserWithoutPassword } } | undefined)?.nuxtUsers?.user
-  if (!user) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
-  }
-  return user
 }
 
 /** What the API shows of a passkey: never the public key, credential id or user handle */

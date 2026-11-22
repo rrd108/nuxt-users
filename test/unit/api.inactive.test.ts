@@ -14,8 +14,9 @@ vi.mock('../../src/runtime/server/utils/db', () => ({
   useDb: mockUseDb
 }))
 
-vi.mock('../../src/runtime/server/utils/user', () => ({
-  getLastLoginTime: vi.fn().mockResolvedValue(null)
+// Last-login bookkeeping is covered against a real database in test/auth-session.test.ts
+vi.mock('../../src/runtime/server/utils/auth-session', () => ({
+  getLastLoginTimes: vi.fn().mockResolvedValue(new Map())
 }))
 
 const testInactiveUsers = [

@@ -1,5 +1,5 @@
 import crypto from 'node:crypto'
-import { defineEventHandler, sendRedirect, getQuery, getCookie, deleteCookie } from 'h3'
+import { defineEventHandler, sendRedirect, getQuery, getCookie, deleteCookie, isError } from 'h3'
 import type { ModuleOptions } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import type { H3Event } from 'h3'
@@ -7,9 +7,8 @@ import {
   createGoogleOAuth2Client,
   getGoogleUserFromCode,
   findOrCreateGoogleUser,
-  createAuthTokenForUser
+  startSession
 } from '../../../../utils'
-import { setAuthCookie } from '../../../../utils/auth-session'
 import { OAUTH_STATE_COOKIE } from '../../../../../constants'
 
 export default defineEventHandler(async (event) => {
@@ -67,17 +66,18 @@ export default defineEventHandler(async (event) => {
       return sendRedirect(event, errorRedirect)
     }
 
-    // Check if user account is active
-    if (!user.active) {
-      console.warn(`[Nuxt Users] Inactive user attempted Google OAuth login: ${user.email}`)
-      const errorRedirect = options.auth.google.errorRedirect || '/login?error=account_inactive'
-      return sendRedirect(event, errorRedirect)
+    // Google logins are always remembered
+    try {
+      await startSession(event, user, 'google', options, true)
     }
-
-    // Create authentication token - default to remember me for OAuth users
-    const token = await createAuthTokenForUser(user, options, true)
-
-    setAuthCookie(event, token, options, true)
+    catch (error) {
+      if (isError(error) && error.statusCode === 403) {
+        console.warn(`[Nuxt Users] Inactive user attempted Google OAuth login: ${user.email}`)
+        const errorRedirect = options.auth.google.errorRedirect || '/login?error=account_inactive'
+        return sendRedirect(event, errorRedirect)
+      }
+      throw error
+    }
 
     console.log(`[Nuxt Users] Google OAuth login successful for user: ${user.email}`)
 
