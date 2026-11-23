@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.53.5
+
+[compare changes](https://github.com/rrd108/nuxt-users/compare/v1.53.4...v1.53.5)
+
+### 🩹 Fixes
+
+- Keep the passkey user handle and signal removed passkeys to devices ([238264f](https://github.com/rrd108/nuxt-users/commit/238264f))
+
+### ❤️ Contributors
+
+- Rrd108 ([@rrd108](https://github.com/rrd108))
+
 ## v1.53.4
 
 [compare changes](https://github.com/rrd108/nuxt-users/compare/v1.53.3...v1.53.4)
