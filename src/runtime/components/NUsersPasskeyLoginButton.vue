@@ -37,10 +37,13 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>()
 
-const { enabled, supported, login } = usePasskeys()
+const { enabled, supported, login, isUnknownPasskey } = usePasskeys()
 const isLoading = ref(false)
 
 const extractErrorMessage = (err: unknown): string => {
+  if (isUnknownPasskey(err)) {
+    return t('passkey.unknownCredential')
+  }
   if (err && typeof err === 'object' && 'data' in err && err.data && typeof err.data === 'object' && 'statusMessage' in err.data) {
     return String(err.data.statusMessage)
   }

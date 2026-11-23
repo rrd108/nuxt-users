@@ -18,6 +18,8 @@ export type {
   DisplayFieldsProps,
   LoginFormProps,
   PasskeySummary,
+  PasskeyAcceptedCredentials,
+  PasskeyUnknownCredential,
   PasskeyOptions,
   ResetPasswordFormProps,
   Permission,

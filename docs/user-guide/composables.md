@@ -134,7 +134,7 @@ Passkey (WebAuthn) login and management. Use it to build a custom UI; the [passk
 
 ```vue
 <script setup lang="ts">
-const { enabled, supported, login, register, list, remove } = usePasskeys()
+const { enabled, supported, login, isUnknownPasskey, register, list, remove } = usePasskeys()
 const { login: setUser } = useAuthentication()
 
 const signIn = async () => {
@@ -151,10 +151,11 @@ const signIn = async () => {
 |---|---|---|
 | `enabled` | `ComputedRef<boolean>` | `auth.passkey` is set in the module config. |
 | `supported` | `Ref<boolean>` | The browser supports WebAuthn. Known after mount, so server and client render the same markup. |
-| `login(rememberMe?)` | `Promise<UserWithoutPassword \| null>` | Signs in with a passkey and returns the user, like the password form (call `useAuthentication().login` with it). `null` when the user dismissed the browser prompt. |
+| `login(rememberMe?)` | `Promise<UserWithoutPassword \| null>` | Signs in with a passkey and returns the user, like the password form (call `useAuthentication().login` with it). `null` when the user dismissed the browser prompt. Tells the authenticators which of the user's passkeys still exist ([Signal API](/user-guide/authentication#removed-passkeys-on-the-device)). |
+| `isUnknownPasskey(error)` | `boolean` | The error `login` threw means the server no longer has the passkey the device offered. Use it to ask the user to delete it from the device. |
 | `register(name?)` | `Promise<PasskeySummary \| null>` | Adds a passkey to the signed-in user. `null` when the user dismissed the prompt. Throws an `InvalidStateError` when the authenticator already holds a passkey for the account. |
 | `list()` | `Promise<PasskeySummary[]>` | The signed-in user's passkeys (`id`, `name`, `device_type`, `backed_up`, `transports`, `created_at`, `last_used_at`). |
-| `remove(id)` | `Promise<void>` | Removes one of the signed-in user's passkeys. |
+| `remove(id)` | `Promise<void>` | Removes one of the signed-in user's passkeys, and asks the authenticators to drop it while keeping the others. |
 
 ## `usePublicPaths()`
 

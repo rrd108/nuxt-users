@@ -15,6 +15,7 @@ import {
   deletePasskeysForUser,
   PasskeyUserHandleConflictError,
 } from '../src/runtime/server/utils/passkey'
+import { createUser } from '../src/runtime/server/utils/user'
 import { cleanupTestSetup, createTestSetup, getDatabaseConfig } from './test-setup'
 import type { DatabaseType, ModuleOptions } from '../src/types'
 
@@ -171,36 +172,39 @@ describe('Passkey store', () => {
   })
 
   describe('user handle', () => {
-    it('generates a random handle for a user without passkeys', async () => {
-      const first = await getOrCreateUserHandle(options, 1)
-      const other = await getOrCreateUserHandle(options, 2)
+    const createUsers = async () => {
+      const first = await createUser({ email: 'first@example.com', name: 'First', password: 'Password123!' }, options)
+      const second = await createUser({ email: 'second@example.com', name: 'Second', password: 'Password123!' }, options)
+      return [first.id, second.id] as const
+    }
+
+    it('generates a random handle per user and keeps it', async () => {
+      const [firstId, secondId] = await createUsers()
+      const first = await getOrCreateUserHandle(options, firstId)
+
       expect(first).toMatch(/^[\w-]{43}$/)
-      expect(other).not.toBe(first)
+      expect(await getOrCreateUserHandle(options, firstId)).toBe(first)
+      expect(await getOrCreateUserHandle(options, secondId)).not.toBe(first)
     })
 
-    it('keeps one handle when a user adds their first passkeys concurrently', async () => {
-      const results = await Promise.allSettled([
-        addPasskey(options, newPasskey({ credentialId: 'race-a', userHandle: 'handle-a' })),
-        addPasskey(options, newPasskey({ credentialId: 'race-b', userHandle: 'handle-b' })),
-        addPasskey(options, newPasskey({ credentialId: 'race-c', userHandle: 'handle-c' })),
-      ])
+    it('gives concurrent first registrations of a user one handle', async () => {
+      const [userId] = await createUsers()
+      const handles = await Promise.all([1, 2, 3].map(() => getOrCreateUserHandle(options, userId)))
 
-      const passkeys = await listPasskeys(options, 1)
-      expect(new Set(passkeys.map(p => p.user_handle)).size).toBe(1)
-      // A passkey with another handle is never rewritten, as its authenticator keeps the original one
-      expect(passkeys.length).toBe(results.filter(r => r.status === 'fulfilled').length)
+      expect(new Set(handles).size).toBe(1)
     })
 
-    it('refuses a passkey whose handle differs from the user existing passkeys', async () => {
-      await addPasskey(options, newPasskey({ credentialId: 'first', userHandle: 'handle-a' }))
+    it('refuses a passkey whose handle differs from the one stored for the user', async () => {
+      const [userId] = await createUsers()
+      const handle = await getOrCreateUserHandle(options, userId)
+      await addPasskey(options, newPasskey({ userId, credentialId: 'first', userHandle: handle }))
 
-      await expect(addPasskey(options, newPasskey({ credentialId: 'second', userHandle: 'handle-b' }))).rejects.toBeInstanceOf(PasskeyUserHandleConflictError)
-      expect((await listPasskeys(options, 1)).map(p => p.credential_id)).toEqual(['first'])
+      await expect(addPasskey(options, newPasskey({ userId, credentialId: 'second', userHandle: 'other-handle' }))).rejects.toBeInstanceOf(PasskeyUserHandleConflictError)
+      expect((await listPasskeys(options, userId)).map(p => p.credential_id)).toEqual(['first'])
     })
 
-    it('reuses the handle of the user existing passkeys', async () => {
-      await addPasskey(options, newPasskey({ userHandle: 'stored-handle' }))
-      expect(await getOrCreateUserHandle(options, 1)).toBe('stored-handle')
+    it('fails for a user that does not exist', async () => {
+      await expect(getOrCreateUserHandle(options, 999)).rejects.toThrow('Could not store a passkey user handle')
     })
   })
 

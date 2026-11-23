@@ -4,7 +4,7 @@ import type { ModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
 import { useRuntimeConfig } from '#imports'
 import { startSession } from '../../../../utils'
 import { finishPasskeyLogin } from '../../../../services/passkey'
-import { assertPasskeysEnabled, rethrowPasskeyError } from '../../../../utils/passkey-http'
+import { acceptedPasskeyCredentialsFor, assertPasskeysEnabled, rethrowPasskeyError } from '../../../../utils/passkey-http'
 
 export default defineEventHandler(async (event) => {
   const options = useRuntimeConfig().nuxtUsers as ModuleOptions
@@ -25,5 +25,6 @@ export default defineEventHandler(async (event) => {
   }
 
   await startSession(event, user, 'passkey', options, rememberMe)
-  return { user }
+  // The browser tells the authenticators which of the user's passkeys still exist (WebAuthn Signal API)
+  return { user, passkeys: await acceptedPasskeyCredentialsFor(options, user.id) }
 })

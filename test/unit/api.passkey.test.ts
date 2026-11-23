@@ -47,6 +47,7 @@ vi.mock('../../src/runtime/server/services/passkey', () => {
     finishPasskeyRegistration: vi.fn(),
     beginPasskeyLogin: vi.fn(),
     finishPasskeyLogin: vi.fn(),
+    getAcceptedPasskeyCredentials: vi.fn(),
   }
 })
 
@@ -67,6 +68,9 @@ describe('Passkey API endpoints', () => {
     id: 1, user_id: 7, credential_id: 'cred', public_key: 'secret-key', counter: 3, transports: ['internal'],
     device_type: 'multiDevice', backed_up: true, name: 'Laptop', user_handle: 'secret-handle', created_at: '2026-01-01', last_used_at: null,
   }
+
+  // The passkeys the user still has, for the browser's Signal API
+  const accepted = { rpId: 'example.com', userId: 'handle', allAcceptedCredentialIds: ['cred', 'phone-cred'] }
 
   let h3: typeof import('h3')
   let utils: typeof import('../../src/runtime/server/utils')
@@ -148,11 +152,13 @@ describe('Passkey API endpoints', () => {
       vi.mocked(h3.readBody).mockResolvedValue({ response: { id: 'cred' }, rememberMe: true })
       vi.mocked(service.finishPasskeyLogin).mockResolvedValue(user)
       vi.mocked(utils.startSession).mockResolvedValue('the-token')
+      vi.mocked(service.getAcceptedPasskeyCredentials).mockResolvedValue(accepted)
 
       const result = await loginVerify.default(anonymous)
 
       expect(utils.startSession).toHaveBeenCalledWith(anonymous, user, 'passkey', passkeyOptions, true)
-      expect(result).toEqual({ user })
+      expect(service.getAcceptedPasskeyCredentials).toHaveBeenCalledWith(passkeyOptions, 7)
+      expect(result).toEqual({ user, passkeys: accepted })
     })
 
     it('passes the session refusal of an inactive user through', async () => {
@@ -190,8 +196,20 @@ describe('Passkey API endpoints', () => {
 
     it('deletes a passkey of the current user', async () => {
       vi.mocked(utils.deletePasskey).mockResolvedValue(true)
+      vi.mocked(service.getAcceptedPasskeyCredentials).mockResolvedValue(accepted)
 
-      expect(await deleteEndpoint.default(withId('1'))).toEqual({ success: true })
+      expect(await deleteEndpoint.default(withId('1'))).toEqual({ success: true, passkeys: accepted })
+    })
+
+    it('still answers the delete and the login when the remaining passkeys cannot be read', async () => {
+      vi.mocked(utils.deletePasskey).mockResolvedValue(true)
+      vi.mocked(service.getAcceptedPasskeyCredentials).mockRejectedValue(new Error('db down'))
+      expect(await deleteEndpoint.default(withId('1'))).toEqual({ success: true, passkeys: null })
+
+      vi.mocked(h3.readBody).mockResolvedValue({ response: { id: 'cred' } })
+      vi.mocked(service.finishPasskeyLogin).mockResolvedValue(user)
+      vi.mocked(utils.startSession).mockResolvedValue('the-token')
+      expect(await loginVerify.default(anonymous)).toEqual({ user, passkeys: null })
       expect(utils.deletePasskey).toHaveBeenCalledWith(passkeyOptions, 7, 1)
     })
 

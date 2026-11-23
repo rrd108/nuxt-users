@@ -1,9 +1,39 @@
 import { computed, getCurrentInstance, onMounted, ref } from 'vue'
 import { useRuntimeConfig } from '#app'
-import type { PasskeySummary, RuntimeModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
+import type { PasskeyAcceptedCredentials, PasskeySummary, PasskeyUnknownCredential, RuntimeModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
 
 /** The browser aborted the ceremony: the user dismissed the prompt, or it timed out */
 const isCancelled = (error: unknown) => error instanceof Error && (error.name === 'NotAllowedError' || error.name === 'AbortError')
+
+/** The `data` the server attached to an HTTP error ($fetch puts the response body on `error.data`) */
+const unknownCredentialOf = (error: unknown): PasskeyUnknownCredential | null => {
+  const data = (error as { data?: { data?: Partial<PasskeyUnknownCredential> } } | null)?.data?.data
+  return data?.code === 'unknown_credential' && data.rpId && data.credentialId ? data as PasskeyUnknownCredential : null
+}
+
+// The WebAuthn Signal API, not in every browser (nor in the DOM typings) yet
+interface SignalApi {
+  signalUnknownCredential?: (options: Omit<PasskeyUnknownCredential, 'code'>) => Promise<void>
+  signalAllAcceptCredentials?: (options: PasskeyAcceptedCredentials) => Promise<void>
+}
+
+/**
+ * Tells the authenticators about passkeys the server no longer has, so they disappear from the device.
+ * Best effort: a browser without the Signal API, or one that refuses, changes nothing for the user.
+ */
+const signal = async <K extends keyof SignalApi>(method: K, options: Parameters<NonNullable<SignalApi[K]>>[0]) => {
+  const api = (globalThis as { PublicKeyCredential?: SignalApi }).PublicKeyCredential
+  const fn = api?.[method] as ((options: unknown) => Promise<void>) | undefined
+  if (typeof fn !== 'function') {
+    return
+  }
+  try {
+    await fn.call(api, options)
+  }
+  catch (error) {
+    console.warn(`[Nuxt Users] PublicKeyCredential.${method} failed:`, error)
+  }
+}
 
 /**
  * Passkey (WebAuthn) login and management for the signed-in user.
@@ -46,12 +76,31 @@ export const usePasskeys = () => {
       throw error
     }
 
-    const result = await $fetch<{ user: UserWithoutPassword }>(`${apiBasePath}/passkey/login/verify`, {
-      method: 'POST',
-      body: { response, rememberMe }
-    })
+    let result
+    try {
+      result = await $fetch<{ user: UserWithoutPassword, passkeys?: PasskeyAcceptedCredentials | null }>(`${apiBasePath}/passkey/login/verify`, {
+        method: 'POST',
+        body: { response, rememberMe }
+      })
+    }
+    catch (error) {
+      // The passkey was removed on the server: the device would keep offering it
+      const unknown = unknownCredentialOf(error)
+      if (unknown) {
+        const { code: _, ...credential } = unknown
+        await signal('signalUnknownCredential', credential)
+      }
+      throw error
+    }
+
+    if (result.passkeys) {
+      await signal('signalAllAcceptCredentials', result.passkeys)
+    }
     return result.user
   }
+
+  /** The login was refused because the server does not know the passkey: it was removed */
+  const isUnknownPasskey = (error: unknown): boolean => unknownCredentialOf(error) !== null
 
   /** Adds a passkey to the signed-in user. Resolves to null when the user dismissed the browser prompt. */
   const register = async (name?: string): Promise<PasskeySummary | null> => {
@@ -81,9 +130,13 @@ export const usePasskeys = () => {
     return result.passkeys
   }
 
+  /** Removes a passkey, and asks the authenticators to drop it while keeping the user's other passkeys */
   const remove = async (id: number): Promise<void> => {
-    await $fetch(`${apiBasePath}/passkeys/${id}`, { method: 'DELETE' })
+    const result = await $fetch<{ success: boolean, passkeys?: PasskeyAcceptedCredentials | null }>(`${apiBasePath}/passkeys/${id}`, { method: 'DELETE' })
+    if (result?.passkeys) {
+      await signal('signalAllAcceptCredentials', result.passkeys)
+    }
   }
 
-  return { enabled, supported, login, register, list, remove }
+  return { enabled, supported, login, isUnknownPasskey, register, list, remove }
 }

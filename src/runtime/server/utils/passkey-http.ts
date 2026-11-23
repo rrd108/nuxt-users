@@ -1,6 +1,6 @@
 import { createError } from 'h3'
-import type { ModuleOptions } from 'nuxt-users/utils'
-import { PasskeyError } from '../services/passkey'
+import type { ModuleOptions, PasskeyAcceptedCredentials } from 'nuxt-users/utils'
+import { getAcceptedPasskeyCredentials, PasskeyError } from '../services/passkey'
 import type { Passkey } from './passkey'
 
 /** Passkeys are an opt-in feature: without auth.passkey every passkey endpoint answers 404 */
@@ -24,8 +24,22 @@ export const toPublicPasskey = (passkey: Passkey) => ({
 /** Turns an expected passkey ceremony failure into an HTTP error, and lets anything else bubble up as a 500 */
 export const rethrowPasskeyError = (error: unknown): never => {
   if (error instanceof PasskeyError) {
-    throw createError({ statusCode: error.statusCode, statusMessage: error.message })
+    throw createError({ statusCode: error.statusCode, statusMessage: error.message, data: error.data })
   }
   console.error('[Nuxt Users] Passkey error:', error)
   throw createError({ statusCode: 500, statusMessage: 'Passkey request failed' })
+}
+
+/**
+ * The user's remaining passkeys for the browser's Signal API, or null if they cannot be read. Best effort:
+ * it runs after the login or delete already happened, which must not turn into an error.
+ */
+export const acceptedPasskeyCredentialsFor = async (options: ModuleOptions, userId: number): Promise<PasskeyAcceptedCredentials | null> => {
+  try {
+    return await getAcceptedPasskeyCredentials(options, userId)
+  }
+  catch (error) {
+    console.warn('[Nuxt Users] Could not list the accepted passkeys for the Signal API:', error)
+    return null
+  }
 }

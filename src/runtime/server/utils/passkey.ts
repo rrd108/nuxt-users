@@ -142,15 +142,34 @@ export const findPasskeyByCredentialId = async (options: ModuleOptions, credenti
   return row ? toPasskey(row) : null
 }
 
+/** The WebAuthn user handle stored for a user, or null when they never started a passkey registration */
+export const findUserHandle = async (options: ModuleOptions, userId: number): Promise<string | null> => {
+  const db = await useDb(options)
+  const result = await db.sql`SELECT passkey_user_handle FROM {${options.tables.users}} WHERE id = ${userId}` as { rows: Array<{ passkey_user_handle: string | null }> }
+  return result.rows[0]?.passkey_user_handle ?? null
+}
+
 /**
- * The WebAuthn user handle of a user: the one their existing passkeys carry, or a new random one.
- * A new one is not persisted here: registration stores it with the challenge and saves the passkey with it.
- * It is deliberately not derived from the user id.
+ * The WebAuthn user handle of a user, created on first use and kept for good, also when all their passkeys
+ * are deleted: an authenticator only replaces a passkey that has the same handle (issue #235).
+ * It is random, deliberately not derived from the user id.
  */
 export const getOrCreateUserHandle = async (options: ModuleOptions, userId: number): Promise<string> => {
+  const existing = await findUserHandle(options, userId)
+  if (existing) {
+    return existing
+  }
+
+  // Set only while empty: of concurrent first registrations one write lands, and all of them read that one back
   const db = await useDb(options)
-  const result = await db.sql`SELECT user_handle FROM {${options.tables.passkeys}} WHERE user_id = ${userId} ORDER BY id LIMIT 1` as { rows: Array<{ user_handle: string }> }
-  return result.rows[0]?.user_handle ?? crypto.randomBytes(32).toString('base64url')
+  const handle = crypto.randomBytes(32).toString('base64url')
+  await db.sql`UPDATE {${options.tables.users}} SET passkey_user_handle = ${handle} WHERE id = ${userId} AND passkey_user_handle IS NULL`
+
+  const stored = await findUserHandle(options, userId)
+  if (!stored) {
+    throw new Error(`[Nuxt Users] Could not store a passkey user handle for user ${userId}`)
+  }
+  return stored
 }
 
 export const addPasskey = async (options: ModuleOptions, passkey: NewPasskey): Promise<Passkey> => {
@@ -169,10 +188,9 @@ export const addPasskey = async (options: ModuleOptions, passkey: NewPasskey): P
     throw new Error('[Nuxt Users] Passkey was not saved')
   }
 
-  // Concurrent first registrations may each have generated a handle: the oldest passkey's one wins. A passkey
-  // with another handle could never log in (the authenticator keeps its own), so it is removed, not rewritten.
-  const canonical = await db.sql`SELECT user_handle FROM {${table}} WHERE user_id = ${passkey.userId} ORDER BY id LIMIT 1` as { rows: Array<{ user_handle: string }> }
-  const handle = canonical.rows[0]?.user_handle
+  // Every passkey of a user carries the user's stored handle. One registered with another handle could never
+  // log in (the authenticator keeps its own), so it is removed, not rewritten.
+  const handle = await findUserHandle(options, passkey.userId)
   if (handle && handle !== created.user_handle) {
     await db.sql`DELETE FROM {${table}} WHERE id = ${created.id}`
     throw new PasskeyUserHandleConflictError()
@@ -180,10 +198,10 @@ export const addPasskey = async (options: ModuleOptions, passkey: NewPasskey): P
   return created
 }
 
-/** The passkey was registered with a user handle other than the one the user's existing passkeys carry */
+/** The passkey was registered with a user handle other than the one stored for the user */
 export class PasskeyUserHandleConflictError extends Error {
   constructor() {
-    super('[Nuxt Users] The passkey was registered with a user handle that differs from the user\'s other passkeys')
+    super('[Nuxt Users] The passkey was registered with a user handle that differs from the one stored for the user')
     this.name = 'PasskeyUserHandleConflictError'
   }
 }

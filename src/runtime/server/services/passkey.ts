@@ -5,11 +5,12 @@ import {
   verifyAuthenticationResponse,
 } from '@simplewebauthn/server'
 import type { AuthenticationResponseJSON, RegistrationResponseJSON, PublicKeyCredentialCreationOptionsJSON, PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/server'
-import type { ModuleOptions, UserWithoutPassword } from 'nuxt-users/utils'
+import type { ModuleOptions, PasskeyAcceptedCredentials, PasskeyUnknownCredential, UserWithoutPassword } from 'nuxt-users/utils'
 import {
   addPasskey,
   consumeChallenge,
   findPasskeyByCredentialId,
+  findUserHandle,
   getOrCreateUserHandle,
   listPasskeys,
   PasskeyUserHandleConflictError,
@@ -22,11 +23,14 @@ import { findUserById } from '../utils/user'
 /** An expected failure of a passkey ceremony, carrying the HTTP status the API should answer with */
 export class PasskeyError extends Error {
   statusCode: number
+  /** Details the client may act on, sent as the `data` of the HTTP error */
+  data?: PasskeyUnknownCredential
 
-  constructor(message: string, statusCode: number) {
+  constructor(message: string, statusCode: number, data?: PasskeyUnknownCredential) {
     super(message)
     this.name = 'PasskeyError'
     this.statusCode = statusCode
+    this.data = data
   }
 }
 
@@ -239,7 +243,10 @@ export const finishPasskeyLogin = async (
 
   const passkey = await findPasskeyByCredentialId(options, response.id)
   if (!passkey) {
-    throw invalid(`no stored passkey matches the credential id "${response.id}"`)
+    // Only after a valid challenge: the credential id comes from the browser and says nothing about accounts.
+    // Naming it lets the browser drop the removed passkey from the authenticator (WebAuthn Signal API).
+    console.warn(`[Nuxt Users] Passkey login rejected: no stored passkey matches the credential id "${response.id}"`)
+    throw new PasskeyError('Unknown passkey', 401, { code: 'unknown_credential', rpId: config.rpID, credentialId: response.id })
   }
 
   // A discoverable credential reports whose it is: it must be the account the credential is stored for
@@ -289,4 +296,19 @@ export const finishPasskeyLogin = async (
     throw invalid()
   }
   return user
+}
+
+/**
+ * The passkeys a user still has, for the browser to tell the authenticators (WebAuthn Signal API), so a
+ * removed passkey disappears from the device while the user's other passkeys stay. Null when the user never
+ * started a passkey registration, as authenticators then hold nothing under a handle of theirs.
+ */
+export const getAcceptedPasskeyCredentials = async (options: ModuleOptions, userId: number): Promise<PasskeyAcceptedCredentials | null> => {
+  const config = resolvePasskeyConfig(options)
+  const userHandle = await findUserHandle(options, userId)
+  if (!userHandle) {
+    return null
+  }
+  const passkeys = await listPasskeys(options, userId)
+  return { rpId: config.rpID, userId: userHandle, allAcceptedCredentialIds: passkeys.map(passkey => passkey.credential_id) }
 }

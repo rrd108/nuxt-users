@@ -205,6 +205,9 @@ const huInformalOverrides: LocaleMessages = {
   },
   userForm: {
     customRolePlaceholder: 'Add meg az egyedi szerepkört'
+  },
+  passkey: {
+    unknownCredential: 'Ezt a passkey-t eltávolították. Töröld az eszközödről, és jelentkezz be másképp, majd adj hozzá egy újat.'
   }
 }
 
@@ -247,6 +250,9 @@ const huFormalOverrides: LocaleMessages = {
   },
   userForm: {
     customRolePlaceholder: 'Adja meg az egyedi szerepkört'
+  },
+  passkey: {
+    unknownCredential: 'Ezt a passkey-t eltávolították. Törölje az eszközéről, és jelentkezzen be másképp, majd adjon hozzá egy újat.'
   }
 }
 

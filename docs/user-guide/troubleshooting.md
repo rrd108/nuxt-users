@@ -274,6 +274,7 @@ export default defineNuxtConfig({
 4. **`Passkey registration could not be verified`:** the page origin is not listed in `origins`, or `rpId` is not the page's domain or a parent of it. Passkeys saved for another `rpId` will not show up.
 5. **Tables missing:** if you disabled auto migrations, run `npx nuxt-users migrate` (or `npx nuxt-users create-passkey-tables` on a fresh database).
 6. **A user's first passkey never logs in** (the server logs `the user handle of the response does not match the stored passkey`): before v1.53.2, a user's first passkey was saved with the wrong user handle. Such passkeys cannot be repaired: remove them in the app (and on the device), then add them again. Passkeys created after the update work.
+7. **`Unknown passkey` after removing a passkey** (the server logs `no stored passkey matches the credential id`): the device still offers a passkey that was removed in the app or lost with the database. Delete it in the device's password manager. Browsers with the WebAuthn Signal API drop it after the failed login. In versions up to v1.53.4, a passkey added after all others were deleted got a new user handle, so the device kept the old one next to it; the `add_passkey_user_handle_to_users` migration fixes that for new registrations.
 
 ## Component Issues
 

@@ -137,7 +137,8 @@ export const findUserById = async <T extends boolean = false>(
     return normalizedUser as (T extends true ? (User | null) : (UserWithoutPassword | null))
   }
 
-  const { password, ...userWithoutPassword } = normalizedUser
+  // The passkey user handle is an internal of the passkey store, not part of the user
+  const { password, passkey_user_handle: _handle, ...userWithoutPassword } = normalizedUser as typeof normalizedUser & { passkey_user_handle?: string | null }
   return userWithoutPassword as (T extends true ? (User | null) : (UserWithoutPassword | null))
 }
 

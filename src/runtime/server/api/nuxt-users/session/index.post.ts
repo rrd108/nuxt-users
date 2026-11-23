@@ -50,6 +50,6 @@ export default defineEventHandler(async (event) => {
   await startSession(event, user, 'password', options, Boolean(rememberMe))
 
   // Return user without password for security
-  const { password: _, ...userWithoutPassword } = user
+  const { password: _, passkey_user_handle: _handle, ...userWithoutPassword } = user as typeof user & { passkey_user_handle?: string | null }
   return { user: userWithoutPassword }
 })

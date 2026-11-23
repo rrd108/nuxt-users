@@ -121,7 +121,7 @@ Run from the project root so `nuxt.config.ts` (and optionally `.env`) are found.
 - **useUsers()** — Admin: `users`, `pagination`, `loading`, `error`, `fetchUsers(page?, limit?)`, `updateUser`, `addUser`, `removeUser(userId)`
 - **usePublicPaths()** — `getPublicPaths()`, `getAccessiblePaths()`, `isPublicPath(path, method?)`, `isAccessiblePath(path, method?)` (same rules as the server middleware and `list-routes`)
 - **usePasswordValidation(moduleOptions?, options?)** — `validate(password)`, `isValid`, `errors`, `strength`, `score`, `clearValidation()`
-- **usePasskeys()** — `enabled`, `supported`, `login(rememberMe?)` (returns the user or `null` if dismissed), `register(name?)`, `list()`, `remove(id)`
+- **usePasskeys()** — `enabled`, `supported`, `login(rememberMe?)` (returns the user or `null` if dismissed), `isUnknownPasskey(error)` (login failed because the passkey was removed on the server), `register(name?)`, `list()`, `remove(id)`. Login and `remove` call the WebAuthn Signal API where supported, so devices drop removed passkeys
 - **useNuxtUsersLocale()** — `t(key, params?)`, `currentLocale`, `fallbackLocale`
 
 ## Components

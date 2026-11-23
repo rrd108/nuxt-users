@@ -4,7 +4,7 @@ import type { Database } from 'db0'
 import * as webauthn from '@simplewebauthn/server'
 import { runMigrations } from '../src/runtime/server/utils/migrate'
 import { createUser } from '../src/runtime/server/utils/user'
-import { addPasskey, findPasskeyByCredentialId, listPasskeys, saveChallenge } from '../src/runtime/server/utils/passkey'
+import { addPasskey, deletePasskey, findPasskeyByCredentialId, listPasskeys, saveChallenge } from '../src/runtime/server/utils/passkey'
 import {
   PasskeyError,
   resolvePasskeyConfig,
@@ -12,6 +12,7 @@ import {
   finishPasskeyRegistration,
   beginPasskeyLogin,
   finishPasskeyLogin,
+  getAcceptedPasskeyCredentials,
 } from '../src/runtime/server/services/passkey'
 import { cleanupTestSetup, createTestSetup, getDatabaseConfig } from './test-setup'
 import type { DatabaseType, ModuleOptions, User } from '../src/types'
@@ -208,15 +209,47 @@ describe('Passkey service', () => {
       expect(secondPasskey.user_handle).toBe(firstPasskey.user_handle)
     })
 
-    it('answers 409 to the later of two concurrent first registrations and keeps the earlier one', async () => {
+    it('saves both of two concurrent first registrations with one handle', async () => {
       const a = await beginPasskeyRegistration(options, user)
       const b = await beginPasskeyRegistration(options, user)
       verifiedRegistration('cred-a')
       await finishPasskeyRegistration(options, user, registrationResponse(a.challenge, 'cred-a'))
       verifiedRegistration('cred-b')
+      await finishPasskeyRegistration(options, user, registrationResponse(b.challenge, 'cred-b'))
 
-      await expect(finishPasskeyRegistration(options, user, registrationResponse(b.challenge, 'cred-b'))).rejects.toMatchObject({ statusCode: 409 })
-      expect((await listPasskeys(options, user.id)).map(p => p.credential_id)).toEqual(['cred-a'])
+      const passkeys = await listPasskeys(options, user.id)
+      expect(passkeys.map(p => p.credential_id)).toEqual(['cred-a', 'cred-b'])
+      expect(new Set(passkeys.map(p => p.user_handle)).size).toBe(1)
+    })
+
+    // Issue #235: a new handle made the device keep the removed passkey next to the new one
+    it('keeps the user handle after all of the user passkeys are deleted', async () => {
+      const first = await beginPasskeyRegistration(options, user)
+      verifiedRegistration('old-cred')
+      const oldPasskey = await finishPasskeyRegistration(options, user, registrationResponse(first.challenge, 'old-cred'))
+      await deletePasskey(options, user.id, oldPasskey.id)
+
+      const again = await beginPasskeyRegistration(options, user)
+      const sentHandle = Buffer.from(vi.mocked(webauthn.generateRegistrationOptions).mock.calls[1]![0].userID!).toString('base64url')
+      verifiedRegistration('new-cred')
+      const newPasskey = await finishPasskeyRegistration(options, user, registrationResponse(again.challenge, 'new-cred'))
+
+      expect(sentHandle).toBe(oldPasskey.user_handle)
+      expect(newPasskey.user_handle).toBe(oldPasskey.user_handle)
+    })
+
+    it('lets a user keep several passkeys, e.g. a laptop and a phone, and log in with each', async () => {
+      for (const credentialId of ['laptop-cred', 'phone-cred']) {
+        const { challenge } = await beginPasskeyRegistration(options, user)
+        verifiedRegistration(credentialId)
+        await finishPasskeyRegistration(options, user, registrationResponse(challenge, credentialId))
+      }
+
+      for (const [i, credentialId] of ['laptop-cred', 'phone-cred'].entries()) {
+        const { challenge } = await beginPasskeyLogin(options)
+        verifiedLogin(i + 1)
+        await expect(finishPasskeyLogin(options, authenticationResponse(challenge, credentialId))).resolves.toMatchObject({ id: user.id })
+      }
     })
 
     it('rejects a registration challenge stored without a user handle', async () => {
@@ -288,10 +321,22 @@ describe('Passkey service', () => {
       expect((await findPasskeyByCredentialId(options, 'cred-1'))?.counter).toBe(6)
     })
 
-    it('rejects an unknown credential', async () => {
+    it('rejects an unknown credential and names it, so the browser can forget it', async () => {
       const { challenge } = await beginPasskeyLogin(options)
 
-      await expect(finishPasskeyLogin(options, authenticationResponse(challenge, 'nope'))).rejects.toMatchObject({ statusCode: 401 })
+      await expect(finishPasskeyLogin(options, authenticationResponse(challenge, 'nope'))).rejects.toMatchObject({
+        statusCode: 401,
+        message: 'Unknown passkey',
+        data: { code: 'unknown_credential', rpId: 'example.com', credentialId: 'nope' },
+      })
+    })
+
+    it('does not name the credential when the challenge is not valid', async () => {
+      await expect(finishPasskeyLogin(options, authenticationResponse('never-issued', 'nope'))).rejects.toMatchObject({
+        statusCode: 401,
+        message: 'Invalid passkey',
+        data: undefined,
+      })
     })
 
     it('rejects a response whose user handle does not match the passkey owner', async () => {
@@ -380,6 +425,41 @@ describe('Passkey service', () => {
       verifiedLogin(0)
 
       await expect(finishPasskeyLogin(options, authenticationResponse(challenge))).resolves.toMatchObject({ id: user.id })
+    })
+  })
+  describe('accepted credentials', () => {
+    it('lists every passkey the user still has, under the handle the authenticators hold', async () => {
+      const ids: number[] = []
+      for (const credentialId of ['laptop-cred', 'phone-cred', 'tablet-cred']) {
+        const { challenge } = await beginPasskeyRegistration(options, user)
+        verifiedRegistration(credentialId)
+        ids.push((await finishPasskeyRegistration(options, user, registrationResponse(challenge, credentialId))).id)
+      }
+      const handle = (await listPasskeys(options, user.id))[0]!.user_handle
+      await deletePasskey(options, user.id, ids[1]!)
+
+      expect(await getAcceptedPasskeyCredentials(options, user.id)).toEqual({
+        rpId: 'example.com',
+        userId: handle,
+        allAcceptedCredentialIds: ['laptop-cred', 'tablet-cred'],
+      })
+    })
+
+    it('keeps the handle with an empty list after the last passkey is deleted', async () => {
+      const { challenge } = await beginPasskeyRegistration(options, user)
+      verifiedRegistration('only-cred')
+      const passkey = await finishPasskeyRegistration(options, user, registrationResponse(challenge, 'only-cred'))
+      await deletePasskey(options, user.id, passkey.id)
+
+      expect(await getAcceptedPasskeyCredentials(options, user.id)).toEqual({
+        rpId: 'example.com',
+        userId: passkey.user_handle,
+        allAcceptedCredentialIds: [],
+      })
+    })
+
+    it('is null for a user who never registered a passkey', async () => {
+      expect(await getAcceptedPasskeyCredentials(options, user.id)).toBeNull()
     })
   })
 })

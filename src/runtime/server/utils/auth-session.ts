@@ -139,7 +139,8 @@ export const getCurrentUserFromToken = async <T extends boolean = false>(
   if (withPass === true) {
     return user as Result
   }
-  const { password: _, ...userWithoutPassword } = user
+  // The passkey user handle is an internal of the passkey store, not part of the user
+  const { password: _, passkey_user_handle: _handle, ...userWithoutPassword } = user as User & { passkey_user_handle?: string | null }
   return userWithoutPassword as Result
 }
 

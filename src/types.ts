@@ -404,6 +404,23 @@ export interface PasskeySummary {
   last_used_at: string | null
 }
 
+/**
+ * The passkeys a user still has, in the shape of the WebAuthn Signal API's `signalAllAcceptCredentials`:
+ * authenticators drop the user's other passkeys for the relying party. `userId` is the base64url user handle.
+ */
+export interface PasskeyAcceptedCredentials {
+  rpId: string
+  userId: string
+  allAcceptedCredentialIds: string[]
+}
+
+/** The `data` of the 401 a passkey login gets for a credential the server does not know (it was removed) */
+export interface PasskeyUnknownCredential {
+  code: 'unknown_credential'
+  rpId: string
+  credentialId: string
+}
+
 export interface LoginFormProps {
   apiEndpoint?: string
   redirectTo?: string

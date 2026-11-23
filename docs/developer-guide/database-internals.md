@@ -143,6 +143,7 @@ It returns the names of the migrations applied by this run, and throws on the fi
 - `create_passkey_tables`: Creates the `passkeys` and `passkey_challenges` tables used by [passkey login](/user-guide/authentication#passkey-authentication)
 - `add_user_handle_to_passkey_challenges`: Adds `user_handle` to `passkey_challenges`, so a passkey is saved with the WebAuthn user handle its registration sent to the authenticator
 - `add_purpose_to_password_reset_tokens`: Adds `purpose` to `password_reset_tokens`, so a password reset token can never confirm an email. Existing tokens of inactive users become confirmation tokens, the rest password reset tokens
+- `add_passkey_user_handle_to_users`: Adds `passkey_user_handle` to `users`, the user's WebAuthn user handle, kept when all their passkeys are deleted. Users with passkeys get the handle of their oldest one, the others one on their first passkey registration
 
 ### `getAppliedMigrations(options)`
 

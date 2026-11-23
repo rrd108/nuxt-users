@@ -144,6 +144,7 @@ export const en: LocaleMessages = {
     loggingIn: 'Waiting for your device...',
     loginFailed: 'Passkey sign-in failed',
     cancelled: 'The passkey request was cancelled or timed out',
+    unknownCredential: 'This passkey was removed. Delete it from your device and add a new one after signing in another way.',
     manager: {
       title: 'Passkeys',
       description: 'Sign in without a password, using your fingerprint, face, screen lock or a security key.',

@@ -1097,7 +1097,8 @@ Passkeys use two tables, `passkeys` and `passkey_challenges` (names configurable
 npx nuxt-users create-passkey-tables
 ```
 
-- `passkeys` holds the public key, signature counter, transports and a random per-user WebAuthn user handle (never derived from the user id). A user can have several passkeys. Deleting a user with `hardDelete` also deletes their passkeys.
+- `passkeys` holds the public key, signature counter, transports and the user's WebAuthn user handle. A user can have several passkeys, for example one on a laptop and one on a phone. Deleting a user with `hardDelete` also deletes their passkeys.
+- `users.passkey_user_handle` is the user's WebAuthn user handle: random (never derived from the user id), created on the first passkey registration and kept when the user deletes all their passkeys. An authenticator only replaces a passkey with the same handle, so a passkey added again replaces the removed one on the device instead of sitting next to it. Added by the `add_passkey_user_handle_to_users` migration, which takes it from each user's oldest passkey.
 - `passkey_challenges` holds short-lived, single-use challenges (5 minute TTL). The scheduled `nuxt-users:cleanup-tokens` task removes expired ones.
 
 ### Components
@@ -1128,6 +1129,17 @@ See [Components](/user-guide/components#nuserspasskeyloginbutton) and the [`useP
 | `POST` | `/api/nuxt-users/passkey/register/verify` | signed-in | Finish adding a passkey |
 | `GET` | `/api/nuxt-users/passkeys` | signed-in | List the current user's passkeys |
 | `DELETE` | `/api/nuxt-users/passkeys/:id` | signed-in | Remove one of the current user's passkeys |
+
+`login/verify` answers `401` with `statusMessage: 'Unknown passkey'` and `data: { code: 'unknown_credential', rpId, credentialId }` when the device offers a passkey the server no longer has. Other failures stay a generic `Invalid passkey`.
+
+### Removed passkeys on the device
+
+Removing a passkey in the app does not remove it from the device by itself. `usePasskeys()` (and so `NUsersPasskeyLoginButton` and `NUsersPasskeyManager`) uses the [WebAuthn Signal API](https://w3c.github.io/webauthn/#sctn-signal-methods) where the browser supports it:
+
+- After a passkey login and after a passkey is removed, it calls `PublicKeyCredential.signalAllAcceptCredentials()` with every passkey the user still has, so the authenticators drop the removed ones and keep the others. `login/verify` and `DELETE /passkeys/:id` return that list as `passkeys: { rpId, userId, allAcceptedCredentialIds }`.
+- When a login fails with `Unknown passkey`, it calls `PublicKeyCredential.signalUnknownCredential()`, and the login button shows a message asking the user to delete the passkey from the device and add a new one.
+
+In browsers without the Signal API nothing changes, and the user deletes a stale passkey in their password manager.
 
 The login endpoints are whitelisted automatically when `auth.passkey` is set. The other endpoints are open to every signed-in user whatever their role, because they only ever touch the user's own passkeys. All endpoints answer `404` when passkeys are not enabled. The API never returns key material.
 

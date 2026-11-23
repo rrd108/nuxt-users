@@ -151,10 +151,11 @@ Passkey (WebAuthn) login and management. Requires `auth.passkey`.
 
 - **enabled**: `ComputedRef<boolean>` - `auth.passkey` is set.
 - **supported**: `Ref<boolean>` - Browser supports WebAuthn (known after mount).
-- **login(rememberMe?: boolean)**: `Promise<UserWithoutPassword | null>` - Returns the user (call `useAuthentication().login` with it); `null` if the prompt was dismissed.
+- **login(rememberMe?: boolean)**: `Promise<UserWithoutPassword | null>` - Returns the user (call `useAuthentication().login` with it); `null` if the prompt was dismissed. Calls the WebAuthn Signal API (where supported) so authenticators drop removed passkeys.
+- **isUnknownPasskey(error: unknown)**: `boolean` - The login error means the server no longer has that passkey (401 `Unknown passkey`, `data.code === 'unknown_credential'`).
 - **register(name?: string)**: `Promise<PasskeySummary | null>` - Adds a passkey to the signed-in user.
 - **list()**: `Promise<PasskeySummary[]>`
-- **remove(id: number)**: `Promise<void>`
+- **remove(id: number)**: `Promise<void>` - Also signals the user's remaining passkeys to the authenticators.
 
 ### `useUsers()`
 Admin utility for managing users.
