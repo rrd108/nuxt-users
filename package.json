@@ -153,6 +153,6 @@
     "vue-tsc": "^3.0.1"
   },
   "resolutions": {
-    "entities": "^7.0.0"
+    "entities": "^9.0.0"
   }
 }
