@@ -134,7 +134,7 @@
     "@nuxt/test-utils": "^4.4.0",
     "@nuxt/vite-builder": "^4.6.4",
     "@types/bcrypt": "^6.0.0",
-    "@types/node": "^25.0.3",
+    "@types/node": "^26.0.0",
     "@types/nodemailer": "^8.0.0",
     "@types/pg": "^8.15.4",
     "@vue/compiler-core": "^3.5.44",
